@@ -10,7 +10,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class EnemyCharacter : CharacterBase {
-    //“G‚ÌHPƒQ[ƒW
+    // “G‚ÌHPƒQ[ƒW
     private Slider _enemyHPGauge = null;
     
 }
