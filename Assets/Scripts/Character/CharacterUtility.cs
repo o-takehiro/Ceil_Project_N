@@ -22,4 +22,18 @@ public class CharacterUtility {
     public static void UseEnemy(int ID) {
         CharacterManager.instance.UseEnemy(ID);
     }
+    /// <summary>
+    /// プレイヤーを未使用状態にする
+    /// </summary>
+    /// <param name="unusePlayer"></param>
+    public static void UnusePlayer(PlayerCharacter unusePlayer) {
+        CharacterManager.instance.UnusePlayer(unusePlayer);
+    }
+    /// <summary>
+    /// 敵を未使用状態にする
+    /// </summary>
+    /// <param name="unuseEnemy"></param>
+    public static void UnuseEnemy(EnemyCharacter unuseEnemy) {
+        CharacterManager.instance.UnuseEnemy(unuseEnemy);
+    }
 }

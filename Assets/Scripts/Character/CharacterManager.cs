@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 using static CommonModule;
+using static GameConst;
 
 public class CharacterManager : MonoBehaviour {
     public static CharacterManager instance { get; private set; } = null;
@@ -24,7 +25,7 @@ public class CharacterManager : MonoBehaviour {
     private PlayerCharacter _originPlayerObject = null;
     // 敵オブジェクトのオリジナル
     [SerializeField]
-    private List<CharacterBase> _originEnemyList = null;
+    private List<EnemyCharacter> _originEnemyList = null;
 
     // 未使用のプレイヤーオブジェクト
     private PlayerCharacter _unusePlayerObject = null;
@@ -40,9 +41,14 @@ public class CharacterManager : MonoBehaviour {
     /// </summary>
     public void Initialize() {
         instance = this;
-        _unusePlayerObject = _originPlayerObject;
+        int enemyTypeMax = (int)eEnemyType.Max;
+        //プレイヤー情報を未使用リストに入れる
+        _unusePlayerObject = Instantiate(_originPlayerObject, _unuseObjectRoot);
         _unuseEnemyList = new List<EnemyCharacter>();
-
+        //敵情報を未使用リストに入れる
+        for (int i = 0; i < enemyTypeMax; i++) {
+            _unuseEnemyList.Add(Instantiate(_originEnemyList[i], _unuseObjectRoot));
+        }
     }
     /// <summary>
     /// プレイヤーキャラクター生成
@@ -52,6 +58,8 @@ public class CharacterManager : MonoBehaviour {
         PlayerCharacter player = _unusePlayerObject;
         //未使用プレイヤーオブジェクトを空にする
         _unusePlayerObject = null;
+        //親オブジェクトの移動
+        player.transform.SetParent(_useObjectRoot);
         //プレイヤーの使用準備
         player.Setup();
     }
@@ -62,8 +70,37 @@ public class CharacterManager : MonoBehaviour {
     public void UseEnemy(int ID) {
         EnemyCharacter enemy = _unuseEnemyList[ID];
         //未使用敵オブジェクトを空にする
-        _unuseEnemyList.RemoveAt(ID);
+        _unuseEnemyList[ID] = null;
+        //親オブジェクトの移動
+        enemy.transform.SetParent(_useObjectRoot);
         //敵の使用準備
         enemy.Setup();
+    }
+    /// <summary>
+    /// プレイヤーを未使用状態にする
+    /// </summary>
+    /// <param name="unusePlayer"></param>
+    public void UnusePlayer(PlayerCharacter unusePlayer) {
+        if(unusePlayer == null) return;
+
+        //未使用プレイヤーオブジェクトに入れる
+        _unusePlayerObject = unusePlayer;
+        _unusePlayerObject.Teardown();
+        _unusePlayerObject.transform.SetParent(_unuseObjectRoot);
+    }
+    /// <summary>
+    /// 敵を未使用状態にする
+    /// </summary>
+    /// <param name="ID"></param>
+    public void UnuseEnemy(EnemyCharacter unuseEnemy) {
+        if(unuseEnemy == null) return;
+
+        for (int i = 0, max = (int)eEnemyType.Max; i < max; i++) {
+            if (_unuseEnemyList[i] != null) continue;
+
+            _unuseEnemyList[i] = unuseEnemy;
+            _unuseEnemyList[i].Teardown();
+            _unuseEnemyList[i].transform.SetParent(_unuseObjectRoot);
+        }
     }
 }
