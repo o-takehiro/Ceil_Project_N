@@ -8,14 +8,15 @@ using static CommonModule;
 public class FadeManager : SystemObject {
     public static FadeManager Instance { get; private set; }
 
-    [Header("フェードに使用する画像一覧")]
+    // フェード用画像
     [SerializeField]
-    private List<Image> _fadeImageList = new();
+    private List<Image> _fadeImageList = null;
 
     private const float _DEFAULT_FADE_DURATION = 0.1f;
 
     public override async UniTask Initialize() {
         Instance = this;
+        if (_fadeImageList == null) _fadeImageList = new List<Image>();
         await UniTask.CompletedTask;
     }
 
@@ -69,15 +70,19 @@ public class FadeManager : SystemObject {
     /// フェード画像を指定の不透明度に変化させる
     /// </summary>
     private async UniTask FadeTargetAlpha(Image image, float targetAlpha, float duration) {
+        // 経過時間
         float elapsedTime = 0f;
         float startAlpha = image.color.a;
         Color color = image.color;
 
         while (elapsedTime < duration) {
+            // フレーム経過時間
             elapsedTime += Time.deltaTime;
+            // 補間した不透明度をフェード画像に設定
             float t = elapsedTime / duration;
             color.a = Mathf.Lerp(startAlpha, targetAlpha, t);
             image.color = color;
+            // 5フレーム待ち
             await UniTask.DelayFrame(5);
         }
 
