@@ -13,8 +13,10 @@ public class PartStandby : PartBase {
     /// </summary>
     /// <returns></returns>
     public override async UniTask Execute() {
+        // フェード時の色
+        var fadeColor = FadeType.Black;
         // フェードアウト
-        await FadeManager.Instance.FadeOut(FadeType.Black);
+        await FadeManager.Instance.FadeOut(fadeColor);
 
         // タイトルパートへ遷移
         UniTask task = PartManager.Instance.TransitionPart(eGamePart.Title);
