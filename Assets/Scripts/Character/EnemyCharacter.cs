@@ -11,8 +11,15 @@ using UnityEngine.UI;
 
 public class EnemyCharacter : CharacterBase {
     // ìGÇÃHPÉQÅ[ÉW
-    private Slider _enemyHPGauge = null;
+    protected Slider _enemyHPGauge = null;
 
+
+    public override void Setup() {
+        base.Setup();
+    }
+    public override void Teardown() {
+        base.Teardown();
+    }
     public override bool isPlayer() {
         return false;
     }
