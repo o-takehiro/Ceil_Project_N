@@ -34,3 +34,13 @@ public enum FadeType {
     Black,  // çï
     Max,
 }
+
+public enum eEnemyType {
+    Invalid = -1,
+    TutorialEnemy,
+    Stage1Enemy,
+    Stage2Enemy,
+    Stage3Enemy,
+
+    Max
+}
