@@ -8,7 +8,7 @@ using static CommonModule;
 public class FadeManager : SystemObject {
     public static FadeManager Instance { get; private set; }
 
-    [Header("フェードに使用する画像一覧（enum順）")]
+    [Header("フェードに使用する画像一覧")]
     [SerializeField]
     private List<Image> _fadeImageList = new();
 
@@ -28,6 +28,7 @@ public class FadeManager : SystemObject {
     public async UniTask FadeOut(FadeType type = FadeType.Black, float duration = _DEFAULT_FADE_DURATION) {
         // 画像を取得
         var image = GetImageByType(type);
+        SetImageActiveOnly(type);
         if (image != null) await FadeTargetAlpha(image, 1.0f, duration);
 
     }
@@ -41,8 +42,27 @@ public class FadeManager : SystemObject {
     public async UniTask FadeIn(FadeType type = FadeType.Black, float duration = _DEFAULT_FADE_DURATION) {
         // 画像を取得
         var image = GetImageByType(type);
-        if (image != null) await FadeTargetAlpha(image, 0.0f, duration);
+        if (image != null) {
+            SetImageActiveOnly(type);
+            await FadeTargetAlpha(image, 0.0f, duration);
 
+            // 完全に透明になったら非表示にする
+            if (image.color.a <= 0f) {
+                image.gameObject.SetActive(false);
+            }
+        }
+    }
+
+    /// <summary>
+    /// フェード対象の選択
+    /// </summary>
+    private void SetImageActiveOnly(FadeType activeType) {
+        for (int i = 0; i < _fadeImageList.Count; i++) {
+            var image = _fadeImageList[i];
+            if (image == null) continue;
+
+            image.gameObject.SetActive(i == (int)activeType);
+        }
     }
 
     /// <summary>
