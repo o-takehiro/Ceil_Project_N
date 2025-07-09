@@ -41,12 +41,12 @@ public class CharacterManager : MonoBehaviour {
     /// </summary>
     public void Initialize() {
         instance = this;
-        int enemyTypeMax = (int)eEnemyType.Max;
+        int maxEnemyCount = _originEnemyList.Count;
         //プレイヤー情報を未使用リストに入れる
         _unusePlayerObject = Instantiate(_originPlayerObject, _unuseObjectRoot);
-        _unuseEnemyList = new List<EnemyCharacter>();
+        _unuseEnemyList = new List<EnemyCharacter>(maxEnemyCount);
         //敵情報を未使用リストに入れる
-        for (int i = 0; i < enemyTypeMax; i++) {
+        for (int i = 0; i < maxEnemyCount; i++) {
             _unuseEnemyList.Add(Instantiate(_originEnemyList[i], _unuseObjectRoot));
         }
     }
