@@ -12,5 +12,8 @@ using UnityEngine.UI;
 public class EnemyCharacter : CharacterBase {
     // “G‚ÌHPƒQ[ƒW
     private Slider _enemyHPGauge = null;
-    
+
+    public override bool isPlayer() {
+        return false;
+    }
 }

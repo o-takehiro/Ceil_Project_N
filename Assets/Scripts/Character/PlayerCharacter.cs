@@ -20,4 +20,7 @@ public class PlayerCharacter : CharacterBase {
     public int maxMP { get; private set; } = -1;
     public int MP { get; private set; } = -1;
 
+    public override bool isPlayer() {
+        return true;
+    }
 }

@@ -8,7 +8,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CharacterBase : MonoBehaviour {
+public abstract class CharacterBase : MonoBehaviour {
     // 一フレーム前の座標
     public Vector3 prevPos { get; protected set; } = Vector3.zero;
     // 現在フレームの座標
@@ -43,7 +43,5 @@ public class CharacterBase : MonoBehaviour {
 
     }
 
-    public virtual bool isPlayer() {
-        return false;
-    }
+    public abstract bool isPlayer();
 }
