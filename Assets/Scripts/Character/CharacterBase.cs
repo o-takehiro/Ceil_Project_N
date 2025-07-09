@@ -33,13 +33,13 @@ public abstract class CharacterBase : MonoBehaviour {
     /// <summary>
     /// g—p€”õˆ—
     /// </summary>
-    protected virtual void Setup() {
+    public virtual void Setup() {
 
     }
     /// <summary>
     /// •Ğ•t‚¯ˆ—
     /// </summary>
-    protected virtual void Teardown() {
+    public virtual void Teardown() {
 
     }
 
