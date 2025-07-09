@@ -14,7 +14,7 @@ public class PartStandby : PartBase {
     /// <returns></returns>
     public override async UniTask Execute() {
         // フェードアウト
-        await FadeManager.Instance.FadeIn();
+        await FadeManager.Instance.FadeOut();
 
         // タイトルパートへ遷移
         UniTask task = PartManager.Instance.TransitionPart(eGamePart.Title);

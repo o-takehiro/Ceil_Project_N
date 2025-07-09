@@ -32,6 +32,8 @@ public class SystemManager : MonoBehaviour {
             // 初期化
             await createObject.Initialize();
         }
+        // スタンバイパートの実行
+        UniTask task = PartManager.Instance.TransitionPart(eGamePart.Standby);
     }
 
 }
