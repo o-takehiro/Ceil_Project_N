@@ -34,3 +34,24 @@ public enum FadeType {
     Black,  // •
     Max,
 }
+
+public enum eEnemyType {
+    Invalid = -1,
+    TutorialEnemy,
+    Stage1Enemy,
+    Stage2Enemy,
+    Stage3Enemy,
+
+    Max
+}
+
+/// <summary>
+/// –‚–@‚ğg‚¤w‰c‚Ìí—Ş
+/// </summary>
+public enum eSideType {
+    Invalid = -1,
+    PlayerSide,     // ƒvƒŒƒCƒ„[
+    EnemySide,      // “G
+
+    Max,
+}

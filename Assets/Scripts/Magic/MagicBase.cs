@@ -1,0 +1,41 @@
+/*
+ * @file    MagicBase.cs
+ * @brief   魔法の基底
+ * @author  Riku
+ * @date    2025/7/9
+ */
+
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public abstract class MagicBase {
+	// ユニークのID
+	public int ID { get; private set; } = -1;
+	// マスターデータのID
+	public int masterID { get; private set; } = -1;
+
+	/// <summary>
+	/// 準備
+	/// </summary>
+	/// <param name="setID"></param>
+	/// <param name="setMasterID"></param>
+	public void Setup(int setID, int setMasterID) {
+		ID = setID;
+		masterID = setMasterID;
+	}
+
+	/// <summary>
+	/// 片付け
+	/// </summary>
+	public void Teardown() {
+
+	}
+
+	/// <summary>
+	/// 自身を未使用状態にする
+	/// </summary>
+	public void UnuseSelf() {
+
+	}
+}
