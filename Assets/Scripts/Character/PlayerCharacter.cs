@@ -23,4 +23,7 @@ public class PlayerCharacter : CharacterBase {
     public override bool isPlayer() {
         return true;
     }
+
+
+
 }
