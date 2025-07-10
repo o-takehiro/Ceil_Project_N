@@ -10,7 +10,7 @@ public class MenuTitle : MenuBase {
     public override async UniTask Open() {
         await base.Open();
         // フェード時の色を設定する。
-        var fadeColor = FadeType.Black;
+        var fadeColor = FadeType.White;
         await FadeManager.Instance.FadeIn(fadeColor);
         // 何かが押されるまで待つ
         /*

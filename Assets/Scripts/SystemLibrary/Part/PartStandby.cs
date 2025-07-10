@@ -14,7 +14,7 @@ public class PartStandby : PartBase {
     /// <returns></returns>
     public override async UniTask Execute() {
         // フェード時の色
-        var fadeColor = FadeType.Black;
+        var fadeColor = FadeType.White;
         // フェードアウト
         await FadeManager.Instance.FadeOut(fadeColor);
 
