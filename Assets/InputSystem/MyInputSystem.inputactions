@@ -1,5 +1,5 @@
 {
-    "name": "Player_InputSystem",
+    "name": "MyInputSystem",
     "maps": [
         {
             "name": "Player",
@@ -798,6 +798,45 @@
                     "processors": "",
                     "groups": "XR",
                     "action": "TrackedDeviceOrientation",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "Camera",
+            "id": "ff7e0bf8-b7b9-408e-aa69-10259dd07e42",
+            "actions": [
+                {
+                    "name": "Look",
+                    "type": "Value",
+                    "id": "d9754f67-a892-4b7c-a325-ba53a5b9b2f7",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "cdd67477-b21b-4698-a315-26be9361b3b9",
+                    "path": "<Mouse>/delta",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Look",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "464efa32-8441-4474-ae75-fcac5cc0e467",
+                    "path": "<Gamepad>/rightStick",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Look",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
