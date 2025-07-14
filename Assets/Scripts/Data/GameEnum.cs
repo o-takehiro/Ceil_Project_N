@@ -55,3 +55,15 @@ public enum eSideType {
 
     Max,
 }
+
+/// <summary>
+/// –‚–@‚Ìí—Ş
+/// </summary>
+public enum eMagicType {
+    Invalid = -1,
+	Analysis,       // ‰ğÍ–‚–@
+	Defense,        // –hŒä–‚–@
+	MiniBullet,     // ¬Œ^’e–‹
+
+	Max,
+}

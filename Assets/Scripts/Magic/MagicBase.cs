@@ -1,6 +1,6 @@
 /*
  * @file    MagicBase.cs
- * @brief   魔法の基底
+ * @brief   魔法データの基底
  * @author  Riku
  * @date    2025/7/9
  */
@@ -14,6 +14,8 @@ public abstract class MagicBase {
 	public int ID { get; private set; } = -1;
 	// マスターデータのID
 	public int masterID { get; private set; } = -1;
+	// 魔法陣営取得
+	public abstract eSideType GetSide();
 
 	/// <summary>
 	/// 準備
