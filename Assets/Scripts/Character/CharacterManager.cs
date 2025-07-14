@@ -108,25 +108,12 @@ public class CharacterManager : MonoBehaviour {
     public PlayerCharacter GetPlayer() {
         return _usePlayerObject;
     }
-    /// <summary>
-    /// プレイヤーの座標取得
-    /// </summary>
-    /// <returns></returns>
-    public Vector3 GetPlayerPosition() {
-        return _usePlayerObject.transform.position;
-    }
+
     /// <summary>
     /// 敵取得
     /// </summary>
     /// <returns></returns>
     public EnemyCharacter GetEnemy() {
         return _useEnemyObject;
-    }
-    /// <summary>
-    /// 敵座標取得
-    /// </summary>
-    /// <returns></returns>
-    public Vector3 GetEnemyPosition() {
-        return _useEnemyObject.transform.position;
     }
 }

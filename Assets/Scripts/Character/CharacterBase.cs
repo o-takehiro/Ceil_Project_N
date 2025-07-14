@@ -14,7 +14,7 @@ public abstract class CharacterBase : MonoBehaviour {
     // 現在フレームの座標
     public Vector3 currentPos { get; protected set; } = Vector3.zero;
     // 現在フレームの回転
-    public Vector3 currentRot { get; protected set; } = Vector3.zero;
+    public Quaternion currentRot { get; protected set; } = Quaternion.identity;
 
     // マスターデータ依存の変数
     public int ID { get; protected set; } = -1;
@@ -44,4 +44,33 @@ public abstract class CharacterBase : MonoBehaviour {
     }
 
     public abstract bool isPlayer();
+
+    /// <summary>
+    /// 座標の取得
+    /// </summary>
+    /// <returns></returns>
+    public Vector3 GetPosition() {
+        return currentPos;
+    }
+    /// <summary>
+    /// 座標の設定
+    /// </summary>
+    /// <param name="setPosition"></param>
+    public void SetPosition(Vector3 setPosition) {
+        currentPos = setPosition;
+    }
+    /// <summary>
+    /// 回転の取得
+    /// </summary>
+    /// <returns></returns>
+    public Quaternion GetRotation() {
+        return currentRot;
+    }
+    /// <summary>
+    /// 回転の設定
+    /// </summary>
+    /// <param name="setRotation"></param>
+    public void SetRotation(Quaternion setRotation) {
+        currentRot = setRotation;
+    }
 }

@@ -13,13 +13,16 @@ public class EnemyCharacter : CharacterBase {
     // 敵のHPゲージ
     protected Slider _enemyHPGauge = null;
 
-
     public override void Setup() {
         base.Setup();
     }
     public override void Teardown() {
         base.Teardown();
     }
+    /// <summary>
+    /// プレイヤーの判別
+    /// </summary>
+    /// <returns></returns>
     public override bool isPlayer() {
         return false;
     }
