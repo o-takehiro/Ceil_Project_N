@@ -33,6 +33,7 @@ public class PartMainGame : PartBase {
         // ¶¬ŠÖ˜A‚ğ‚±‚±‚ÉB
         await FadeManager.Instance.FadeIn();
         UsePlayer();
+        UseEnemy(0);
         await UniTask.CompletedTask;
     }
 
