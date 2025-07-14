@@ -12,6 +12,7 @@ using UnityEngine.UI;
 public class EnemyCharacter : CharacterBase {
     // ìGÇÃHPÉQÅ[ÉW
     protected Slider _enemyHPGauge = null;
+    public CharacterAIMachine<EnemyCharacter> _myAI { get; protected set; } = null;
 
     public override void Setup() {
         base.Setup();

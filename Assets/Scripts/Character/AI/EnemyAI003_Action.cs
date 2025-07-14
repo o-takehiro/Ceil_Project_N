@@ -2,17 +2,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyAI003_Action : MonoBehaviour
-{
-    // Start is called before the first frame update
-    void Start()
-    {
-        
+public class EnemyAI003_Action : CharacterAIBase<EnemyCharacter> {
+
+    public override void Setup() {
+        base.Setup();
+
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+    public override void Execute() {
+        base.Execute();
+
+    }
+
+    public override void Teardown() {
+        base.Teardown();
+
     }
 }
