@@ -17,4 +17,20 @@ public class EnemyMagic : MagicBase {
 	public override eSideType GetSide() {
 		return eSideType.EnemySide;
 	}
+
+	/// <summary>
+	/// ‰ğÍ–‚–@
+	/// </summary>
+	public override void AnalysisMagic() {
+	}
+	/// <summary>
+	/// –hŒä–‚–@
+	/// </summary>
+	public override void DefenseMagic() {
+	}
+	/// <summary>
+	/// ¬Œ^’e–‹–‚–@
+	/// </summary>
+	public override void MiniBulletMagic() {
+	}
 }

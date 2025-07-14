@@ -16,6 +16,10 @@ public abstract class MagicBase {
 	public int masterID { get; private set; } = -1;
 	// –‚–@w‰cæ“¾
 	public abstract eSideType GetSide();
+	// À‘•–‚–@
+	public abstract void AnalysisMagic();
+	public abstract void DefenseMagic();
+	public abstract void MiniBulletMagic();
 
 	/// <summary>
 	/// €”õ
@@ -40,4 +44,5 @@ public abstract class MagicBase {
 	public void UnuseSelf() {
 
 	}
+
 }

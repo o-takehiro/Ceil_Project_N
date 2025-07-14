@@ -63,7 +63,7 @@ public enum eMagicType {
     Invalid = -1,
 	Analysis,       // ‰ğÍ–‚–@
 	Defense,        // –hŒä–‚–@
-	MiniBullet,     // ¬Œ^’e–‹
+	MiniBullet,     // ¬Œ^’e–‹–‚–@
 
 	Max,
 }
