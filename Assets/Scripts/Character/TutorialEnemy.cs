@@ -16,10 +16,12 @@ public class TutorialEnemy : EnemyCharacter {
         base.Setup();
         _myAI = new CharacterAIMachine<EnemyCharacter>();
         _myAI.Setup(this);
+        _myAI.ChangeState(new EnemyAI001_Wait());
     }
     private void Update() {
         //AIマシーンの更新
         _myAI.Update();
+        SetPosition(transform.position);
         transform.position = currentPos;
         prevPos = currentPos;
         transform.rotation = currentRot;
