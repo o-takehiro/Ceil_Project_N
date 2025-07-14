@@ -53,6 +53,8 @@ public class PlayerCharacter : CharacterBase {
         return true;
     }
 
+
+
     /// <summary>
     /// コンストラクタ
     /// </summary>
