@@ -20,5 +20,9 @@ public class TutorialEnemy : EnemyCharacter {
     private void Update() {
         //AIマシーンの更新
         _myAI.Update();
+        transform.position = currentPos;
+        prevPos = currentPos;
+        transform.rotation = currentRot;
+        currentRot = transform.rotation;
     }
 }
