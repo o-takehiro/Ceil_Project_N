@@ -1,3 +1,9 @@
+/*
+ * @file    TutorialEnemy.cs
+ * @brief   チュートリアル用の敵
+ * @author  Seki
+ * @date    2025/7/9
+ */
 using JetBrains.Annotations;
 using System.Collections;
 using System.Collections.Generic;
@@ -14,6 +20,7 @@ public class TutorialEnemy : EnemyCharacter {
         _myAI.ChangeState(new MoveRight());
     }
     private void Update() {
+        //AIマシーンの更新
         _myAI.Update();
     }
     private class MoveRight : CharacterAIBase<TutorialEnemy> {
