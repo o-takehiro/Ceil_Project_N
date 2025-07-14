@@ -54,21 +54,19 @@ public class PlayerCharacter : CharacterBase {
         return true;
     }
 
-    /// <summary>
-    /// 使用前準備
-    /// </summary>
-    public override void Setup() {
-        base.Setup();
-        // カメラに自身をセット
-        if (CameraManager.Instance != null) CameraManager.Instance.SetTarget(_transform);
-    }
 
+    /// <summary>
+    /// 初期化
+    /// </summary>
+    /// <param name="controller"></param>
+    /// <param name="transform"></param>
+    /// <param name="camera"></param>
+    /// <param name="engineAdapter"></param>
     public void Initialize(
         CharacterController controller,
         Transform transform,
         Camera camera,
         PlayerMove engineAdapter) {
-        // 初期化処理
         _controller = controller;
         _transform = transform;
         _camera = camera;
@@ -76,15 +74,13 @@ public class PlayerCharacter : CharacterBase {
     }
 
     /// <summary>
-    /// コンストラクタ
+    /// 使用前準備
     /// </summary>
-    /// <param name="controller"></param>
-    /// <param name="transform"></param>
-    /// <param name="camera"></param>
-    /// <param name="engineAdapter"></param>
-    //public PlayerCharacter() {
-    //
-    //}
+    public override void Setup() {
+        // カメラに自身をセット
+        if (CameraManager.Instance != null) CameraManager.Instance.SetTarget(_transform);
+        base.Setup();
+    }
 
     // 外部からの入力受付
     public void SetMoveInput(Vector2 input) => _inputMove = input;
