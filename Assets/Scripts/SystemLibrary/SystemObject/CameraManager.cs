@@ -26,12 +26,12 @@ public class CameraManager : SystemObject {
     private Transform _target;                // 実際のターゲット参照
 
     // カメラの挙動に関する設定
-    public Vector3 offset = new Vector3(0f, 2f, -5f);   // プレイヤーに対するカメラの相対位置
-    public float followSpeed = 10f;                     // カメラの追従速度
-    public float rotationSpeed = 1.0f;                  // 回転速度
-    public float mouseSensitivity = 0.1f;               // マウス感度
-    public float gamepadSensitivity = 1.0f;             // ゲームパッド感度
-    public float pitchLimit = 40f;                      // 上下回転の制限
+    private Vector3 offset = new Vector3(0f, 2f, -5f);   // プレイヤーに対するカメラの相対位置
+    private float followSpeed = 10f;                     // カメラの追従速度
+    private float rotationSpeed = 1.0f;                  // 回転速度
+    private float mouseSensitivity = 0.1f;               // マウス感度
+    private float gamepadSensitivity = 0.1f;             // ゲームパッド感度
+    private float pitchLimit = 20f;                      // 上下回転の制限
 
     /// <summary>
     /// 初期化処理（非同期）

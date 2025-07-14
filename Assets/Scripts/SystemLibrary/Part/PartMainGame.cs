@@ -3,10 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+using static CharacterUtility;
 /// <summary>
 /// メインゲームパート
 /// </summary>
 public class PartMainGame : PartBase {
+
+    [SerializeField]
+    private CharacterManager _characterManager = null;
 
     /// <summary>
     /// 初期化処理
@@ -15,6 +19,8 @@ public class PartMainGame : PartBase {
     public override async UniTask Initialize() {
         // 全ての初期化処理を呼ぶ
         await base.Initialize();
+        // キャラクター管理クラス初期化
+        _characterManager?.Initialize();
         await UniTask.CompletedTask;
     }
 
@@ -26,6 +32,7 @@ public class PartMainGame : PartBase {
         await base.SetUp();
         // 生成関連をここに。
         await FadeManager.Instance.FadeIn();
+        //UsePlayer();
         await UniTask.CompletedTask;
     }
 

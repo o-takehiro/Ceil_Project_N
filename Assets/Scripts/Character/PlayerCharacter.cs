@@ -12,7 +12,7 @@ public class PlayerCharacter : CharacterBase {
     //現在のスピード
     public float playerMoveSpeed { get; private set; } = -1.0f;
     // カメラとの距離
-    private float _cameraDistance = -1.0f;
+    //private float _cameraDistance = -1.0f;
 
     // プレイヤーの基礎移動スピード
     private const float _PLAYER_RAW_MOVE_SPEED = 10.0f;
@@ -58,12 +58,9 @@ public class PlayerCharacter : CharacterBase {
     /// </summary>
     public override void Setup() {
         base.Setup();
-        // カメラのセット
-
         // カメラに自身をセット
-        if (CameraManager.Instance != null) {
-            CameraManager.Instance.SetTarget(_transform);
-        }
+        if (CameraManager.Instance != null) CameraManager.Instance.SetTarget(_transform);
+
     }
 
     /// <summary>
