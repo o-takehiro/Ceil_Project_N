@@ -53,7 +53,18 @@ public class PlayerCharacter : CharacterBase {
         return true;
     }
 
+    /// <summary>
+    /// 使用前準備
+    /// </summary>
+    public override void Setup() {
+        base.Setup();
+        // カメラのセット
 
+        // カメラに自身をセット
+        if (CameraManager.Instance != null) {
+            CameraManager.Instance.SetTarget(_transform);
+        }
+    }
 
     /// <summary>
     /// コンストラクタ
