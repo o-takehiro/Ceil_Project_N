@@ -38,10 +38,6 @@ public class PartMainGame : PartBase {
     /// <exception cref="System.NotImplementedException"></exception>
     public override async UniTask Execute() {
 
-        // ゲームの終了結果の処理
-        //UniTask task;
-        // とりあえずタイトルに戻す
-        //task = PartManager.Instance.TransitionPart(eGamePart.Title);
 
         await UniTask.CompletedTask;
 
