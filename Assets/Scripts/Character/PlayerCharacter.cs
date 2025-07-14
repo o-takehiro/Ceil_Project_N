@@ -8,7 +8,9 @@ using Cysharp.Threading.Tasks;
 using System.Threading;
 using UnityEngine;
 using UnityEngine.InputSystem.XR;
+using UnityEngine.UIElements;
 
+using static CharacterUtility;
 public class PlayerCharacter : CharacterBase {
     //現在のスピード
     public float playerMoveSpeed { get; private set; } = -1.0f;
@@ -77,9 +79,10 @@ public class PlayerCharacter : CharacterBase {
     /// 使用前準備
     /// </summary>
     public override void Setup() {
-        // カメラに自身をセット
-        if (CameraManager.Instance != null) CameraManager.Instance.SetTarget(_transform);
         base.Setup();
+        // カメラに自身をセット
+        if (CameraManager.Instance != null) CameraManager.Instance.SetTarget(GetPlayer());
+
     }
 
     // 外部からの入力受付
@@ -96,6 +99,7 @@ public class PlayerCharacter : CharacterBase {
         // 無限ループ
         while (!token.IsCancellationRequested) {
             MoveUpdate(Time.deltaTime);
+
             await UniTask.Yield(PlayerLoopTiming.Update, token);
         }
     }
@@ -150,6 +154,10 @@ public class PlayerCharacter : CharacterBase {
             float angleY = Mathf.SmoothDampAngle(
                 _transform.eulerAngles.y, targetAngle, ref _turnVelocity, 0.1f);
             _playerMove.ApplyRotation(Quaternion.Euler(0, angleY, 0));
+
+            SetPosition(transform.position);
+            transform.position = currentPos;
+            prevPos = currentPos;
         }
 
 

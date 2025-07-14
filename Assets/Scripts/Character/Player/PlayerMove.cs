@@ -3,6 +3,7 @@ using Cysharp.Threading.Tasks;
 using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UIElements;
 
 /// <summary>
 /// ƒvƒŒƒCƒ„[‚ÌˆÚ“®ŠÇ—
