@@ -7,6 +7,7 @@
 using Cysharp.Threading.Tasks;
 using System.Threading;
 using UnityEngine;
+using UnityEngine.InputSystem.XR;
 
 public class PlayerCharacter : CharacterBase {
     //現在のスピード
@@ -37,13 +38,13 @@ public class PlayerCharacter : CharacterBase {
     private bool _wasGrounded = false;
 
     // プレイヤーTransgorm
-    private readonly Transform _transform;
+    private Transform _transform;
     // キャラクターコントローラー
-    private readonly CharacterController _controller;
+    private CharacterController _controller;
     // カメラ
-    private readonly Camera _camera;
+    private Camera _camera;
     // PlayerMove.cs
-    private readonly PlayerMove _playerMove;
+    private PlayerMove _playerMove;
 
     // マスターデータ依存の変数
     public int maxMP { get; private set; } = -1;
@@ -60,7 +61,18 @@ public class PlayerCharacter : CharacterBase {
         base.Setup();
         // カメラに自身をセット
         if (CameraManager.Instance != null) CameraManager.Instance.SetTarget(_transform);
+    }
 
+    public void Initialize(
+        CharacterController controller,
+        Transform transform,
+        Camera camera,
+        PlayerMove engineAdapter) {
+        // 初期化処理
+        _controller = controller;
+        _transform = transform;
+        _camera = camera;
+        _playerMove = engineAdapter;
     }
 
     /// <summary>
@@ -70,16 +82,9 @@ public class PlayerCharacter : CharacterBase {
     /// <param name="transform"></param>
     /// <param name="camera"></param>
     /// <param name="engineAdapter"></param>
-    public PlayerCharacter(
-        CharacterController controller,
-        Transform transform,
-        Camera camera,
-        PlayerMove engineAdapter) {
-        _controller = controller;
-        _transform = transform;
-        _camera = camera;
-        _playerMove = engineAdapter;
-    }
+    //public PlayerCharacter() {
+    //
+    //}
 
     // 外部からの入力受付
     public void SetMoveInput(Vector2 input) => _inputMove = input;

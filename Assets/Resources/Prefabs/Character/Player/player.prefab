@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 6822296612861672717}
   - component: {fileID: 2033477673427579522}
   - component: {fileID: 4367375247412697646}
+  - component: {fileID: -616276080016746698}
   m_Layer: 0
   m_Name: player
   m_TagString: Untagged
@@ -255,11 +256,27 @@ MonoBehaviour:
       m_Calls: []
     m_ActionId: 8131f17a-01d7-454d-818c-cbe14a2b839f
     m_ActionName: UI/TrackedDeviceOrientation
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: d9754f67-a892-4b7c-a325-ba53a5b9b2f7
+    m_ActionName: Camera/Look[/Mouse/delta,/XInputControllerWindows/rightStick]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
+--- !u!114 &-616276080016746698
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1611239995627760807}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6bc646798d4f2064cae26b3921b37503, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &3221916125040033074
 GameObject:
   m_ObjectHideFlags: 0

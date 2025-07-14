@@ -35,8 +35,8 @@ public sealed class PlayerMove : MonoBehaviour {
         _controller = GetComponent<CharacterController>();
         if (_targetCamera == null) _targetCamera = Camera.main;
 
-        // ドメインクラス生成
-        _character = new PlayerCharacter(_controller, transform, _targetCamera, this);
+        _character = gameObject.AddComponent<PlayerCharacter>();
+        _character.Initialize(_controller, transform, _targetCamera, this);
 
         // UniTaskのキャンセルを行うときのハンドリング
         try {
