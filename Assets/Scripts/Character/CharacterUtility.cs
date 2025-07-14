@@ -48,8 +48,29 @@ public class CharacterUtility {
     /// </summary>
     /// <returns></returns>
     public static Vector3 GetPlayerPosition() {
-        return CharacterManager.instance.GetPlayerPosition();
-    } 
+        return GetPlayer().GetPosition();
+    }
+    /// <summary>
+    /// ƒvƒŒƒCƒ„[‚Ì‰ñ“]æ“¾
+    /// </summary>
+    /// <returns></returns>
+    public static Quaternion GetPlayerRotation() {
+        return GetPlayer().GetRotation();
+    }
+    /// <summary>
+    /// ƒvƒŒƒCƒ„[‚ÌÀ•Wİ’è
+    /// </summary>
+    /// <param name="setPosition"></param>
+    public static void SetPlayerPosition(Vector3 setPosition) {
+        GetPlayer().SetPosition(setPosition);
+    }
+    /// <summary>
+    /// ƒvƒŒƒCƒ„[‰ñ“]İ’è
+    /// </summary>
+    /// <param name="setRotation"></param>
+    public static void SetPlayerRotation(Quaternion setRotation) {
+        GetPlayer().SetRotation(setRotation);
+    }
     /// <summary>
     /// “Gæ“¾
     /// </summary>
@@ -62,6 +83,27 @@ public class CharacterUtility {
     /// </summary>
     /// <returns></returns>
     public static Vector3 GetEnemyPosition() {
-        return CharacterManager.instance.GetEnemyPosition();
+        return GetEnemy().GetPosition();
+    }
+    /// <summary>
+    /// “G‰ñ“]æ“¾
+    /// </summary>
+    /// <returns></returns>
+    public static Quaternion GetEnemyRotation() {
+        return GetEnemy().GetRotation();
+    }
+    /// <summary>
+    /// “GÀ•W‚Ìİ’è
+    /// </summary>
+    /// <param name="setRotation"></param>
+    public static void SetEnemyPosition(Vector3 setPosition) {
+        GetEnemy().SetPosition(setPosition);
+    }
+    /// <summary>
+    /// “G‰ñ“]İ’è
+    /// </summary>
+    /// <param name="setRotation"></param>
+    public static void SetEnemyRotation(Quaternion setRotation) {
+        GetEnemy().SetRotation(setRotation);
     }
 }
