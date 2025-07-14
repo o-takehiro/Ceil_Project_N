@@ -25,7 +25,7 @@ public class PartMainGame : PartBase {
     public override async UniTask SetUp() {
         await base.SetUp();
         // ¶¬ŠÖ˜A‚ğ‚±‚±‚ÉB
-
+        await FadeManager.Instance.FadeIn();
         await UniTask.CompletedTask;
     }
 

@@ -26,14 +26,42 @@ public class CharacterUtility {
     /// プレイヤーを未使用状態にする
     /// </summary>
     /// <param name="unusePlayer"></param>
-    public static void UnusePlayer(PlayerCharacter unusePlayer) {
-        CharacterManager.instance.UnusePlayer(unusePlayer);
+    public static void UnusePlayer() {
+        CharacterManager.instance.UnusePlayer();
     }
     /// <summary>
     /// 敵を未使用状態にする
     /// </summary>
     /// <param name="unuseEnemy"></param>
-    public static void UnuseEnemy(EnemyCharacter unuseEnemy) {
-        CharacterManager.instance.UnuseEnemy(unuseEnemy);
+    public static void UnuseEnemy() {
+        CharacterManager.instance.UnuseEnemy();
+    }
+    /// <summary>
+    /// プレイヤー取得
+    /// </summary>
+    /// <returns></returns>
+    public static PlayerCharacter GetPlayer() {
+        return CharacterManager.instance.GetPlayer();
+    }
+    /// <summary>
+    /// プレイヤーの座標取得
+    /// </summary>
+    /// <returns></returns>
+    public static Vector3 GetPlayerPosition() {
+        return CharacterManager.instance.GetPlayerPosition();
+    } 
+    /// <summary>
+    /// 敵取得
+    /// </summary>
+    /// <returns></returns>
+    public static EnemyCharacter GetEnemy() {
+        return CharacterManager.instance.GetEnemy();
+    }
+    /// <summary>
+    /// 敵座標取得
+    /// </summary>
+    /// <returns></returns>
+    public static Vector3 GetEnemyPosition() {
+        return CharacterManager.instance.GetEnemyPosition();
     }
 }

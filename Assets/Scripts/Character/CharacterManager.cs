@@ -31,22 +31,22 @@ public class CharacterManager : MonoBehaviour {
     private PlayerCharacter _unusePlayerObject = null;
     // 未使用の敵オブジェクトリスト
     private List<EnemyCharacter> _unuseEnemyList = null;
-    // 使用中のオブジェクトリスト
-    private List<CharacterBase> _useObjectList = null;
+    // 使用中のプレイヤーオブジェクト
+    private PlayerCharacter _usePlayerObject = null;
     // 未使用のオブジェクトリスト
-    private List<CharacterBase> _unuseObjectList = null;
+    private EnemyCharacter _useEnemyObject = null;
     
     /// <summary>
     /// 初期化処理
     /// </summary>
     public void Initialize() {
         instance = this;
-        int enemyTypeMax = (int)eEnemyType.Max;
+        int maxEnemyCount = _originEnemyList.Count;
         //プレイヤー情報を未使用リストに入れる
         _unusePlayerObject = Instantiate(_originPlayerObject, _unuseObjectRoot);
-        _unuseEnemyList = new List<EnemyCharacter>();
+        _unuseEnemyList = new List<EnemyCharacter>(maxEnemyCount);
         //敵情報を未使用リストに入れる
-        for (int i = 0; i < enemyTypeMax; i++) {
+        for (int i = 0; i < maxEnemyCount; i++) {
             _unuseEnemyList.Add(Instantiate(_originEnemyList[i], _unuseObjectRoot));
         }
     }
@@ -55,52 +55,78 @@ public class CharacterManager : MonoBehaviour {
     /// </summary>
     public void UsePlayer() {
         //プレイヤー情報のインスタンスを未使用オブジェクトから取得
-        PlayerCharacter player = _unusePlayerObject;
+        _usePlayerObject = _unusePlayerObject;
         //未使用プレイヤーオブジェクトを空にする
         _unusePlayerObject = null;
         //親オブジェクトの移動
-        player.transform.SetParent(_useObjectRoot);
+        _usePlayerObject.transform.SetParent(_useObjectRoot);
         //プレイヤーの使用準備
-        player.Setup();
+        _usePlayerObject.Setup();
     }
     /// <summary>
     /// 敵キャラクター生成
     /// </summary>
     /// <param name="ID"></param>
     public void UseEnemy(int ID) {
-        EnemyCharacter enemy = _unuseEnemyList[ID];
+        _useEnemyObject = _unuseEnemyList[ID];
         //未使用敵オブジェクトを空にする
         _unuseEnemyList[ID] = null;
         //親オブジェクトの移動
-        enemy.transform.SetParent(_useObjectRoot);
+        _useEnemyObject.transform.SetParent(_useObjectRoot);
         //敵の使用準備
-        enemy.Setup();
+        _useEnemyObject.Setup();
     }
     /// <summary>
     /// プレイヤーを未使用状態にする
     /// </summary>
     /// <param name="unusePlayer"></param>
-    public void UnusePlayer(PlayerCharacter unusePlayer) {
-        if(unusePlayer == null) return;
-
+    public void UnusePlayer() {
+        if(_usePlayerObject == null) return;
         //未使用プレイヤーオブジェクトに入れる
-        _unusePlayerObject = unusePlayer;
-        _unusePlayerObject.Teardown();
+        _unusePlayerObject = _usePlayerObject;
+        //片付け処理を呼ぶ
+        _usePlayerObject.Teardown();
         _unusePlayerObject.transform.SetParent(_unuseObjectRoot);
     }
     /// <summary>
     /// 敵を未使用状態にする
     /// </summary>
     /// <param name="ID"></param>
-    public void UnuseEnemy(EnemyCharacter unuseEnemy) {
-        if(unuseEnemy == null) return;
-
+    public void UnuseEnemy() {
         for (int i = 0, max = (int)eEnemyType.Max; i < max; i++) {
             if (_unuseEnemyList[i] != null) continue;
 
-            _unuseEnemyList[i] = unuseEnemy;
+            _unuseEnemyList[i] = _useEnemyObject;
             _unuseEnemyList[i].Teardown();
             _unuseEnemyList[i].transform.SetParent(_unuseObjectRoot);
         }
+    }
+    /// <summary>
+    /// プレイヤー取得
+    /// </summary>
+    /// <returns></returns>
+    public PlayerCharacter GetPlayer() {
+        return _usePlayerObject;
+    }
+    /// <summary>
+    /// プレイヤーの座標取得
+    /// </summary>
+    /// <returns></returns>
+    public Vector3 GetPlayerPosition() {
+        return _usePlayerObject.transform.position;
+    }
+    /// <summary>
+    /// 敵取得
+    /// </summary>
+    /// <returns></returns>
+    public EnemyCharacter GetEnemy() {
+        return _useEnemyObject;
+    }
+    /// <summary>
+    /// 敵座標取得
+    /// </summary>
+    /// <returns></returns>
+    public Vector3 GetEnemyPosition() {
+        return _useEnemyObject.transform.position;
     }
 }

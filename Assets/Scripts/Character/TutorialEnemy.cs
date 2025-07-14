@@ -1,3 +1,9 @@
+/*
+ * @file    TutorialEnemy.cs
+ * @brief   チュートリアル用の敵
+ * @author  Seki
+ * @date    2025/7/9
+ */
 using JetBrains.Annotations;
 using System.Collections;
 using System.Collections.Generic;
@@ -6,17 +12,15 @@ using UnityEngine;
 
 public class TutorialEnemy : EnemyCharacter {
     public static CharacterAIMachine<TutorialEnemy> _myAI { get; private set; } = null;
-    private void Start() {
-        Setup();
-    }
+
     public override void Setup() {
         base.Setup();
         _myAI = new CharacterAIMachine<TutorialEnemy>();
         _myAI.Setup(this);
         _myAI.ChangeState(new MoveRight());
     }
-
     private void Update() {
+        //AIマシーンの更新
         _myAI.Update();
     }
     private class MoveRight : CharacterAIBase<TutorialEnemy> {
@@ -27,7 +31,7 @@ public class TutorialEnemy : EnemyCharacter {
         public override void Execute() {
             base.Execute();
             ownerClass.gameObject.transform.position += Vector3.right;
-            if(ownerClass.gameObject.transform.position.x >= 20) {
+            if (ownerClass.gameObject.transform.position.x >= 20) {
 
                 _myAI.ChangeState(new MoveLeft());
             }
@@ -49,7 +53,7 @@ public class TutorialEnemy : EnemyCharacter {
                 _myAI.ChangeState(new MoveRight());
             }
         }
-        public override void Teardown() { 
+        public override void Teardown() {
             base.Teardown();
         }
     }

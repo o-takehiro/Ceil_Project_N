@@ -4,70 +4,100 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+using static CommonModule;
 public class FadeManager : SystemObject {
-    // フェード用黒画像
+    public static FadeManager Instance { get; private set; }
+
+    // フェード用画像
     [SerializeField]
-    private Image _fadeImage = null;
+    private List<Image> _fadeImageList = null;
 
-    /// <summary>
-    /// 自身への参照
-    /// </summary>
-    public static FadeManager Instance { get; private set; } = null;
-
-    // デフォルトのフェード時間
     private const float _DEFAULT_FADE_DURATION = 0.1f;
 
-    /// <summary>
-    /// 初期化
-    /// </summary>
-    /// <returns></returns>
     public override async UniTask Initialize() {
         Instance = this;
+        if (_fadeImageList == null) _fadeImageList = new List<Image>();
         await UniTask.CompletedTask;
     }
 
     /// <summary>
     /// フェードアウト
     /// </summary>
-    /// <param name="_duration"></param>
+    /// <param name="type"></param>
+    /// <param name="duration"></param>
     /// <returns></returns>
-    public async UniTask FadeOut(float _duration = _DEFAULT_FADE_DURATION) {
-        await FadeTargetAlpha(1.0f, _duration);
-    }
+    public async UniTask FadeOut(FadeType type = FadeType.Black, float duration = _DEFAULT_FADE_DURATION) {
+        // 画像を取得
+        var image = GetImageByType(type);
+        SetImageActiveOnly(type);
+        if (image != null) await FadeTargetAlpha(image, 1.0f, duration);
 
+    }
 
     /// <summary>
     /// フェードイン
     /// </summary>
-    /// <param name="_duration"></param>
+    /// <param name="type"></param>
+    /// <param name="duration"></param>
     /// <returns></returns>
-    public async UniTask FadeIn(float _duration = _DEFAULT_FADE_DURATION) {
-        await FadeTargetAlpha(0.0f, _duration);
+    public async UniTask FadeIn(FadeType type = FadeType.Black, float duration = _DEFAULT_FADE_DURATION) {
+        // 画像を取得
+        var image = GetImageByType(type);
+        if (image != null) {
+            SetImageActiveOnly(type);
+            await FadeTargetAlpha(image, 0.0f, duration);
 
+            // 完全に透明になったら非表示にする
+            if (image.color.a <= 0f) {
+                image.gameObject.SetActive(false);
+            }
+        }
+    }
+
+    /// <summary>
+    /// フェード対象の選択
+    /// </summary>
+    private void SetImageActiveOnly(FadeType activeType) {
+        for (int i = 0; i < _fadeImageList.Count; i++) {
+            var image = _fadeImageList[i];
+            if (image == null) continue;
+
+            image.gameObject.SetActive(i == (int)activeType);
+        }
     }
 
     /// <summary>
     /// フェード画像を指定の不透明度に変化させる
     /// </summary>
-    /// <param name="_targetAlpha"></param>
-    /// <param name="_duration"></param>
-    /// <returns></returns>
-    private async UniTask FadeTargetAlpha(float _targetAlpha, float _duration) {
-        float elapsedTime = 0.0f;   // 経過時間
-        float startAlpha = _fadeImage.color.a;
-        Color targetColor = _fadeImage.color;
-        while (elapsedTime < _duration) {
+    private async UniTask FadeTargetAlpha(Image image, float targetAlpha, float duration) {
+        // 経過時間
+        float elapsedTime = 0f;
+        float startAlpha = image.color.a;
+        Color color = image.color;
+
+        while (elapsedTime < duration) {
             // フレーム経過時間
             elapsedTime += Time.deltaTime;
             // 補間した不透明度をフェード画像に設定
-            float t = elapsedTime / _duration;
-            targetColor.a = Mathf.Lerp(startAlpha, _targetAlpha, t);
-            _fadeImage.color = targetColor;
-            // 1フレーム待ち
+            float t = elapsedTime / duration;
+            color.a = Mathf.Lerp(startAlpha, targetAlpha, t);
+            image.color = color;
+            // 5フレーム待ち
             await UniTask.DelayFrame(5);
         }
-        targetColor.a = _targetAlpha;
-        _fadeImage.color = targetColor;
+
+        color.a = targetAlpha;
+        image.color = color;
+    }
+
+    /// <summary>
+    /// enumに対応する画像を取得
+    /// </summary>
+    private Image GetImageByType(FadeType type) {
+        int index = (int)type;
+        if (!IsEnableIndex(_fadeImageList, index)) return null;
+
+        return _fadeImageList[index];
 
     }
 
