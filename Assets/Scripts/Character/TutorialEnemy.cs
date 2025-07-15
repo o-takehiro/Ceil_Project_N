@@ -16,7 +16,7 @@ public class TutorialEnemy : EnemyCharacter {
         base.Setup();
         _myAI = new CharacterAIMachine<EnemyCharacter>();
         _myAI.Setup(this);
-        _myAI.ChangeState(new EnemyAI001_Wait());
+        _myAI.ChangeState(new EnemyAI002_Move());
     }
     private void Update() {
         //AIマシーンの更新
