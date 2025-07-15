@@ -21,7 +21,7 @@ public class PlayerMagic : MagicBase {
 	/// <summary>
 	/// ‰ğÍ–‚–@
 	/// </summary>
-	public override void AnalysisMagic() {
+	public void AnalysisMagic() {
 
 	}
 	/// <summary>

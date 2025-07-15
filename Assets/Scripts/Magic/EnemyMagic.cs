@@ -10,6 +10,9 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class EnemyMagic : MagicBase {
+	// ”­“®’†‚Ì–‚–@ID
+	private eMagicType _activeMagicID = 0;
+
 	/// <summary>
 	/// –‚–@w‰c‚Ìæ“¾
 	/// </summary>
@@ -19,18 +22,15 @@ public class EnemyMagic : MagicBase {
 	}
 
 	/// <summary>
-	/// ‰ğÍ–‚–@
-	/// </summary>
-	public override void AnalysisMagic() {
-	}
-	/// <summary>
 	/// –hŒä–‚–@
 	/// </summary>
 	public override void DefenseMagic() {
+		_activeMagicID = eMagicType.Defense;
 	}
 	/// <summary>
 	/// ¬Œ^’e–‹–‚–@
 	/// </summary>
 	public override void MiniBulletMagic() {
+		_activeMagicID = eMagicType.Defense;
 	}
 }

@@ -14,6 +14,7 @@ using UnityEngine;
 using System;
 
 using static CommonModule;
+using System.Drawing;
 
 public class MagicManager : MonoBehaviour {
 	// 自身への参照
@@ -40,7 +41,7 @@ public class MagicManager : MonoBehaviour {
 	private List<MagicObject> _unuseObjectList = null;
 
 	// 発動する魔法
-	private List<Action> activeMagic = null;
+	private Action activeMagic = null;
 
 	private const int _MAGIC_MAX = 10;
 
@@ -69,7 +70,7 @@ public class MagicManager : MonoBehaviour {
 	}
 
 	public void Update() {
-
+		activeMagic();
 	}
 
 	/// <summary>
@@ -211,15 +212,20 @@ public class MagicManager : MonoBehaviour {
 	/// 指定された魔法の関数を実行する
 	/// </summary>
 	/// <param name="magic"></param>
-	public void MagicActivate(eMagicType magic) {
+	public void MagicActivate(eSideType side, eMagicType magic) {
 		switch (magic) {
-			case eMagicType.Analysis:
-				break;
 			case eMagicType.Defense:
 				break;
 			case eMagicType.MiniBullet:
 				break;
 		}
+	}
+
+	/// <summary>
+	/// 解析魔法の発動
+	/// </summary>
+	public void AnalysisMagicActivate() {
+
 	}
 
 	/// <summary>
