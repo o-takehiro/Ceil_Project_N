@@ -39,6 +39,7 @@ public class CameraManager : SystemObject {
     public override async UniTask Initialize() {
         Instance = this;
 
+        await UniTask.DelayFrame(1); // プレイヤー生成待ち
         // シーン上からMain Cameraを取得
         _camera = GameObject.Find(_CAMERA_NAME).GetComponent<Camera>();
 
@@ -66,8 +67,12 @@ public class CameraManager : SystemObject {
     /// 追跡対象を設定
     /// </summary>
     /// <param name="target"></param>
-    public void SetTarget(Transform target) {
-        this.playerTarget = target;
+    public void SetTarget(PlayerCharacter target) {
+        _target = target.transform;      // 追跡用の実体も更新
+        playerTarget = _target;
+        // 初期角度をプレイヤーに合わせてリセットしておくと視点が飛びにくい
+        _currentYaw = _target.eulerAngles.y;
+        _currentPitch = 0f;
     }
 
     /// <summary>

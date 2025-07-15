@@ -27,7 +27,7 @@ public class EnemyAI002_Move : CharacterAIBase<EnemyCharacter> {
 
         Vector3 norm = (GetPlayerPosition() - GetEnemyPosition()).normalized;
 
-        _enemyRigidbody.velocity = norm * 10.0f;
+        _enemyRigidbody.velocity = norm ;
 
         if(distance < _PLAYER_DISTANCE) {
             GetEnemy()._myAI.ChangeState(new EnemyAI001_Wait());

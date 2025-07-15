@@ -3,6 +3,7 @@ using Cysharp.Threading.Tasks;
 using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UIElements;
 
 /// <summary>
 /// プレイヤーの移動管理
@@ -35,7 +36,12 @@ public sealed class PlayerMove : MonoBehaviour {
         _controller = GetComponent<CharacterController>();
         if (_targetCamera == null) _targetCamera = Camera.main;
 
-        _character = gameObject.AddComponent<PlayerCharacter>();
+        // 既に付いているコンポーネントを取得
+        _character = GetComponent<PlayerCharacter>();
+        if (_character == null) {
+            // 付いていなかった場合だけ追加（エディタで外し忘れた時の保険）
+            _character = gameObject.AddComponent<PlayerCharacter>();
+        }
         _character.Initialize(_controller, transform, _targetCamera, this);
 
         // UniTaskのキャンセルを行うときのハンドリング

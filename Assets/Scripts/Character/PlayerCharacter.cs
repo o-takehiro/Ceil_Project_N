@@ -8,7 +8,9 @@ using Cysharp.Threading.Tasks;
 using System.Threading;
 using UnityEngine;
 using UnityEngine.InputSystem.XR;
+using UnityEngine.UIElements;
 
+using static CharacterUtility;
 public class PlayerCharacter : CharacterBase {
     //現在のスピード
     public float playerMoveSpeed { get; private set; } = -1.0f;
@@ -54,21 +56,19 @@ public class PlayerCharacter : CharacterBase {
         return true;
     }
 
-    /// <summary>
-    /// 使用前準備
-    /// </summary>
-    public override void Setup() {
-        base.Setup();
-        // カメラに自身をセット
-        if (CameraManager.Instance != null) CameraManager.Instance.SetTarget(_transform);
-    }
 
+    /// <summary>
+    /// 初期化
+    /// </summary>
+    /// <param name="controller"></param>
+    /// <param name="transform"></param>
+    /// <param name="camera"></param>
+    /// <param name="engineAdapter"></param>
     public void Initialize(
         CharacterController controller,
         Transform transform,
         Camera camera,
         PlayerMove engineAdapter) {
-        // 初期化処理
         _controller = controller;
         _transform = transform;
         _camera = camera;
@@ -76,15 +76,14 @@ public class PlayerCharacter : CharacterBase {
     }
 
     /// <summary>
-    /// コンストラクタ
+    /// 使用前準備
     /// </summary>
-    /// <param name="controller"></param>
-    /// <param name="transform"></param>
-    /// <param name="camera"></param>
-    /// <param name="engineAdapter"></param>
-    //public PlayerCharacter() {
-    //
-    //}
+    public override void Setup() {
+        base.Setup();
+        // カメラに自身をセット
+        if (CameraManager.Instance != null) CameraManager.Instance.SetTarget(GetPlayer());
+
+    }
 
     // 外部からの入力受付
     public void SetMoveInput(Vector2 input) => _inputMove = input;
@@ -100,6 +99,7 @@ public class PlayerCharacter : CharacterBase {
         // 無限ループ
         while (!token.IsCancellationRequested) {
             MoveUpdate(Time.deltaTime);
+
             await UniTask.Yield(PlayerLoopTiming.Update, token);
         }
     }
@@ -154,6 +154,10 @@ public class PlayerCharacter : CharacterBase {
             float angleY = Mathf.SmoothDampAngle(
                 _transform.eulerAngles.y, targetAngle, ref _turnVelocity, 0.1f);
             _playerMove.ApplyRotation(Quaternion.Euler(0, angleY, 0));
+
+            SetPosition(transform.position);
+            transform.position = currentPos;
+            prevPos = currentPos;
         }
 
 
