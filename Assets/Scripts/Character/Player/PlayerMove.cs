@@ -24,6 +24,7 @@ public sealed class PlayerMove : MonoBehaviour {
     public void OnMove(InputAction.CallbackContext ctx)
         => _character?.SetMoveInput(ctx.ReadValue<Vector2>());
 
+
     /// <summary>
     /// InputSystemのジャンプ用コールバック
     /// </summary>

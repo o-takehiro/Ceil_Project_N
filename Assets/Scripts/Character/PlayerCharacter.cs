@@ -24,8 +24,6 @@ public class PlayerCharacter : CharacterBase {
     private const float _PLAYER_GRAVITY = 15f;
     // 落ちる速度
     private const float _FALL_SPEED = 10f;
-    // 落下開始速度
-    private const float _INIT_FALL_SPEED = 2f;
 
     // 入力ベクトル
     private Vector2 _inputMove = Vector2.zero;
@@ -176,12 +174,10 @@ public class PlayerCharacter : CharacterBase {
         // Rigidbodyに直接速度を渡す
         _rigidbody.velocity = finalVelocity;
 
-
-
         // 回転
         if (_inputMove != Vector2.zero) {
             float targetAngle = -Mathf.Atan2(_inputMove.y, _inputMove.x) * Mathf.Rad2Deg + 90f + camY;
-            float angleY = Mathf.SmoothDampAngle(_transform.eulerAngles.y, targetAngle, ref _turnVelocity, 0.1f);
+            float angleY = Mathf.SmoothDampAngle(_transform.eulerAngles.y, targetAngle, ref _turnVelocity, 0.05f);
             _playerMove.ApplyRotation(Quaternion.Euler(0, angleY, 0));
         }
         // 座標更新
