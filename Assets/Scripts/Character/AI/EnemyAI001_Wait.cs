@@ -28,7 +28,7 @@ public class EnemyAI001_Wait : CharacterAIBase<EnemyCharacter> {
         direction.y = 0;
         //âÒì]Ç≥ÇπÇÈ
         Quaternion lookRotation = Quaternion.LookRotation(direction, Vector3.up);
-        enemyRotation = Quaternion.Lerp(enemyRotation, lookRotation, 0.1f);
+        enemyRotation = Quaternion.Slerp(enemyRotation, lookRotation, 0.1f);
         //é©êgÇÃâÒì]Ç…ë„ì¸Ç∑ÇÈ
         SetEnemyRotation(enemyRotation);
 

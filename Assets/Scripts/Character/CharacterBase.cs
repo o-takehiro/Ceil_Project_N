@@ -6,6 +6,7 @@
  */
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public abstract class CharacterBase : MonoBehaviour {
@@ -73,4 +74,64 @@ public abstract class CharacterBase : MonoBehaviour {
     public void SetRotation(Quaternion setRotation) {
         currentRot = setRotation;
     }
+    /// <summary>
+    /// ‘f‚ÌUŒ‚—Íæ“¾
+    /// </summary>
+    /// <returns></returns>
+    public int GetRawAttack() {
+        return rawAttack;
+    }
+    /// <summary>
+    /// ‘f‚ÌUŒ‚—Íİ’è
+    /// </summary>
+    /// <param name="setValue"></param>
+    public virtual void SetRawAttack(int setValue) {
+        rawAttack = setValue;
+    }
+    /// <summary>
+    /// ‘f‚Ì–hŒä—Íæ“¾
+    /// </summary>
+    /// <returns></returns>
+    public int GetRewDefense() {
+        return rawDefense;
+    }
+    /// <summary>
+    /// ‘f‚Ì–hŒä—Íİ’è
+    /// </summary>
+    /// <param name="setValue"></param>
+    public virtual void SetRawDefense(int setValue) {
+        rawDefense = setValue;
+    }
+    /// <summary>
+    /// Å‘åHPİ’è
+    /// </summary>
+    /// <param name="setValue"></param>
+    public virtual void SetMaxHP(int setValue) {
+        maxHP = setValue;
+    }
+    /// <summary>
+    /// HP‚Ìİ’è
+    /// </summary>
+    /// <param name="setValue"></param>
+    public virtual void SetHP(int setValue) {
+        HP = Mathf.Clamp(setValue, 0, maxHP);
+    }
+    /// <summary>
+    /// HP‘‰Á
+    /// </summary>
+    /// <param name="addValue"></param>
+    public void AddHP(int addValue) {
+        SetHP(HP + addValue);
+    }
+    /// <summary>
+    /// HPŒ¸­
+    /// </summary>
+    /// <param name="removeValue"></param>
+    public void RemoveHP(int removeValue) {
+        SetHP(HP - removeValue); 
+    }
+    /// <summary>
+    /// ƒLƒƒƒ‰ƒNƒ^[‚Ì€–S
+    /// </summary>
+    public abstract void Dead();
 }
