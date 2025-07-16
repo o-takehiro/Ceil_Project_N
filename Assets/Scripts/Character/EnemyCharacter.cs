@@ -9,8 +9,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+using static CharacterUtility;
+
 public class EnemyCharacter : CharacterBase {
     // ìGÇÃHPÉQÅ[ÉW
+    [SerializeField]
+    protected GameObject _enemyCanvas = null;
     protected Slider _enemyHPGauge = null;
     public CharacterAIMachine<EnemyCharacter> _myAI { get; protected set; } = null;
 
@@ -26,5 +30,24 @@ public class EnemyCharacter : CharacterBase {
     /// <returns></returns>
     public override bool isPlayer() {
         return false;
+    }
+
+    public override void Dead() {
+        UnuseEnemy();
+    }
+
+    protected void SetEnemyCanvas() {
+        if(_enemyHPGauge != null) return;
+
+        _enemyHPGauge = MenuManager.Instance.Get<EnemyHPGauge>().GetSlider();
+    }
+
+    protected void SetupCanvasPosition(float setPosY) {
+        Vector3 canvasPos = Vector3.zero;
+        canvasPos.y = setPosY;
+        SetEnemyCanvas();
+        _enemyHPGauge.transform.SetParent(_enemyCanvas.transform);
+        _enemyCanvas.transform.position = canvasPos;
+        _enemyCanvas.gameObject.SetActive(true);
     }
 }

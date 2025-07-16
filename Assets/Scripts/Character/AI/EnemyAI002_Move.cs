@@ -7,7 +7,8 @@ using static CharacterUtility;
 
 public class EnemyAI002_Move : CharacterAIBase<EnemyCharacter> {
     private Rigidbody _enemyRigidbody = null;
-    private const float _PLAYER_DISTANCE = 20.0f;
+    private const float _PLAYER_DISTANCE = 3.0f;
+    private const float _MOVE_SPEED = 10.0f;
     public override void Setup() {
         base.Setup();
         _enemyRigidbody = ownerClass.GetComponent<Rigidbody>();
@@ -26,10 +27,13 @@ public class EnemyAI002_Move : CharacterAIBase<EnemyCharacter> {
         float distance = Vector3.Distance(GetPlayerPosition(), GetEnemyPosition());
 
         Vector3 norm = (GetPlayerPosition() - GetEnemyPosition()).normalized;
+        //yç¿ïWÇÃà⁄ìÆÇêßå¿
+        norm.y = 0.0f;
 
-        _enemyRigidbody.velocity = norm ;
+        _enemyRigidbody.velocity = norm * _MOVE_SPEED;
 
         if(distance < _PLAYER_DISTANCE) {
+            _enemyRigidbody.velocity = Vector3.zero;
             GetEnemy()._myAI.ChangeState(new EnemyAI001_Wait());
         }
     }

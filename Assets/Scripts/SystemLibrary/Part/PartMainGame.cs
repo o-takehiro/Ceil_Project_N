@@ -21,6 +21,7 @@ public class PartMainGame : PartBase {
         await base.Initialize();
         // キャラクター管理クラス初期化
         _characterManager?.Initialize();
+        await MenuManager.Instance.Get<EnemyHPGauge>("Prefabs/Menu/CanvasEnemyUI").Initialize();
         await UniTask.CompletedTask;
     }
 
