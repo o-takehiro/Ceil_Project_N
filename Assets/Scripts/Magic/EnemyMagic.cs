@@ -30,6 +30,6 @@ public class EnemyMagic : MagicBase {
 	/// </summary>
 	public override void MiniBulletMagic() {
 		Debug.Log("EEEEEEEEEBBBBBBBBBB");
-		MagicManager.instance.activeEnemyMagicID = eMagicType.Defense;
+		MagicManager.instance.activeEnemyMagicID = eMagicType.MiniBullet;
 	}
 }

@@ -48,6 +48,13 @@ public class MagicUtility {
 	}
 
 	/// <summary>
+	/// ‰ğÍ–‚–@‚Ì”­“®
+	/// </summary>
+	public static void AnalysisMagicActivate() {
+		MagicManager.instance.AnalysisMagicActivate();
+	}
+
+	/// <summary>
 	/// –‚–@íœ
 	/// </summary>
 	/// <param name="removeMagic"></param>
