@@ -33,7 +33,7 @@ public class CharacterManager : MonoBehaviour {
     private List<EnemyCharacter> _unuseEnemyList = null;
     // 使用中のプレイヤーオブジェクト
     private PlayerCharacter _usePlayerObject = null;
-    // 未使用のオブジェクトリスト
+    // 使用中の敵オブジェクト
     private EnemyCharacter _useEnemyObject = null;
     
     /// <summary>

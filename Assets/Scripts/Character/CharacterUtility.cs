@@ -106,4 +106,18 @@ public class CharacterUtility {
     public static void SetEnemyRotation(Quaternion setRotation) {
         GetEnemy().SetRotation(setRotation);
     }
+    /// <summary>
+    /// プレイヤーへのダメージ
+    /// </summary>
+    /// <param name="setValue"></param>
+    public static void ToPlayerDamage(int setValue) {
+        GetPlayer().RemoveHP(setValue);
+    }
+    /// <summary>
+    /// 敵へのダメージ
+    /// </summary>
+    /// <param name="setValue"></param>
+    public static void ToEnemyDamage(int setValue) {
+        GetEnemy().RemoveHP(setValue);
+    }
 }
