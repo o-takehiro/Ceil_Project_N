@@ -14,18 +14,17 @@ using static CharacterUtility;
 public class PlayerCharacter : CharacterBase {
     //現在のスピード
     public float playerMoveSpeed { get; private set; } = -1.0f;
-    // カメラとの距離
-    //private float _cameraDistance = -1.0f;
 
-    // プレイヤーの基礎移動スピード
+    // -定数-
+    // 基礎移動スピード
     private const float _PLAYER_RAW_MOVE_SPEED = 10.0f;
-    // プレイヤーの基礎ジャンプスピード
+    // 基礎ジャンプスピード
     private const float _PLAYER_JUMP_SPEED = 7f;
-    // プレイヤーの重力
+    // 重力
     private const float _PLAYER_GRAVITY = 15f;
-    // プレイヤーの落ちる速度
+    // 落ちる速度
     private const float _FALL_SPEED = 10f;
-    // プレイヤーの落下開始速度
+    // 落下開始速度
     private const float _INIT_FALL_SPEED = 2f;
 
     // 入力ベクトル
@@ -47,6 +46,27 @@ public class PlayerCharacter : CharacterBase {
     private Camera _camera;
     // PlayerMove.cs
     private PlayerMove _playerMove;
+
+    /// <summary>
+    /// プレイヤーの攻撃enum(後でうつすーー)
+    /// </summary>
+    private enum AttackStep {
+        Invalid,    // 無
+        First,      // 1段目
+        Second,     // 2段目
+        Third       // 3段目
+    }
+
+    // 現在の攻撃の状態
+    private AttackStep _currentAttack = AttackStep.Invalid;
+    // 攻撃の入力可否
+    private bool _attackRequested = false;
+    // 攻撃中かどうか
+    private bool _isAttacking = false;
+    // 攻撃中の時間
+    private float _attackTimer = 0f;
+    // 攻撃間のクールタイム
+    private const float _ATTACK_RESETTIME = 0.6f; // 秒
 
     // マスターデータ依存の変数
     public int maxMP { get; private set; } = -1;
@@ -89,9 +109,12 @@ public class PlayerCharacter : CharacterBase {
     public void SetMoveInput(Vector2 input) => _inputMove = input;
     // ジャンプ受付
     public void RequestJump() => _jumpRequested = true;
+    // 攻撃受付
+
+
 
     /// <summary>
-    /// 非同期処理
+    /// 非同期処理 ; Update
     /// </summary>
     /// <param name="token"></param>
     /// <returns></returns>
