@@ -79,6 +79,11 @@ public class MagicManager : MonoBehaviour {
 	}
 
 	public void Update() {
+		if (Input.GetKey(KeyCode.Z)) MagicUtility.CreateMagic(eSideType.PlayerSide, eMagicType.Defense);
+		if (Input.GetKey(KeyCode.X)) MagicUtility.CreateMagic(eSideType.PlayerSide, eMagicType.MiniBullet);
+		if (Input.GetKey(KeyCode.C)) MagicUtility.CreateMagic(eSideType.EnemySide, eMagicType.Defense);
+		if (Input.GetKey(KeyCode.V)) MagicUtility.CreateMagic(eSideType.EnemySide, eMagicType.MiniBullet);
+
 		if (activeMagic == null) return;
 		activeMagic();
 	}
@@ -179,6 +184,19 @@ public class MagicManager : MonoBehaviour {
 	}
 
 	/// <summary>
+	/// 魔法生成
+	/// </summary>
+	/// <param name="magicID"></param>
+	public void	CreateMagic(eSideType side, eMagicType magicID) {
+		// データを使用状態にする
+		int useID = UseMagicData((int)side);
+		MagicBase magicSide = GetMagicData(useID);
+		magicSide?.Setup(useID);
+		// 魔法実行
+		MagicActivate(magicSide, magicID);
+	}
+
+	/// <summary>
 	/// 魔法を未使用状態にする
 	/// </summary>
 	/// <param name="unuseMagic"></param>
@@ -222,12 +240,13 @@ public class MagicManager : MonoBehaviour {
 	/// 指定された魔法の関数を実行する
 	/// </summary>
 	/// <param name="magic"></param>
-	public void MagicActivate(eSideType side, eMagicType magic) {
+	private void MagicActivate(MagicBase sideData, eMagicType magic) {
 		switch (magic) {
 			case eMagicType.Defense:
-
+				activeMagic = sideData.DefenseMagic;
 				break;
 			case eMagicType.MiniBullet:
+				activeMagic = sideData.MiniBulletMagic;
 				break;
 		}
 	}

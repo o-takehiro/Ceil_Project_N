@@ -24,10 +24,8 @@ public abstract class MagicBase {
 	/// €”õ
 	/// </summary>
 	/// <param name="setID"></param>
-	/// <param name="setMasterID"></param>
-	public void Setup(int setID, int setMasterID) {
+	public void Setup(int setID) {
 		ID = setID;
-		masterID = setMasterID;
 	}
 
 	/// <summary>
