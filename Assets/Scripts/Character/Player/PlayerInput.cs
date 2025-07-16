@@ -9,7 +9,7 @@ using UnityEngine.UIElements;
 /// プレイヤーの移動管理
 /// </summary>
 
-public sealed class PlayerMove : MonoBehaviour {
+public sealed class PlayerInput : MonoBehaviour {
     // メインカメラ
     [SerializeField] private Camera _targetCamera;
 
@@ -23,6 +23,7 @@ public sealed class PlayerMove : MonoBehaviour {
     /// <param name="ctx"></param>
     public void OnMove(InputAction.CallbackContext ctx)
         => _character?.SetMoveInput(ctx.ReadValue<Vector2>());
+
 
 
     /// <summary>

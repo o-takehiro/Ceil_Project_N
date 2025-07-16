@@ -23,15 +23,16 @@ public class CameraManager : SystemObject {
     private float _currentPitch;
 
     public Transform playerTarget;           // 追従対象となるプレイヤー
-    private Transform _target;                // 実際のターゲット参照
+    private Transform _target;               // 実際のターゲット参照
+    private Transform _lookOnTarget;         // ロックオン時のターゲット
 
     // カメラの挙動に関する設定
-    private Vector3 offset = new Vector3(0f, 2f, -5f);   // プレイヤーに対するカメラの相対位置
-    private float followSpeed = 10f;                     // カメラの追従速度
-    private float rotationSpeed = 4f;                  // 回転速度
-    private float mouseSensitivity = 0.05f;               // マウス感度
-    private float gamepadSensitivity = 0.1f;             // ゲームパッド感度
-    private float pitchLimit = 20f;                      // 上下回転の制限
+    private Vector3 offset = new Vector3(0f, 2f, -5f);     // プレイヤーに対するカメラの相対位置
+    private float followSpeed = 10f;                       // カメラの追従速度
+    private float rotationSpeed = 4f;                      // 回転速度
+    private float mouseSensitivity = 0.05f;                // マウス感度
+    private float gamepadSensitivity = 0.1f;               // ゲームパッド感度
+    private float pitchLimit = 20f;                        // 上下回転の制限
 
     /// <summary>
     /// 初期化処理（非同期）
@@ -73,6 +74,17 @@ public class CameraManager : SystemObject {
         // 初期角度をプレイヤーに合わせてリセットしておくと視点が飛びにくい
         _currentYaw = _target.eulerAngles.y;
         _currentPitch = 0f;
+    }
+
+    /// <summary>
+    /// ロックオン時の追跡対象を設定
+    /// </summary>
+    /// <param name="LookOnTarget"></param>
+    public void SetLookOnTarget(EnemyCharacter LookOnTarget) {
+        // ロックオン用のターゲットに追加
+        _lookOnTarget = LookOnTarget.transform;
+        
+
     }
 
     /// <summary>

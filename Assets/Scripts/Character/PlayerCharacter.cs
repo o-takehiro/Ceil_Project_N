@@ -43,7 +43,7 @@ public class PlayerCharacter : CharacterBase {
     // カメラ
     private Camera _camera;
     // PlayerMove.cs
-    private PlayerMove _playerMove;
+    private PlayerInput _playerMove;
 
     /// <summary>
     /// プレイヤーの攻撃enum(後でうつすーー)
@@ -88,7 +88,7 @@ public class PlayerCharacter : CharacterBase {
         Rigidbody rigidbody,
         Transform transform,
         Camera camera,
-        PlayerMove engineAdapter) {
+        PlayerInput engineAdapter) {
         _rigidbody = rigidbody;
         _transform = transform;
         _camera = camera;
