@@ -120,4 +120,11 @@ public class CharacterUtility {
     public static void ToEnemyDamage(int setValue) {
         GetEnemy().RemoveHP(setValue);
     }
+    /// <summary>
+    /// ƒvƒŒƒCƒ„[‚Æ“G‚Æ‚Ì‹——£‚Ìæ“¾
+    /// </summary>
+    /// <returns></returns>
+    public static float PlayerToEnemyDistance() {
+        return Vector3.Distance(GetPlayerPosition(), GetEnemyPosition());
+    }
 }
