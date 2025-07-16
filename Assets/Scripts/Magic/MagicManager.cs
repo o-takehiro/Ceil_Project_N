@@ -43,6 +43,11 @@ public class MagicManager : MonoBehaviour {
 	// 発動する魔法
 	private Action activeMagic = null;
 
+	// 発動中の敵の魔法ID
+	public eMagicType activeEnemyMagicID = eMagicType.Invalid;
+	// コピーした魔法ID
+	public List<eMagicType> copyMagicIDList = null;
+
 	private const int _MAGIC_MAX = 10;
 
 	public void Initialize() {
@@ -67,9 +72,14 @@ public class MagicManager : MonoBehaviour {
 		for (int i = 0; i < _MAGIC_MAX; i++) {
 			_unuseObjectList.Add(Instantiate(_originObject, _unuseObjectRoot));
 		}
+
+		// 魔法の種類分のリストを生成しておく
+		int magicTypeMax = (int)eMagicType.Max;
+		copyMagicIDList = new List<eMagicType>(magicTypeMax);
 	}
 
 	public void Update() {
+		if (activeMagic == null) return;
 		activeMagic();
 	}
 
@@ -215,6 +225,7 @@ public class MagicManager : MonoBehaviour {
 	public void MagicActivate(eSideType side, eMagicType magic) {
 		switch (magic) {
 			case eMagicType.Defense:
+
 				break;
 			case eMagicType.MiniBullet:
 				break;
@@ -225,7 +236,11 @@ public class MagicManager : MonoBehaviour {
 	/// 解析魔法の発動
 	/// </summary>
 	public void AnalysisMagicActivate() {
-
+		// 敵の発動中の魔法を取得
+		for (int i = 0, max = copyMagicIDList.Count; i < max; i++) {
+			if (copyMagicIDList[i] == activeEnemyMagicID) return;
+		}
+		copyMagicIDList.Add(activeEnemyMagicID);
 	}
 
 	/// <summary>
