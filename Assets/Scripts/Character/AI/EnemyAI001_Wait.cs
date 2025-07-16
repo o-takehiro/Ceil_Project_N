@@ -32,7 +32,7 @@ public class EnemyAI001_Wait : CharacterAIBase<EnemyCharacter> {
         //Ž©g‚Ì‰ñ“]‚É‘ã“ü‚·‚é
         SetEnemyRotation(enemyRotation);
 
-        if(distance > 10) GetEnemy()._myAI.ChangeState(new EnemyAI002_Move());
+        if(distance > 10) GetEnemy()._myAI.ChangeState(new EnemyAI002_CloseMove());
     }
 
     public override void Teardown() {
