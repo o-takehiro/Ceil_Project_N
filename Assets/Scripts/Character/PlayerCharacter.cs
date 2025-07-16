@@ -76,7 +76,9 @@ public class PlayerCharacter : CharacterBase {
         return true;
     }
 
-
+    [SerializeField] private Rigidbody _rigidbody;  // 追加: Rigidbody参照
+    [SerializeField] private LayerMask groundLayer; // 接地判定用レイヤー
+    [SerializeField] private float groundCheckDistance = 0.2f; // 地面判定距離
     /// <summary>
     /// 初期化
     /// </summary>
@@ -85,11 +87,11 @@ public class PlayerCharacter : CharacterBase {
     /// <param name="camera"></param>
     /// <param name="engineAdapter"></param>
     public void Initialize(
-        CharacterController controller,
+        Rigidbody rigidbody,
         Transform transform,
         Camera camera,
         PlayerMove engineAdapter) {
-        _controller = controller;
+        _rigidbody = rigidbody;
         _transform = transform;
         _camera = camera;
         _playerMove = engineAdapter;
@@ -129,9 +131,9 @@ public class PlayerCharacter : CharacterBase {
             // 移動
             MoveUpdate(Time.deltaTime);
             // 攻撃
-            await AttackUpdate(Time.deltaTime);
+            //AttackUpdate(Time.deltaTime);
             // 非同期処理追加版
-            //UniTask await AttackUpdate(Time.deltaTime);
+            await AttackUpdate(Time.deltaTime);
 
             await UniTask.Yield(PlayerLoopTiming.Update, token);
         }
@@ -142,60 +144,50 @@ public class PlayerCharacter : CharacterBase {
     /// 移動関連の1フレーム分の更新
     /// </summary>
     private void MoveUpdate(float deltaTime) {
-        // 攻撃中は移動しない
         if (_isAttacking) return;
-        // 地面に接地しているか
-        bool isGrounded = _controller.isGrounded;
 
-        // 着地した瞬間のめり込み対策
+        bool isGrounded = CheckGrounded();
+
         if (isGrounded && !_wasGrounded) {
-            _verticalVelocity = -_INIT_FALL_SPEED;
+            // 接地したら垂直速度をリセット
+            _verticalVelocity = 0f;
         }
-        // 地面に接地していなければ降下し続ける
         else if (!isGrounded) {
-            // 落下速度計算
             _verticalVelocity -= _PLAYER_GRAVITY * deltaTime;
-            // 落下速度の上限設定
             if (_verticalVelocity < -_FALL_SPEED) _verticalVelocity = -_FALL_SPEED;
         }
 
-        // ジャンプ開始
-        if (_jumpRequested && isGrounded) _verticalVelocity = _PLAYER_JUMP_SPEED;
-
-        _jumpRequested = false;
-        // 1フレーム前の接地判定更新
-        _wasGrounded = isGrounded;
-
-        // カメラの角度取得
-        float camY = _camera.transform.eulerAngles.y;
-
-        Vector3 vel = new Vector3(_inputMove.x * _PLAYER_RAW_MOVE_SPEED,     // XZ平面速度
-                                  _verticalVelocity,                         // 縦速度
-                                  _inputMove.y * _PLAYER_RAW_MOVE_SPEED);
-        // カメラの方向に向きを合わせる
-        vel = Quaternion.Euler(0, camY, 0) * vel;
-        // 1フレーム事の移動量
-        Vector3 moveDelta = vel * deltaTime;
-
-        // 移動処理
-        _playerMove.ApplyMovement(moveDelta);
-        if (_inputMove != Vector2.zero) {
-
-            float targetAngle = -Mathf.Atan2(_inputMove.y, _inputMove.x) * Mathf.Rad2Deg + 90f;
-
-            targetAngle += camY;
-
-            // 滑らかに追従させる
-            float angleY = Mathf.SmoothDampAngle(
-                _transform.eulerAngles.y, targetAngle, ref _turnVelocity, 0.1f);
-            _playerMove.ApplyRotation(Quaternion.Euler(0, angleY, 0));
-
-            SetPosition(transform.position);
-            transform.position = currentPos;
-            prevPos = currentPos;
+        if (_jumpRequested && isGrounded) {
+            _verticalVelocity = _PLAYER_JUMP_SPEED;
         }
 
+        _jumpRequested = false;
+        _wasGrounded = isGrounded;
 
+        // 入力からXZ方向の移動を作る
+        float camY = _camera.transform.eulerAngles.y;
+        Vector3 inputDir = new Vector3(_inputMove.x, 0, _inputMove.y).normalized;
+        Vector3 moveDir = Quaternion.Euler(0, camY, 0) * inputDir;
+
+        // 最終的な速度を構成
+        Vector3 finalVelocity = moveDir * _PLAYER_RAW_MOVE_SPEED;
+        finalVelocity.y = _verticalVelocity;
+
+        // Rigidbodyに直接速度を渡す
+        _rigidbody.velocity = finalVelocity;
+
+
+
+        // 回転
+        if (_inputMove != Vector2.zero) {
+            float targetAngle = -Mathf.Atan2(_inputMove.y, _inputMove.x) * Mathf.Rad2Deg + 90f + camY;
+            float angleY = Mathf.SmoothDampAngle(_transform.eulerAngles.y, targetAngle, ref _turnVelocity, 0.1f);
+            _playerMove.ApplyRotation(Quaternion.Euler(0, angleY, 0));
+        }
+        // 座標更新
+        SetPosition(transform.position);
+        transform.position = currentPos;
+        prevPos = currentPos;
     }
 
     /// <summary>
@@ -270,6 +262,14 @@ public class PlayerCharacter : CharacterBase {
         }
     }
 
+    /// <summary>
+    /// 地面の接地判定
+    /// </summary>
+    /// <returns></returns>
+    private bool CheckGrounded() {
+        Vector3 origin = _transform.position + Vector3.up * 0.1f;
+        return Physics.Raycast(origin, Vector3.down, groundCheckDistance + 0.1f, groundLayer);
+    }
     /// <summary>
     /// キャラクターの死亡
     /// </summary>
