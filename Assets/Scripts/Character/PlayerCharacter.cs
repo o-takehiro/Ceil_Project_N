@@ -188,4 +188,15 @@ public class PlayerCharacter : CharacterBase {
 
 
 
+    
+
+
+
+
+    /// <summary>
+    /// キャラクターの死亡
+    /// </summary>
+    public override void Dead() {
+        
+    }
 }
