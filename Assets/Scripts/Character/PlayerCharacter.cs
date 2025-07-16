@@ -14,7 +14,7 @@ using static CharacterUtility;
 public class PlayerCharacter : CharacterBase {
     //現在のスピード
     public float playerMoveSpeed { get; private set; } = -1.0f;
-
+    [SerializeField] private Collider attackCollider;
     // -定数-
     // 基礎移動スピード
     private const float _PLAYER_RAW_MOVE_SPEED = 10.0f;
@@ -66,7 +66,7 @@ public class PlayerCharacter : CharacterBase {
     // 攻撃中の時間
     private float _attackTimer = 0f;
     // 攻撃間のクールタイム
-    private const float _ATTACK_RESETTIME = 0.6f; // 秒
+    private const float _ATTACK_RESET_TIME = 0.6f; // 秒
 
     // マスターデータ依存の変数
     public int maxMP { get; private set; } = -1;
@@ -102,7 +102,9 @@ public class PlayerCharacter : CharacterBase {
         base.Setup();
         // カメラに自身をセット
         if (CameraManager.Instance != null) CameraManager.Instance.SetTarget(GetPlayer());
-
+        if (attackCollider != null) {
+            attackCollider.enabled = false;
+        }
     }
 
     // 外部からの入力受付
@@ -110,8 +112,11 @@ public class PlayerCharacter : CharacterBase {
     // ジャンプ受付
     public void RequestJump() => _jumpRequested = true;
     // 攻撃受付
-
-
+    public void RequestAttack() {
+        if (!_isAttacking) {
+            _attackRequested = true;
+        }
+    }
 
     /// <summary>
     /// 非同期処理 ; Update
@@ -121,7 +126,12 @@ public class PlayerCharacter : CharacterBase {
     public async UniTask PlayerMainLoop(CancellationToken token) {
         // 無限ループ
         while (!token.IsCancellationRequested) {
+            // 移動
             MoveUpdate(Time.deltaTime);
+            // 攻撃
+            await AttackUpdate(Time.deltaTime);
+            // 非同期処理追加版
+            //UniTask await AttackUpdate(Time.deltaTime);
 
             await UniTask.Yield(PlayerLoopTiming.Update, token);
         }
@@ -132,6 +142,8 @@ public class PlayerCharacter : CharacterBase {
     /// 移動関連の1フレーム分の更新
     /// </summary>
     private void MoveUpdate(float deltaTime) {
+        // 攻撃中は移動しない
+        if (_isAttacking) return;
         // 地面に接地しているか
         bool isGrounded = _controller.isGrounded;
 
@@ -186,17 +198,82 @@ public class PlayerCharacter : CharacterBase {
 
     }
 
+    /// <summary>
+    /// 攻撃の非同期処理
+    /// </summary>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    private async UniTask AttackUpdate(float deltaTime) {
+        // 攻撃入力があったら攻撃処理へ
+        if (_attackRequested && !_isAttacking) {
+            // 攻撃の入力受付をリセット
+            _attackRequested = false;
+            // 攻撃中に設定
+            _isAttacking = true;
 
+            // 3段攻撃を段階的に行う
+            AdvanceAttackStep();
+            Debug.Log($"攻撃：{_currentAttack}");
 
-    
+            // 攻撃発動時の時間をリセット
+            _attackTimer = 0f;
 
+            // 攻撃コライダーを有効にする
+            if (attackCollider != null) {
+                attackCollider.enabled = true;
+            }
 
+            // ---数秒待機---
+            await UniTask.Delay(1000);
 
+            // 攻撃コライダーを無効にする
+            if (attackCollider != null) {
+                attackCollider.enabled = false;
+            }
+            // 攻撃判定をリセット
+            _isAttacking = false;
+        }
+
+        // 攻撃ステップが何かに設定されていれば、経過時間を更新
+        if (_currentAttack != AttackStep.Invalid) {
+            _attackTimer += deltaTime;
+            // 攻撃開始からリセット時間分が過ぎたら
+            if (_attackTimer >= _ATTACK_RESET_TIME) {
+                Debug.Log("攻撃リセット");
+                // 攻撃状態を無にする
+                _currentAttack = AttackStep.Invalid;
+                // 攻撃の経過時間をリセットする
+                _attackTimer = 0f;
+            }
+        }
+
+    }
+
+    /// <summary>
+    /// 現在の攻撃段階を次に進める。
+    /// </summary>
+    private void AdvanceAttackStep() {
+        // 現在の攻撃からの遷移
+        switch (_currentAttack) {
+            case AttackStep.Invalid:
+                _currentAttack = AttackStep.First;
+                break;
+            case AttackStep.First:  // 1段目から2段目
+                _currentAttack = AttackStep.Second;
+                break;
+            case AttackStep.Second: // 2段目から3段目
+                _currentAttack = AttackStep.Third;
+                break;
+            default:                // 1段目に戻す
+                _currentAttack = AttackStep.First;
+                break;
+        }
+    }
 
     /// <summary>
     /// キャラクターの死亡
     /// </summary>
     public override void Dead() {
-        
+
     }
 }

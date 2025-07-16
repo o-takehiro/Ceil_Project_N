@@ -31,13 +31,13 @@ public sealed class PlayerMove : MonoBehaviour {
     public void OnJump(InputAction.CallbackContext ctx) {
         if (ctx.performed) _character?.RequestJump();
     }
-    
+
     /// <summary>
     /// InputSystemの攻撃用コールバック
     /// </summary>
     /// <param name="ctx"></param>
     public void OnAttack(InputAction.CallbackContext ctx) {
-
+        if (ctx.performed) _character?.RequestAttack();
     }
 
     // 初期化
