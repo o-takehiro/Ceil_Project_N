@@ -9,6 +9,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+using static CharacterUtility;
+
 public class EnemyCharacter : CharacterBase {
     // ìGÇÃHPÉQÅ[ÉW
     protected Slider _enemyHPGauge = null;
@@ -26,5 +28,9 @@ public class EnemyCharacter : CharacterBase {
     /// <returns></returns>
     public override bool isPlayer() {
         return false;
+    }
+
+    public override void Dead() {
+        UnuseEnemy();
     }
 }

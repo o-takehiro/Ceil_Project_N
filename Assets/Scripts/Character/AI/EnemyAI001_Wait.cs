@@ -17,6 +17,9 @@ public class EnemyAI001_Wait : CharacterAIBase<EnemyCharacter> {
 
     public override void Execute() {
         base.Execute();
+        //©g‚Æ“G‚Æ‚Ì‹——£
+        float distance = Vector3.Distance(GetPlayerPosition(), GetEnemyPosition());
+        Debug.Log(distance);
         //“G‚Ì•ûŒü‚ğŒü‚«‘±‚¯‚é
         Quaternion enemyRotation = GetEnemyRotation();
         //•ûŒü‚ğŒˆ‚ß‚é
@@ -25,9 +28,11 @@ public class EnemyAI001_Wait : CharacterAIBase<EnemyCharacter> {
         direction.y = 0;
         //‰ñ“]‚³‚¹‚é
         Quaternion lookRotation = Quaternion.LookRotation(direction, Vector3.up);
-        enemyRotation = Quaternion.Lerp(enemyRotation, lookRotation, 0.1f);
+        enemyRotation = Quaternion.Slerp(enemyRotation, lookRotation, 0.1f);
         //©g‚Ì‰ñ“]‚É‘ã“ü‚·‚é
         SetEnemyRotation(enemyRotation);
+
+        if(distance > 10) GetEnemy()._myAI.ChangeState(new EnemyAI002_Move());
     }
 
     public override void Teardown() {
