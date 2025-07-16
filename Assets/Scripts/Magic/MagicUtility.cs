@@ -39,6 +39,15 @@ public class MagicUtility {
 	}
 
 	/// <summary>
+	/// –‚–@¶¬
+	/// </summary>
+	/// <param name="side"></param>
+	/// <param name="magicID"></param>
+	public static void CreateMagic(eSideType side, eMagicType magicID) {
+		MagicManager.instance.CreateMagic(side, magicID);
+	}
+
+	/// <summary>
 	/// –‚–@íœ
 	/// </summary>
 	/// <param name="removeMagic"></param>

@@ -18,7 +18,7 @@ public class EnemyAI001_Wait : CharacterAIBase<EnemyCharacter> {
     public override void Execute() {
         base.Execute();
         //©g‚Æ“G‚Æ‚Ì‹——£
-        float distance = Vector3.Distance(GetPlayerPosition(), GetEnemyPosition());
+        float distance = PlayerToEnemyDistance();
         Debug.Log(distance);
         //“G‚Ì•ûŒü‚ğŒü‚«‘±‚¯‚é
         Quaternion enemyRotation = GetEnemyRotation();

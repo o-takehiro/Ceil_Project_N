@@ -28,10 +28,12 @@ public class PlayerMagic : MagicBase {
 	/// ñhå‰ñÇñ@
 	/// </summary>
 	public override void DefenseMagic() {
+		Debug.Log("PPPPPPPPPPPDDDDDDDDDD");
 	}
 	/// <summary>
 	/// è¨å^íeñãñÇñ@
 	/// </summary>
 	public override void MiniBulletMagic() {
+		Debug.Log("PPPPPPPPPPPBBBBBBBBBBBB");
 	}
 }

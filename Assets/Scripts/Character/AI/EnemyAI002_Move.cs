@@ -24,7 +24,7 @@ public class EnemyAI002_Move : CharacterAIBase<EnemyCharacter> {
     }
 
     private void EnemyCloseMove() {
-        float distance = Vector3.Distance(GetPlayerPosition(), GetEnemyPosition());
+        float distance = PlayerToEnemyDistance();
 
         Vector3 norm = (GetPlayerPosition() - GetEnemyPosition()).normalized;
         //yç¿ïWÇÃà⁄ìÆÇêßå¿
@@ -36,5 +36,11 @@ public class EnemyAI002_Move : CharacterAIBase<EnemyCharacter> {
             _enemyRigidbody.velocity = Vector3.zero;
             GetEnemy()._myAI.ChangeState(new EnemyAI001_Wait());
         }
+    }
+
+    private void EnemyLeaveMove() {
+        float distance = PlayerToEnemyDistance();
+
+
     }
 }
