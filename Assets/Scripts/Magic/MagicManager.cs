@@ -11,8 +11,10 @@ using System.Xml.Serialization;
 using Unity.VisualScripting.Dependencies.Sqlite;
 using UnityEditor.Search;
 using UnityEngine;
+using System;
 
 using static CommonModule;
+using System.Drawing;
 
 public class MagicManager : MonoBehaviour {
 	// 自身への参照
@@ -38,6 +40,9 @@ public class MagicManager : MonoBehaviour {
 	// 未使用状態の魔法オブジェクト
 	private List<MagicObject> _unuseObjectList = null;
 
+	// 発動する魔法
+	private Action activeMagic = null;
+
 	private const int _MAGIC_MAX = 10;
 
 	public void Initialize() {
@@ -62,6 +67,10 @@ public class MagicManager : MonoBehaviour {
 		for (int i = 0; i < _MAGIC_MAX; i++) {
 			_unuseObjectList.Add(Instantiate(_originObject, _unuseObjectRoot));
 		}
+	}
+
+	public void Update() {
+		activeMagic();
 	}
 
 	/// <summary>
@@ -146,7 +155,7 @@ public class MagicManager : MonoBehaviour {
 	/// </summary>
 	/// <param name="useID"></param>
 	/// <returns></returns>
-	public MagicObject UsaMagicObject(int useID) {
+	public MagicObject UseMagicObject(int useID) {
 		// 使用可能な魔法オブジェクトのインスタンスを取得
 		MagicObject useObject = GetUsableMagicObject();
 		// useIDが有効になるように使用リストの要素を追加する
@@ -203,10 +212,8 @@ public class MagicManager : MonoBehaviour {
 	/// 指定された魔法の関数を実行する
 	/// </summary>
 	/// <param name="magic"></param>
-	public void MagicActivate(eMagicType magic) {
+	public void MagicActivate(eSideType side, eMagicType magic) {
 		switch (magic) {
-			case eMagicType.Analysis:
-				break;
 			case eMagicType.Defense:
 				break;
 			case eMagicType.MiniBullet:
@@ -215,10 +222,17 @@ public class MagicManager : MonoBehaviour {
 	}
 
 	/// <summary>
+	/// 解析魔法の発動
+	/// </summary>
+	public void AnalysisMagicActivate() {
+
+	}
+
+	/// <summary>
 	/// 全ての魔法に指定処理実行
 	/// </summary>
 	/// <param name="action"></param>
-	public void ExecuteAllMagic(System.Action<MagicBase> action) {
+	public void ExecuteAllMagic(Action<MagicBase> action) {
 		if (action == null || IsEmpty(_useList)) return;
 
 		for (int i = 0, max = _useList.Count; i < max; i++) {

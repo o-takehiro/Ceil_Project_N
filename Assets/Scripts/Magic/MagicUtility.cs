@@ -1,0 +1,64 @@
+/*
+ * @file    MagicUtility.cs
+ * @brief   魔法関連実行処理
+ * @author  Riku
+ * @date    2025/7/9
+ */
+
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class MagicUtility {
+
+	/// <summary>
+	/// ID指定の魔法オブジェクト取得
+	/// </summary>
+	/// <param name="ID"></param>
+	/// <returns></returns>
+	public static MagicObject GetMagicObject(int ID) {
+		return MagicManager.instance.GetMagicObject(ID);
+	}
+
+	/// <summary>
+	/// ID指定の魔法データ取得
+	/// </summary>
+	/// <param name="ID"></param>
+	/// <returns></returns>
+	public static MagicBase GetMagicData(int ID) {
+		return MagicManager.instance.GetMagicData(ID);
+	}
+
+	/// <summary>
+	/// 魔法オブジェクトを使用状態にする
+	/// </summary>
+	/// <param name="useID"></param>
+	/// <returns></returns>
+	public static MagicObject UseMagicObject(int useID) {
+		return MagicManager.instance.UseMagicObject(useID);
+	}
+
+	/// <summary>
+	/// 魔法削除
+	/// </summary>
+	/// <param name="removeMagic"></param>
+	public static void RemoveMagic(MagicBase removeMagic) {
+		MagicManager.instance.UnuseMagic(removeMagic);
+	}
+
+	/// <summary>
+	/// 魔法オブジェクトを不可視化
+	/// </summary>
+	/// <param name="removeObject"></param>
+	public static void RemoveMagicObject(MagicObject removeObject) {
+		MagicManager.instance.UnuseMagicObject(removeObject);
+	}
+
+	/// <summary>
+	/// 全ての魔法に指定処理実行
+	/// </summary>
+	/// <param name="action"></param>
+	public static void ExecuteAllMagic(System.Action<MagicBase> action) {
+		MagicManager.instance.ExecuteAllMagic(action);
+	}
+}

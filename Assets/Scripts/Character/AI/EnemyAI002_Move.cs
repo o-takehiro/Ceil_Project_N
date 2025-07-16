@@ -27,6 +27,8 @@ public class EnemyAI002_Move : CharacterAIBase<EnemyCharacter> {
         float distance = Vector3.Distance(GetPlayerPosition(), GetEnemyPosition());
 
         Vector3 norm = (GetPlayerPosition() - GetEnemyPosition()).normalized;
+        //yÀ•W‚ÌˆÚ“®‚ğ§ŒÀ
+        norm.y = 0.0f;
 
         _enemyRigidbody.velocity = norm * _MOVE_SPEED;
 
