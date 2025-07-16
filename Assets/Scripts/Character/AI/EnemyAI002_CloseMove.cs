@@ -5,7 +5,7 @@ using UnityEngine;
 
 using static CharacterUtility;
 
-public class EnemyAI002_Move : CharacterAIBase<EnemyCharacter> {
+public class EnemyAI002_CloseMove : CharacterAIBase<EnemyCharacter> {
     private Rigidbody _enemyRigidbody = null;
     private const float _PLAYER_DISTANCE = 3.0f;
     private const float _MOVE_SPEED = 10.0f;
