@@ -9,7 +9,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+using static CharacterUtility;
+
 public class PlayerMagic : MagicBase {
+
+	private GameObject activeMagicObject = null;
+
 	/// <summary>
 	/// ñÇñ@êwâcÇÃéÊìæ
 	/// </summary>
@@ -27,13 +32,17 @@ public class PlayerMagic : MagicBase {
 	/// <summary>
 	/// ñhå‰ñÇñ@
 	/// </summary>
-	public override void DefenseMagic() {
+	public override void DefenseMagic(MagicObject magicObject) {
+		activeMagicObject = magicObject.defense;
+		activeMagicObject.transform.position = GetPlayerPosition();
+		activeMagicObject.transform.rotation = GetPlayerRotation();
+
 		Debug.Log("PPPPPPPPPPPDDDDDDDDDD");
 	}
 	/// <summary>
 	/// è¨å^íeñãñÇñ@
 	/// </summary>
-	public override void MiniBulletMagic() {
+	public override void MiniBulletMagic(MagicObject magicObject) {
 		Debug.Log("PPPPPPPPPPPBBBBBBBBBBBB");
 	}
 }

@@ -21,14 +21,14 @@ public class EnemyMagic : MagicBase {
 	/// <summary>
 	/// ñhå‰ñÇñ@
 	/// </summary>
-	public override void DefenseMagic() {
+	public override void DefenseMagic(MagicObject magicObject) {
 		Debug.Log("EEEEEEEEEEDDDDDDDDDD");
 		MagicManager.instance.activeEnemyMagicID = eMagicType.Defense;
 	}
 	/// <summary>
 	/// è¨å^íeñãñÇñ@
 	/// </summary>
-	public override void MiniBulletMagic() {
+	public override void MiniBulletMagic(MagicObject magicObject) {
 		Debug.Log("EEEEEEEEEBBBBBBBBBB");
 		MagicManager.instance.activeEnemyMagicID = eMagicType.MiniBullet;
 	}

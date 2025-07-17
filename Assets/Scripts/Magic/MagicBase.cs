@@ -17,8 +17,8 @@ public abstract class MagicBase {
 	// –‚–@w‰cæ“¾
 	public abstract eSideType GetSide();
 	// À‘•–‚–@
-	public abstract void DefenseMagic();
-	public abstract void MiniBulletMagic();
+	public abstract void DefenseMagic(MagicObject magicObject);
+	public abstract void MiniBulletMagic(MagicObject magicObject);
 
 	/// <summary>
 	/// €”õ
