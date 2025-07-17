@@ -20,7 +20,7 @@ public class EnemyAI001_Wait : CharacterAIBase<EnemyCharacter> {
         //自身と敵との距離
         float distance = PlayerToEnemyDistance();
         Debug.Log(distance);
-        //敵の方向を向き続ける
+        //プレイヤーの方向を向き続ける
         Quaternion enemyRotation = GetEnemyRotation();
         //方向を決める
         Vector3 direction = GetPlayerPosition() - GetEnemyPosition();

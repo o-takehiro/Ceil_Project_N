@@ -16,14 +16,6 @@ public class EnemyAI002_CloseMove : CharacterAIBase<EnemyCharacter> {
 
     public override void Execute() {
         base.Execute();
-        EnemyCloseMove();
-    }
-
-    public override void Teardown() {
-        base.Teardown();
-    }
-
-    private void EnemyCloseMove() {
         float distance = PlayerToEnemyDistance();
 
         Vector3 norm = (GetPlayerPosition() - GetEnemyPosition()).normalized;
@@ -32,15 +24,13 @@ public class EnemyAI002_CloseMove : CharacterAIBase<EnemyCharacter> {
 
         _enemyRigidbody.velocity = norm * _MOVE_SPEED;
 
-        if(distance < _PLAYER_DISTANCE) {
+        if (distance < _PLAYER_DISTANCE) {
             _enemyRigidbody.velocity = Vector3.zero;
-            GetEnemy()._myAI.ChangeState(new EnemyAI001_Wait());
+            GetEnemy()._myAI.ChangeState(new EnemyAI003_LeaveMove());
         }
     }
 
-    private void EnemyLeaveMove() {
-        float distance = PlayerToEnemyDistance();
-
-
+    public override void Teardown() {
+        base.Teardown();
     }
 }
