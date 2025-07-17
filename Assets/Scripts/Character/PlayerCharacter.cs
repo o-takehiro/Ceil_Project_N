@@ -5,6 +5,7 @@
  * @date    2025/7/8
  */
 using Cysharp.Threading.Tasks;
+using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
 using UnityEngine.InputSystem.XR;
@@ -45,6 +46,9 @@ public class PlayerCharacter : CharacterBase {
     // PlayerMove.cs
     private PlayerInput _playerMove;
 
+    // 攻撃ごとの設定を保持
+    private Dictionary<AttackStep, AttackData> _attackDataMap;
+
     /// <summary>
     /// プレイヤーの攻撃enum(後でうつすーー)
     /// </summary>
@@ -64,7 +68,7 @@ public class PlayerCharacter : CharacterBase {
     // 攻撃中の時間
     private float _attackTimer = 0f;
     // 攻撃間のクールタイム
-    private const float _ATTACK_RESET_TIME = 0.6f; // 秒
+    private const float _ATTACK_RESET_TIME = 1f; // 秒
 
     // マスターデータ依存の変数
     public int maxMP { get; private set; } = -1;
@@ -77,6 +81,7 @@ public class PlayerCharacter : CharacterBase {
     [SerializeField] private Rigidbody _rigidbody;  // 追加: Rigidbody参照
     [SerializeField] private LayerMask groundLayer; // 接地判定用レイヤー
     [SerializeField] private float groundCheckDistance = 0.2f; // 地面判定距離
+    private bool _isAttackDataInitialized = false;
     /// <summary>
     /// 初期化
     /// </summary>
@@ -105,6 +110,7 @@ public class PlayerCharacter : CharacterBase {
         if (attackCollider != null) {
             attackCollider.enabled = false;
         }
+        SetupAttackData(); // 攻撃データ初期化
     }
 
     // 外部からの入力受付
@@ -192,45 +198,46 @@ public class PlayerCharacter : CharacterBase {
     /// <param name="token"></param>
     /// <returns></returns>
     private async UniTask AttackUpdate(float deltaTime) {
-        // 攻撃入力があったら攻撃処理へ
         if (_attackRequested && !_isAttacking) {
-            // 攻撃の入力受付をリセット
             _attackRequested = false;
-            // 攻撃中に設定
             _isAttacking = true;
 
-            // 3段攻撃を段階的に行う
             AdvanceAttackStep();
-            Debug.Log($"攻撃：{_currentAttack}");
+            Debug.Log($"攻撃ステップ: {_currentAttack}");
 
-            // 攻撃発動時の時間をリセット
-            _attackTimer = 0f;
+            // 該当攻撃データ取得
+            if (!_attackDataMap.TryGetValue(_currentAttack, out var attackData)) {
+                Debug.LogWarning("攻撃データが未設定です");
+                _isAttacking = false;
+                return;
+            }
 
-            // 攻撃コライダーを有効にする
-            if (attackCollider != null) {
+            // アニメーション再生
+            PlayAttackAnimation(attackData.AnimationName);
+
+            // 攻撃コライダーON
+            if (attackCollider != null)
                 attackCollider.enabled = true;
-            }
 
-            // ---数秒待機---
-            await UniTask.Delay(1000);
+            // コライダーON時間分待機
+            await UniTask.Delay(attackData.ColliderActiveDurationMs);
 
-            // 攻撃コライダーを無効にする
-            if (attackCollider != null) {
+            // 攻撃コライダーOFF
+            if (attackCollider != null)
                 attackCollider.enabled = false;
-            }
-            // 攻撃判定をリセット
+
+            // 硬直ディレイ
+            await UniTask.Delay(attackData.PostDelayMs);
+
             _isAttacking = false;
         }
 
-        // 攻撃ステップが何かに設定されていれば、経過時間を更新
+        // 攻撃リセット判定
         if (_currentAttack != AttackStep.Invalid) {
             _attackTimer += deltaTime;
-            // 攻撃開始からリセット時間分が過ぎたら
             if (_attackTimer >= _ATTACK_RESET_TIME) {
                 Debug.Log("攻撃リセット");
-                // 攻撃状態を無にする
                 _currentAttack = AttackStep.Invalid;
-                // 攻撃の経過時間をリセットする
                 _attackTimer = 0f;
             }
         }
@@ -258,6 +265,42 @@ public class PlayerCharacter : CharacterBase {
         }
     }
 
+
+    /// <summary>
+    /// 攻撃事のデータの初期化
+    /// </summary>
+    private void SetupAttackData() {
+        if (_isAttackDataInitialized) return;
+
+        _attackDataMap = new Dictionary<AttackStep, AttackData> {
+        {
+            AttackStep.First,
+            new AttackData("Attack1", 10f, 300, 200)
+        },
+        {
+            AttackStep.Second,
+            new AttackData("Attack2", 15f, 300, 250)
+        },
+        {
+            AttackStep.Third,
+            new AttackData("Attack3", 20f, 400, 300)
+        }
+    };
+
+        _isAttackDataInitialized = true;
+
+    }
+
+    /// <summary>
+    /// アニメーションの再生
+    /// </summary>
+    /// <param name="animationName"></param>
+    private void PlayAttackAnimation(string animationName) {
+        // Animatorを使って攻撃アニメーション再生する場合はここに記述
+        //Debug.Log($"アニメーション再生: {animationName}");
+        // animator.Play(animationName); など
+    }
+
     /// <summary>
     /// 地面の接地判定
     /// </summary>
@@ -266,6 +309,8 @@ public class PlayerCharacter : CharacterBase {
         Vector3 origin = _transform.position + Vector3.up * 0.1f;
         return Physics.Raycast(origin, Vector3.down, groundCheckDistance + 0.1f, groundLayer);
     }
+
+
     /// <summary>
     /// キャラクターの死亡
     /// </summary>
