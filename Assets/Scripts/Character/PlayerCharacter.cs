@@ -26,6 +26,10 @@ public class PlayerCharacter : CharacterBase {
     // 落ちる速度
     private const float _FALL_SPEED = 10f;
 
+    [SerializeField] private Rigidbody _rigidbody;  // 追加: Rigidbody参照
+    [SerializeField] private LayerMask groundLayer; // 接地判定用レイヤー
+    [SerializeField] private float groundCheckDistance = 0.2f; // 地面判定距離
+    private bool _isAttackDataInitialized = false;
     // 入力ベクトル
     private Vector2 _inputMove = Vector2.zero;
     // ジャンプ可否
@@ -39,8 +43,6 @@ public class PlayerCharacter : CharacterBase {
 
     // プレイヤーTransgorm
     private Transform _transform;
-    // キャラクターコントローラー
-    private CharacterController _controller;
     // カメラ
     private Camera _camera;
     // PlayerMove.cs
@@ -78,10 +80,6 @@ public class PlayerCharacter : CharacterBase {
         return true;
     }
 
-    [SerializeField] private Rigidbody _rigidbody;  // 追加: Rigidbody参照
-    [SerializeField] private LayerMask groundLayer; // 接地判定用レイヤー
-    [SerializeField] private float groundCheckDistance = 0.2f; // 地面判定距離
-    private bool _isAttackDataInitialized = false;
     /// <summary>
     /// 初期化
     /// </summary>
@@ -283,7 +281,7 @@ public class PlayerCharacter : CharacterBase {
         },
         {
             AttackStep.Third,
-            new AttackData("Attack3", 20f, 400, 300)
+            new AttackData("Attack3", 20f, 500, 1000)
         }
     };
 
