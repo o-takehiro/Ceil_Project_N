@@ -42,6 +42,7 @@ public class MagicManager : MonoBehaviour {
 
 	// 発動する魔法
 	private Action<MagicObject> _activeMagic = null;
+	// 発動中の魔法ID(仮)
 	private int _activeID = -1;
 
 	// 発動中の敵の魔法ID
@@ -80,11 +81,16 @@ public class MagicManager : MonoBehaviour {
 	}
 
 	public void Update() {
-		if (Input.GetKeyDown(KeyCode.Z)) MagicUtility.CreateMagic(eSideType.PlayerSide, eMagicType.Defense);
-		if (Input.GetKeyDown(KeyCode.X)) MagicUtility.CreateMagic(eSideType.PlayerSide, eMagicType.MiniBullet);
-		if (Input.GetKeyDown(KeyCode.C)) MagicUtility.CreateMagic(eSideType.EnemySide, eMagicType.Defense);
-		if (Input.GetKeyDown(KeyCode.V)) MagicUtility.CreateMagic(eSideType.EnemySide, eMagicType.MiniBullet);
-		if (Input.GetKeyDown(KeyCode.B)) MagicUtility.AnalysisMagicActivate();
+		// デバッグ用
+		if (Input.GetKeyDown(KeyCode.Z)) CreateMagic(eSideType.PlayerSide, eMagicType.Defense);
+		if (Input.GetKeyDown(KeyCode.X)) CreateMagic(eSideType.PlayerSide, eMagicType.MiniBullet);
+		if (Input.GetKeyDown(KeyCode.C)) CreateMagic(eSideType.EnemySide, eMagicType.Defense);
+		if (Input.GetKeyDown(KeyCode.V)) CreateMagic(eSideType.EnemySide, eMagicType.MiniBullet);
+        if (Input.GetKeyUp(KeyCode.Z)) MagicEnd();
+        if (Input.GetKeyUp(KeyCode.X)) MagicEnd();
+        if (Input.GetKeyUp(KeyCode.C)) MagicEnd();
+		if (Input.GetKeyUp(KeyCode.V)) MagicEnd();
+        if (Input.GetKeyDown(KeyCode.B)) AnalysisMagicActivate();
 		for (int i = 0, max = copyMagicIDList.Count; i < max; i++) {
 			Debug.Log(copyMagicIDList[i]);
 		}
@@ -200,10 +206,18 @@ public class MagicManager : MonoBehaviour {
 		MagicObject magicObject = GetMagicObject(_activeID);
 		if (magicObject == null) {
 			// オブジェクトを生成する
-			magicObject = UseMagicObject(_activeID);
+			UseMagicObject(_activeID);
 		}
 		// 魔法実行
 		MagicActivate(magicSide, magicID);
+	}
+
+	public void MagicEnd() {
+		// 魔法のリセット
+		_activeMagic = null;
+        MagicBase removeMagic = GetMagicData(_activeID);
+		_activeID = -1;
+		UnuseMagic(removeMagic);
 	}
 
 	/// <summary>
@@ -231,7 +245,7 @@ public class MagicManager : MonoBehaviour {
 		_useObjectList[unuseObject.ID] = null;
 		unuseObject.Teardown();
 		_unuseObjectList.Add(unuseObject);
-		unuseObject.transform.SetParent(_useObjectRoot);
+		unuseObject.transform.SetParent(_unuseObjectRoot);
 	}
 
 	/// <summary>

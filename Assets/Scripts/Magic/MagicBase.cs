@@ -32,7 +32,7 @@ public abstract class MagicBase {
 	/// •Ð•t‚¯
 	/// </summary>
 	public void Teardown() {
-
+		ID = -1;
 	}
 
 	/// <summary>

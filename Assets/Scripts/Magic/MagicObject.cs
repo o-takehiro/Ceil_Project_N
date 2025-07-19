@@ -25,7 +25,8 @@ public class MagicObject : MonoBehaviour {
 	/// •Ð•t‚¯
 	/// </summary>
 	public void Teardown() {
-
+		ID = -1;
+		//gameObject.SetActive(false);
 	}
 
 }
