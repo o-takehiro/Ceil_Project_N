@@ -18,9 +18,9 @@ public class EnemyAI001_Wait : CharacterAIBase<EnemyCharacter> {
     public override void Execute() {
         base.Execute();
         //自身と敵との距離
-        float distance = Vector3.Distance(GetPlayerPosition(), GetEnemyPosition());
+        float distance = PlayerToEnemyDistance();
         Debug.Log(distance);
-        //敵の方向を向き続ける
+        //プレイヤーの方向を向き続ける
         Quaternion enemyRotation = GetEnemyRotation();
         //方向を決める
         Vector3 direction = GetPlayerPosition() - GetEnemyPosition();
@@ -32,7 +32,7 @@ public class EnemyAI001_Wait : CharacterAIBase<EnemyCharacter> {
         //自身の回転に代入する
         SetEnemyRotation(enemyRotation);
 
-        if(distance > 10) GetEnemy()._myAI.ChangeState(new EnemyAI002_Move());
+        if(distance > 10) GetEnemy()._myAI.ChangeState(new EnemyAI002_CloseMove());
     }
 
     public override void Teardown() {

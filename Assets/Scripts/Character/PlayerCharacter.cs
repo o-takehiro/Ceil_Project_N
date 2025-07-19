@@ -5,6 +5,7 @@
  * @date    2025/7/8
  */
 using Cysharp.Threading.Tasks;
+using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
 using UnityEngine.InputSystem.XR;
@@ -14,7 +15,7 @@ using static CharacterUtility;
 public class PlayerCharacter : CharacterBase {
     //現在のスピード
     public float playerMoveSpeed { get; private set; } = -1.0f;
-
+    [SerializeField] private Collider attackCollider;
     // -定数-
     // 基礎移動スピード
     private const float _PLAYER_RAW_MOVE_SPEED = 10.0f;
@@ -24,9 +25,11 @@ public class PlayerCharacter : CharacterBase {
     private const float _PLAYER_GRAVITY = 15f;
     // 落ちる速度
     private const float _FALL_SPEED = 10f;
-    // 落下開始速度
-    private const float _INIT_FALL_SPEED = 2f;
 
+    [SerializeField] private Rigidbody _rigidbody;  // 追加: Rigidbody参照
+    [SerializeField] private LayerMask groundLayer; // 接地判定用レイヤー
+    [SerializeField] private float groundCheckDistance = 0.2f; // 地面判定距離
+    private bool _isAttackDataInitialized = false;
     // 入力ベクトル
     private Vector2 _inputMove = Vector2.zero;
     // ジャンプ可否
@@ -40,12 +43,13 @@ public class PlayerCharacter : CharacterBase {
 
     // プレイヤーTransgorm
     private Transform _transform;
-    // キャラクターコントローラー
-    private CharacterController _controller;
     // カメラ
     private Camera _camera;
     // PlayerMove.cs
-    private PlayerMove _playerMove;
+    private PlayerInput _playerMove;
+
+    // 攻撃ごとの設定を保持
+    private Dictionary<AttackStep, AttackData> _attackDataMap;
 
     /// <summary>
     /// プレイヤーの攻撃enum(後でうつすーー)
@@ -66,7 +70,7 @@ public class PlayerCharacter : CharacterBase {
     // 攻撃中の時間
     private float _attackTimer = 0f;
     // 攻撃間のクールタイム
-    private const float _ATTACK_RESETTIME = 0.6f; // 秒
+    private const float _ATTACK_RESET_TIME = 1f; // 秒
 
     // マスターデータ依存の変数
     public int maxMP { get; private set; } = -1;
@@ -76,7 +80,6 @@ public class PlayerCharacter : CharacterBase {
         return true;
     }
 
-
     /// <summary>
     /// 初期化
     /// </summary>
@@ -85,11 +88,11 @@ public class PlayerCharacter : CharacterBase {
     /// <param name="camera"></param>
     /// <param name="engineAdapter"></param>
     public void Initialize(
-        CharacterController controller,
+        Rigidbody rigidbody,
         Transform transform,
         Camera camera,
-        PlayerMove engineAdapter) {
-        _controller = controller;
+        PlayerInput engineAdapter) {
+        _rigidbody = rigidbody;
         _transform = transform;
         _camera = camera;
         _playerMove = engineAdapter;
@@ -102,7 +105,10 @@ public class PlayerCharacter : CharacterBase {
         base.Setup();
         // カメラに自身をセット
         if (CameraManager.Instance != null) CameraManager.Instance.SetTarget(GetPlayer());
-
+        if (attackCollider != null) {
+            attackCollider.enabled = false;
+        }
+        SetupAttackData(); // 攻撃データ初期化
     }
 
     // 外部からの入力受付
@@ -110,8 +116,11 @@ public class PlayerCharacter : CharacterBase {
     // ジャンプ受付
     public void RequestJump() => _jumpRequested = true;
     // 攻撃受付
-
-
+    public void RequestAttack() {
+        if (!_isAttacking) {
+            _attackRequested = true;
+        }
+    }
 
     /// <summary>
     /// 非同期処理 ; Update
@@ -121,7 +130,12 @@ public class PlayerCharacter : CharacterBase {
     public async UniTask PlayerMainLoop(CancellationToken token) {
         // 無限ループ
         while (!token.IsCancellationRequested) {
+            // 移動
             MoveUpdate(Time.deltaTime);
+            // 攻撃
+            //AttackUpdate(Time.deltaTime);
+            // 非同期処理追加版
+            await AttackUpdate(Time.deltaTime);
 
             await UniTask.Yield(PlayerLoopTiming.Update, token);
         }
@@ -132,71 +146,173 @@ public class PlayerCharacter : CharacterBase {
     /// 移動関連の1フレーム分の更新
     /// </summary>
     private void MoveUpdate(float deltaTime) {
-        // 地面に接地しているか
-        bool isGrounded = _controller.isGrounded;
+        if (_isAttacking) return;
 
-        // 着地した瞬間のめり込み対策
+        bool isGrounded = CheckGrounded();
+
         if (isGrounded && !_wasGrounded) {
-            _verticalVelocity = -_INIT_FALL_SPEED;
+            // 接地したら垂直速度をリセット
+            _verticalVelocity = 0f;
         }
-        // 地面に接地していなければ降下し続ける
         else if (!isGrounded) {
-            // 落下速度計算
             _verticalVelocity -= _PLAYER_GRAVITY * deltaTime;
-            // 落下速度の上限設定
             if (_verticalVelocity < -_FALL_SPEED) _verticalVelocity = -_FALL_SPEED;
         }
 
-        // ジャンプ開始
-        if (_jumpRequested && isGrounded) _verticalVelocity = _PLAYER_JUMP_SPEED;
-
-        _jumpRequested = false;
-        // 1フレーム前の接地判定更新
-        _wasGrounded = isGrounded;
-
-        // カメラの角度取得
-        float camY = _camera.transform.eulerAngles.y;
-
-        Vector3 vel = new Vector3(_inputMove.x * _PLAYER_RAW_MOVE_SPEED,     // XZ平面速度
-                                  _verticalVelocity,                         // 縦速度
-                                  _inputMove.y * _PLAYER_RAW_MOVE_SPEED);
-        // カメラの方向に向きを合わせる
-        vel = Quaternion.Euler(0, camY, 0) * vel;
-        // 1フレーム事の移動量
-        Vector3 moveDelta = vel * deltaTime;
-
-        // 移動処理
-        _playerMove.ApplyMovement(moveDelta);
-        if (_inputMove != Vector2.zero) {
-
-            float targetAngle = -Mathf.Atan2(_inputMove.y, _inputMove.x) * Mathf.Rad2Deg + 90f;
-
-            targetAngle += camY;
-
-            // 滑らかに追従させる
-            float angleY = Mathf.SmoothDampAngle(
-                _transform.eulerAngles.y, targetAngle, ref _turnVelocity, 0.1f);
-            _playerMove.ApplyRotation(Quaternion.Euler(0, angleY, 0));
-
-            SetPosition(transform.position);
-            transform.position = currentPos;
-            prevPos = currentPos;
+        if (_jumpRequested && isGrounded) {
+            _verticalVelocity = _PLAYER_JUMP_SPEED;
         }
 
+        _jumpRequested = false;
+        _wasGrounded = isGrounded;
+
+        // 入力からXZ方向の移動を作る
+        float camY = _camera.transform.eulerAngles.y;
+        Vector3 inputDir = new Vector3(_inputMove.x, 0, _inputMove.y).normalized;
+        Vector3 moveDir = Quaternion.Euler(0, camY, 0) * inputDir;
+
+        // 最終的な速度を構成
+        Vector3 finalVelocity = moveDir * _PLAYER_RAW_MOVE_SPEED;
+        finalVelocity.y = _verticalVelocity;
+
+        // Rigidbodyに直接速度を渡す
+        _rigidbody.velocity = finalVelocity;
+
+        // 回転
+        if (_inputMove != Vector2.zero) {
+            float targetAngle = -Mathf.Atan2(_inputMove.y, _inputMove.x) * Mathf.Rad2Deg + 90f + camY;
+            float angleY = Mathf.SmoothDampAngle(_transform.eulerAngles.y, targetAngle, ref _turnVelocity, 0.05f);
+            _playerMove.ApplyRotation(Quaternion.Euler(0, angleY, 0));
+        }
+        // 座標更新
+        SetPosition(transform.position);
+        transform.position = currentPos;
+        prevPos = currentPos;
+    }
+
+    /// <summary>
+    /// 攻撃の非同期処理
+    /// </summary>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    private async UniTask AttackUpdate(float deltaTime) {
+        if (_attackRequested && !_isAttacking) {
+            _attackRequested = false;
+            _isAttacking = true;
+
+            AdvanceAttackStep();
+            Debug.Log($"攻撃ステップ: {_currentAttack}");
+
+            // 該当攻撃データ取得
+            if (!_attackDataMap.TryGetValue(_currentAttack, out var attackData)) {
+                Debug.LogWarning("攻撃データが未設定です");
+                _isAttacking = false;
+                return;
+            }
+
+            // アニメーション再生
+            PlayAttackAnimation(attackData.AnimationName);
+
+            // 攻撃コライダーON
+            if (attackCollider != null)
+                attackCollider.enabled = true;
+
+            // コライダーON時間分待機
+            await UniTask.Delay(attackData.ColliderActiveDurationMs);
+
+            // 攻撃コライダーOFF
+            if (attackCollider != null)
+                attackCollider.enabled = false;
+
+            // 硬直ディレイ
+            await UniTask.Delay(attackData.PostDelayMs);
+
+            _isAttacking = false;
+        }
+
+        // 攻撃リセット判定
+        if (_currentAttack != AttackStep.Invalid) {
+            _attackTimer += deltaTime;
+            if (_attackTimer >= _ATTACK_RESET_TIME) {
+                Debug.Log("攻撃リセット");
+                _currentAttack = AttackStep.Invalid;
+                _attackTimer = 0f;
+            }
+        }
 
     }
 
+    /// <summary>
+    /// 現在の攻撃段階を次に進める。
+    /// </summary>
+    private void AdvanceAttackStep() {
+        // 現在の攻撃からの遷移
+        switch (_currentAttack) {
+            case AttackStep.Invalid:
+                _currentAttack = AttackStep.First;
+                break;
+            case AttackStep.First:  // 1段目から2段目
+                _currentAttack = AttackStep.Second;
+                break;
+            case AttackStep.Second: // 2段目から3段目
+                _currentAttack = AttackStep.Third;
+                break;
+            default:                // 1段目に戻す
+                _currentAttack = AttackStep.First;
+                break;
+        }
+    }
 
 
-    
+    /// <summary>
+    /// 攻撃事のデータの初期化
+    /// </summary>
+    private void SetupAttackData() {
+        if (_isAttackDataInitialized) return;
 
+        _attackDataMap = new Dictionary<AttackStep, AttackData> {
+        {
+            AttackStep.First,
+            new AttackData("Attack1", 10f, 300, 200)
+        },
+        {
+            AttackStep.Second,
+            new AttackData("Attack2", 15f, 300, 250)
+        },
+        {
+            AttackStep.Third,
+            new AttackData("Attack3", 20f, 500, 1000)
+        }
+    };
 
+        _isAttackDataInitialized = true;
+
+    }
+
+    /// <summary>
+    /// アニメーションの再生
+    /// </summary>
+    /// <param name="animationName"></param>
+    private void PlayAttackAnimation(string animationName) {
+        // Animatorを使って攻撃アニメーション再生する場合はここに記述
+        //Debug.Log($"アニメーション再生: {animationName}");
+        // animator.Play(animationName); など
+    }
+
+    /// <summary>
+    /// 地面の接地判定
+    /// </summary>
+    /// <returns></returns>
+    private bool CheckGrounded() {
+        Vector3 origin = _transform.position + Vector3.up * 0.1f;
+        return Physics.Raycast(origin, Vector3.down, groundCheckDistance + 0.1f, groundLayer);
+    }
 
 
     /// <summary>
     /// キャラクターの死亡
     /// </summary>
     public override void Dead() {
-        
+
     }
 }

@@ -5,7 +5,7 @@ using UnityEngine;
 
 using static CharacterUtility;
 
-public class EnemyAI002_Move : CharacterAIBase<EnemyCharacter> {
+public class EnemyAI002_CloseMove : CharacterAIBase<EnemyCharacter> {
     private Rigidbody _enemyRigidbody = null;
     private const float _PLAYER_DISTANCE = 3.0f;
     private const float _MOVE_SPEED = 10.0f;
@@ -16,15 +16,7 @@ public class EnemyAI002_Move : CharacterAIBase<EnemyCharacter> {
 
     public override void Execute() {
         base.Execute();
-        EnemyCloseMove();
-    }
-
-    public override void Teardown() {
-        base.Teardown();
-    }
-
-    private void EnemyCloseMove() {
-        float distance = Vector3.Distance(GetPlayerPosition(), GetEnemyPosition());
+        float distance = PlayerToEnemyDistance();
 
         Vector3 norm = (GetPlayerPosition() - GetEnemyPosition()).normalized;
         //yç¿ïWÇÃà⁄ìÆÇêßå¿
@@ -32,9 +24,13 @@ public class EnemyAI002_Move : CharacterAIBase<EnemyCharacter> {
 
         _enemyRigidbody.velocity = norm * _MOVE_SPEED;
 
-        if(distance < _PLAYER_DISTANCE) {
+        if (distance < _PLAYER_DISTANCE) {
             _enemyRigidbody.velocity = Vector3.zero;
-            GetEnemy()._myAI.ChangeState(new EnemyAI001_Wait());
+            GetEnemy()._myAI.ChangeState(new EnemyAI003_LeaveMove());
         }
+    }
+
+    public override void Teardown() {
+        base.Teardown();
     }
 }

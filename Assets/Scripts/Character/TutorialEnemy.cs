@@ -18,7 +18,7 @@ public class TutorialEnemy : EnemyCharacter {
         SetupCanvasPosition(_CANVAS_POS_Y);
         _myAI = new CharacterAIMachine<EnemyCharacter>();
         _myAI.Setup(this);
-        _myAI.ChangeState(new EnemyAI002_Move());
+        _myAI.ChangeState(new EnemyAI002_CloseMove());
     }
     private void Update() {
         //AIマシーンの更新
