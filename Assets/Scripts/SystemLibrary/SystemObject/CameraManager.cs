@@ -3,11 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UIElements;
 
 public class CameraManager : SystemObject {
     // Singletonインスタンス
     public static CameraManager Instance { get; private set; } = null;
-
+    private LockOnSystem _lockOnSystem = new LockOnSystem();
     // メインカメラの参照
     private Camera _camera;
     private const string _CAMERA_NAME = "Main Camera";
@@ -24,7 +25,6 @@ public class CameraManager : SystemObject {
 
     public Transform playerTarget;           // 追従対象となるプレイヤー
     private Transform _target;               // 実際のターゲット参照
-    private Transform _lookOnTarget;         // ロックオン時のターゲット
 
     // カメラの挙動に関する設定
     private Vector3 offset = new Vector3(0f, 2f, -5f);     // プレイヤーに対するカメラの相対位置
@@ -76,16 +76,6 @@ public class CameraManager : SystemObject {
         _currentPitch = 0f;
     }
 
-    /// <summary>
-    /// ロックオン時の追跡対象を設定
-    /// </summary>
-    /// <param name="LookOnTarget"></param>
-    public void SetLookOnTarget(EnemyCharacter LookOnTarget) {
-        // ロックオン用のターゲットに追加
-        _lookOnTarget = LookOnTarget.transform;
-        
-
-    }
 
     /// <summary>
     /// 毎フレーム後に呼ばれる処理（カメラの追従と回転）
@@ -93,27 +83,76 @@ public class CameraManager : SystemObject {
     private void LateUpdate() {
         if (_camera == null || _target == null) return;
 
-        // 入力デバイスごとの感度を選択
-        float sensitivity = Mouse.current != null && Mouse.current.delta.IsActuated()
-            ? mouseSensitivity
-            : gamepadSensitivity;
+        // ロックオン時の挙動
+        if (_lockOnSystem.IsLockedOn()) {
 
-        // 入力から回転を更新
-        Vector2 delta = _lookInput * sensitivity * rotationSpeed;
-        _currentYaw += delta.x;
-        _currentPitch = Mathf.Clamp(_currentPitch - delta.y, -pitchLimit, pitchLimit);
+            // 敵キャラクターの取得
+            EnemyCharacter enemy = CharacterUtility.GetEnemy();
+            if (enemy == null) {
+                // 敵が消滅または取得失敗したらロックオン解除
+                _lockOnSystem.Unlock();
+                return;
+            }
 
-        // カメラの回転をQuaternionで計算
-        Quaternion rotation = Quaternion.Euler(_currentPitch, _currentYaw, 0f);
+            // プレイヤーと敵のワールド座標を取得
+            Vector3 playerPos = _target.position;
+            Vector3 enemyPos = CharacterUtility.GetEnemyPosition();
 
-        // プレイヤー位置から回転を加味したカメラの理想位置を算出
-        Vector3 desiredPosition = _target.position + rotation * offset;
+            // プレイヤーと敵の中心点（注視ポイントとして使用可能）
+            Vector3 midpoint = (playerPos + enemyPos) * 0.5f;
 
-        // カメラをスムーズに追従させる
-        _camera.transform.position = Vector3.Lerp(_camera.transform.position, desiredPosition, followSpeed * Time.deltaTime);
+            // プレイヤー→敵の方向を取得（正規化で方向ベクトル化）
+            Vector3 directionToEnemy = (enemyPos - playerPos).normalized;
 
-        // プレイヤーを注視（頭あたりを見るようにオフセットを加える）
-        _camera.transform.LookAt(_target.position + Vector3.up * 1.5f);
+            // カメラの理想的な位置を算出（敵とプレイヤーを両方映すような距離・高さ）
+            float distanceBehindPlayer = 5f;   // 後ろに引く距離
+            float heightOffset = 2f;           // 高さ（Y軸）オフセット
+            Vector3 cameraTargetPosition = playerPos - directionToEnemy * distanceBehindPlayer + Vector3.up * heightOffset;
+
+            // カメラをスムーズに目的位置へ移動させる
+            _camera.transform.position = Vector3.Lerp(_camera.transform.position, cameraTargetPosition, followSpeed * Time.deltaTime);
+
+            // 敵の頭部（少し上）をカメラが注視するように設定
+            _camera.transform.LookAt(enemyPos + Vector3.up * 1.5f);
+        }
+        // 通常のカメラ挙動
+        else {
+
+            // 使用デバイスごとに感度を切り替える
+            float sensitivity = Mouse.current != null && Mouse.current.delta.IsActuated()
+                ? mouseSensitivity
+                : gamepadSensitivity;
+
+            // 入力ベクトルから回転を計算
+            Vector2 delta = _lookInput * sensitivity * rotationSpeed;
+            _currentYaw += delta.x;
+            _currentPitch = Mathf.Clamp(_currentPitch - delta.y, -pitchLimit, pitchLimit);
+
+            // カメラの回転角度をQuaternionに変換
+            Quaternion rotation = Quaternion.Euler(_currentPitch, _currentYaw, 0f);
+
+            // プレイヤー基準のカメラ位置を取得
+            Vector3 desiredPosition = _target.position + rotation * offset;
+
+            // カメラを補間でスムーズに移動させる
+            _camera.transform.position = Vector3.Lerp(_camera.transform.position, desiredPosition, followSpeed * Time.deltaTime);
+
+            // プレイヤーのやや上をカメラが常に注視する
+            _camera.transform.LookAt(_target.position + Vector3.up * 1.5f);
+        }
+    }
+
+    // ロックオン対象を設定するAPI
+    public void LockOnTarget(EnemyCharacter target) {
+        if (target == null) return;
+
+        // Transform を渡す
+        _lockOnSystem.LockOn(target.transform);
+    }
+
+    // ロックオン解除
+    public void UnlockTarget() {
+        _lockOnSystem.Unlock();
     }
 
     /// <summary>
