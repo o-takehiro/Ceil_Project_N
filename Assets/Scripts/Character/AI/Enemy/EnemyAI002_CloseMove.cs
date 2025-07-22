@@ -4,6 +4,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 
 using static CharacterUtility;
+using static EnemyCommonModule;
 
 public class EnemyAI002_CloseMove : CharacterAIBase<EnemyCharacter> {
     private Rigidbody _enemyRigidbody = null;
@@ -18,19 +19,7 @@ public class EnemyAI002_CloseMove : CharacterAIBase<EnemyCharacter> {
         base.Execute();
         //自身と敵との距離
         float distance = PlayerToEnemyDistance();
-
-        //プレイヤーの方向を向き続ける
-        Quaternion enemyRotation = GetEnemyRotation();
-        //方向を決める
-        Vector3 direction = GetPlayerPosition() - GetEnemyPosition();
-        //水平方向のみの回転のため、yには0を代入
-        direction.y = 0;
-        //回転させる
-        Quaternion lookRotation = Quaternion.LookRotation(direction, Vector3.up);
-        enemyRotation = Quaternion.Slerp(enemyRotation, lookRotation, 0.1f);
-        //自身の回転に代入する
-        SetEnemyRotation(enemyRotation);
-
+        LookAtPlayer();
         Vector3 norm = (GetPlayerPosition() - GetEnemyPosition()).normalized;
         //y座標の移動を制限
         norm.y = 0.0f;
