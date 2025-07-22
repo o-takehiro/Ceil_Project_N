@@ -7,11 +7,18 @@
 
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting.FullSerializer;
 using UnityEngine;
 
 using static CharacterUtility;
 
 public class PlayerMagic : MagicBase {
+
+	private float speed = 20;
+	private float distanceMAX = 20;
+	private float coolTime = 1.5f;
+	private float coolTimeMAX = 0.5f;
+
 	/// <summary>
 	/// ñÇñ@êwâcÇÃéÊìæ
 	/// </summary>
@@ -39,7 +46,29 @@ public class PlayerMagic : MagicBase {
 	/// è¨å^íeñãñÇñ@
 	/// </summary>
 	public override void MiniBulletMagic(MagicObject magicObject) {
-		Transform bullet = magicObject.miniBullet;
+		if (coolTime < 0){
+			Transform bullet = magicObject.miniBullet;
+			bullet.position = GetPlayerPosition();
+			bullet.rotation = GetPlayerRotation();
+			magicObject.GenerateMiniBullet();
+			coolTime = coolTimeMAX;
+		}
+		else {
+			coolTime -= Time.deltaTime;
+		}
+		for (int i = 0, max = magicObject.miniBulletObjects.Count; i < max; i++) {
+			if (magicObject.miniBulletObjects[i] == null) continue;
+			Transform magicTransform = magicObject.miniBulletObjects[i].transform;
+			magicTransform.position += magicTransform.forward * speed * Time.deltaTime;
+			float distance = Vector3.Distance(magicTransform.position, GetPlayerPosition());
+			if (distance > distanceMAX) {
+				
+				magicObject.miniBulletObjects[i] = null;
+			}
+			else {
+				magicObject.miniBulletObjects[i].transform.position = magicTransform.position;
+			}
+		}
 
 	}
 }

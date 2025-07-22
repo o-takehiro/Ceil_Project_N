@@ -26,8 +26,8 @@ public class EnemyMagic : MagicBase {
 	/// </summary>
 	public override void DefenseMagic(MagicObject magicObject) {
 		Transform defense = magicObject.defense;
-		defense.position = GetPlayerPosition();
-		defense.rotation = GetPlayerRotation();
+		defense.position = GetEnemyPosition();
+		defense.rotation = GetEnemyRotation();
 
 		//MagicManager.instance.activeEnemyMagicID = eMagicType.Defense;
 	}

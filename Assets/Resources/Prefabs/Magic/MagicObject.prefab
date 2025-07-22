@@ -214,6 +214,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 58275c87ae2730749b698e14b17bad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  defense: {fileID: 1142549705436653228}
-  miniBullet: {fileID: 0}
-  originMiniBullet: {fileID: 0}
+  defense: {fileID: 2963373647427008743}
+  miniBullet: {fileID: 7251893828974309424}
+  originMiniBullet: {fileID: 7323836922818739123, guid: a23298bc5a87fbc44b7b8cee4680c942, type: 3}
