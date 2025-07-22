@@ -11,14 +11,18 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
+using static CharacterUtility;
+
 public class TutorialEnemy : EnemyCharacter {
     private const float _CANVAS_POS_Y = 2.0f;
     public override void Setup() {
         base.Setup();
+        SetEnemyPosition(transform.position);
+        SetEnemyRotation(transform.rotation);
         SetupCanvasPosition(_CANVAS_POS_Y);
         _myAI = new CharacterAIMachine<EnemyCharacter>();
         _myAI.Setup(this);
-        _myAI.ChangeState(new EnemyAI002_CloseMove());
+        _myAI.ChangeState(new EnemyAI001_Wait());
     }
     private void Update() {
         //AIマシーンの更新
