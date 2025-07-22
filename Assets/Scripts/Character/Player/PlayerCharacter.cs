@@ -206,6 +206,11 @@ public class PlayerCharacter : CharacterBase {
         SetPosition(transform.position);
         transform.position = currentPos;
         prevPos = currentPos;
+
+        // ‰ñ“]XV
+        SetRotation(transform.rotation);
+
+
     }
 
     /// <summary>
