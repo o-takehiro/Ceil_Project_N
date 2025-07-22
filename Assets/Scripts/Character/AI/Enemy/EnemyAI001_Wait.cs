@@ -22,6 +22,7 @@ public class EnemyAI001_Wait : CharacterAIBase<EnemyCharacter> {
         base.Execute();
         _waitTimePer += Time.deltaTime;
 
+        //ƒvƒŒƒCƒ„[‚Ì•ûŒü‚ğŒü‚­
         LookAtPlayer();
 
         if(_waitTimePer < 5) return;
