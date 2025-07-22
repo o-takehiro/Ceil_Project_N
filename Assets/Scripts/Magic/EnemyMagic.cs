@@ -13,8 +13,6 @@ using static CharacterUtility;
 
 public class EnemyMagic : MagicBase {
 
-	private GameObject activeMagicObject = null;
-
 	/// <summary>
 	/// ñÇñ@êwâcÇÃéÊìæ
 	/// </summary>
@@ -27,18 +25,16 @@ public class EnemyMagic : MagicBase {
 	/// ñhå‰ñÇñ@
 	/// </summary>
 	public override void DefenseMagic(MagicObject magicObject) {
-		activeMagicObject = magicObject.defense;
-		activeMagicObject.transform.position = GetEnemyPosition();
-		activeMagicObject.transform.rotation = GetEnemyRotation();
+		Transform defense = magicObject.defense;
+		defense.position = GetPlayerPosition();
+		defense.rotation = GetPlayerRotation();
 
-		Debug.Log("EEEEEEEEEEDDDDDDDDDD");
-		MagicManager.instance.activeEnemyMagicID = eMagicType.Defense;
+		//MagicManager.instance.activeEnemyMagicID = eMagicType.Defense;
 	}
 	/// <summary>
 	/// è¨å^íeñãñÇñ@
 	/// </summary>
 	public override void MiniBulletMagic(MagicObject magicObject) {
-		Debug.Log("EEEEEEEEEBBBBBBBBBB");
-		MagicManager.instance.activeEnemyMagicID = eMagicType.MiniBullet;
+		//MagicManager.instance.activeEnemyMagicID = eMagicType.MiniBullet;
 	}
 }
