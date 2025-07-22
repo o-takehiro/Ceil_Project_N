@@ -14,7 +14,7 @@ public class MagicObject : MonoBehaviour {
 	// ユニークのID
 	public int ID { get; private set; } = -1;
 	
-	private List<GameObject> miniBulletObjects = null;
+	public List<GameObject> miniBulletObjects = null;
 
 	// 魔法用のオブジェクト
 	public Transform defense = null;
@@ -28,6 +28,7 @@ public class MagicObject : MonoBehaviour {
 
 	public void Setup(int setID, eSideType side) {
 		miniBulletObjects = new List<GameObject>(_GENERATE_OBJECTS_MAX);
+		for (int i = 0, max = _GENERATE_OBJECTS_MAX; i < max; i++) miniBulletObjects.Add(null);
 		ID = setID;
 	}
 
@@ -35,7 +36,16 @@ public class MagicObject : MonoBehaviour {
 	/// 小型弾幕の生成
 	/// </summary>
 	public void GenerateMiniBullet() {
-		//miniBulletObjects = Instantiate(originMiniBullet, miniBullet);
+		for (int i = 0, max = miniBulletObjects.Count + 1 ; i < max; i++) {
+			if (miniBulletObjects[i] == null) {
+				miniBulletObjects[i] = Instantiate(originMiniBullet, miniBullet);
+				return;
+			}
+			else {
+				miniBulletObjects.Add(Instantiate(originMiniBullet, miniBullet));
+				return;
+			}
+		}
 	}
 
 	/// <summary>

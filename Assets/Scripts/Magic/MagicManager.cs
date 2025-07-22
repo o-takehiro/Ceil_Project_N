@@ -15,6 +15,7 @@ using System;
 
 using static CommonModule;
 using System.Drawing;
+using Unity.VisualScripting;
 
 public class MagicManager : MonoBehaviour {
 	// ©g‚Ö‚ÌQÆ
@@ -296,6 +297,17 @@ public class MagicManager : MonoBehaviour {
 				_activeMagic = sideData.MiniBulletMagic;
 				break;
 		}
+	}
+
+	/// <summary>
+	/// “Á’è‚Ì–‚–@‚ª”­“®’†‚©‚Ç‚¤‚©
+	/// </summary>
+	/// <param name="side"></param>
+	/// <param name="magic"></param>
+	/// <returns></returns>
+	public bool IsMagicActive (eSideType side, eMagicType magic) {
+		if (_activeMagicIDList[(int)side][(int)magic] < 0) return true;
+		return false;
 	}
 
 	/// <summary>
