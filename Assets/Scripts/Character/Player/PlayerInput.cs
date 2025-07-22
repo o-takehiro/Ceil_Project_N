@@ -1,6 +1,7 @@
 
 using Cysharp.Threading.Tasks;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
@@ -41,6 +42,15 @@ public sealed class PlayerInput : MonoBehaviour {
     public void OnAttack(InputAction.CallbackContext ctx) {
         if (ctx.performed) _character?.RequestAttack();
     }
+
+    /// <summary>
+    /// InputSystemのLookOn用コールバック
+    /// </summary>
+    /// <param name="ctx"></param>
+    public void OnLookOn(InputAction.CallbackContext ctx) {
+        if (ctx.performed) _character?.RequestLookOn();
+    }
+
 
     // 初期化
     private async void Start() {

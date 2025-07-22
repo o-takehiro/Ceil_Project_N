@@ -75,6 +75,8 @@ public class PlayerCharacter : CharacterBase {
     // マスターデータ依存の変数
     public int maxMP { get; private set; } = -1;
     public int MP { get; private set; } = -1;
+    // 現在ロックオンしているかどうか
+    private bool _isLockedOn = false;
 
     public override bool isPlayer() {
         return true;
@@ -119,6 +121,22 @@ public class PlayerCharacter : CharacterBase {
     public void RequestAttack() {
         if (!_isAttacking) {
             _attackRequested = true;
+        }
+    }
+    // カメラのロックオン受付
+    public void RequestLookOn() {
+        if (_isLockedOn) {
+            // ロックオン解除
+            CameraManager.Instance.UnlockTarget();
+            _isLockedOn = false;
+        }
+        else {
+            // 敵が取得できる場合のみロックオン
+            var enemy = CharacterUtility.GetEnemy();
+            if (enemy != null) {
+                CameraManager.Instance.LockOnTarget(enemy);
+                _isLockedOn = true;
+            }
         }
     }
 
