@@ -12,9 +12,6 @@ using UnityEngine;
 using static CharacterUtility;
 
 public class PlayerMagic : MagicBase {
-
-	private GameObject activeMagicObject = null;
-
 	/// <summary>
 	/// ñÇñ@êwâcÇÃéÊìæ
 	/// </summary>
@@ -33,16 +30,16 @@ public class PlayerMagic : MagicBase {
 	/// ñhå‰ñÇñ@
 	/// </summary>
 	public override void DefenseMagic(MagicObject magicObject) {
-		activeMagicObject = magicObject.defense;
-		activeMagicObject.transform.position = GetPlayerPosition();
-		activeMagicObject.transform.rotation = GetPlayerRotation();
+		Transform defense = magicObject.defense;
+		defense.position = GetPlayerPosition();
+		defense.rotation = GetPlayerRotation();
 
-		Debug.Log("PPPPPPPPPPPDDDDDDDDDD");
 	}
 	/// <summary>
 	/// è¨å^íeñãñÇñ@
 	/// </summary>
 	public override void MiniBulletMagic(MagicObject magicObject) {
-		Debug.Log("PPPPPPPPPPPBBBBBBBBBBBB");
+		Transform bullet = magicObject.miniBullet;
+
 	}
 }
