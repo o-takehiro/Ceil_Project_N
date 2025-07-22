@@ -48,6 +48,13 @@ public class MagicUtility {
 	}
 
 	/// <summary>
+	/// 魔法のリセット
+	/// </summary>
+	public static void MagicReset(eSideType side, eMagicType magicID) {
+		MagicManager.instance.MagicReset(side, magicID);
+	}
+
+	/// <summary>
 	/// 解析魔法の発動
 	/// </summary>
 	public static void AnalysisMagicActivate() {

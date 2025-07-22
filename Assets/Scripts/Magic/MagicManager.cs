@@ -42,15 +42,13 @@ public class MagicManager : MonoBehaviour {
 
 	// 発動する魔法
 	private Action<MagicObject> _activeMagic = null;
-	// 発動中の魔法ID(仮)
-	private int _activeID = -1;
-
-	// 発動中の敵の魔法ID
-	public eMagicType activeEnemyMagicID = eMagicType.Invalid;
+	// 発動中の魔法ID
+	private List<List<int>> _activeMagicIDList = null;
+	//private eMagicType activeEnemyMagicID = eMagicType.Invalid;
 	// コピーした魔法ID
-	public List<eMagicType> copyMagicIDList = null;
+	private List<int> copyMagicIDList = null;
 
-	private const int _MAGIC_MAX = 10;
+	private const int _MAGIC_MAX = 8;
 
 	public void Initialize() {
 		instance = this;
@@ -77,7 +75,17 @@ public class MagicManager : MonoBehaviour {
 
 		// 魔法の種類分のリストを生成しておく
 		int magicTypeMax = (int)eMagicType.Max;
-		copyMagicIDList = new List<eMagicType>(magicTypeMax);
+		copyMagicIDList = new List<int>(magicTypeMax);
+
+		// 発動中の魔法リストをある程度生成
+		_activeMagicIDList = new List<List<int>>(sideTypeMax);
+		for (int i = 0; i < sideTypeMax; i++) {
+			_activeMagicIDList.Add(new List<int>(_MAGIC_MAX));
+			for (int magicCount = 0; magicCount < _MAGIC_MAX; magicCount++) {
+				// 未使用状態にしておく
+				_activeMagicIDList[i].Add(-1);
+			}
+		}
 	}
 
 	public void Update() {
@@ -86,17 +94,20 @@ public class MagicManager : MonoBehaviour {
 		if (Input.GetKeyDown(KeyCode.X)) CreateMagic(eSideType.PlayerSide, eMagicType.MiniBullet);
 		if (Input.GetKeyDown(KeyCode.C)) CreateMagic(eSideType.EnemySide, eMagicType.Defense);
 		if (Input.GetKeyDown(KeyCode.V)) CreateMagic(eSideType.EnemySide, eMagicType.MiniBullet);
-        if (Input.GetKeyUp(KeyCode.Z)) MagicEnd();
-        if (Input.GetKeyUp(KeyCode.X)) MagicEnd();
-        if (Input.GetKeyUp(KeyCode.C)) MagicEnd();
-		if (Input.GetKeyUp(KeyCode.V)) MagicEnd();
-        if (Input.GetKeyDown(KeyCode.B)) AnalysisMagicActivate();
-		for (int i = 0, max = copyMagicIDList.Count; i < max; i++) {
-			Debug.Log(copyMagicIDList[i]);
-		}
+		if (Input.GetKeyUp(KeyCode.Z)) MagicReset(eSideType.PlayerSide, eMagicType.Defense);
+		if (Input.GetKeyUp(KeyCode.X)) MagicReset(eSideType.PlayerSide, eMagicType.MiniBullet);
+		if (Input.GetKeyUp(KeyCode.C)) MagicReset(eSideType.EnemySide, eMagicType.Defense);
+		if (Input.GetKeyUp(KeyCode.V)) MagicReset(eSideType.EnemySide, eMagicType.MiniBullet);
+		if (Input.GetKeyDown(KeyCode.B)) AnalysisMagicActivate();
 
 		if (_activeMagic == null) return;
-		_activeMagic(GetMagicObject(_activeID));
+
+		for (int sideCount = 0; sideCount < (int)eSideType.Max; sideCount++) {
+			for (int i = 0, max = _activeMagicIDList.Count; i < max; i++) {
+				if (_activeMagicIDList[sideCount][i] < 0) continue;
+				_activeMagic(GetMagicObject(_activeMagicIDList[sideCount][i]));
+			}
+		}
 	}
 
 	/// <summary>
@@ -198,25 +209,37 @@ public class MagicManager : MonoBehaviour {
 	/// 魔法生成
 	/// </summary>
 	/// <param name="magicID"></param>
-	public void	CreateMagic(eSideType side, eMagicType magicID) {
-		// データを使用状態にする
-		_activeID = UseMagicData((int)side);
-		MagicBase magicSide = GetMagicData(_activeID);
-		magicSide?.Setup(_activeID);
-		MagicObject magicObject = GetMagicObject(_activeID);
-		if (magicObject == null) {
+	public void CreateMagic(eSideType sideType, eMagicType magicID) {
+		int side = (int)sideType;
+		for (int i = 0, max = _activeMagicIDList.Count; i < max; i++) {
+			if (_activeMagicIDList[side][i] >= 0) continue;
+			// データを使用状態にする
+			_activeMagicIDList[side][i] = UseMagicData(side);
+			MagicBase magicSide = GetMagicData(_activeMagicIDList[side][i]);
+			magicSide?.Setup(_activeMagicIDList[side][i]);
 			// オブジェクトを生成する
-			UseMagicObject(_activeID);
+			MagicObject magicObject = GetMagicObject(_activeMagicIDList[side][i]);
+			if (magicObject == null) {
+				magicObject = UseMagicObject(_activeMagicIDList[side][i]);
+			}
+			// オブジェクト内のオブジェクト生成
+			magicObject.GenerateMiniBullet();
+			// 魔法実行
+			MagicActivate(magicSide, magicID);
+			return;
 		}
-		// 魔法実行
-		MagicActivate(magicSide, magicID);
 	}
 
-	public void MagicEnd() {
+	/// <summary>
+	/// 発動中の魔法を終了する
+	/// </summary>
+	public void MagicReset(eSideType sideType, eMagicType magicID) {
+		int activeMagic = _activeMagicIDList[(int)sideType][(int)magicID];
 		// 魔法のリセット
 		_activeMagic = null;
-        MagicBase removeMagic = GetMagicData(_activeID);
-		_activeID = -1;
+		MagicBase removeMagic = GetMagicData(activeMagic);
+		activeMagic = -1;
+		_activeMagicIDList[(int)sideType][(int)magicID] = activeMagic;
 		UnuseMagic(removeMagic);
 	}
 
@@ -279,11 +302,13 @@ public class MagicManager : MonoBehaviour {
 	/// 解析魔法の発動
 	/// </summary>
 	public void AnalysisMagicActivate() {
+		int activeEnemyMagic = -1;
 		// 敵の発動中の魔法を取得
 		for (int i = 0, max = copyMagicIDList.Count; i < max; i++) {
-			if (copyMagicIDList[i] == activeEnemyMagicID) return;
+			activeEnemyMagic = _activeMagicIDList[(int)eSideType.EnemySide][i];
+			if (copyMagicIDList[i] == activeEnemyMagic) return;
 		}
-		copyMagicIDList.Add(activeEnemyMagicID);
+		copyMagicIDList.Add(activeEnemyMagic);
 	}
 
 	/// <summary>

@@ -7,10 +7,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
-using static CommonModule;
-using static GameConst;
-
 public class CharacterManager : MonoBehaviour {
     public static CharacterManager instance { get; private set; } = null;
     // 使用中キャラクターオブジェクトの親オブジェクト
