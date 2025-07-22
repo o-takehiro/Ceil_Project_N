@@ -21,8 +21,6 @@ public class EnemyAI001_Wait : CharacterAIBase<EnemyCharacter> {
     public override void Execute() {
         base.Execute();
         _waitTimePer += Time.deltaTime;
-        //©g‚Æ“G‚Æ‚Ì‹——£
-        float distance = PlayerToEnemyDistance();
 
         LookAtPlayer();
 

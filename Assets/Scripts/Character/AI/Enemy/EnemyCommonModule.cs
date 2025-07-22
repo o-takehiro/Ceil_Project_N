@@ -6,8 +6,6 @@ using static CharacterUtility;
 
 public class EnemyCommonModule {
     public static void LookAtPlayer() {
-        //自身と敵との距離
-        float distance = PlayerToEnemyDistance();
         //プレイヤーの方向を向き続ける
         Quaternion enemyRotation = GetEnemyRotation();
         //方向を決める
