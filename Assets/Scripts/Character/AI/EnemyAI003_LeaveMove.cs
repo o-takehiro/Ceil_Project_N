@@ -15,6 +15,7 @@ public class EnemyAI003_LeaveMove : CharacterAIBase<EnemyCharacter> {
     private const float _BEHAIND_ANGLE = 180.0f;
     public override void Setup() {
         base.Setup();
+        Vector3 enemyAngle = GetEnemy().transform.localEulerAngles;
         _enemyRigidbody = ownerClass.GetComponent<Rigidbody>();
         //背後から逃げる方向（角度を）をランダムで決める
         float minAngle = _BEHAIND_ANGLE - _RANGE_ANGLE;
@@ -25,7 +26,6 @@ public class EnemyAI003_LeaveMove : CharacterAIBase<EnemyCharacter> {
     public override void Execute() {
         base.Execute();
         //背後を向く
-
         //プレイヤーとの距離を取得
         float distance = PlayerToEnemyDistance();
         //逃げる方向ベクトルの宣言
@@ -37,9 +37,11 @@ public class EnemyAI003_LeaveMove : CharacterAIBase<EnemyCharacter> {
         direction.y = 0;
         direction.z = Mathf.Sin(escapeAngle);
 
-        _enemyRigidbody.velocity = direction * _MOVE_SPEED;
         if (distance > _PLAYER_DISTANCE) {
-            GetEnemy()._myAI.ChangeState(new EnemyAI002_CloseMove());
+            _enemyRigidbody.velocity = Vector3.zero;
+            GetEnemy()._myAI.ChangeState(new EnemyAI001_Wait());
+        } else {
+            _enemyRigidbody.velocity = direction * _MOVE_SPEED;
         }
     }
 

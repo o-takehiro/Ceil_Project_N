@@ -11,15 +11,17 @@ using UnityEngine;
 using static CharacterUtility;
 
 public class EnemyAI001_Wait : CharacterAIBase<EnemyCharacter> {
+    private float _waitTimePer = -1;
     public override void Setup() {
         base.Setup();
+        _waitTimePer = 0.0f;
     }
 
     public override void Execute() {
         base.Execute();
+        _waitTimePer += Time.deltaTime;
         //自身と敵との距離
         float distance = PlayerToEnemyDistance();
-        Debug.Log(distance);
         //プレイヤーの方向を向き続ける
         Quaternion enemyRotation = GetEnemyRotation();
         //方向を決める
@@ -32,10 +34,13 @@ public class EnemyAI001_Wait : CharacterAIBase<EnemyCharacter> {
         //自身の回転に代入する
         SetEnemyRotation(enemyRotation);
 
-        if(distance > 10) GetEnemy()._myAI.ChangeState(new EnemyAI002_CloseMove());
+        if(_waitTimePer < 5) return;
+
+        GetEnemy()._myAI.ChangeState(new EnemyAI004_Action());
     }
 
     public override void Teardown() {
         base.Teardown();
+        _waitTimePer = 0.0f;
     }
 }

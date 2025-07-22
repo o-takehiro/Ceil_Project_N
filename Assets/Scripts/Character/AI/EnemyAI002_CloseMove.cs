@@ -7,7 +7,7 @@ using static CharacterUtility;
 
 public class EnemyAI002_CloseMove : CharacterAIBase<EnemyCharacter> {
     private Rigidbody _enemyRigidbody = null;
-    private const float _PLAYER_DISTANCE = 3.0f;
+    private const float _PLAYER_DISTANCE = 10.0f;
     private const float _MOVE_SPEED = 10.0f;
     public override void Setup() {
         base.Setup();
@@ -26,7 +26,7 @@ public class EnemyAI002_CloseMove : CharacterAIBase<EnemyCharacter> {
 
         if (distance < _PLAYER_DISTANCE) {
             _enemyRigidbody.velocity = Vector3.zero;
-            GetEnemy()._myAI.ChangeState(new EnemyAI003_LeaveMove());
+            GetEnemy()._myAI.ChangeState(new EnemyAI001_Wait());
         }
     }
 
