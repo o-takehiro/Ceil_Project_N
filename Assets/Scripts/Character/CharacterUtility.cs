@@ -59,18 +59,25 @@ public class CharacterUtility {
         return GetPlayer().GetPrevPosition();
     }
     /// <summary>
+    /// プレイヤーの現在のフレームから一フレーム前を引いた移動量計算
+    /// </summary>
+    /// <returns></returns>
+    public static Vector3 GetPlayerMoveDelta() {
+        return GetPlayerPosition() - GetPlayerPrevPos();
+    }
+    /// <summary>
     /// プレイヤーの回転取得
     /// </summary>
     /// <returns></returns>
     public static Quaternion GetPlayerRotation() {
-        return GetPlayer().GetRotation();
+        return GetPlayer().GetCurrentRotation();
     }
     /// <summary>
     /// プレイヤーの座標設定
     /// </summary>
     /// <param name="setPosition"></param>
     public static void SetPlayerPosition(Vector3 setPosition) {
-        GetPlayer().SetPosition(setPosition);
+        GetPlayer().SetCurrentPosition(setPosition);
     }
     /// <summary>
     /// プレイヤーの1フレーム前の座標設定
@@ -107,18 +114,25 @@ public class CharacterUtility {
         return GetEnemy().GetPrevPosition();
     }
     /// <summary>
+    /// 敵の現在のフレームから一フレーム前を引いた移動量計算
+    /// </summary>
+    /// <returns></returns>
+    public static Vector3 GetEnemyMoveDelta() {
+        return GetEnemyPosition() - GetEnemyPrevPosition();
+    }
+    /// <summary>
     /// 敵回転取得
     /// </summary>
     /// <returns></returns>
     public static Quaternion GetEnemyRotation() {
-        return GetEnemy().GetRotation();
+        return GetEnemy().GetCurrentRotation();
     }
     /// <summary>
     /// 敵座標の設定
     /// </summary>
     /// <param name="setRotation"></param>
     public static void SetEnemyPosition(Vector3 setPosition) {
-        GetEnemy().SetPosition(setPosition);
+        GetEnemy().SetCurrentPosition(setPosition);
     }
     /// <summary>
     /// 敵の1フレーム前の座標設定

@@ -26,7 +26,7 @@ public class TutorialEnemy : EnemyCharacter {
     }
     private void Update() {
         //現在の位置更新
-        SetPosition(transform.position);
+        SetCurrentPosition(transform.position);
         SetRotation(transform.rotation);
         //AIマシーンの更新
         _myAI.Update();
@@ -35,8 +35,6 @@ public class TutorialEnemy : EnemyCharacter {
         //オブジェクトの回転更新
         transform.rotation = currentRot;
         //1フレーム前の座標更新
-        prevPos = currentPos;
+        SetEnemyPrevPosition();
     }
-
-    
 }

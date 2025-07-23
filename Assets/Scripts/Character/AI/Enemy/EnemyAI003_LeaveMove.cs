@@ -35,16 +35,18 @@ public class EnemyAI003_LeaveMove : CharacterAIBase<EnemyCharacter> {
 
     public override void Execute() {
         base.Execute();
+        //距離の計算
         float distance = PlayerToEnemyDistance();
+        //移動時間の更新
         _moveTimePer += Time.deltaTime;
-        //進む方向に向く
         if (distance > _PLAYER_DISTANCE || _moveTimePer > _MOVE_TIME) {
             _enemyRigidbody.velocity = Vector3.zero;
             GetEnemy()._myAI.ChangeState(new EnemyAI001_Wait());
         } else {
             _enemyRigidbody.velocity = LeaveMove(_angle) * _MOVE_SPEED;
         }
-        Vector3 moveDir = GetEnemyPosition() - GetEnemyPrevPosition();
+        //進む方向に向く
+        Vector3 moveDir = GetEnemyMoveDelta();
         LookAtDirection(moveDir);
     }
 
