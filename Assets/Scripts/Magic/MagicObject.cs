@@ -14,7 +14,7 @@ public class MagicObject : MonoBehaviour {
 	// ユニークのID
 	public int ID { get; private set; } = -1;
 
-	// 加賀田弾幕のオブジェクト
+	// 小型弾幕のオブジェクト
 	public List<GameObject> miniBulletObjects = null;
 
 	// 使用中オブジェクトの親オブジェクト
@@ -23,6 +23,10 @@ public class MagicObject : MonoBehaviour {
 	// 未使用オブジェクトの親オブジェクト
 	[SerializeField]
 	private Transform _unuseObjectRoot = null;
+
+	// 魔法オブジェクトの未使用親オブジェクト
+	[SerializeField]
+	private Transform _unuseMiniBulletRoot = null;
 
 	// 魔法用のオブジェクト
 	public Transform defense = null;
@@ -36,7 +40,9 @@ public class MagicObject : MonoBehaviour {
 
 	public void Setup(int setID, eSideType side, eMagicType magic) {
 		miniBulletObjects = new List<GameObject>(_GENERATE_OBJECTS_MAX);
-		for (int i = 0, max = _GENERATE_OBJECTS_MAX; i < max; i++) miniBulletObjects.Add(null);
+		for (int i = 0, max = _GENERATE_OBJECTS_MAX; i < max; i++) {
+			miniBulletObjects.Add(Instantiate(originMiniBullet, _unuseMiniBulletRoot));
+		}
 		ID = setID;
 		UseMagic(magic);
 	}
@@ -66,6 +72,7 @@ public class MagicObject : MonoBehaviour {
 				defense.SetParent(_unuseObjectRoot);
 				return;
 			case eMagicType.MiniBullet:
+				RemoveMiniBulletAll();
 				miniBullet.SetParent(_unuseObjectRoot);
 				return;
 		}
@@ -75,16 +82,34 @@ public class MagicObject : MonoBehaviour {
 	/// 小型弾幕の生成
 	/// </summary>
 	public GameObject GenerateMiniBullet() {
-		// リストの空き枠に生成
+		// 非表示のオブジェクトを表示する
 		for (int i = 0, max = miniBulletObjects.Count; i < max; i++) {
-			if (miniBulletObjects[i] != null) continue;
-			miniBulletObjects[i] = Instantiate(originMiniBullet, miniBullet);
+			if (miniBulletObjects[i].transform.parent == miniBullet) continue;
+			miniBulletObjects[i].transform.SetParent(miniBullet);
 			return miniBulletObjects[i];
 		}
-		// リストに空きがない場合は追加
+		// 全て表示されている場合は生成
 		GameObject newBullet = Instantiate(originMiniBullet, miniBullet);
 		miniBulletObjects.Add(newBullet);
 		return newBullet;
+	}
+
+	/// <summary>
+	/// 特定の小型弾幕の削除
+	/// </summary>
+	/// <param name="removeObject"></param>
+	public void RemoveMiniBullet(GameObject removeObject) {
+		removeObject.transform.SetParent(_unuseMiniBulletRoot);
+	}
+
+	/// <summary>
+	/// 全ての小型弾幕の削除
+	/// </summary>
+	/// <param name="removeObject"></param>
+	public void RemoveMiniBulletAll() {
+		for (int i = 0, max = miniBulletObjects.Count; i < max; i++) {
+			miniBulletObjects[i].transform.SetParent(_unuseMiniBulletRoot);
+		}
 	}
 
 	/// <summary>
