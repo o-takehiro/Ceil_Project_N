@@ -6,6 +6,7 @@
  */
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class CharacterUtility {
@@ -48,7 +49,14 @@ public class CharacterUtility {
     /// </summary>
     /// <returns></returns>
     public static Vector3 GetPlayerPosition() {
-        return GetPlayer().GetPosition();
+        return GetPlayer().GetCurrentPosition();
+    }
+    /// <summary>
+    /// プレイヤーの1フレーム前の座標取得
+    /// </summary>
+    /// <returns></returns>
+    public static Vector3 GetPlayerPrevPos() {
+        return GetPlayer().GetPrevPosition();
     }
     /// <summary>
     /// プレイヤーの回転取得
@@ -63,6 +71,12 @@ public class CharacterUtility {
     /// <param name="setPosition"></param>
     public static void SetPlayerPosition(Vector3 setPosition) {
         GetPlayer().SetPosition(setPosition);
+    }
+    /// <summary>
+    /// プレイヤーの1フレーム前の座標設定
+    /// </summary>
+    public static void SetPlayerPrevPosition() {
+        GetPlayer().SetPrevPosition();
     }
     /// <summary>
     /// プレイヤー回転設定
@@ -83,7 +97,14 @@ public class CharacterUtility {
     /// </summary>
     /// <returns></returns>
     public static Vector3 GetEnemyPosition() {
-        return GetEnemy().GetPosition();
+        return GetEnemy().GetCurrentPosition();
+    }
+    /// <summary>
+    /// 敵の1フレーム前の座標取得
+    /// </summary>
+    /// <returns></returns>
+    public static Vector3 GetEnemyPrevPosition() {
+        return GetEnemy().GetPrevPosition();
     }
     /// <summary>
     /// 敵回転取得
@@ -98,6 +119,12 @@ public class CharacterUtility {
     /// <param name="setRotation"></param>
     public static void SetEnemyPosition(Vector3 setPosition) {
         GetEnemy().SetPosition(setPosition);
+    }
+    /// <summary>
+    /// 敵の1フレーム前の座標設定
+    /// </summary>
+    public static void SetEnemyPrevPosition() {
+        GetEnemy().SetPrevPosition();
     }
     /// <summary>
     /// 敵回転設定
