@@ -203,7 +203,7 @@ public class PlayerCharacter : CharacterBase {
             _playerMove.ApplyRotation(Quaternion.Euler(0, angleY, 0));
         }
         // ç¿ïWçXêV
-        SetCurrentPosition(transform.position);
+        SetPosition(transform.position);
         transform.position = currentPos;
         prevPos = currentPos;
 
