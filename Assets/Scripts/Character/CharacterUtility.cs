@@ -59,6 +59,13 @@ public class CharacterUtility {
         return GetPlayer().GetPrevPosition();
     }
     /// <summary>
+    /// プレイヤーの現在のフレームから一フレーム前を引いた移動量計算
+    /// </summary>
+    /// <returns></returns>
+    public static Vector3 GetPlayerMoveDelta() {
+        return GetPlayerPosition() - GetPlayerPrevPos();
+    }
+    /// <summary>
     /// プレイヤーの回転取得
     /// </summary>
     /// <returns></returns>
@@ -105,6 +112,13 @@ public class CharacterUtility {
     /// <returns></returns>
     public static Vector3 GetEnemyPrevPosition() {
         return GetEnemy().GetPrevPosition();
+    }
+    /// <summary>
+    /// 敵の現在のフレームから一フレーム前を引いた移動量計算
+    /// </summary>
+    /// <returns></returns>
+    public static Vector3 GetEnemyMoveDelta() {
+        return GetEnemyPosition() - GetEnemyPrevPosition();
     }
     /// <summary>
     /// 敵回転取得

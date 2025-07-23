@@ -35,8 +35,6 @@ public class TutorialEnemy : EnemyCharacter {
         //オブジェクトの回転更新
         transform.rotation = currentRot;
         //1フレーム前の座標更新
-        prevPos = currentPos;
+        SetEnemyPrevPosition();
     }
-
-    
 }
