@@ -50,8 +50,12 @@ public abstract class CharacterBase : MonoBehaviour {
     /// 座標の取得
     /// </summary>
     /// <returns></returns>
-    public Vector3 GetPosition() {
+    public Vector3 GetCurrentPosition() {
         return currentPos;
+    }
+
+    public Vector3 GetPrevPosition() {
+        return prevPos;
     }
     /// <summary>
     /// 座標の設定
@@ -59,6 +63,12 @@ public abstract class CharacterBase : MonoBehaviour {
     /// <param name="setPosition"></param>
     public void SetPosition(Vector3 setPosition) {
         currentPos = setPosition;
+    }
+    /// <summary>
+    /// 1フレーム前の設定
+    /// </summary>
+    public void SetPrevPosition() {
+        prevPos = currentPos;
     }
     /// <summary>
     /// 回転の取得

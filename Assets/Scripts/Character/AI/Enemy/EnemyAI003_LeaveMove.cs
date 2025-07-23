@@ -44,7 +44,7 @@ public class EnemyAI003_LeaveMove : CharacterAIBase<EnemyCharacter> {
         } else {
             _enemyRigidbody.velocity = LeaveMove(_angle) * _MOVE_SPEED;
         }
-        Vector3 moveDir = GetEnemyPosition() - GetEnemy().prevPos;
+        Vector3 moveDir = GetEnemyPosition() - GetEnemyPrevPosition();
         LookAtDirection(moveDir);
     }
 
