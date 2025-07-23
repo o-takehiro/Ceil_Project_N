@@ -19,6 +19,8 @@ public class TutorialEnemy : EnemyCharacter {
         base.Setup();
         //現在の位置更新
         SetEnemyPosition(transform.position);
+        //一フレーム前の位置更新
+        SetEnemyPrevPosition();
         //現在の回転更新
         SetEnemyRotation(transform.rotation);
         //HPゲージの更新
