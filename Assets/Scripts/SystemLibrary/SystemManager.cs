@@ -16,6 +16,7 @@ public class SystemManager : MonoBehaviour {
 
     private void Start() {
         UniTask task = Initialize();
+        Application.targetFrameRate = 60;
     }
 
     /// <summary>
