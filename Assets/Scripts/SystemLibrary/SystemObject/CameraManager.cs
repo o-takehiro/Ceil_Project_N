@@ -28,7 +28,7 @@ public class CameraManager : SystemObject {
 
     // カメラの挙動に関する設定
     private Vector3 offset = new Vector3(0f, 2f, -5f);     // プレイヤーに対するカメラの相対位置
-    private float followSpeed = 10f;                       // カメラの追従速度
+    private float followSpeed = 10f;                       // カメラの追従速度private float lookOnSpped = 3f;
     private float rotationSpeed = 4f;                      // 回転速度
     private float mouseSensitivity = 0.05f;                // マウス感度
     private float gamepadSensitivity = 0.1f;               // ゲームパッド感度
@@ -69,9 +69,10 @@ public class CameraManager : SystemObject {
     /// </summary>
     /// <param name="target"></param>
     public void SetTarget(PlayerCharacter target) {
-        _target = target.transform;      // 追跡用の実体も更新
+        // 追跡用の実態化したプレイヤーを保存
+        _target = target.transform;
         playerTarget = _target;
-        // 初期角度をプレイヤーに合わせてリセットしておくと視点が飛びにくい
+        // 初期角度をプレイヤーに合わせておく
         _currentYaw = _target.eulerAngles.y;
         _currentPitch = 0f;
     }
@@ -99,7 +100,7 @@ public class CameraManager : SystemObject {
             Vector3 enemyPos = CharacterUtility.GetEnemyPosition();
 
             // プレイヤーと敵の中心点（注視ポイントとして使用可能）
-            Vector3 midpoint = (playerPos + enemyPos) * 0.5f;
+            //Vector3 midpoint = (playerPos + enemyPos) * 0.5f;
 
             // プレイヤー→敵の方向を取得（正規化で方向ベクトル化）
             Vector3 directionToEnemy = (enemyPos - playerPos).normalized;
@@ -109,11 +110,20 @@ public class CameraManager : SystemObject {
             float heightOffset = 2f;           // 高さ（Y軸）オフセット
             Vector3 cameraTargetPosition = playerPos - directionToEnemy * distanceBehindPlayer + Vector3.up * heightOffset;
 
+            // カメラ間の座標をキャッシュ
+            float _distance_two = Vector3.Distance(_camera.transform.position, cameraTargetPosition);
+            // カメラの現在の座標をキャッシュ
+            float currentPos = (followSpeed * Time.time) / _distance_two;
             // カメラをスムーズに目的位置へ移動させる
-            _camera.transform.position = Vector3.Lerp(_camera.transform.position, cameraTargetPosition, followSpeed * Time.deltaTime);
+            _camera.transform.position = Vector3.Lerp(_camera.transform.position, cameraTargetPosition, currentPos);
 
-            // 敵の頭部（少し上）をカメラが注視するように設定
-            _camera.transform.LookAt(enemyPos + Vector3.up * 1.5f);
+            // 敵の頭部（少し上）をカメラが注視するように設定（補間付き）
+            Vector3 lookAtTarget = enemyPos + Vector3.up * 1.5f;
+            Quaternion currentRotation = _camera.transform.rotation;
+            Quaternion targetRotation = Quaternion.LookRotation(lookAtTarget - _camera.transform.position);
+
+            float lookSpeed = 5f; // 必要に応じて調整
+            _camera.transform.rotation = Quaternion.Slerp(currentRotation, targetRotation, Time.deltaTime * lookSpeed);
         }
         // 通常のカメラ挙動
         else {
@@ -153,6 +163,7 @@ public class CameraManager : SystemObject {
     // ロックオン解除
     public void UnlockTarget() {
         _lockOnSystem.Unlock();
+
     }
 
     /// <summary>

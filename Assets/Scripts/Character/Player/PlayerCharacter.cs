@@ -78,10 +78,13 @@ public class PlayerCharacter : CharacterBase {
     // 現在ロックオンしているかどうか
     private bool _isLockedOn = false;
 
+    // 魔法を保存するリスト
+    private List<eMagicType> _magicList = null;
+
     public override bool isPlayer() {
         return true;
     }
-
+    
     /// <summary>
     /// 初期化
     /// </summary>

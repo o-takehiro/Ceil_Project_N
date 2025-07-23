@@ -31,4 +31,12 @@ public class LockOnSystem : MonoBehaviour {
     public bool IsLockedOn() {
         return _currentLockTarget != null;
     }
+
+    /// <summary>
+    /// ロックオン中のターゲットの取得
+    /// </summary>
+    /// <returns></returns>
+    public Transform GetLookOnTarget() {
+        return _currentLockTarget;
+    }
 }
