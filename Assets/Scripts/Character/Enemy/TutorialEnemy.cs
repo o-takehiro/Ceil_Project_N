@@ -25,13 +25,17 @@ public class TutorialEnemy : EnemyCharacter {
         _myAI.ChangeState(new EnemyAI001_Wait());
     }
     private void Update() {
+        //現在の位置更新
+        SetPosition(transform.position);
+        SetRotation(transform.rotation);
         //AIマシーンの更新
         _myAI.Update();
-        SetPosition(transform.position);
+        //オブジェクトの座標更新
         transform.position = currentPos;
-        prevPos = currentPos;
+        //オブジェクトの回転更新
         transform.rotation = currentRot;
-        currentRot = transform.rotation;
+        //1フレーム前の座標更新
+        prevPos = currentPos;
     }
 
     

@@ -19,7 +19,7 @@ public class EnemyAI002_CloseMove : CharacterAIBase<EnemyCharacter> {
         base.Execute();
         //©g‚Æ“G‚Æ‚Ì‹——£
         float distance = PlayerToEnemyDistance();
-        LookAtPlayer();
+        LookAtPlayer(0.01f);
         Vector3 norm = (GetPlayerPosition() - GetEnemyPosition()).normalized;
         //yÀ•W‚ÌˆÚ“®‚ğ§ŒÀ
         norm.y = 0.0f;

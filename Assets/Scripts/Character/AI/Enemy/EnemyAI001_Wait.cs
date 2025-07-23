@@ -13,9 +13,16 @@ using static EnemyCommonModule;
 
 public class EnemyAI001_Wait : CharacterAIBase<EnemyCharacter> {
     private float _waitTimePer = -1;
+    private float _randomWaitTime = -1;
+
+    // ’è”
+    private const float _MIN_TIME = 3.0f;
+    private const float _MAX_TIME = 5.0f;
+
     public override void Setup() {
         base.Setup();
         _waitTimePer = 0.0f;
+        _randomWaitTime = Random.Range(_MIN_TIME, _MAX_TIME);
     }
 
     public override void Execute() {
@@ -23,9 +30,9 @@ public class EnemyAI001_Wait : CharacterAIBase<EnemyCharacter> {
         _waitTimePer += Time.deltaTime;
 
         //ƒvƒŒƒCƒ„[‚Ì•ûŒü‚ğŒü‚­
-        LookAtPlayer();
+        LookAtPlayer(0.01f);
 
-        if(_waitTimePer < 5) return;
+        if(_waitTimePer < _randomWaitTime) return;
 
         GetEnemy()._myAI.ChangeState(new EnemyAI004_Action());
     }
