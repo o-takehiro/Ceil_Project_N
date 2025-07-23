@@ -31,7 +31,7 @@ public class CameraManager : SystemObject {
     private float followSpeed = 10f;                       // カメラの追従速度
     private float rotationSpeed = 3f;                      // 回転速度
     private float mouseSensitivity = 0.05f;                // マウス感度
-    private float gamepadSensitivity = 0.1f;               // ゲームパッド感度
+    private float gamepadSensitivity = 1f;                 // ゲームパッド感度
     private float pitchLimit = 20f;                        // 上下回転の制限
 
     // キャッシュしたカメラの回転

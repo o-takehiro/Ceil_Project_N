@@ -12,7 +12,7 @@ public class FadeManager : SystemObject {
     [SerializeField]
     private List<Image> _fadeImageList = null;
 
-    private const float _DEFAULT_FADE_DURATION = 0.1f;
+    private const float _DEFAULT_FADE_DURATION = 1f;
 
     public override async UniTask Initialize() {
         Instance = this;
@@ -83,7 +83,7 @@ public class FadeManager : SystemObject {
             color.a = Mathf.Lerp(startAlpha, targetAlpha, t);
             image.color = color;
             // 5ÉtÉåÅ[ÉÄë“Çø
-            await UniTask.DelayFrame(5);
+            await UniTask.DelayFrame(1);
         }
 
         color.a = targetAlpha;
