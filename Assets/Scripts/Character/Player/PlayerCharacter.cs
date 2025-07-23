@@ -206,12 +206,12 @@ public class PlayerCharacter : CharacterBase {
             _playerMove.ApplyRotation(Quaternion.Euler(0, angleY, 0));
         }
         // 座標更新
-        SetPosition(transform.position);
+        SetPlayerPosition(transform.position);
         transform.position = currentPos;
         prevPos = currentPos;
 
         // 回転更新
-        SetRotation(transform.rotation);
+        SetPlayerRotation(transform.rotation);
 
 
     }

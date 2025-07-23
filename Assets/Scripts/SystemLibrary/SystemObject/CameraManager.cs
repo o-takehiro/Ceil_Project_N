@@ -28,8 +28,8 @@ public class CameraManager : SystemObject {
 
     // カメラの挙動に関する設定
     private Vector3 offset = new Vector3(0f, 2f, -5f);     // プレイヤーに対するカメラの相対位置
-    private float followSpeed = 10f;                       // カメラの追従速度private float lookOnSpped = 3f;
-    private float rotationSpeed = 4f;                      // 回転速度
+    private float followSpeed = 10f;                       // カメラの追従速度
+    private float rotationSpeed = 3f;                      // 回転速度
     private float mouseSensitivity = 0.05f;                // マウス感度
     private float gamepadSensitivity = 0.1f;               // ゲームパッド感度
     private float pitchLimit = 20f;                        // 上下回転の制限
@@ -86,44 +86,35 @@ public class CameraManager : SystemObject {
 
         // ロックオン時の挙動
         if (_lockOnSystem.IsLockedOn()) {
-
-            // 敵キャラクターの取得
             EnemyCharacter enemy = CharacterUtility.GetEnemy();
             if (enemy == null) {
-                // 敵が消滅または取得失敗したらロックオン解除
                 _lockOnSystem.Unlock();
                 return;
             }
 
-            // プレイヤーと敵のワールド座標を取得
             Vector3 playerPos = _target.position;
             Vector3 enemyPos = CharacterUtility.GetEnemyPosition();
 
-            // プレイヤーと敵の中心点（注視ポイントとして使用可能）
-            //Vector3 midpoint = (playerPos + enemyPos) * 0.5f;
+            // プレイヤーと敵の中間点
+            Vector3 midpoint = (playerPos + enemyPos) * 0.5f;
+            Vector3 directionToPlayer = (midpoint - playerPos).normalized;
 
-            // プレイヤー→敵の方向を取得（正規化で方向ベクトル化）
-            Vector3 directionToEnemy = (enemyPos - playerPos).normalized;
+            float distanceBehindPlayer = 5f;
+            float heightOffset = 2f;
+            Vector3 cameraTargetPosition = midpoint - directionToPlayer * distanceBehindPlayer + Vector3.up * heightOffset;
 
-            // カメラの理想的な位置を算出（敵とプレイヤーを両方映すような距離・高さ）
-            float distanceBehindPlayer = 5f;   // 後ろに引く距離
-            float heightOffset = 2f;           // 高さ（Y軸）オフセット
-            Vector3 cameraTargetPosition = playerPos - directionToEnemy * distanceBehindPlayer + Vector3.up * heightOffset;
+            // 安定した補間（揺れ防止）
+            float positionLerpSpeed = 5f;
+            _camera.transform.position = Vector3.Lerp(_camera.transform.position, cameraTargetPosition, Time.deltaTime * positionLerpSpeed);
 
-            // カメラ間の座標をキャッシュ
-            float _distance_two = Vector3.Distance(_camera.transform.position, cameraTargetPosition);
-            // カメラの現在の座標をキャッシュ
-            float currentPos = (followSpeed * Time.time) / _distance_two;
-            // カメラをスムーズに目的位置へ移動させる
-            _camera.transform.position = Vector3.Lerp(_camera.transform.position, cameraTargetPosition, currentPos);
-
-            // 敵の頭部（少し上）をカメラが注視するように設定（補間付き）
-            Vector3 lookAtTarget = enemyPos + Vector3.up * 1.5f;
+            // 注視ターゲット
+            Vector3 lookAtTarget = midpoint + Vector3.up * 1.5f;
             Quaternion currentRotation = _camera.transform.rotation;
             Quaternion targetRotation = Quaternion.LookRotation(lookAtTarget - _camera.transform.position);
 
-            float lookSpeed = 5f; // 必要に応じて調整
+            float lookSpeed = 5f;
             _camera.transform.rotation = Quaternion.Slerp(currentRotation, targetRotation, Time.deltaTime * lookSpeed);
+
         }
         // 通常のカメラ挙動
         else {
