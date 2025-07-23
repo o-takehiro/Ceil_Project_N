@@ -30,7 +30,7 @@ public class EnemyAI001_Wait : CharacterAIBase<EnemyCharacter> {
         _waitTimePer += Time.deltaTime;
 
         //ƒvƒŒƒCƒ„[‚Ì•ûŒü‚ğŒü‚­
-        LookAtPlayer(0.01f);
+        LookAtPlayer();
 
         if(_waitTimePer < _randomWaitTime) return;
 

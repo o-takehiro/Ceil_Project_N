@@ -5,7 +5,7 @@ using UnityEngine;
 using static CharacterUtility;
 
 public class EnemyCommonModule {
-    public static void LookAtPlayer(float setTime) {
+    public static void LookAtPlayer(float setTime = 0.1f) {
         //ƒvƒŒƒCƒ„[‚Ì•ûŒü‚ğŒü‚«‘±‚¯‚é
         Quaternion enemyRotation = GetEnemyRotation();
         //•ûŒü‚ğŒˆ‚ß‚é
