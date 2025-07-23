@@ -118,6 +118,12 @@ public class PlayerCharacter : CharacterBase {
         }
         SetupAttackData(); // 攻撃データ初期化
         a.enabled = false;
+        // 座標更新
+        SetPlayerPosition(transform.position);
+        transform.position = currentPos;
+
+        // 回転更新
+        SetPlayerRotation(transform.rotation);
     }
 
     // 外部からの入力受付
@@ -253,6 +259,7 @@ public class PlayerCharacter : CharacterBase {
             // 攻撃コライダーOFF
             if (attackCollider != null)
                 attackCollider.enabled = false;
+            
             a.enabled = false;
             // 硬直ディレイ
             await UniTask.Delay(attackData.PostDelayMs);
