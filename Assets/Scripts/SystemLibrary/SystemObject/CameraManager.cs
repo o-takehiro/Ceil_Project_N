@@ -34,6 +34,12 @@ public class CameraManager : SystemObject {
     private float gamepadSensitivity = 0.1f;               // ゲームパッド感度
     private float pitchLimit = 20f;                        // 上下回転の制限
 
+    // ロックオンを解除したときの回転軸
+    private Quaternion _cachedCameraRotation;
+    // ロックオンを解除したときの距離
+    private Vector3 _cachedCameraDirection;
+    private bool _wasLockedOnLastFrame = false;
+
     /// <summary>
     /// 初期化処理（非同期）
     /// </summary>
@@ -127,11 +133,17 @@ public class CameraManager : SystemObject {
         }
         // 通常のカメラ挙動
         else {
+            // ロックオン → 通常カメラに切り替わった瞬間だけ処理
+            if (_wasLockedOnLastFrame) {
+                _wasLockedOnLastFrame = false;
+            }
+            // ロックオン時のカメラの向きからYaw/Pitchを逆算して適用
+            Vector3 euler = _cachedCameraRotation.eulerAngles;
 
             // 使用デバイスごとに感度を切り替える
             float sensitivity = Mouse.current != null && Mouse.current.delta.IsActuated()
-                ? mouseSensitivity
-                : gamepadSensitivity;
+            ? mouseSensitivity
+            : gamepadSensitivity;
 
             // 入力ベクトルから回転を計算
             Vector2 delta = _lookInput * sensitivity * rotationSpeed;
