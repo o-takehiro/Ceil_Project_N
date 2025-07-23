@@ -17,9 +17,13 @@ public class TutorialEnemy : EnemyCharacter {
     private const float _CANVAS_POS_Y = 2.0f;
     public override void Setup() {
         base.Setup();
+        //現在の位置更新
         SetEnemyPosition(transform.position);
+        //現在の回転更新
         SetEnemyRotation(transform.rotation);
+        //HPゲージの更新
         SetupCanvasPosition(_CANVAS_POS_Y);
+        //ステートマシーンの初期化
         _myAI = new CharacterAIMachine<EnemyCharacter>();
         _myAI.Setup(this);
         _myAI.ChangeState(new EnemyAI001_Wait());
@@ -27,6 +31,7 @@ public class TutorialEnemy : EnemyCharacter {
     private void Update() {
         //現在の位置更新
         SetPosition(transform.position);
+        //現在の回転取得
         SetRotation(transform.rotation);
         //AIマシーンの更新
         _myAI.Update();
