@@ -7,15 +7,10 @@
 
 using System.Collections;
 using System.Collections.Generic;
-using System.Xml.Serialization;
-using Unity.VisualScripting.Dependencies.Sqlite;
-using UnityEditor.Search;
 using UnityEngine;
 using System;
 
 using static CommonModule;
-using System.Drawing;
-using Unity.VisualScripting;
 
 public class MagicManager : MonoBehaviour {
 	// é©êgÇ÷ÇÃéQè∆
