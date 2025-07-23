@@ -34,9 +34,9 @@ public class CameraManager : SystemObject {
     private float gamepadSensitivity = 0.1f;               // ゲームパッド感度
     private float pitchLimit = 20f;                        // 上下回転の制限
 
-    // ロックオンを解除したときの回転軸
+    // キャッシュしたカメラの回転
     private Quaternion _cachedCameraRotation;
-    // ロックオンを解除したときの距離
+    // キャッシュしたカメラの方向
     private Vector3 _cachedCameraDirection;
     private bool _wasLockedOnLastFrame = false;
 
@@ -90,76 +90,75 @@ public class CameraManager : SystemObject {
     private void LateUpdate() {
         if (_camera == null || _target == null) return;
 
-        // ロックオン時の挙動
+        // ロックオン中の挙動
         if (_lockOnSystem.IsLockedOn()) {
+            _wasLockedOnLastFrame = true;
 
             // 敵キャラクターの取得
             EnemyCharacter enemy = CharacterUtility.GetEnemy();
             if (enemy == null) {
-                // 敵が消滅または取得失敗したらロックオン解除
+                // 敵が消えたらロックオン解除
                 _lockOnSystem.Unlock();
                 return;
             }
 
-            // プレイヤーと敵のワールド座標を取得
+            // プレイヤーと敵の位置を取得
             Vector3 playerPos = _target.position;
             Vector3 enemyPos = CharacterUtility.GetEnemyPosition();
 
-            // プレイヤーと敵の中心点（注視ポイントとして使用可能）
-            //Vector3 midpoint = (playerPos + enemyPos) * 0.5f;
-
-            // プレイヤー→敵の方向を取得（正規化で方向ベクトル化）
+            // 敵方向を計算
             Vector3 directionToEnemy = (enemyPos - playerPos).normalized;
 
-            // カメラの理想的な位置を算出（敵とプレイヤーを両方映すような距離・高さ）
-            float distanceBehindPlayer = 5f;   // 後ろに引く距離
-            float heightOffset = 2f;           // 高さ（Y軸）オフセット
+            // カメラの位置をプレイヤーの後ろへ配置
+            float distanceBehindPlayer = 5f;
+            float heightOffset = 2f;
             Vector3 cameraTargetPosition = playerPos - directionToEnemy * distanceBehindPlayer + Vector3.up * heightOffset;
 
-            // カメラ間の座標をキャッシュ
+            // スムーズに移動
             float _distance_two = Vector3.Distance(_camera.transform.position, cameraTargetPosition);
-            // カメラの現在の座標をキャッシュ
             float currentPos = (followSpeed * Time.time) / _distance_two;
-            // カメラをスムーズに目的位置へ移動させる
             _camera.transform.position = Vector3.Lerp(_camera.transform.position, cameraTargetPosition, currentPos);
 
-            // 敵の頭部（少し上）をカメラが注視するように設定
+            // カメラが敵を注視
             Vector3 lookAtTarget = enemyPos + Vector3.up * 1.5f;
             Quaternion currentRotation = _camera.transform.rotation;
             Quaternion targetRotation = Quaternion.LookRotation(lookAtTarget - _camera.transform.position);
-
-            float lookSpeed = 5f; // 必要に応じて調整
+            float lookSpeed = 5f;
             _camera.transform.rotation = Quaternion.Slerp(currentRotation, targetRotation, Time.deltaTime * lookSpeed);
+
+            // 現在のカメラ方向を記録
+            _cachedCameraDirection = _camera.transform.forward.normalized;
+            _cachedCameraRotation = _camera.transform.rotation;
         }
-        // 通常のカメラ挙動
         else {
-            // ロックオン → 通常カメラに切り替わった瞬間だけ処理
+            // ロックオンが解除されたタイミングでみ
             if (_wasLockedOnLastFrame) {
                 _wasLockedOnLastFrame = false;
+
+                // カメラ回転からYaw/Pitchを復元
+                Vector3 euler = _cachedCameraRotation.eulerAngles;
+                _currentYaw = euler.y;
+                _currentPitch = euler.x > 180f ? euler.x - 360f : euler.x;
             }
-            // ロックオン時のカメラの向きからYaw/Pitchを逆算して適用
-            Vector3 euler = _cachedCameraRotation.eulerAngles;
 
-            // 使用デバイスごとに感度を切り替える
+            // 使用デバイスで感度変更
             float sensitivity = Mouse.current != null && Mouse.current.delta.IsActuated()
-            ? mouseSensitivity
-            : gamepadSensitivity;
+                ? mouseSensitivity
+                : gamepadSensitivity;
 
-            // 入力ベクトルから回転を計算
+            // 入力ベクトルを回転に変換
             Vector2 delta = _lookInput * sensitivity * rotationSpeed;
             _currentYaw += delta.x;
             _currentPitch = Mathf.Clamp(_currentPitch - delta.y, -pitchLimit, pitchLimit);
 
-            // カメラの回転角度をQuaternionに変換
+            // 回転からカメラの位置を計算
             Quaternion rotation = Quaternion.Euler(_currentPitch, _currentYaw, 0f);
-
-            // プレイヤー基準のカメラ位置を取得
             Vector3 desiredPosition = _target.position + rotation * offset;
 
-            // カメラを補間でスムーズに移動させる
+            // カメラ位置の補間
             _camera.transform.position = Vector3.Lerp(_camera.transform.position, desiredPosition, followSpeed * Time.deltaTime);
 
-            // プレイヤーのやや上をカメラが常に注視する
+            // 注視点をプレイヤーの頭上に
             _camera.transform.LookAt(_target.position + Vector3.up * 1.5f);
         }
     }
