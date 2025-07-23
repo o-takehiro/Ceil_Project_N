@@ -13,6 +13,11 @@ using static CharacterUtility;
 
 public class EnemyMagic : MagicBase {
 
+	private float speed = 20;
+	private float distanceMAX = 20;
+	private float coolTime = 1.5f;
+	private float coolTimeMAX = 0.5f;
+
 	/// <summary>
 	/// ñÇñ@êwâcÇÃéÊìæ
 	/// </summary>
@@ -35,6 +40,30 @@ public class EnemyMagic : MagicBase {
 	/// è¨å^íeñãñÇñ@
 	/// </summary>
 	public override void MiniBulletMagic(MagicObject magicObject) {
+		if (coolTime < 0) {
+			// íeÇê∂ê¨
+			GameObject bullet = magicObject.GenerateMiniBullet();
+			bullet.transform.position = GetEnemyPosition();
+			bullet.transform.rotation = GetEnemyRotation();
+			coolTime = coolTimeMAX;
+		}
+		else {
+			coolTime -= Time.deltaTime;
+		}
+		for (int i = 0, max = magicObject.miniBulletObjects.Count; i < max; i++) {
+			if (magicObject.miniBulletObjects[i] == null) continue;
+			// ëOÇ…êiÇﬂÇÈ
+			Transform magicTransform = magicObject.miniBulletObjects[i].transform;
+			magicTransform.position += magicTransform.forward * speed * Time.deltaTime;
+			// ìGÇ©ÇÁàÍíËÇÃãóó£ó£ÇÍÇÈÇ∆è¡Ç¶ÇÈ
+			float distance = Vector3.Distance(magicTransform.position, GetEnemyPosition());
+			if (distance > distanceMAX) {
+				magicObject.RemoveMiniBullet(magicObject.miniBulletObjects[i]);
+			}
+			else {
+				magicObject.miniBulletObjects[i].transform.position = magicTransform.position;
+			}
+		}
 		//MagicManager.instance.activeEnemyMagicID = eMagicType.MiniBullet;
 	}
 }

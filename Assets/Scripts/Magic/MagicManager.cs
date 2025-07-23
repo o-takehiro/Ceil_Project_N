@@ -110,7 +110,7 @@ public class MagicManager : MonoBehaviour {
 
 		for (int sideCount = 0; sideCount < (int)eSideType.Max; sideCount++) {
 			for (int i = 0, max = _activeMagicIDList.Count; i < max; i++) {
-				if (_activeMagicIDList[sideCount][i] < 0) continue;
+				if (_activeMagic[sideCount][i] == null || _activeMagicIDList[sideCount][i] < 0) continue;
 				_activeMagic[sideCount][i](GetMagicObject(_activeMagicIDList[sideCount][i]));
 			}
 		}
@@ -215,25 +215,23 @@ public class MagicManager : MonoBehaviour {
 	/// 魔法生成
 	/// </summary>
 	/// <param name="magicID"></param>
-	public void CreateMagic(eSideType sideType, eMagicType magicID) {
-		int side = (int)sideType;
-		for (int i = 0, max = _activeMagicIDList.Count; i < max; i++) {
-			if (_activeMagicIDList[side][i] >= 0) continue;
-			// データを使用状態にする
-			_activeMagicIDList[side][i] = UseMagicData(side);
-			MagicBase magicSide = GetMagicData(_activeMagicIDList[side][i]);
-			magicSide?.Setup(_activeMagicIDList[side][i]);
-			// オブジェクトを生成する
-			MagicObject magicObject = GetMagicObject(_activeMagicIDList[side][i]);
-			if (magicObject == null) {
-				magicObject = UseMagicObject(_activeMagicIDList[side][i], magicID);
-			}
-			// オブジェクト内のオブジェクト生成
-			magicObject.GenerateMiniBullet();
-			// 魔法実行
-			MagicActivate(magicSide, sideType, magicID);
-			return;
+	public void CreateMagic(eSideType side, eMagicType magicID) {
+		if (_activeMagicIDList[(int)side][(int)magicID] >= 0) return;
+		// データを使用状態にする
+		_activeMagicIDList[(int)side][(int)magicID] = UseMagicData((int)side);
+		MagicBase magicSide = GetMagicData(_activeMagicIDList[(int)side][(int)magicID]);
+		magicSide?.Setup(_activeMagicIDList[(int)side][(int)magicID]);
+		// オブジェクトを生成する
+		MagicObject magicObject = GetMagicObject(_activeMagicIDList[(int)side][(int)magicID]);
+		if (magicObject == null) {
+			magicObject = UseMagicObject(_activeMagicIDList[(int)side][(int)magicID], magicID);
 		}
+		// オブジェクト内のオブジェクト生成
+		magicObject.GenerateMiniBullet();
+		// 魔法実行
+		MagicActivate(magicSide, side, magicID);
+		return;
+
 	}
 
 	/// <summary>

@@ -47,7 +47,9 @@ public class PlayerMagic : MagicBase {
 	public override void MiniBulletMagic(MagicObject magicObject) {
 		if (coolTime < 0){
 			// ’e‚ð¶¬
-			magicObject.GenerateMiniBullet();
+			GameObject bullet =  magicObject.GenerateMiniBullet();
+			bullet.transform.position = GetPlayerPosition();
+			bullet.transform.rotation = GetPlayerRotation();
 			coolTime = coolTimeMAX;
 		}
 		else {
@@ -61,7 +63,7 @@ public class PlayerMagic : MagicBase {
 			// ƒvƒŒƒCƒ„[‚©‚çˆê’è‚Ì‹——£—£‚ê‚é‚ÆÁ‚¦‚é
 			float distance = Vector3.Distance(magicTransform.position, GetPlayerPosition());
 			if (distance > distanceMAX) {
-				magicObject.miniBulletObjects[i] = null;
+				magicObject.RemoveMiniBullet(magicObject.miniBulletObjects[i]);
 			}
 			else {
 				magicObject.miniBulletObjects[i].transform.position = magicTransform.position;
