@@ -70,14 +70,14 @@ public class CharacterUtility {
     /// </summary>
     /// <returns></returns>
     public static Quaternion GetPlayerRotation() {
-        return GetPlayer().GetCurrentRotation();
+        return GetPlayer().GetRotation();
     }
     /// <summary>
     /// プレイヤーの座標設定
     /// </summary>
     /// <param name="setPosition"></param>
     public static void SetPlayerPosition(Vector3 setPosition) {
-        GetPlayer().SetCurrentPosition(setPosition);
+        GetPlayer().SetPosition(setPosition);
     }
     /// <summary>
     /// プレイヤーの1フレーム前の座標設定
@@ -125,14 +125,14 @@ public class CharacterUtility {
     /// </summary>
     /// <returns></returns>
     public static Quaternion GetEnemyRotation() {
-        return GetEnemy().GetCurrentRotation();
+        return GetEnemy().GetRotation();
     }
     /// <summary>
     /// 敵座標の設定
     /// </summary>
     /// <param name="setRotation"></param>
     public static void SetEnemyPosition(Vector3 setPosition) {
-        GetEnemy().SetCurrentPosition(setPosition);
+        GetEnemy().SetPosition(setPosition);
     }
     /// <summary>
     /// 敵の1フレーム前の座標設定
