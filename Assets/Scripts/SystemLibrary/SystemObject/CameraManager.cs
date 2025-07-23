@@ -142,7 +142,6 @@ public class CameraManager : SystemObject {
                 return;
             }
 
-            // === ’Êí‘€ì ===
 
             float sensitivity = Mouse.current != null && Mouse.current.delta.IsActuated()
                 ? mouseSensitivity
