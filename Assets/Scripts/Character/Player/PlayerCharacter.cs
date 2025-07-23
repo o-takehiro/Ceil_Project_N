@@ -81,6 +81,9 @@ public class PlayerCharacter : CharacterBase {
     // 魔法を保存するリスト
     private List<eMagicType> _magicList = null;
 
+    [SerializeField] private Renderer a;
+
+
     public override bool isPlayer() {
         return true;
     }
@@ -114,6 +117,7 @@ public class PlayerCharacter : CharacterBase {
             attackCollider.enabled = false;
         }
         SetupAttackData(); // 攻撃データ初期化
+        a.enabled = false;
     }
 
     // 外部からの入力受付
@@ -242,14 +246,14 @@ public class PlayerCharacter : CharacterBase {
             // 攻撃コライダーON
             if (attackCollider != null)
                 attackCollider.enabled = true;
-
+            a.enabled = true;
             // コライダーON時間分待機
             await UniTask.Delay(attackData.ColliderActiveDurationMs);
 
             // 攻撃コライダーOFF
             if (attackCollider != null)
                 attackCollider.enabled = false;
-
+            a.enabled = false;
             // 硬直ディレイ
             await UniTask.Delay(attackData.PostDelayMs);
 

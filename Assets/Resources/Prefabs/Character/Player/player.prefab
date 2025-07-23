@@ -290,6 +290,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   groundCheckDistance: 1
+  a: {fileID: 8950344977033198966}
 --- !u!54 &9062617385522669387
 Rigidbody:
   m_ObjectHideFlags: 0
