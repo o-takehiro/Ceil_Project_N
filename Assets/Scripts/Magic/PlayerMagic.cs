@@ -47,9 +47,7 @@ public class PlayerMagic : MagicBase {
 	/// </summary>
 	public override void MiniBulletMagic(MagicObject magicObject) {
 		if (coolTime < 0){
-			Transform bullet = magicObject.miniBullet;
-			bullet.position = GetPlayerPosition();
-			bullet.rotation = GetPlayerRotation();
+			// 弾を生成
 			magicObject.GenerateMiniBullet();
 			coolTime = coolTimeMAX;
 		}
@@ -58,11 +56,12 @@ public class PlayerMagic : MagicBase {
 		}
 		for (int i = 0, max = magicObject.miniBulletObjects.Count; i < max; i++) {
 			if (magicObject.miniBulletObjects[i] == null) continue;
+			// 前に進める
 			Transform magicTransform = magicObject.miniBulletObjects[i].transform;
 			magicTransform.position += magicTransform.forward * speed * Time.deltaTime;
+			// プレイヤーから一定の距離離れると消える
 			float distance = Vector3.Distance(magicTransform.position, GetPlayerPosition());
 			if (distance > distanceMAX) {
-				
 				magicObject.miniBulletObjects[i] = null;
 			}
 			else {

@@ -34,8 +34,8 @@ public class MagicUtility {
 	/// </summary>
 	/// <param name="useID"></param>
 	/// <returns></returns>
-	public static MagicObject UseMagicObject(int useID) {
-		return MagicManager.instance.UseMagicObject(useID);
+	public static MagicObject UseMagicObject(int useID, eMagicType magic) {
+		return MagicManager.instance.UseMagicObject(useID, magic);
 	}
 
 	/// <summary>
@@ -69,16 +69,16 @@ public class MagicUtility {
 	/// 魔法削除
 	/// </summary>
 	/// <param name="removeMagic"></param>
-	public static void RemoveMagic(MagicBase removeMagic) {
-		MagicManager.instance.UnuseMagic(removeMagic);
+	public static void RemoveMagic(MagicBase removeMagic, eMagicType magicID) {
+		MagicManager.instance.UnuseMagicData(removeMagic, magicID);
 	}
 
 	/// <summary>
 	/// 魔法オブジェクトを不可視化
 	/// </summary>
 	/// <param name="removeObject"></param>
-	public static void RemoveMagicObject(MagicObject removeObject) {
-		MagicManager.instance.UnuseMagicObject(removeObject);
+	public static void RemoveMagicObject(MagicObject removeObject, eMagicType magicID) {
+		MagicManager.instance.UnuseMagicObject(removeObject, magicID);
 	}
 
 	/// <summary>
