@@ -184,15 +184,16 @@ public class PlayerCharacter : CharacterBase {
 
         bool isGrounded = CheckGrounded();
 
+        // 接地判定による垂直速度の更新
         if (isGrounded && !_wasGrounded) {
-            // 接地したら垂直速度をリセット
-            _verticalVelocity = 0f;
+            _verticalVelocity = 0f; // 接地時リセット
         }
         else if (!isGrounded) {
             _verticalVelocity -= _PLAYER_GRAVITY * deltaTime;
             if (_verticalVelocity < -_FALL_SPEED) _verticalVelocity = -_FALL_SPEED;
         }
 
+        // ジャンプ入力
         if (_jumpRequested && isGrounded) {
             _verticalVelocity = _PLAYER_JUMP_SPEED;
         }
@@ -200,50 +201,42 @@ public class PlayerCharacter : CharacterBase {
         _jumpRequested = false;
         _wasGrounded = isGrounded;
 
-        // 入力からXZ方向の移動を作る
-        float camY = _camera.transform.eulerAngles.y;
-        Vector3 inputDir = new Vector3(_inputMove.x, 0, _inputMove.y).normalized;
-        Vector3 moveDir = Quaternion.Euler(0, camY, 0) * inputDir;
+        // 入力ベクトルからワールド移動方向を計算（カメラ基準）
+        Vector3 inputDir = new Vector3(_inputMove.x, 0f, _inputMove.y).normalized;
+        Vector3 moveDir = Quaternion.Euler(0f, _camera.transform.eulerAngles.y, 0f) * inputDir;
 
-        // 最終的な速度を構成
+        // Rigidbody速度設定
         Vector3 finalVelocity = moveDir * _PLAYER_RAW_MOVE_SPEED;
         finalVelocity.y = _verticalVelocity;
-
-        // Rigidbodyに直接速度を渡す
         _rigidbody.velocity = finalVelocity;
 
-        // 回転
-        if (_inputMove != Vector2.zero) {
-            float targetAngle = -Mathf.Atan2(_inputMove.y, _inputMove.x) * Mathf.Rad2Deg + 90f + camY;
-            float angleY = Mathf.SmoothDampAngle(_transform.eulerAngles.y, targetAngle, ref _turnVelocity, 0.05f);
-            _playerMove.ApplyRotation(Quaternion.Euler(0, angleY, 0));
+        // 入力がある場合はモデルの向きを移動方向に合わせる
+        if (inputDir.sqrMagnitude > 0.001f) {
+            float targetAngle = Mathf.Atan2(moveDir.x, moveDir.z) * Mathf.Rad2Deg;
+            float angleY = Mathf.SmoothDampAngle(_transform.eulerAngles.y, targetAngle, ref _turnVelocity, 0.1f);
+            _transform.rotation = Quaternion.Euler(0f, angleY, 0f);
         }
+
         // 座標更新
-        SetPlayerPosition(transform.position);
-        transform.position = currentPos;
+        SetPlayerPosition(_transform.position);
+        _transform.position = currentPos;
         prevPos = currentPos;
 
         // 回転更新
-        SetPlayerRotation(transform.rotation);
-        
+        SetPlayerRotation(_transform.rotation);
 
-        // アニメーション制御用のフラグ
+        // アニメーション制御
         bool hasInput = _inputMove != Vector2.zero;
-
         if (hasInput) {
-            // 移動アニメーション再生
             animator.SetBool(_ANIMATION_RUN, true);
             animator.SetBool(_ANIMATION_RUN_STOP, false);
         }
         else {
-            // 入力がなくなったタイミングでアニメーション再生
             if (animator.GetBool(_ANIMATION_RUN)) {
                 animator.SetBool(_ANIMATION_RUN, false);
-                // 停止
                 animator.SetBool(_ANIMATION_RUN_STOP, true);
             }
         }
-
     }
     // Idleアニメーション
     public void OnStopAnimationEnd() {
@@ -367,7 +360,6 @@ public class PlayerCharacter : CharacterBase {
         Vector3 origin = _transform.position + Vector3.up * 0.1f;
         return Physics.Raycast(origin, Vector3.down, groundCheckDistance + 0.1f, groundLayer);
     }
-
 
     /// <summary>
     /// キャラクターの死亡
