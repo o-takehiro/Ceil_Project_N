@@ -79,15 +79,20 @@ public class PlayerCharacter : CharacterBase {
     private bool _isLockedOn = false;
 
     // 魔法を保存するリスト
-    private List<eMagicType> _magicList = null;
+    //private List<eMagicType> _magicList = null;
 
-    [SerializeField] private Renderer a;
+    [SerializeField] private Renderer AttackRenderer;
 
+    // アニメーター
+    [SerializeField] private Animator animator;
+    private const string _ANIMATION_RUN = "Run";
+    private const string _ANIMATION_RUN_STOP = "Run_Stop";
+    private const string _ANIMATION_IDLE = "Idle";
 
     public override bool isPlayer() {
         return true;
     }
-    
+
     /// <summary>
     /// 初期化
     /// </summary>
@@ -117,7 +122,7 @@ public class PlayerCharacter : CharacterBase {
             attackCollider.enabled = false;
         }
         SetupAttackData(); // 攻撃データ初期化
-        a.enabled = false;
+        AttackRenderer.enabled = false;
         // 座標更新
         SetPlayerPosition(transform.position);
         transform.position = currentPos;
@@ -164,8 +169,6 @@ public class PlayerCharacter : CharacterBase {
             // 移動
             MoveUpdate(Time.deltaTime);
             // 攻撃
-            //AttackUpdate(Time.deltaTime);
-            // 非同期処理追加版
             await AttackUpdate(Time.deltaTime);
 
             await UniTask.Yield(PlayerLoopTiming.Update, token);
@@ -222,10 +225,30 @@ public class PlayerCharacter : CharacterBase {
 
         // 回転更新
         SetPlayerRotation(transform.rotation);
+        
 
+        // アニメーション制御用のフラグ
+        bool hasInput = _inputMove != Vector2.zero;
+
+        if (hasInput) {
+            // 移動アニメーション再生
+            animator.SetBool(_ANIMATION_RUN, true);
+            animator.SetBool(_ANIMATION_RUN_STOP, false);
+        }
+        else {
+            // 入力がなくなったタイミングでアニメーション再生
+            if (animator.GetBool(_ANIMATION_RUN)) {
+                animator.SetBool(_ANIMATION_RUN, false);
+                // 停止
+                animator.SetBool(_ANIMATION_RUN_STOP, true);
+            }
+        }
 
     }
-
+    // Idleアニメーション
+    public void OnStopAnimationEnd() {
+        animator.SetBool(_ANIMATION_RUN_STOP, false);
+    }
     /// <summary>
     /// 攻撃の非同期処理
     /// </summary>
@@ -239,7 +262,7 @@ public class PlayerCharacter : CharacterBase {
             AdvanceAttackStep();
             Debug.Log($"攻撃ステップ: {_currentAttack}");
 
-            // 該当攻撃データ取得
+            // 攻撃データ取得
             if (!_attackDataMap.TryGetValue(_currentAttack, out var attackData)) {
                 Debug.LogWarning("攻撃データが未設定です");
                 _isAttacking = false;
@@ -252,15 +275,15 @@ public class PlayerCharacter : CharacterBase {
             // 攻撃コライダーON
             if (attackCollider != null)
                 attackCollider.enabled = true;
-            a.enabled = true;
+            AttackRenderer.enabled = true;
             // コライダーON時間分待機
             await UniTask.Delay(attackData.ColliderActiveDurationMs);
 
             // 攻撃コライダーOFF
             if (attackCollider != null)
                 attackCollider.enabled = false;
-            
-            a.enabled = false;
+
+            AttackRenderer.enabled = false;
             // 硬直ディレイ
             await UniTask.Delay(attackData.PostDelayMs);
 

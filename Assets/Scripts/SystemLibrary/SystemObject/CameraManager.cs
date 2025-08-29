@@ -27,7 +27,7 @@ public class CameraManager : SystemObject {
     private Transform _target;               // 実際のターゲット参照
 
     // カメラの挙動に関する設定
-    private Vector3 offset = new Vector3(0f, 2f, -5f);     // プレイヤーに対するカメラの相対位置
+    private Vector3 offset = new Vector3(0f, 4f, -8f);     // プレイヤーに対するカメラの相対位置
     private float followSpeed = 10f;                       // カメラの追従速度
     private float rotationSpeed = 3f;                      // 回転速度
     private float mouseSensitivity = 0.05f;                // マウス感度
