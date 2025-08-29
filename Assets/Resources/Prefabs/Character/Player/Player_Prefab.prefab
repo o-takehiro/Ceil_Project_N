@@ -238,7 +238,7 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
-  groundCheckDistance: 0.2
+  groundCheckDistance: 0.5
   AttackRenderer: {fileID: 5169658878848623438}
   animator: {fileID: 8213544153149856916}
 --- !u!23 &5353654764999440528

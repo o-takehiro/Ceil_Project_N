@@ -180,61 +180,65 @@ public class PlayerCharacter : CharacterBase {
     /// 移動関連の1フレーム分の更新
     /// </summary>
     private void MoveUpdate(float deltaTime) {
-    if (_isAttacking) return;
+        if (_isAttacking) return;
 
-    bool isGrounded = CheckGrounded();
+        bool isGrounded = CheckGrounded();
 
-    // 接地判定による垂直速度の更新
-    if (isGrounded && !_wasGrounded) {
-        _verticalVelocity = 0f; // 接地時リセット
-    } else if (!isGrounded) {
-        _verticalVelocity -= _PLAYER_GRAVITY * deltaTime;
-        if (_verticalVelocity < -_FALL_SPEED) _verticalVelocity = -_FALL_SPEED;
-    }
-
-    // ジャンプ入力
-    if (_jumpRequested && isGrounded) {
-        _verticalVelocity = _PLAYER_JUMP_SPEED;
-    }
-
-    _jumpRequested = false;
-    _wasGrounded = isGrounded;
-
-    // 入力ベクトルからワールド移動方向を計算（カメラ基準）
-    Vector3 inputDir = new Vector3(_inputMove.x, 0f, _inputMove.y).normalized;
-    Vector3 moveDir = Quaternion.Euler(0f, _camera.transform.eulerAngles.y, 0f) * inputDir;
-
-    // Rigidbody速度設定
-    Vector3 finalVelocity = moveDir * _PLAYER_RAW_MOVE_SPEED;
-    finalVelocity.y = _verticalVelocity;
-    _rigidbody.velocity = finalVelocity;
-
-    // 入力がある場合はモデルの向きを移動方向に合わせる
-    if (inputDir.sqrMagnitude > 0.001f) {
-        float targetAngle = Mathf.Atan2(moveDir.x, moveDir.z) * Mathf.Rad2Deg;
-        float angleY = Mathf.SmoothDampAngle(_transform.eulerAngles.y, targetAngle, ref _turnVelocity, 0.1f);
-        _transform.rotation = Quaternion.Euler(0f, angleY, 0f);
-    }
-
-    // 座標更新
-    SetPlayerPosition(_transform.position);
-    _transform.position = currentPos;
-    prevPos = currentPos;
-
-    // 回転更新
-    SetPlayerRotation(_transform.rotation);
-
-    // アニメーション制御
-    bool hasInput = _inputMove != Vector2.zero;
-    if (hasInput) {
-        animator.SetBool(_ANIMATION_RUN, true);
-        animator.SetBool(_ANIMATION_RUN_STOP, false);
-    } else {
-        if (animator.GetBool(_ANIMATION_RUN)) {
-            animator.SetBool(_ANIMATION_RUN, false);
-            animator.SetBool(_ANIMATION_RUN_STOP, true);
+        // 接地判定による垂直速度の更新
+        if (isGrounded && !_wasGrounded) {
+            _verticalVelocity = 0f; // 接地時リセット
+            animator.SetBool("jump", false);
         }
-    }
+        else if (!isGrounded) {
+            _verticalVelocity -= _PLAYER_GRAVITY * deltaTime;
+            if (_verticalVelocity < -_FALL_SPEED) _verticalVelocity = -_FALL_SPEED;
+        }
+
+        // ジャンプ入力
+        if (_jumpRequested && isGrounded) {
+            _verticalVelocity = _PLAYER_JUMP_SPEED;
+            animator.SetBool("jump", true);
+        }
+        
+        _jumpRequested = false;
+        _wasGrounded = isGrounded;
+
+        // 入力ベクトルからワールド移動方向を計算（カメラ基準）
+        Vector3 inputDir = new Vector3(_inputMove.x, 0f, _inputMove.y).normalized;
+        Vector3 moveDir = Quaternion.Euler(0f, _camera.transform.eulerAngles.y, 0f) * inputDir;
+
+        // Rigidbody速度設定
+        Vector3 finalVelocity = moveDir * _PLAYER_RAW_MOVE_SPEED;
+        finalVelocity.y = _verticalVelocity;
+        _rigidbody.velocity = finalVelocity;
+
+        // 入力がある場合はモデルの向きを移動方向に合わせる
+        if (inputDir.sqrMagnitude > 0.001f) {
+            float targetAngle = Mathf.Atan2(moveDir.x, moveDir.z) * Mathf.Rad2Deg;
+            float angleY = Mathf.SmoothDampAngle(_transform.eulerAngles.y, targetAngle, ref _turnVelocity, 0.1f);
+            _transform.rotation = Quaternion.Euler(0f, angleY, 0f);
+        }
+
+        // 座標更新
+        SetPlayerPosition(_transform.position);
+        _transform.position = currentPos;
+        prevPos = currentPos;
+
+        // 回転更新
+        SetPlayerRotation(_transform.rotation);
+
+        // アニメーション制御
+        bool hasInput = _inputMove != Vector2.zero;
+        if (hasInput) {
+            animator.SetBool(_ANIMATION_RUN, true);
+            animator.SetBool(_ANIMATION_RUN_STOP, false);
+        }
+        else {
+            if (animator.GetBool(_ANIMATION_RUN)) {
+                animator.SetBool(_ANIMATION_RUN, false);
+                animator.SetBool(_ANIMATION_RUN_STOP, true);
+            }
+        }
     }
     // Idleアニメーション
     public void OnStopAnimationEnd() {
