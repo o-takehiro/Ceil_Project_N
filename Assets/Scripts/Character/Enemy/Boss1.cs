@@ -5,7 +5,7 @@ using UnityEngine;
 using static CharacterUtility;
 
 public class Boss1 : EnemyCharacter {
-    private const float _CANVAS_POS_Y = 2.0f;
+    private const float _CANVAS_POS_Y = 3.5f;
 
     public override void Initialize() {
         base.Initialize();
@@ -21,7 +21,7 @@ public class Boss1 : EnemyCharacter {
         //現在の回転更新
         SetEnemyRotation(transform.rotation);
         //HPゲージの更新
-        SetupCanvasPosition(_CANVAS_POS_Y);
+        SetupCanvasPosition(_CANVAS_POS_Y, Vector3.one * 2);
         _myAI.Setup(this);
         _myAI.ChangeState(_actionMachine);
     }

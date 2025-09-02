@@ -30,7 +30,7 @@ public class TutorialEnemy : EnemyCharacter {
         //現在の回転更新
         SetEnemyRotation(transform.rotation);
         //HPゲージの更新
-        SetupCanvasPosition(_CANVAS_POS_Y);
+        SetupCanvasPosition(_CANVAS_POS_Y, Vector3.one);
         //ステートマシーンの初期化
         _myAI = new CharacterAIMachine<EnemyCharacter>();
         _myAI.Setup(this);
