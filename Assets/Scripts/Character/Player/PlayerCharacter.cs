@@ -70,7 +70,7 @@ public class PlayerCharacter : CharacterBase {
     // 攻撃中の時間
     private float _attackTimer = 0f;
     // 攻撃間のクールタイム
-    private const float _ATTACK_RESET_TIME = 1f; // 秒
+    private const float _ATTACK_RESET_TIME = 2f; // 秒
 
     // マスターデータ依存の変数
     public int maxMP { get; private set; } = -1;
@@ -199,7 +199,7 @@ public class PlayerCharacter : CharacterBase {
             _verticalVelocity = _PLAYER_JUMP_SPEED;
             animator.SetBool("jump", true);
         }
-        
+
         _jumpRequested = false;
         _wasGrounded = isGrounded;
 
@@ -259,7 +259,6 @@ public class PlayerCharacter : CharacterBase {
 
             // 攻撃データ取得
             if (!_attackDataMap.TryGetValue(_currentAttack, out var attackData)) {
-                Debug.LogWarning("攻撃データが未設定です");
                 _isAttacking = false;
                 return;
             }
@@ -267,18 +266,9 @@ public class PlayerCharacter : CharacterBase {
             // アニメーション再生
             PlayAttackAnimation(attackData.AnimationName);
 
-            // 攻撃コライダーON
-            if (attackCollider != null)
-                attackCollider.enabled = true;
-            AttackRenderer.enabled = true;
             // コライダーON時間分待機
             await UniTask.Delay(attackData.ColliderActiveDurationMs);
 
-            // 攻撃コライダーOFF
-            if (attackCollider != null)
-                attackCollider.enabled = false;
-
-            AttackRenderer.enabled = false;
             // 硬直ディレイ
             await UniTask.Delay(attackData.PostDelayMs);
 
@@ -328,15 +318,15 @@ public class PlayerCharacter : CharacterBase {
         _attackDataMap = new Dictionary<AttackStep, AttackData> {
         {
             AttackStep.First,
-            new AttackData("Attack1", 10f, 300, 200)
+            new AttackData("attack", 10f, 500, 0)
         },
         {
             AttackStep.Second,
-            new AttackData("Attack2", 15f, 300, 250)
+            new AttackData("attack", 15f, 500, 0)
         },
         {
             AttackStep.Third,
-            new AttackData("Attack3", 20f, 500, 1000)
+            new AttackData("attack", 20f, 1000, 0)
         }
     };
 
@@ -349,9 +339,7 @@ public class PlayerCharacter : CharacterBase {
     /// </summary>
     /// <param name="animationName"></param>
     private void PlayAttackAnimation(string animationName) {
-        // Animatorを使って攻撃アニメーション再生する場合はここに記述
-        //Debug.Log($"アニメーション再生: {animationName}");
-        // animator.Play(animationName); など
+        animator.SetTrigger(animationName);
     }
 
     /// <summary>
