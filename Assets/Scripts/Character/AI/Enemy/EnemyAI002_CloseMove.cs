@@ -10,15 +10,15 @@ public class EnemyAI002_CloseMove : CharacterAIBase<EnemyCharacter> {
     private Rigidbody _enemyRigidbody = null;
     private const float _PLAYER_DISTANCE = 10.0f;
     private const float _MOVE_SPEED = 10.0f;
+
     public override void Setup() {
         base.Setup();
         _enemyRigidbody = ownerClass.GetComponent<Rigidbody>();
     }
-
     public override void Execute() {
         base.Execute();
         //©g‚Æ“G‚Æ‚Ì‹——£
-        float distance = PlayerToEnemyDistance();
+        float distance = GetPlayerToEnemyDistance();
         LookAtPlayer();
         Vector3 norm = (GetPlayerPosition() - GetEnemyPosition()).normalized;
         //yÀ•W‚ÌˆÚ“®‚ğ§ŒÀ
@@ -31,7 +31,6 @@ public class EnemyAI002_CloseMove : CharacterAIBase<EnemyCharacter> {
             GetEnemy()._myAI.ChangeState(new EnemyAI001_Wait());
         }
     }
-
     public override void Teardown() {
         base.Teardown();
     }

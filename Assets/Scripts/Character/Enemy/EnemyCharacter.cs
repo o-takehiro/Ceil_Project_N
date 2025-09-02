@@ -17,7 +17,12 @@ public class EnemyCharacter : CharacterBase {
     protected GameObject _enemyCanvas = null;
     protected Slider _enemyHPGauge = null;
     public CharacterAIMachine<EnemyCharacter> _myAI { get; protected set; } = null;
+    public CharacterAIBase<EnemyCharacter> _actionMachine { get; protected set; } = null;
+    public List<eMagicType> _currentMagic { get; protected set; } = null;
 
+    public override void Initialize() {
+        base.Initialize();
+    }
     public override void Setup() {
         base.Setup();
     }
@@ -49,5 +54,9 @@ public class EnemyCharacter : CharacterBase {
         _enemyHPGauge.transform.SetParent(_enemyCanvas.transform);
         _enemyCanvas.transform.position = canvasPos;
         _enemyCanvas.gameObject.SetActive(true);
+    }
+
+    public CharacterAIBase<EnemyCharacter> GetActionMachine() {
+        return _actionMachine;
     }
 }

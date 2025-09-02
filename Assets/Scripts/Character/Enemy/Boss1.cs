@@ -1,25 +1,16 @@
-/*
- * @file    TutorialEnemy.cs
- * @brief   チュートリアル用の敵
- * @author  Seki
- * @date    2025/7/9
- */
-using Cysharp.Threading.Tasks;
-using JetBrains.Annotations;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 using static CharacterUtility;
 
-public class TutorialEnemy : EnemyCharacter {
+public class Boss1 : EnemyCharacter {
     private const float _CANVAS_POS_Y = 2.0f;
 
     public override void Initialize() {
         base.Initialize();
-        _actionMachine = new EnemyAI004_TutorialEnemyAction();
-        _actionMachine.Initialize();
+        _actionMachine = new EnemyAI005_Boss1Action();
+        _myAI = new CharacterAIMachine<EnemyCharacter>();
     }
     public override void Setup() {
         base.Setup();
@@ -31,8 +22,6 @@ public class TutorialEnemy : EnemyCharacter {
         SetEnemyRotation(transform.rotation);
         //HPゲージの更新
         SetupCanvasPosition(_CANVAS_POS_Y);
-        //ステートマシーンの初期化
-        _myAI = new CharacterAIMachine<EnemyCharacter>();
         _myAI.Setup(this);
         _myAI.ChangeState(_actionMachine);
     }
@@ -49,5 +38,8 @@ public class TutorialEnemy : EnemyCharacter {
         transform.rotation = currentRot;
         //1フレーム前の座標更新
         SetEnemyPrevPosition();
+    }
+    public override void Teardown() {
+        base.Teardown();
     }
 }

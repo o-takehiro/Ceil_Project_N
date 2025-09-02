@@ -165,7 +165,11 @@ public class CharacterUtility {
     /// ƒvƒŒƒCƒ„[‚Æ“G‚Æ‚Ì‹——£‚Ìæ“¾
     /// </summary>
     /// <returns></returns>
-    public static float PlayerToEnemyDistance() {
+    public static float GetPlayerToEnemyDistance() {
         return Vector3.Distance(GetPlayerPosition(), GetEnemyPosition());
+    }
+
+    public static CharacterAIBase<EnemyCharacter> GetActionMachine() {
+        return GetEnemy().GetActionMachine();
     }
 }

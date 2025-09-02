@@ -15,6 +15,10 @@ public class CharacterAIBase<T> where T : class{
     protected T ownerClass = null;
 
     /// <summary>
+    /// ‰Šú‰»ˆ—
+    /// </summary>
+    public virtual void Initialize() { }
+    /// <summary>
     /// g—p‘O€”õ
     /// </summary>
     public virtual void Setup() { }
