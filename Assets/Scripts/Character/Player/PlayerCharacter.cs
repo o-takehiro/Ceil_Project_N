@@ -70,7 +70,7 @@ public class PlayerCharacter : CharacterBase {
     // 攻撃中の時間
     private float _attackTimer = 0f;
     // 攻撃間のクールタイム
-    private const float _ATTACK_RESET_TIME = 2f; // 秒
+    private const float _ATTACK_RESET_TIME = 5f; // 秒
 
     // マスターデータ依存の変数
     public int maxMP { get; private set; } = -1;
@@ -81,7 +81,8 @@ public class PlayerCharacter : CharacterBase {
     // 魔法を保存するリスト
     //private List<eMagicType> _magicList = null;
 
-    [SerializeField] private Renderer AttackRenderer;
+    // コンボ攻撃中かどうか
+    private bool _comboCheck = false;
 
     // アニメーター
     [SerializeField] private Animator animator;
@@ -122,13 +123,15 @@ public class PlayerCharacter : CharacterBase {
             attackCollider.enabled = false;
         }
         SetupAttackData(); // 攻撃データ初期化
-        AttackRenderer.enabled = false;
         // 座標更新
         SetPlayerPosition(transform.position);
         transform.position = currentPos;
 
         // 回転更新
         SetPlayerRotation(transform.rotation);
+
+        // フラグを初期化
+        _comboCheck = false;
     }
 
     // 外部からの入力受付
@@ -253,6 +256,12 @@ public class PlayerCharacter : CharacterBase {
         if (_attackRequested && !_isAttacking) {
             _attackRequested = false;
             _isAttacking = true;
+            _comboCheck = true;
+            if (_comboCheck) {
+
+                // 攻撃開始時に移動を止める
+                _rigidbody.velocity = Vector3.zero;
+            }
 
             AdvanceAttackStep();
             Debug.Log($"攻撃ステップ: {_currentAttack}");
@@ -273,6 +282,7 @@ public class PlayerCharacter : CharacterBase {
             await UniTask.Delay(attackData.PostDelayMs);
 
             _isAttacking = false;
+            _comboCheck = false;
         }
 
         // 攻撃リセット判定
@@ -326,7 +336,7 @@ public class PlayerCharacter : CharacterBase {
         },
         {
             AttackStep.Third,
-            new AttackData("attack", 20f, 1000, 0)
+            new AttackData("attack", 20f, 1000, 3)
         }
     };
 
@@ -340,6 +350,7 @@ public class PlayerCharacter : CharacterBase {
     /// <param name="animationName"></param>
     private void PlayAttackAnimation(string animationName) {
         animator.SetTrigger(animationName);
+        _comboCheck = true;
     }
 
     /// <summary>
