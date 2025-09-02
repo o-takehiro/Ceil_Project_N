@@ -49,6 +49,9 @@ public abstract class CharacterBase : MonoBehaviour {
 
     public abstract bool isPlayer();
 
+    public virtual void Damage(float damage) {
+
+    }
     /// <summary>
     /// À•W‚Ìæ“¾
     /// </summary>

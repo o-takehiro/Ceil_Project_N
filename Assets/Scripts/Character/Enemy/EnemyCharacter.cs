@@ -36,7 +36,7 @@ public class EnemyCharacter : CharacterBase {
     public override bool isPlayer() {
         return false;
     }
-
+    
     public override void Dead() {
         UnuseEnemy();
     }
