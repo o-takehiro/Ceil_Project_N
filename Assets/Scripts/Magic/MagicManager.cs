@@ -11,6 +11,7 @@ using UnityEngine;
 using System;
 
 using static CommonModule;
+using Cysharp.Threading.Tasks;
 
 public class MagicManager : MonoBehaviour {
 	// 自身への参照
@@ -42,7 +43,7 @@ public class MagicManager : MonoBehaviour {
 	private List<List<int>> _activeMagicIDList = null;
 	//private eMagicType activeEnemyMagicID = eMagicType.Invalid;
 	// コピーした魔法ID
-	private List<int> copyMagicIDList = null;
+	private List<int> _copyMagicIDList = null;
 
 	private const int _MAGIC_MAX = 8;
 
@@ -71,7 +72,7 @@ public class MagicManager : MonoBehaviour {
 
 		// 魔法の種類分のリストを生成しておく
 		int magicTypeMax = (int)eMagicType.Max;
-		copyMagicIDList = new List<int>(magicTypeMax);
+		_copyMagicIDList = new List<int>(magicTypeMax);
 
 		// 発動中の魔法リストをある程度生成
 		_activeMagicIDList = new List<List<int>>(sideTypeMax);
@@ -113,6 +114,10 @@ public class MagicManager : MonoBehaviour {
 				if (_activeMagic[sideCount][i] == null || _activeMagicIDList[sideCount][i] < 0) continue;
 				_activeMagic[sideCount][i](GetMagicObject(_activeMagicIDList[sideCount][i]));
 			}
+		}
+
+		for (int i = 0, max = _copyMagicIDList.Count; i < max; i++) {
+			Debug.Log(_copyMagicIDList[i]);
 		}
 	}
 
@@ -278,15 +283,19 @@ public class MagicManager : MonoBehaviour {
 		unuseMagic.Teardown();
 		_unuseList[(int)unuseMagic.GetSide()].Add(unuseMagic);
 		// オブジェクトの未使用化
-		UnuseMagicObject(GetMagicObject(unuseID), magicID);
+		UniTask task = UnuseMagicObject(GetMagicObject(unuseID), magicID);
 	}
 
 	/// <summary>
 	/// 魔法オブジェクトを未使用状態にする
 	/// </summary>
 	/// <param name="unuseObject"></param>
-	public void UnuseMagicObject(MagicObject unuseObject, eMagicType magicID) {
+	public async UniTask UnuseMagicObject(MagicObject unuseObject, eMagicType magicID) {
 		if (unuseObject == null) return;
+		// 未使用化可能まで待つ
+		while (unuseObject.canUnuse == false) {
+			await UniTask.DelayFrame(1);
+		}
 		// 未使用状態にする
 		_useObjectList[unuseObject.ID] = null;
 		unuseObject.Teardown(magicID);
@@ -323,11 +332,11 @@ public class MagicManager : MonoBehaviour {
 	public void AnalysisMagicActivate() {
 		int activeEnemyMagic = -1;
 		// 敵の発動中の魔法を取得
-		for (int i = 0, max = copyMagicIDList.Count; i < max; i++) {
+		for (int i = 0, max = _copyMagicIDList.Count; i < max; i++) {
 			activeEnemyMagic = _activeMagicIDList[(int)eSideType.EnemySide][i];
-			if (copyMagicIDList[i] == activeEnemyMagic) return;
+			if (_copyMagicIDList[i] == activeEnemyMagic) return;
 		}
-		copyMagicIDList.Add(activeEnemyMagic);
+		_copyMagicIDList.Add(activeEnemyMagic);
 	}
 
 	/// <summary>

@@ -5,6 +5,7 @@
  * @date    2025/7/9
  */
 
+using Cysharp.Threading.Tasks;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
@@ -35,14 +36,18 @@ public class MagicObject : MonoBehaviour {
 	// 小型弾幕オブジェクトのオリジナル
 	public GameObject originMiniBullet = null;
 
+	// 未使用化可能かどうか
+	public bool canUnuse = true;
+
 	// 魔法用のオブジェクトの生成数
-	private const int _GENERATE_OBJECTS_MAX = 32;
+	public const int _GENERATE_OBJECTS_MAX = 16;
 
 	public void Setup(int setID, eSideType side, eMagicType magic) {
 		miniBulletObjects = new List<GameObject>(_GENERATE_OBJECTS_MAX);
 		for (int i = 0, max = _GENERATE_OBJECTS_MAX; i < max; i++) {
 			miniBulletObjects.Add(Instantiate(originMiniBullet, _unuseMiniBulletRoot));
 		}
+		canUnuse = true;
 		ID = setID;
 		UseMagic(magic);
 	}
