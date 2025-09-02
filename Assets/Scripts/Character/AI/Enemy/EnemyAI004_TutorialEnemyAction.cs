@@ -5,17 +5,20 @@ using UnityEngine;
 using static CharacterUtility;
 using static MagicUtility;
 
-public class EnemyAI004_Action : CharacterAIBase<EnemyCharacter> {
+public class EnemyAI004_TutorialEnemyAction : CharacterAIBase<EnemyCharacter> {
     private const int _DEFENSE_DISTANCE = 15;
     private const int _CLOSE_DISTANCE = 25;
-    public override void Setup() {
-        base.Setup();
+
+    public override void Initialize() {
+        base.Initialize();
 
     }
-
+    public override void Setup() {
+        base.Setup();
+    }
     public override void Execute() {
         base.Execute();
-        float distance = PlayerToEnemyDistance();
+        float distance = GetPlayerToEnemyDistance();
 
         //ƒvƒŒƒCƒ„[‚Æ‚Ì‹——£‚ªˆê’èˆÈ‰º‚Ìê‡
         if(distance < _DEFENSE_DISTANCE) {
@@ -30,7 +33,6 @@ public class EnemyAI004_Action : CharacterAIBase<EnemyCharacter> {
             GetEnemy()._myAI.ChangeState(new EnemyAI001_Wait());
         }
     }
-
     public override void Teardown() {
         base.Teardown();
 

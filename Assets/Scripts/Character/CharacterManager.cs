@@ -43,7 +43,9 @@ public class CharacterManager : MonoBehaviour {
         _unuseEnemyList = new List<EnemyCharacter>(maxEnemyCount);
         //敵情報を未使用リストに入れる
         for (int i = 0; i < maxEnemyCount; i++) {
-            _unuseEnemyList.Add(Instantiate(_originEnemyList[i], _unuseObjectRoot));
+            EnemyCharacter createEnemy = Instantiate(_originEnemyList[i], _unuseObjectRoot);
+            createEnemy.Initialize();
+            _unuseEnemyList.Add(createEnemy);   
         }
     }
     /// <summary>

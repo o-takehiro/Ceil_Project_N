@@ -36,14 +36,14 @@ public class EnemyAI003_LeaveMove : CharacterAIBase<EnemyCharacter> {
     public override void Execute() {
         base.Execute();
         //距離の計算
-        float distance = PlayerToEnemyDistance();
+        float distance = GetPlayerToEnemyDistance();
         //移動時間の更新
         _moveTimePer += Time.deltaTime;
         if (distance > _PLAYER_DISTANCE || _moveTimePer > _MOVE_TIME) {
             _enemyRigidbody.velocity = Vector3.zero;
             GetEnemy()._myAI.ChangeState(new EnemyAI001_Wait());
         } else {
-            _enemyRigidbody.velocity = LeaveMove(_angle) * _MOVE_SPEED;
+            _enemyRigidbody.velocity = LeaveMoveAngle(_angle) * _MOVE_SPEED;
         }
         //進む方向に向く
         Vector3 moveDir = GetEnemyMoveDelta();
@@ -54,8 +54,12 @@ public class EnemyAI003_LeaveMove : CharacterAIBase<EnemyCharacter> {
         base.Teardown();
         _moveTimePer = 0.0f;
     }
-
-    public Vector3 LeaveMove(float setAngle) {
+    /// <summary>
+    /// 逃げる角度の計算
+    /// </summary>
+    /// <param name="setAngle"></param>
+    /// <returns></returns>
+    public Vector3 LeaveMoveAngle(float setAngle) {
         //ラジアン角に変換してベクトルを再生成
         Vector3 moveDirection = Vector3.zero;
         float rad = setAngle * Mathf.Deg2Rad;

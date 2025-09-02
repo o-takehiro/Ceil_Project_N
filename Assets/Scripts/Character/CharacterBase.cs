@@ -25,6 +25,9 @@ public abstract class CharacterBase : MonoBehaviour {
     public int rawAttack { get; protected set; } = -1;
     public int rawDefense {  get; protected set; } = -1;
 
+    public virtual void Initialize() {
+
+    }
     /// <summary>
     /// マスターデータ関連の使用準備処理
     /// </summary>
