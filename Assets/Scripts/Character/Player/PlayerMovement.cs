@@ -1,6 +1,8 @@
 using Unity.VisualScripting;
 using UnityEngine;
 
+
+using static CharacterUtility;
 /// <summary>
 /// プレイヤーの移動・ジャンプ処理を担当するクラス
 /// </summary>
@@ -81,6 +83,7 @@ public class PlayerMovement {
 
         // 移動関連のアニメーションを再生
         AnimationHundoll(inputDir);
+
     }
 
     /// <summary>

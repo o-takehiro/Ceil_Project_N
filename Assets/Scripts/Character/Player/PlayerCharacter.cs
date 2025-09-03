@@ -2,6 +2,7 @@ using Cysharp.Threading.Tasks;
 using System.Threading;
 using UnityEngine;
 
+using static CharacterUtility;
 /// <summary>
 /// プレイヤーキャラクター全体を統括するクラス
 /// ・移動、攻撃などの処理をサブクラスに委譲する
@@ -95,6 +96,10 @@ public class PlayerCharacter : CharacterBase {
 
             // 攻撃更新
             await _attack.Update(Time.deltaTime);
+
+            // 座標と回転の更新
+            SetPlayerPosition(transform.position);
+            SetPlayerRotation(transform.rotation);
 
         }
     }
