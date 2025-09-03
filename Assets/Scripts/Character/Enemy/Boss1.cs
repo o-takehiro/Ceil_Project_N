@@ -5,7 +5,7 @@ using UnityEngine;
 using static CharacterUtility;
 
 public class Boss1 : EnemyCharacter {
-    private const float _CANVAS_POS_Y = 3.5f;
+    private const float _CANVAS_POS_Y = 6f;
 
     public override void Initialize() {
         base.Initialize();

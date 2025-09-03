@@ -81,7 +81,7 @@ MonoBehaviour:
   _originPlayerObject: {fileID: 5361601564945596984, guid: a4c538fe83d99d14ea21f8143d369cb3, type: 3}
   _originEnemyList:
   - {fileID: 466813595056837872, guid: 32f777227825df14db2c0b283550df34, type: 3}
-  - {fileID: 6856870609400595267, guid: f697cdf282e1c41468f832a1dfe69d7d, type: 3}
+  - {fileID: 5081871034179024946, guid: c77b02d41f7a8994a871d8dc9714f3b8, type: 3}
 --- !u!1 &4136215333099490308
 GameObject:
   m_ObjectHideFlags: 0
