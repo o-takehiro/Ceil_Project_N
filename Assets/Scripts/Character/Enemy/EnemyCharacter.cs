@@ -16,6 +16,7 @@ public class EnemyCharacter : CharacterBase {
     [SerializeField]
     protected GameObject _enemyCanvas = null;
     protected Slider _enemyHPGauge = null;
+    protected Animator _enemyAnimator = null;
     public CharacterAIMachine<EnemyCharacter> _myAI { get; protected set; } = null;
     public CharacterAIBase<EnemyCharacter> _actionMachine { get; protected set; } = null;
     public List<eMagicType> _currentMagic { get; protected set; } = null;
@@ -59,5 +60,9 @@ public class EnemyCharacter : CharacterBase {
 
     public CharacterAIBase<EnemyCharacter> GetActionMachine() {
         return _actionMachine;
+    }
+
+    public Animator GetEnemyAnimator() {
+        return _enemyAnimator;
     }
 }

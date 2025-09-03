@@ -11,6 +11,7 @@ public class Boss1 : EnemyCharacter {
         base.Initialize();
         _actionMachine = new EnemyAI005_Boss1Action();
         _myAI = new CharacterAIMachine<EnemyCharacter>();
+        _enemyAnimator = GetComponent<Animator>();
     }
     public override void Setup() {
         base.Setup();
@@ -23,7 +24,7 @@ public class Boss1 : EnemyCharacter {
         //HPゲージの更新
         SetupCanvasPosition(_CANVAS_POS_Y, Vector3.one * 3);
         _myAI.Setup(this);
-        _myAI.ChangeState(_actionMachine);
+        _myAI.ChangeState(new EnemyAI001_Wait());
     }
     private void Update() {
         //現在の位置更新
