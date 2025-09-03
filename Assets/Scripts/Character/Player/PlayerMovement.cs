@@ -57,17 +57,18 @@ public class PlayerMovement {
         _jumpRequested = false;
         _wasGrounded = isGrounded;
 
+        // 待機モーション再生
         if (!isGrounded) {
             _animator.SetBool("Idle", true);
         }
 
-        // 入力ベクトルをワールド方向に変換（カメラ基準）
+        // カメラ基準でワールドベクトルで移動
         Vector3 inputDir = new Vector3(_inputMove.x, 0f, _inputMove.y).normalized;
         Vector3 moveDir = Quaternion.Euler(0f, _camera.transform.eulerAngles.y, 0f) * inputDir;
 
         // 移動速度をRigidbodyに適用
         Vector3 finalVelocity = moveDir * MOVE_SPEED;
-        finalVelocity.y = _rigidbody.velocity.y; // Y速度は維持
+        finalVelocity.y = _rigidbody.velocity.y;
         _rigidbody.velocity = finalVelocity;
 
         // 入力があれば回転を移動方向に合わせる
@@ -77,7 +78,7 @@ public class PlayerMovement {
             _transform.rotation = Quaternion.Euler(0f, angleY, 0f);
         }
 
-        // アニメーション制御
+        // 移動関連のアニメーションを再生
         AnimationHundoll(inputDir);
     }
 

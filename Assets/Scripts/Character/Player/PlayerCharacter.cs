@@ -20,7 +20,7 @@ public class PlayerCharacter : CharacterBase {
     public override bool isPlayer() => true;
 
     /// <summary>
-    /// 外部から初期化されるコンストラクタ的処理
+    /// 初期化処理
     /// </summary>
     public void Initialize(
         Rigidbody rigidbody,
@@ -35,22 +35,23 @@ public class PlayerCharacter : CharacterBase {
         _playerInput = playerInput;
         _animator = animator;
 
-        // サブクラスを生成
+        // 移動用クラスの生成
         _movement = new PlayerMovement(rigidbody, transform, camera, animator);
+        // 攻撃用クラスの生成
         _attack = new PlayerAttack(rigidbody, animator);
+        // 攻撃データの初期化
         _attack.SetupAttackData();
     }
 
     /// <summary>
-    /// ゲーム開始時の初期化処理
+    /// 使用前準備
     /// </summary>
     public override void Setup() {
         base.Setup();
 
-        // 攻撃データの初期化は Setup 内で呼ぶ
+        // 攻撃データの初期化
         if (_attack != null) {
             _attack.SetupAttackData();
-            Debug.Log("攻撃データの初期化完了");
         }
 
         // カメラターゲット設定
@@ -58,7 +59,7 @@ public class PlayerCharacter : CharacterBase {
             CameraManager.Instance.SetTarget(this);
     }
 
-    // 入力受付を移動・攻撃クラスに転送
+    // 入力を受けつけて、各クラスで使用可能にする
     public void SetMoveInput(Vector2 input) => _movement.SetMoveInput(input);
     public void RequestJump() => _movement.RequestJump();
     public void RequestAttack() => _attack.RequestAttack();
@@ -79,14 +80,14 @@ public class PlayerCharacter : CharacterBase {
         }
     }
     /// <summary>
-    /// 非同期でプレイヤーの毎フレーム処理を実行するループ
+    /// 非同期のUpdate
     /// </summary>
     public async UniTask PlayerMainLoop(CancellationToken token) {
         while (!token.IsCancellationRequested) {
-            // 移動更新（攻撃中は制御される）
+            // 移動更新
             _movement.Update(Time.deltaTime, _attack.IsAttacking);
 
-            // 攻撃更新（非同期処理あり）
+            // 攻撃更新
             await _attack.Update(Time.deltaTime);
 
             // 次フレームまで待機
@@ -98,6 +99,6 @@ public class PlayerCharacter : CharacterBase {
     /// キャラクター死亡処理
     /// </summary>
     public override void Dead() {
-        // TODO: 死亡アニメーションやリスポーン処理
+        // 死亡アニメーション再生
     }
 }
