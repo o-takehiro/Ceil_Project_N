@@ -33,6 +33,7 @@ public class MagicObject : MonoBehaviour {
 	// 魔法用のオブジェクト
 	public Transform defense = null;
 	public Transform miniBullet = null;
+	public Transform satelliteOrbital = null;
 
 	// 小型弾幕オブジェクトのオリジナル
 	public GameObject originMiniBullet = null;

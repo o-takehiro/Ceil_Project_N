@@ -8,6 +8,7 @@
 using Cysharp.Threading.Tasks;
 using System.Collections;
 using System.Collections.Generic;
+using System.Xml;
 using UnityEngine;
 using UnityEngine.Rendering;
 using static CharacterUtility;
@@ -43,7 +44,6 @@ public class PlayerMagic : MagicBase {
 		Transform defense = magicObject.defense;
 		defense.position = GetPlayerPosition();
 		defense.rotation = GetPlayerRotation();
-
 	}
 	/// <summary>
 	/// è¨å^íeñãñÇñ@
@@ -65,7 +65,6 @@ public class PlayerMagic : MagicBase {
 			coolTime -= Time.deltaTime;
 		}
 	}
-
 	/// <summary>
 	/// è¨å^íeñãÇÃà⁄ìÆ
 	/// </summary>
@@ -90,4 +89,9 @@ public class PlayerMagic : MagicBase {
 		}
 		magicObject.canUnuse = true;
 	}
+
+    public override void SatelliteOrbital(MagicObject magicObject) {
+		if (magicObject == null) return;
+
+    }
 }

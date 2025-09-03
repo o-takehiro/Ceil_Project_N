@@ -19,6 +19,7 @@ public abstract class MagicBase {
 	// À‘•–‚–@
 	public abstract void DefenseMagic(MagicObject magicObject);
 	public abstract void MiniBulletMagic(MagicObject magicObject);
+	public abstract void SatelliteOrbital(MagicObject magicObject);
 
 	/// <summary>
 	/// €”õ
