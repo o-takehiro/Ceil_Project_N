@@ -26,6 +26,9 @@ public class EnemyAI006_Charge : CharacterAIBase<EnemyCharacter> {
         startPos = ownerClass.transform.position;
         targetPos = GetPlayerPosition();
         LookAtPlayer();
+        GetEnemy().GetEnemyAnimator().SetBool("isCharge", true);
+        EnemySideRotation();
+
     }
     public override void Execute() {
         base.Execute();
@@ -38,6 +41,8 @@ public class EnemyAI006_Charge : CharacterAIBase<EnemyCharacter> {
 
         if (chargeTime > _CHARGE_TIME) {
             _enemyRigidbody.velocity = Vector3.zero;
+            GetEnemy().GetEnemyAnimator().SetBool("isCharge", false);
+            GetEnemy().SetRotation(Quaternion.identity);
             GetEnemy()._myAI.ChangeState(new EnemyAI001_Wait());
         }
     }

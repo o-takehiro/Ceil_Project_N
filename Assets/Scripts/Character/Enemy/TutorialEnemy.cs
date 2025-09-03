@@ -34,7 +34,7 @@ public class TutorialEnemy : EnemyCharacter {
         //ステートマシーンの初期化
         _myAI = new CharacterAIMachine<EnemyCharacter>();
         _myAI.Setup(this);
-        _myAI.ChangeState(_actionMachine);
+        _myAI.ChangeState(new EnemyAI001_Wait());
     }
     private void Update() {
         //現在の位置更新

@@ -14,7 +14,7 @@ public class EnemyAI003_LeaveMove : CharacterAIBase<EnemyCharacter> {
     private float _angle = -1;
     //íËêî
     private const float _PLAYER_DISTANCE = 20.0f;
-    private const float _MOVE_SPEED = 10.0f;
+    private const float _MOVE_SPEED = 8.0f;
     private const float _RANGE_ANGLE = 30.0f;
     private const float _MOVE_TIME = 2.0f;
     public override void Setup() {

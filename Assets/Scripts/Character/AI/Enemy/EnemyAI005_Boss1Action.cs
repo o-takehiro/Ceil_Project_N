@@ -16,7 +16,7 @@ public class EnemyAI005_Boss1Action : CharacterAIBase<EnemyCharacter> {
         float distance = GetPlayerToEnemyDistance();
         if(distance > 50) {
             GetEnemy()._myAI.ChangeState(new EnemyAI002_CloseMove());
-        }else if (distance < 40 && distance > 0) {
+        }else if (distance < 40 && distance > 10) {
             GetEnemy()._myAI.ChangeState(new EnemyAI006_Charge());
         } else {
             GetEnemy()._myAI.ChangeState(new EnemyAI001_Wait());
