@@ -113,6 +113,7 @@ GameObject:
   - component: {fileID: 1166077887664335052}
   - component: {fileID: 7646717966346149733}
   - component: {fileID: 5081871034179024946}
+  - component: {fileID: -1504636881713448718}
   m_Layer: 0
   m_Name: Boss1
   m_TagString: Untagged
@@ -200,6 +201,27 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _enemyCanvas: {fileID: 3423051008145358868}
+--- !u!95 &-1504636881713448718
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6680616483058419530}
+  m_Enabled: 1
+  m_Avatar: {fileID: 9000000, guid: e1faa1607f0644d4a84b460b0eec348e, type: 3}
+  m_Controller: {fileID: 9100000, guid: c0920b14c55c3094e97c83deb34f3949, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1001 &7121638044074443862
 PrefabInstance:
   m_ObjectHideFlags: 0
