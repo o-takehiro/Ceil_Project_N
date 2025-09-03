@@ -43,7 +43,7 @@ public class EnemyCommonModule {
     /// </summary>
     public static void EnemySideRotation() {
         // カメラからプレイヤーへの方向ベクトルを取得（水平方向のみ）
-        Vector3 dir = GetPlayerPosition() - Camera.main.transform.position;
+        Vector3 dir = Camera.main.transform.position - GetPlayerPosition();
         dir.y = 0;
 
         // もしほとんどゼロベクトルだったら処理を飛ばす（同位置の場合など）
