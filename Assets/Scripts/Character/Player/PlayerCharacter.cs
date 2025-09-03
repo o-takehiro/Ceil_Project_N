@@ -62,7 +62,11 @@ public class PlayerCharacter : CharacterBase {
     // 入力を受けつけて、各クラスで使用可能にする
     public void SetMoveInput(Vector2 input) => _movement.SetMoveInput(input);
     public void RequestJump() => _movement.RequestJump();
-    public void RequestAttack() => _attack.RequestAttack();
+    public void RequestAttack() {
+        if (_movement._isGrounded) {
+            _attack.RequestAttack();
+        }
+    }
     // カメラのロックオン受付
     public void RequestLookOn() {
         if (_isLockedOn) {

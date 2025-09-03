@@ -21,6 +21,7 @@ public class PlayerMovement {
     // 状態管理
     private bool _wasGrounded;               // 前フレームの接地状態
     private float _turnVelocity;             // 回転補間用の速度
+    public bool _isGrounded;                // 現在の接地状態
 
     public PlayerMovement(Rigidbody rigidbody, Transform transform, Camera camera, Animator animator) {
         _rigidbody = rigidbody;
@@ -42,7 +43,7 @@ public class PlayerMovement {
         if (isAttacking) return; // 攻撃中は移動不可
 
         // 接地判定
-        bool isGrounded = Physics.Raycast(
+        _isGrounded = Physics.Raycast(
             _transform.position + Vector3.up * 0.1f,
             Vector3.down,
             0.3f,
@@ -50,15 +51,15 @@ public class PlayerMovement {
         );
 
         // ジャンプ処理
-        if (_jumpRequested && isGrounded) {
+        if (_jumpRequested && _isGrounded) {
             _rigidbody.AddForce(Vector3.up * JUMP_FORCE, ForceMode.VelocityChange);
             _animator.SetTrigger("jumpT");
         }
         _jumpRequested = false;
-        _wasGrounded = isGrounded;
+        _wasGrounded = _isGrounded;
 
         // 待機モーション再生
-        if (!isGrounded) {
+        if (!_isGrounded) {
             _animator.SetBool("Idle", true);
         }
 
