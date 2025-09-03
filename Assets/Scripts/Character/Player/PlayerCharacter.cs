@@ -192,6 +192,7 @@ public class PlayerCharacter : CharacterBase {
         // ジャンプ入力処理
         if (_jumpRequested && isGrounded) {
             _rigidbody.AddForce(Vector3.up * _PLAYER_JUMP_SPEED, ForceMode.VelocityChange);
+            // アニメーションを再生
             animator.SetTrigger("jumpT");
         }
 
