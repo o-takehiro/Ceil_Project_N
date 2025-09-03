@@ -232,13 +232,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6bc646798d4f2064cae26b3921b37503, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  attackCollider: {fileID: 9199082624916085781}
-  _rigidbody: {fileID: 6799432238899963241}
-  groundLayer:
-    serializedVersion: 2
-    m_Bits: 64
-  groundCheckDistance: 0.2
-  animator: {fileID: 8213544153149856916}
 --- !u!23 &5353654764999440528
 MeshRenderer:
   m_ObjectHideFlags: 0
