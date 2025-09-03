@@ -84,14 +84,14 @@ public class PlayerCharacter : CharacterBase {
     /// </summary>
     public async UniTask PlayerMainLoop(CancellationToken token) {
         while (!token.IsCancellationRequested) {
+            // 次フレームまで待機
+            await UniTask.Yield(PlayerLoopTiming.FixedUpdate, token);
             // 移動更新
             _movement.Update(Time.deltaTime, _attack.IsAttacking);
 
             // 攻撃更新
             await _attack.Update(Time.deltaTime);
 
-            // 次フレームまで待機
-            await UniTask.Yield(PlayerLoopTiming.Update, token);
         }
     }
 

@@ -9,10 +9,10 @@ using UnityEngine.InputSystem;
 /// - 移動、ジャンプ、攻撃、ロックオンなどを仲介する
 /// </summary>
 public sealed class PlayerInput : MonoBehaviour {
-    [SerializeField] private Camera _targetCamera;   // 入力に使うカメラ（Inspector で指定可）
+    [SerializeField] private Camera _targetCamera;   // 入力に使うカメラ
 
-    private Rigidbody _rigidbody;       // Rigidbody（物理挙動用）
-    private Animator _animator;         // Animator（アニメーション制御用）
+    private Rigidbody _rigidbody;       // Rigidbody
+    private Animator _animator;         // Animator
     private PlayerCharacter _character; // プレイヤーキャラクター本体
 
     public void OnMove(InputAction.CallbackContext ctx) {
@@ -36,10 +36,7 @@ public sealed class PlayerInput : MonoBehaviour {
     }
 
     /// <summary>
-    /// 初期化処理
-    /// - Rigidbody / Animator を取得
-    /// - PlayerCharacter を準備
-    /// - PlayerCharacter のメインループを開始
+    /// 準備処理
     /// </summary>
     private async void Start() {
         // Rigidbody を取得

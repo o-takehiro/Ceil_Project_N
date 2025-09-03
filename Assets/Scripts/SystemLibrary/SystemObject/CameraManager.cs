@@ -172,7 +172,7 @@ public class CameraManager : SystemObject {
             // カメラの位置を求める
             Quaternion rotation = Quaternion.Euler(_currentPitch, _currentYaw, 0f);
             Vector3 desiredPosition = _target.position + rotation * offset;
-
+            
             // 補間でスムーズに移動
             _camera.transform.position = Vector3.Lerp(_camera.transform.position, desiredPosition, followSpeed * Time.deltaTime);
 
@@ -192,7 +192,6 @@ public class CameraManager : SystemObject {
 
     /// <summary>
     /// ロックオンを解除する
-    /// - 記録している敵の参照を消す
     /// </summary>
     public void UnlockTarget() {
         _lockOnSystem.Unlock();
@@ -200,7 +199,6 @@ public class CameraManager : SystemObject {
 
     /// <summary>
     /// オブジェクト破棄時の処理
-    /// - 入力を無効化してリークを防ぐ
     /// </summary>
     private void OnDestroy() {
         _inputActions?.Disable();
