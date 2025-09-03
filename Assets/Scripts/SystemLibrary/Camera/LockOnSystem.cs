@@ -2,8 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LockOnSystem : MonoBehaviour {
-    // 現在のロック御大将
+public class LockOnSystem {
+    // 現在のロックオン対象
     private Transform _currentLockTarget;
 
     /// <summary>
@@ -35,8 +35,7 @@ public class LockOnSystem : MonoBehaviour {
     /// <summary>
     /// ロックオン中のターゲットの取得
     /// </summary>
-    /// <returns></returns>
-    public Transform GetLookOnTarget() {
+    public Transform GetLockOnTarget() {
         return _currentLockTarget;
     }
 }
