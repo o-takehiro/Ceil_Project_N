@@ -20,7 +20,7 @@ public class PlayerCharacter : CharacterBase {
     // 基礎移動スピード
     private const float _PLAYER_RAW_MOVE_SPEED = 10.0f;
     // 基礎ジャンプスピード
-    private const float _PLAYER_JUMP_SPEED = 7f;
+    private const float _PLAYER_JUMP_SPEED = 4.7f;
     // 重力
     private const float _PLAYER_GRAVITY = 15f;
     // 落ちる速度
@@ -137,7 +137,9 @@ public class PlayerCharacter : CharacterBase {
     // 外部からの入力受付
     public void SetMoveInput(Vector2 input) => _inputMove = input;
     // ジャンプ受付
-    public void RequestJump() => _jumpRequested = true;
+    public void RequestJump() {
+        _jumpRequested = true;
+    }
     // 攻撃受付
     public void RequestAttack() {
         if (!_isAttacking) {
@@ -187,20 +189,15 @@ public class PlayerCharacter : CharacterBase {
 
         bool isGrounded = CheckGrounded();
 
-        // 接地判定による垂直速度の更新
-        if (isGrounded && !_wasGrounded) {
-            _verticalVelocity = 0f; // 接地時リセット
-            animator.SetBool("jump", false);
-        }
-        else if (!isGrounded) {
-            _verticalVelocity -= _PLAYER_GRAVITY * deltaTime;
-            if (_verticalVelocity < -_FALL_SPEED) _verticalVelocity = -_FALL_SPEED;
+        // ジャンプ入力処理
+        if (_jumpRequested && isGrounded) {
+            _rigidbody.AddForce(Vector3.up * _PLAYER_JUMP_SPEED, ForceMode.VelocityChange);
+            animator.SetTrigger("jumpT");
         }
 
-        // ジャンプ入力
-        if (_jumpRequested && isGrounded) {
-            _verticalVelocity = _PLAYER_JUMP_SPEED;
-            animator.SetBool("jump", true);
+        // 着地を検知
+        if (isGrounded && !_wasGrounded) {
+            animator.SetBool(_ANIMATION_IDLE, true);
         }
 
         _jumpRequested = false;
@@ -210,9 +207,9 @@ public class PlayerCharacter : CharacterBase {
         Vector3 inputDir = new Vector3(_inputMove.x, 0f, _inputMove.y).normalized;
         Vector3 moveDir = Quaternion.Euler(0f, _camera.transform.eulerAngles.y, 0f) * inputDir;
 
-        // Rigidbody速度設定
+        // Rigidbody の現在の y 速度はそのまま維持する
         Vector3 finalVelocity = moveDir * _PLAYER_RAW_MOVE_SPEED;
-        finalVelocity.y = _verticalVelocity;
+        finalVelocity.y = _rigidbody.velocity.y;
         _rigidbody.velocity = finalVelocity;
 
         // 入力がある場合はモデルの向きを移動方向に合わせる
