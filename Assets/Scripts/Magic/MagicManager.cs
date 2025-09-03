@@ -68,6 +68,7 @@ public class MagicManager : MonoBehaviour {
 		_unuseObjectList = new List<MagicObject>(_MAGIC_MAX);
 		for (int i = 0; i < _MAGIC_MAX; i++) {
 			_unuseObjectList.Add(Instantiate(_originObject, _unuseObjectRoot));
+			_unuseObjectList[i].Initialize();
 		}
 
 		// 魔法の種類分のリストを生成しておく
@@ -232,7 +233,7 @@ public class MagicManager : MonoBehaviour {
 			magicObject = UseMagicObject(_activeMagicIDList[(int)side][(int)magicID], magicID);
 		}
 		// オブジェクト内のオブジェクト生成
-		magicObject.GenerateMiniBullet();
+		//magicObject.GenerateMiniBullet();
 		// 魔法実行
 		MagicActivate(magicSide, side, magicID);
 		return;
@@ -244,18 +245,18 @@ public class MagicManager : MonoBehaviour {
 	/// </summary>
 	/// <param name="magic"></param>
 	private void MagicActivate(MagicBase magicSyde, eSideType side, eMagicType magic) {
-		for (int i = 0, max = _activeMagic[(int)side].Count; i < max; i++) {
-			if (_activeMagic[(int)side][i] != null) continue;
-			switch (magic) {
-				case eMagicType.Defense:
-					_activeMagic[(int)side][i] = magicSyde.DefenseMagic;
-					break;
-				case eMagicType.MiniBullet:
-					_activeMagic[(int)side][i] = magicSyde.MiniBulletMagic;
-					break;
-			}
-			return;
+		//for (int i = 0, max = _activeMagic[(int)side].Count; i < max; i++) {
+		//	if (_activeMagic[(int)side][i] != null) continue;
+		switch (magic) {
+			case eMagicType.Defense:
+				_activeMagic[(int)side][(int)magic] = magicSyde.DefenseMagic;
+				break;
+			case eMagicType.MiniBullet:
+				_activeMagic[(int)side][(int)magic] = magicSyde.MiniBulletMagic;
+				break;
 		}
+		return;
+		//}
 	}
 
 	/// <summary>
@@ -296,6 +297,7 @@ public class MagicManager : MonoBehaviour {
 		while (unuseObject.canUnuse == false) {
 			await UniTask.DelayFrame(1);
 		}
+		if (unuseObject.ID < 0) return;
 		// 未使用状態にする
 		_useObjectList[unuseObject.ID] = null;
 		unuseObject.Teardown(magicID);

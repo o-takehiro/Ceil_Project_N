@@ -16,7 +16,7 @@ public class PlayerMagic : MagicBase {
 
 	private float speed = 20;
 	private float distanceMAX = 20;
-	private float coolTime = 1.5f;
+	private float coolTime = 0.0f;
 	private float coolTimeMAX = 0.5f;
 	// ’e
 	List<GameObject> bulletList = new List<GameObject>();
@@ -39,6 +39,7 @@ public class PlayerMagic : MagicBase {
 	/// –hŒä–‚–@
 	/// </summary>
 	public override void DefenseMagic(MagicObject magicObject) {
+		if (magicObject == null) return;
 		Transform defense = magicObject.defense;
 		defense.position = GetPlayerPosition();
 		defense.rotation = GetPlayerRotation();
@@ -85,7 +86,7 @@ public class PlayerMagic : MagicBase {
 		await UniTask.DelayFrame(1);
 		// –¢Žg—p‰»‰Â”\
 		for (int i = 0, max = bulletList.Count; i < max; i++) {
-			if (bulletList[i].activeSelf) return;
+			if (bulletList[i].activeInHierarchy) return;
 		}
 		magicObject.canUnuse = true;
 	}
