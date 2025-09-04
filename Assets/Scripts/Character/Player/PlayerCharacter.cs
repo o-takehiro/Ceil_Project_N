@@ -51,8 +51,8 @@ public class PlayerCharacter : CharacterBase {
     /// <summary>
     /// 使用前準備
     /// </summary>
-    public override void Setup() {
-        base.Setup();
+    public override void Setup(int masterID) {
+        base.Setup(masterID);
 
         // 攻撃データの初期化
         if (_attack != null) {
