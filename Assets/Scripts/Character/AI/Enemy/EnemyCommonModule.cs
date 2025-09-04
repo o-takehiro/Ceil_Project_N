@@ -42,33 +42,16 @@ public class EnemyCommonModule {
     /// カメラから見た敵が横向きになるようにする
     /// </summary>
     public static void EnemySideRotation() {
-        // カメラからプレイヤーへの方向ベクトルを取得（水平方向のみ）
-        Vector3 dir = Camera.main.transform.position - GetPlayerPosition();
-        dir.y = 0;
+        // 今の回転を取得
+        Quaternion currentRot = GetEnemy().transform.rotation;
 
-        // もしほとんどゼロベクトルだったら処理を飛ばす（同位置の場合など）
-        if (dir.sqrMagnitude < 0.001f)
-            return;
+        // Y軸周りに右へ90°回す（ローカル基準）
+        Quaternion offset = Quaternion.Euler(0f, 90f, 0f);
 
-        dir.Normalize(); // 水平面での方向ベクトルを正規化
+        // ローカル回転に対して適用
+        Quaternion newRot = currentRot * offset;
 
-        // dir に対して左向きになるベクトルを作る（Y軸回りで垂直）
-        Vector3 leftDir = Vector3.Cross(Vector3.up, dir);
-
-        // プレイヤーの前方向も水平面だけにして正規化
-        Vector3 playerForward = GetPlayer().transform.forward;
-        playerForward.y = 0;
-        playerForward.Normalize();
-
-        // カメラがプレイヤーの前にある場合、左向きが逆になっちゃうので反転する
-        if (Vector3.Dot(dir, playerForward) < 0) {
-            leftDir = -leftDir;
-        }
-
-        // 最終的に Y軸だけで向く回転を作成
-        Quaternion sideRot = Quaternion.LookRotation(leftDir, Vector3.up);
-
-        // 敵に回転を適用
-        SetEnemyRotation(sideRot);
+        // 適用
+        SetEnemyRotation(newRot);
     }
 }
