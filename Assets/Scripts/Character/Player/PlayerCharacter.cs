@@ -3,6 +3,7 @@ using System.Threading;
 using UnityEngine;
 
 using static CharacterUtility;
+using static CharacterMasterUtility;
 /// <summary>
 /// プレイヤーキャラクター全体を統括するクラス
 /// ・移動、攻撃などの処理をサブクラスに委譲する
@@ -53,6 +54,16 @@ public class PlayerCharacter : CharacterBase {
     /// </summary>
     public override void Setup(int masterID) {
         base.Setup(masterID);
+        // マスター出たー
+        var playerMasterID = GetCharacterMaster(masterID);
+
+        // ステータスのセット
+        SetMaxHP(playerMasterID.HP);            // 最大HP
+        SetHP(playerMasterID.HP);               // HP
+        //SetMaxMP(playerMasterID.MP);          // MP
+        SetRawAttack(playerMasterID.Attack);    // Attack
+        SetRawDefense(playerMasterID.Defense);  // Difence
+
 
         // 攻撃データの初期化
         if (_attack != null) {
