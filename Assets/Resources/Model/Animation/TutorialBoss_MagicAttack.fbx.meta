@@ -1,34 +1,9 @@
 fileFormatVersion: 2
-guid: fcb5fb040e0a02d4881df61e9abe45ac
+guid: 3b15b300e9d02d74da651ba4c2ac0581
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
-  externalObjects:
-  - first:
-      type: UnityEngine:Texture2D
-      assembly: UnityEngine.CoreModule
-      name: Vampire_diffuse
-    second: {fileID: 2800000, guid: f34fa42ee332ea14b906527416ce4b73, type: 3}
-  - first:
-      type: UnityEngine:Texture2D
-      assembly: UnityEngine.CoreModule
-      name: Vampire_diffuse_transparent
-    second: {fileID: 2800000, guid: f728ba694d5e62443bbe1a1963d3cdaa, type: 3}
-  - first:
-      type: UnityEngine:Texture2D
-      assembly: UnityEngine.CoreModule
-      name: Vampire_emission
-    second: {fileID: 2800000, guid: 51d6975534da4a742a6d4ef9ec282345, type: 3}
-  - first:
-      type: UnityEngine:Texture2D
-      assembly: UnityEngine.CoreModule
-      name: Vampire_normal
-    second: {fileID: 2800000, guid: e8bad092b2ceeb340a02ed6414f5ec78, type: 3}
-  - first:
-      type: UnityEngine:Texture2D
-      assembly: UnityEngine.CoreModule
-      name: Vampire_specular
-    second: {fileID: 2800000, guid: 1b16cc7a5f67d3743bf5571b230c52b4, type: 3}
+  externalObjects: {}
   materials:
     materialImportMode: 2
     materialName: 0

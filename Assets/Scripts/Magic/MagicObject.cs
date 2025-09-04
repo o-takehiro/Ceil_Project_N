@@ -5,9 +5,11 @@
  * @date    2025/7/9
  */
 
+using Cysharp.Threading.Tasks;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
+using UnityEditor.PackageManager.Requests;
 using UnityEngine;
 
 public class MagicObject : MonoBehaviour {
@@ -35,24 +37,46 @@ public class MagicObject : MonoBehaviour {
 	// 小型弾幕オブジェクトのオリジナル
 	public GameObject originMiniBullet = null;
 
-	// 魔法用のオブジェクトの生成数
-	private const int _GENERATE_OBJECTS_MAX = 32;
+	// 発動中の魔法とその陣営
+	private eMagicType activeMagic = eMagicType.Invalid;
+	private eSideType activeSide = eSideType.Invalid;
 
-	public void Setup(int setID, eSideType side, eMagicType magic) {
+	// 未使用化可能かどうか
+	public bool canUnuse = true;
+
+	// 魔法用のオブジェクトの生成数
+	public const int _GENERATE_OBJECTS_MAX = 16;
+
+	/// <summary>
+	/// 初期化
+	/// </summary>
+	public void Initialize() {
 		miniBulletObjects = new List<GameObject>(_GENERATE_OBJECTS_MAX);
 		for (int i = 0, max = _GENERATE_OBJECTS_MAX; i < max; i++) {
 			miniBulletObjects.Add(Instantiate(originMiniBullet, _unuseMiniBulletRoot));
 		}
+	}
+
+	/// <summary>
+	/// 使用前準備
+	/// </summary>
+	/// <param name="setID"></param>
+	/// <param name="side"></param>
+	/// <param name="magic"></param>
+	public void Setup(int setID, eSideType side, eMagicType magic) {
+		canUnuse = true;
 		ID = setID;
-		UseMagic(magic);
+		activeSide = side;
+		activeMagic = magic;
+		UseMagic();
 	}
 
 	/// <summary>
 	/// 魔法を使用中にする
 	/// </summary>
 	/// <param name="magicID"></param>
-	public void UseMagic(eMagicType magic) {
-		switch (magic) {
+	public void UseMagic() {
+		switch (activeMagic) {
 			case eMagicType.Defense:
 				defense.SetParent(_useObjectRoot);
 				return;
@@ -118,5 +142,37 @@ public class MagicObject : MonoBehaviour {
 	public void Teardown(eMagicType magic) {
 		ID = -1;
 		UnuseMagic(magic);
+	}
+
+	/// <summary>
+	/// 当たった時
+	/// </summary>
+	/// <param name="other"></param>
+	private void OnTriggerEnter(Collider other) {
+		// 同陣営どうしは当たり判定をとらない 
+		eSideType otherSide = eSideType.Invalid;
+		if (other.gameObject.tag == "Player") {
+			otherSide = eSideType.PlayerSide;
+		}
+		else if (other.gameObject.tag == "Enemy") {
+			otherSide = eSideType.EnemySide;
+		}
+		if (otherSide == activeSide) return;
+		MagicObject otherMagic = null;
+		if (otherSide == eSideType.Invalid) {
+			otherMagic = other.gameObject.GetComponent<MagicObject>();
+		}
+		if (otherMagic.activeSide == activeSide) return;
+
+		// 魔法ごとの当たり判定
+		switch (activeMagic) {
+			case eMagicType.Defense:
+				break;
+			case eMagicType.MiniBullet:
+				if (otherMagic.activeMagic == eMagicType.Defense)
+				RemoveMiniBullet(gameObject);
+				break;
+		}
+
 	}
 }
