@@ -14,12 +14,14 @@ using UnityEngine;
 using static CharacterUtility;
 
 public class TutorialEnemy : EnemyCharacter {
-    private const float _CANVAS_POS_Y = 2.0f;
+    private const float _CANVAS_POS_Y = 5.0f;
 
     public override void Initialize() {
         base.Initialize();
         _actionMachine = new EnemyAI004_TutorialEnemyAction();
         _actionMachine.Initialize();
+        _myAI = new CharacterAIMachine<EnemyCharacter>();
+        _enemyAnimator = GetComponent<Animator>();
     }
     public override void Setup() {
         base.Setup();
@@ -32,7 +34,6 @@ public class TutorialEnemy : EnemyCharacter {
         //HPゲージの更新
         SetupCanvasPosition(_CANVAS_POS_Y, Vector3.one);
         //ステートマシーンの初期化
-        _myAI = new CharacterAIMachine<EnemyCharacter>();
         _myAI.Setup(this);
         _myAI.ChangeState(new EnemyAI001_Wait());
     }

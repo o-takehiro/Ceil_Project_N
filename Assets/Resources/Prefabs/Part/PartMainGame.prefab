@@ -80,7 +80,7 @@ MonoBehaviour:
   _unuseObjectRoot: {fileID: 587070041883491946}
   _originPlayerObject: {fileID: 5361601564945596984, guid: a4c538fe83d99d14ea21f8143d369cb3, type: 3}
   _originEnemyList:
-  - {fileID: 466813595056837872, guid: 32f777227825df14db2c0b283550df34, type: 3}
+  - {fileID: 2861289428992066396, guid: e4768d5fd1de91d48a3b0a19b96ea201, type: 3}
   - {fileID: 5081871034179024946, guid: c77b02d41f7a8994a871d8dc9714f3b8, type: 3}
 --- !u!1 &4136215333099490308
 GameObject:

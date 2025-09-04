@@ -14,6 +14,7 @@ public class EnemyAI002_CloseMove : CharacterAIBase<EnemyCharacter> {
     public override void Setup() {
         base.Setup();
         _enemyRigidbody = ownerClass.GetComponent<Rigidbody>();
+        GetEnemy().GetEnemyAnimator().SetBool("isMove", true);
     }
     public override void Execute() {
         base.Execute();
@@ -28,6 +29,7 @@ public class EnemyAI002_CloseMove : CharacterAIBase<EnemyCharacter> {
 
         if (distance < _PLAYER_DISTANCE) {
             _enemyRigidbody.velocity = Vector3.zero;
+            GetEnemy().GetEnemyAnimator().SetBool("isMove", false);
             GetEnemy()._myAI.ChangeState(new EnemyAI001_Wait());
         }
     }
