@@ -26,10 +26,10 @@ public class EnemyCharacter : CharacterBase {
     }
     public override void Setup(int masterID) {
         base.Setup(masterID);
-        enemyHPGauge.value = 1.0f;
     }
     public override void Teardown() {
         base.Teardown();
+        enemyHPGauge.value = 1.0f;
     }
     /// <summary>
     /// ƒvƒŒƒCƒ„[‚Ì”»•Ê

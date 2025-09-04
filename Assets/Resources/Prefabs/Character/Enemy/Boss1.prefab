@@ -150,7 +150,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a2fe0ab79036bc47b5368e7b892cfc4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _enemyCanvas: {fileID: 3423051008145358868}
+  enemyCanvas: {fileID: 3423051008145358868}
 --- !u!136 &1166077887664335052
 CapsuleCollider:
   m_ObjectHideFlags: 0
