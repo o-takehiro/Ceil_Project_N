@@ -11,6 +11,7 @@ using static CharacterUtility;
 public class PlayerCharacter : CharacterBase {
     private PlayerMovement _movement;   // 移動制御クラス
     private PlayerAttack _attack;       // 攻撃制御クラス
+    private PlayerMagicAttack _magic;   // 魔法制御クラス
 
     private Rigidbody _rigidbody;       // 物理挙動
     private Transform _transform;       // キャラクターのTransform
@@ -37,11 +38,14 @@ public class PlayerCharacter : CharacterBase {
         _animator = animator;
 
         // 移動用クラスの生成
-        _movement = new PlayerMovement(rigidbody, transform, camera, animator);
+        _movement = new PlayerMovement(_rigidbody, _transform, _camera, _animator);
         // 攻撃用クラスの生成
-        _attack = new PlayerAttack(rigidbody, animator);
+        _attack = new PlayerAttack(_rigidbody, _animator);
         // 攻撃データの初期化
         _attack.SetupAttackData();
+        // 魔法用クラスの生成
+        _magic = new PlayerMagicAttack(_animator);
+
     }
 
     /// <summary>
@@ -68,6 +72,17 @@ public class PlayerCharacter : CharacterBase {
             _attack.RequestAttack();
         }
     }
+    /// <summary>
+    /// 魔法入力の受付x4
+    /// </summary>
+    /// <param name="slotIndex"></param>
+    public void RequestCastMagic(int slotIndex) => _magic.RequestAttack(slotIndex);
+    /// <summary>
+    /// 魔法のキャンセル入力の受付x4
+    /// </summary>
+    /// <param name="slotIndex"></param>
+    public void RequestCastMagicEnd(int slotIndex) => _magic.RequestCancelMagic(slotIndex);
+
     // カメラのロックオン受付
     public void RequestLookOn() {
         if (_isLockedOn) {

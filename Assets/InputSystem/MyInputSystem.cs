@@ -144,6 +144,42 @@ public partial class @CameraInputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Magic_R"",
+                    ""type"": ""Button"",
+                    ""id"": ""537cf4d0-d84c-40a9-8d67-2dfe7b7093e6"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Magic_ZR"",
+                    ""type"": ""Button"",
+                    ""id"": ""1add0a21-fcdf-4628-878c-f11c05771c7d"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Magic_L"",
+                    ""type"": ""Button"",
+                    ""id"": ""3dc81c52-58bc-4b90-86d1-f33887843cb7"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Magic_ZL"",
+                    ""type"": ""Button"",
+                    ""id"": ""0555dc42-a2f9-40d2-b88d-bead3e941f9e"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -485,6 +521,94 @@ public partial class @CameraInputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": "";Gamepad"",
                     ""action"": ""LookOn"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""59bb17d2-848c-4c15-b51e-250540903037"",
+                    ""path"": ""<NPad>/rightShoulder"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Gamepad"",
+                    ""action"": ""Magic_R"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""4a23e950-0d23-4f0a-a1ee-4ca2b11e5747"",
+                    ""path"": ""<Gamepad>/rightShoulder"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Gamepad"",
+                    ""action"": ""Magic_R"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a5ccdfa2-fd74-44d1-a283-7b5d62e6937e"",
+                    ""path"": ""<NPad>/rightTrigger"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Gamepad"",
+                    ""action"": ""Magic_ZR"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""83d9943f-828d-494f-b51f-3ca1293503a1"",
+                    ""path"": ""<Gamepad>/rightTrigger"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Gamepad"",
+                    ""action"": ""Magic_ZR"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a331bee1-65b3-45f4-ac85-58b6c0ec85ee"",
+                    ""path"": ""<NPad>/leftShoulder"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Gamepad"",
+                    ""action"": ""Magic_L"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a0ddcdca-d373-4d58-a559-8e1e70417182"",
+                    ""path"": ""<Gamepad>/leftShoulder"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Gamepad"",
+                    ""action"": ""Magic_L"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""69c6ae05-576d-4b9d-9bcb-f2a5b5b860bf"",
+                    ""path"": ""<NPad>/leftTrigger"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Gamepad"",
+                    ""action"": ""Magic_ZL"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""648eaad1-1615-474e-b0a1-3cbb891ba7a0"",
+                    ""path"": ""<Gamepad>/leftTrigger"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Gamepad"",
+                    ""action"": ""Magic_ZL"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1117,6 +1241,10 @@ public partial class @CameraInputActions: IInputActionCollection2, IDisposable
         m_Player_Jump = m_Player.FindAction("Jump", throwIfNotFound: true);
         m_Player_Attack = m_Player.FindAction("Attack", throwIfNotFound: true);
         m_Player_LookOn = m_Player.FindAction("LookOn", throwIfNotFound: true);
+        m_Player_Magic_R = m_Player.FindAction("Magic_R", throwIfNotFound: true);
+        m_Player_Magic_ZR = m_Player.FindAction("Magic_ZR", throwIfNotFound: true);
+        m_Player_Magic_L = m_Player.FindAction("Magic_L", throwIfNotFound: true);
+        m_Player_Magic_ZL = m_Player.FindAction("Magic_ZL", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -1220,6 +1348,10 @@ public partial class @CameraInputActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Jump;
     private readonly InputAction m_Player_Attack;
     private readonly InputAction m_Player_LookOn;
+    private readonly InputAction m_Player_Magic_R;
+    private readonly InputAction m_Player_Magic_ZR;
+    private readonly InputAction m_Player_Magic_L;
+    private readonly InputAction m_Player_Magic_ZL;
     /// <summary>
     /// Provides access to input actions defined in input action map "Player".
     /// </summary>
@@ -1255,6 +1387,22 @@ public partial class @CameraInputActions: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Player/LookOn".
         /// </summary>
         public InputAction @LookOn => m_Wrapper.m_Player_LookOn;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/Magic_R".
+        /// </summary>
+        public InputAction @Magic_R => m_Wrapper.m_Player_Magic_R;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/Magic_ZR".
+        /// </summary>
+        public InputAction @Magic_ZR => m_Wrapper.m_Player_Magic_ZR;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/Magic_L".
+        /// </summary>
+        public InputAction @Magic_L => m_Wrapper.m_Player_Magic_L;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/Magic_ZL".
+        /// </summary>
+        public InputAction @Magic_ZL => m_Wrapper.m_Player_Magic_ZL;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -1299,6 +1447,18 @@ public partial class @CameraInputActions: IInputActionCollection2, IDisposable
             @LookOn.started += instance.OnLookOn;
             @LookOn.performed += instance.OnLookOn;
             @LookOn.canceled += instance.OnLookOn;
+            @Magic_R.started += instance.OnMagic_R;
+            @Magic_R.performed += instance.OnMagic_R;
+            @Magic_R.canceled += instance.OnMagic_R;
+            @Magic_ZR.started += instance.OnMagic_ZR;
+            @Magic_ZR.performed += instance.OnMagic_ZR;
+            @Magic_ZR.canceled += instance.OnMagic_ZR;
+            @Magic_L.started += instance.OnMagic_L;
+            @Magic_L.performed += instance.OnMagic_L;
+            @Magic_L.canceled += instance.OnMagic_L;
+            @Magic_ZL.started += instance.OnMagic_ZL;
+            @Magic_ZL.performed += instance.OnMagic_ZL;
+            @Magic_ZL.canceled += instance.OnMagic_ZL;
         }
 
         /// <summary>
@@ -1328,6 +1488,18 @@ public partial class @CameraInputActions: IInputActionCollection2, IDisposable
             @LookOn.started -= instance.OnLookOn;
             @LookOn.performed -= instance.OnLookOn;
             @LookOn.canceled -= instance.OnLookOn;
+            @Magic_R.started -= instance.OnMagic_R;
+            @Magic_R.performed -= instance.OnMagic_R;
+            @Magic_R.canceled -= instance.OnMagic_R;
+            @Magic_ZR.started -= instance.OnMagic_ZR;
+            @Magic_ZR.performed -= instance.OnMagic_ZR;
+            @Magic_ZR.canceled -= instance.OnMagic_ZR;
+            @Magic_L.started -= instance.OnMagic_L;
+            @Magic_L.performed -= instance.OnMagic_L;
+            @Magic_L.canceled -= instance.OnMagic_L;
+            @Magic_ZL.started -= instance.OnMagic_ZL;
+            @Magic_ZL.performed -= instance.OnMagic_ZL;
+            @Magic_ZL.canceled -= instance.OnMagic_ZL;
         }
 
         /// <summary>
@@ -1766,6 +1938,34 @@ public partial class @CameraInputActions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnLookOn(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Magic_R" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnMagic_R(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Magic_ZR" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnMagic_ZR(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Magic_L" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnMagic_L(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Magic_ZL" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnMagic_ZL(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "UI" which allows adding and removing callbacks.
