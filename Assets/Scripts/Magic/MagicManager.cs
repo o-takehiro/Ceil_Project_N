@@ -102,16 +102,18 @@ public class MagicManager : MonoBehaviour {
 		if (Input.GetKeyDown(KeyCode.X)) CreateMagic(eSideType.PlayerSide, eMagicType.MiniBullet);
 		if (Input.GetKeyDown(KeyCode.C)) CreateMagic(eSideType.EnemySide, eMagicType.Defense);
 		if (Input.GetKeyDown(KeyCode.V)) CreateMagic(eSideType.EnemySide, eMagicType.MiniBullet);
+		if (Input.GetKeyDown(KeyCode.N)) CreateMagic(eSideType.PlayerSide, eMagicType.SatelliteOrbital);
 		if (Input.GetKeyUp(KeyCode.Z)) MagicReset(eSideType.PlayerSide, eMagicType.Defense);
 		if (Input.GetKeyUp(KeyCode.X)) MagicReset(eSideType.PlayerSide, eMagicType.MiniBullet);
 		if (Input.GetKeyUp(KeyCode.C)) MagicReset(eSideType.EnemySide, eMagicType.Defense);
 		if (Input.GetKeyUp(KeyCode.V)) MagicReset(eSideType.EnemySide, eMagicType.MiniBullet);
+		if (Input.GetKeyUp(KeyCode.N)) MagicReset(eSideType.PlayerSide, eMagicType.SatelliteOrbital);
 		if (Input.GetKeyDown(KeyCode.B)) AnalysisMagicActivate();
 
 		if (_activeMagic == null) return;
 
 		for (int sideCount = 0; sideCount < (int)eSideType.Max; sideCount++) {
-			for (int i = 0, max = _activeMagicIDList.Count; i < max; i++) {
+			for (int i = 0, max = _activeMagicIDList[sideCount].Count; i < max; i++) {
 				if (_activeMagic[sideCount][i] == null || _activeMagicIDList[sideCount][i] < 0) continue;
 				_activeMagic[sideCount][i](GetMagicObject(_activeMagicIDList[sideCount][i]));
 			}
@@ -253,6 +255,9 @@ public class MagicManager : MonoBehaviour {
 				break;
 			case eMagicType.MiniBullet:
 				_activeMagic[(int)side][(int)magic] = magicSyde.MiniBulletMagic;
+				break;
+			case eMagicType.SatelliteOrbital:
+				_activeMagic[(int)side][(int)magic] = magicSyde.SatelliteOrbitalMagic;
 				break;
 		}
 		return;

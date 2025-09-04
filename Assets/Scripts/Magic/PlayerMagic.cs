@@ -9,6 +9,7 @@ using Cysharp.Threading.Tasks;
 using System.Collections;
 using System.Collections.Generic;
 using System.Xml;
+using Unity.Loading;
 using UnityEngine;
 using UnityEngine.Rendering;
 using static CharacterUtility;
@@ -20,10 +21,15 @@ public class PlayerMagic : MagicBase {
 	private float coolTime = 0.0f;
 	private float coolTimeMAX = 0.5f;
 
-	private const float SATELLITE_DISTANCE = 5;
+	private bool satelliteOn = false;
 
-	// 弾
+	private const float SATELLITE_DISTANCE = 2;
+	private const int SATELLITE_MAX = 4;
+
+	// 小型弾幕のリスト
 	private List<GameObject> bulletList = new List<GameObject>();
+	// 衛星軌道のリスト
+	private List<GameObject> satelliteList = new List<GameObject>();
 
 	/// <summary>
 	/// 魔法陣営の取得
@@ -44,7 +50,7 @@ public class PlayerMagic : MagicBase {
 	/// </summary>
 	public override void DefenseMagic(MagicObject magicObject) {
 		if (magicObject == null) return;
-		Transform defense = magicObject.defense;
+		Transform defense = magicObject.magicObjectList[(int)magicObject.activeMagic];
 		defense.position = GetPlayerPosition();
 		defense.rotation = GetPlayerRotation();
 	}
@@ -90,16 +96,65 @@ public class PlayerMagic : MagicBase {
 		}
 		magicObject.canUnuse = true;
 	}
-
-	public override void SatelliteOrbital(MagicObject magicObject) {
+	/// <summary>
+	/// 衛星軌道魔法
+	/// </summary>
+	/// <param name="magicObject"></param>
+	public override void SatelliteOrbitalMagic(MagicObject magicObject) {
 		if (magicObject == null) return;
-		// 未使用化不可能
-		magicObject.canUnuse = false;
-		Transform bullet = magicObject.GenerateMiniBullet().transform;
-		bulletList.Add(bullet.gameObject);
-		bullet.position = GetPlayerPosition();
-		bullet.rotation = GetPlayerRotation();
+		if (satelliteOn) return;
+		satelliteOn = true;
+		for (int i = 0; i < SATELLITE_MAX; i++) {
+			// 未使用化不可能
+			magicObject.canUnuse = false;
+			Transform bullet = magicObject.GenerateMiniBullet().transform;
+			satelliteList.Add(bullet.gameObject);
+			bullet.position = GetPlayerPosition();
+			bullet.rotation = GetPlayerRotation();
+			// 衛星配置
+			switch (i) {
+				case 0:
+					bullet.position += new Vector3(SATELLITE_DISTANCE, 0, 0);
+					break;
+				case 1:
+					bullet.position += new Vector3(-SATELLITE_DISTANCE, 0, 0);
+					break;
+				case 2:
+					bullet.position += new Vector3(0, 0, SATELLITE_DISTANCE);
+					break;
+				case 3:
+					bullet.position += new Vector3(0, 0, -SATELLITE_DISTANCE);
+					break;
+			}
+			UniTask task = SatelliteOrbitalMove(magicObject);
+		}
+	}
+	/// <summary>
+	/// 衛星起動魔法の移動
+	/// </summary>
+	/// <param name="magicObject"></param>
+	/// <param name="miniBullet"></param>
+	/// <returns></returns>
+	private async UniTask SatelliteOrbitalMove(MagicObject magicObject) {
+		bool loop = true;
+		// プレイヤーから一定距離離れるまで前に進める
+		while (loop) {
+			magicObject.transform.position = GetPlayerPosition();
+			Vector3 satelliteRotation = magicObject.transform.eulerAngles;
+			satelliteRotation.y += speed * Time.deltaTime;
+			magicObject.transform.eulerAngles = satelliteRotation;
+			await UniTask.DelayFrame(1);
+			loop = LoopChange();
+		}
+		satelliteOn = false;
+		// 未使用化可能
+		magicObject.canUnuse = true;
+	}
 
-
+	private bool LoopChange() {
+		for (int i = 0, max = satelliteList.Count; i < max; i++) {
+			if (satelliteList[i].activeInHierarchy) return true;
+		}
+		return false;
 	}
 }
