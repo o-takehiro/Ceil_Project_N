@@ -16,8 +16,8 @@ public class EnemyAI001_Wait : CharacterAIBase<EnemyCharacter> {
     private float _randomWaitTime = -1;
 
     // ’è”
-    private const float _MIN_TIME = 3.0f;
-    private const float _MAX_TIME = 5.0f;
+    private const float _MIN_TIME = 2.0f;
+    private const float _MAX_TIME = 4.0f;
 
     public override void Setup() {
         base.Setup();

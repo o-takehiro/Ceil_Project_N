@@ -31,6 +31,7 @@ public class EnemyAI003_LeaveMove : CharacterAIBase<EnemyCharacter> {
 
         //ランダム角度を生成(デグリー角)
         _angle = centerAngle + _randomAngle;
+        GetEnemy().GetEnemyAnimator().SetBool("isMove", true);
     }
 
     public override void Execute() {
@@ -42,6 +43,7 @@ public class EnemyAI003_LeaveMove : CharacterAIBase<EnemyCharacter> {
         if (distance > _PLAYER_DISTANCE || _moveTimePer > _MOVE_TIME) {
             _enemyRigidbody.velocity = Vector3.zero;
             GetEnemy()._myAI.ChangeState(new EnemyAI001_Wait());
+            GetEnemy().GetEnemyAnimator().SetBool("isMove", false);
         } else {
             _enemyRigidbody.velocity = LeaveMoveAngle(_angle) * _MOVE_SPEED;
         }
