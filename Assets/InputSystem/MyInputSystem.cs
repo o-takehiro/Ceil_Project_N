@@ -461,7 +461,7 @@ public partial class @CameraInputActions: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""b05bc969-faf6-43d7-a778-6a201d4201a8"",
-                    ""path"": ""<Gamepad>/buttonNorth"",
+                    ""path"": ""<XInputController>/buttonWest"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": "";Gamepad"",
@@ -494,7 +494,7 @@ public partial class @CameraInputActions: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""e6e29494-9342-4b26-a500-bae81177a2cf"",
-                    ""path"": ""<NPad>/buttonNorth"",
+                    ""path"": ""<Joystick>/stick/left"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",

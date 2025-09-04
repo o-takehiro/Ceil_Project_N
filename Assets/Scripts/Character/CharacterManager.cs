@@ -51,7 +51,7 @@ public class CharacterManager : MonoBehaviour {
     /// <summary>
     /// プレイヤーキャラクター生成
     /// </summary>
-    public void UsePlayer() {
+    public void UsePlayer(int masterID) {
         //プレイヤー情報のインスタンスを未使用オブジェクトから取得
         _usePlayerObject = _unusePlayerObject;
         //未使用プレイヤーオブジェクトを空にする

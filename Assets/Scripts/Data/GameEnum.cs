@@ -61,8 +61,10 @@ public enum eSideType {
 /// </summary>
 public enum eMagicType {
     Invalid = -1,
-	Defense,        // –hŒä–‚–@
-	MiniBullet,     // ¬Œ^’e–‹–‚–@
+	Defense,            // –hŒä–‚–@
+	MiniBullet,         // ¬Œ^’e–‹–‚–@
+    SatelliteOrbital,   // ‰q¯‹O“¹–‚–@
 
-	Max,
+
+    Max,
 }

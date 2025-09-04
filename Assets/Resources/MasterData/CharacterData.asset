@@ -1,0 +1,42 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 8
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 551deb12d49da124e9d679c9c9f4dcd3, type: 3}
+  m_Name: CharacterData
+  m_EditorClassIdentifier: 
+  sheets:
+  - name: CharacterData
+    list:
+    - ID: 0
+      HP: 100
+      MP: 50
+      Attack: 10
+      Defense: 5
+    - ID: 1
+      HP: 100
+      MP: -1
+      Attack: 5
+      Defense: 2
+    - ID: 2
+      HP: 200
+      MP: -1
+      Attack: 10
+      Defense: 5
+    - ID: 3
+      HP: 300
+      MP: -1
+      Attack: 20
+      Defense: 6
+    - ID: 4
+      HP: 400
+      MP: -1
+      Attack: 30
+      Defense: 7
