@@ -6,7 +6,7 @@ using static CharacterUtility;
 using static CharacterMasterUtility;
 
 public class Boss1 : EnemyCharacter {
-    private const float _CANVAS_POS_Y = 7.5f;
+    private const float _CANVAS_POS_Y = 5.5f;
 
     public override void Initialize() {
         base.Initialize();
@@ -17,6 +17,7 @@ public class Boss1 : EnemyCharacter {
     public override void Setup(int masterID) {
         base.Setup(masterID);
         var masterData = GetCharacterMaster(masterID);
+        SetMaxHP(masterData.HP);
         SetHP(masterData.HP);
         SetRawAttack(masterData.Attack);
         SetRawDefense(masterData.Defense);
