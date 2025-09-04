@@ -19,11 +19,11 @@ public abstract class CharacterBase : MonoBehaviour {
 
     // マスターデータ依存の変数
     public int ID { get; protected set; } = -1;
-    public int maxHP { get; protected set; } = -1;
-    public int HP { get; protected set; } = -1;
+    public float maxHP { get; protected set; } = -1;
+    public float HP { get; protected set; } = -1;
     public bool isDead { get { return HP <= 0; } }
     public int rawAttack { get; protected set; } = -1;
-    public int rawDefense {  get; protected set; } = -1;
+    public int rawDefense { get; protected set; } = -1;
 
     public virtual void Initialize() {
 
@@ -129,7 +129,7 @@ public abstract class CharacterBase : MonoBehaviour {
     /// HPの設定
     /// </summary>
     /// <param name="setValue"></param>
-    public virtual void SetHP(int setValue) {
+    public virtual void SetHP(float setValue) {
         HP = Mathf.Clamp(setValue, 0, maxHP);
     }
     /// <summary>
@@ -144,7 +144,7 @@ public abstract class CharacterBase : MonoBehaviour {
     /// </summary>
     /// <param name="removeValue"></param>
     public void RemoveHP(int removeValue) {
-        SetHP(HP - removeValue); 
+        SetHP(HP - removeValue);
     }
     /// <summary>
     /// キャラクターの死亡
