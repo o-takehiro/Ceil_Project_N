@@ -59,7 +59,7 @@ public class CharacterManager : MonoBehaviour {
         //親オブジェクトの移動
         _usePlayerObject.transform.SetParent(_useObjectRoot);
         //プレイヤーの使用準備
-        _usePlayerObject.Setup();
+        _usePlayerObject.Setup(masterID);
     }
     /// <summary>
     /// 敵キャラクター生成
@@ -72,7 +72,7 @@ public class CharacterManager : MonoBehaviour {
         //親オブジェクトの移動
         _useEnemyObject.transform.SetParent(_useObjectRoot);
         //敵の使用準備
-        _useEnemyObject.Setup();
+        _useEnemyObject.Setup(ID);
     }
     /// <summary>
     /// プレイヤーを未使用状態にする

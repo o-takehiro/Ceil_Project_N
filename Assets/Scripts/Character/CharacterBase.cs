@@ -37,7 +37,7 @@ public abstract class CharacterBase : MonoBehaviour {
     /// <summary>
     /// g—p€”õˆ—
     /// </summary>
-    public virtual void Setup() {
+    public virtual void Setup(int masterID) {
 
     }
     /// <summary>
