@@ -24,8 +24,8 @@ public class EnemyCharacter : CharacterBase {
     public override void Initialize() {
         base.Initialize();
     }
-    public override void Setup() {
-        base.Setup();
+    public override void Setup(int masterID) {
+        base.Setup(masterID);
     }
     public override void Teardown() {
         base.Teardown();

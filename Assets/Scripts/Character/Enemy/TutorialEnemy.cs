@@ -23,8 +23,8 @@ public class TutorialEnemy : EnemyCharacter {
         _myAI = new CharacterAIMachine<EnemyCharacter>();
         _enemyAnimator = GetComponent<Animator>();
     }
-    public override void Setup() {
-        base.Setup();
+    public override void Setup(int masterID) {
+        base.Setup(masterID);
         //現在の位置更新
         SetEnemyPosition(transform.position);
         //一フレーム前の位置更新
