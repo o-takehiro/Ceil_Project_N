@@ -13,6 +13,8 @@ public class PartStandby : PartBase {
     /// </summary>
     /// <returns></returns>
     public override async UniTask Execute() {
+        //マスターデータの読み込み
+        MasterDataManager.LoadAllData();
         // フェード時の色
         var fadeColor = FadeType.White;
         // フェードアウト

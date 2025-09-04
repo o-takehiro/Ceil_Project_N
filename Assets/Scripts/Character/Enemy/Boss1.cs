@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 using static CharacterUtility;
+using static CharacterMasterUtility;
 
 public class Boss1 : EnemyCharacter {
     private const float _CANVAS_POS_Y = 7.5f;
@@ -15,6 +16,10 @@ public class Boss1 : EnemyCharacter {
     }
     public override void Setup(int masterID) {
         base.Setup(masterID);
+        var masterData = GetCharacterMaster(masterID);
+        SetHP(masterData.HP);
+        SetRawAttack(masterData.Attack);
+        SetRawDefense(masterData.Defense);
         //現在の位置更新
         SetEnemyPosition(transform.position);
         //一フレーム前の位置更新
