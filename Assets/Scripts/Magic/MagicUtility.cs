@@ -5,6 +5,7 @@
  * @date    2025/7/9
  */
 
+using Cysharp.Threading.Tasks;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -69,16 +70,16 @@ public class MagicUtility {
 	/// 魔法削除
 	/// </summary>
 	/// <param name="removeMagic"></param>
-	public static void RemoveMagic(MagicBase removeMagic, eMagicType magicID) {
-		MagicManager.instance.UnuseMagicData(removeMagic, magicID);
+	public static void RemoveMagic(MagicBase removeMagic) {
+		MagicManager.instance.UnuseMagicData(removeMagic);
 	}
 
 	/// <summary>
 	/// 魔法オブジェクトを不可視化
 	/// </summary>
 	/// <param name="removeObject"></param>
-	public static void RemoveMagicObject(MagicObject removeObject, eMagicType magicID) {
-		MagicManager.instance.UnuseMagicObject(removeObject, magicID);
+	public static void RemoveMagicObject(MagicObject removeObject) {
+		UniTask task = MagicManager.instance.UnuseMagicObject(removeObject);
 	}
 
 	/// <summary>

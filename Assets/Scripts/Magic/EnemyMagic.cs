@@ -60,7 +60,6 @@ public class EnemyMagic : MagicBase {
 			coolTime -= Time.deltaTime;
 		}
 	}
-
 	/// <summary>
 	/// ¬Œ^’e–‹‚ÌˆÚ“®
 	/// </summary>
@@ -85,4 +84,8 @@ public class EnemyMagic : MagicBase {
 		}
 		magicObject.canUnuse = true;
 	}
+
+    public override void SatelliteOrbital(MagicObject magicObject) {
+        
+    }
 }

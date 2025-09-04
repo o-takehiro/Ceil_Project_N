@@ -9,7 +9,6 @@ using Cysharp.Threading.Tasks;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
-using UnityEditor.PackageManager.Requests;
 using UnityEngine;
 
 public class MagicObject : MonoBehaviour {
@@ -28,18 +27,19 @@ public class MagicObject : MonoBehaviour {
 
 	// 魔法オブジェクトの未使用親オブジェクト
 	[SerializeField]
-	private Transform _unuseMiniBulletRoot = null;
+	private Transform _unuseMagicRoot = null;
 
 	// 魔法用のオブジェクト
 	public Transform defense = null;
 	public Transform miniBullet = null;
+	public Transform satelliteOrbital = null;
 
 	// 小型弾幕オブジェクトのオリジナル
 	public GameObject originMiniBullet = null;
 
 	// 発動中の魔法とその陣営
-	private eMagicType activeMagic = eMagicType.Invalid;
-	private eSideType activeSide = eSideType.Invalid;
+	protected eMagicType activeMagic = eMagicType.Invalid;
+	protected eSideType activeSide = eSideType.Invalid;
 
 	// 未使用化可能かどうか
 	public bool canUnuse = true;
@@ -53,7 +53,7 @@ public class MagicObject : MonoBehaviour {
 	public void Initialize() {
 		miniBulletObjects = new List<GameObject>(_GENERATE_OBJECTS_MAX);
 		for (int i = 0, max = _GENERATE_OBJECTS_MAX; i < max; i++) {
-			miniBulletObjects.Add(Instantiate(originMiniBullet, _unuseMiniBulletRoot));
+			miniBulletObjects.Add(Instantiate(originMiniBullet, _unuseMagicRoot));
 		}
 	}
 
@@ -90,8 +90,8 @@ public class MagicObject : MonoBehaviour {
 	/// 魔法を未使用にする
 	/// </summary>
 	/// <param name="magicID"></param>
-	public void UnuseMagic(eMagicType magic) {
-		switch (magic) {
+	public void UnuseMagic() {
+		switch (activeMagic) {
 			case eMagicType.Defense:
 				defense.SetParent(_unuseObjectRoot);
 				return;
@@ -110,6 +110,8 @@ public class MagicObject : MonoBehaviour {
 		for (int i = 0, max = miniBulletObjects.Count; i < max; i++) {
 			if (miniBulletObjects[i].transform.parent == miniBullet) continue;
 			miniBulletObjects[i].transform.SetParent(miniBullet);
+			miniBulletObjects[i].GetComponent<MagicHit>().Setup(activeMagic, activeSide);
+			
 			return miniBulletObjects[i];
 		}
 		// 全て表示されている場合は生成
@@ -123,7 +125,7 @@ public class MagicObject : MonoBehaviour {
 	/// </summary>
 	/// <param name="removeObject"></param>
 	public void RemoveMiniBullet(GameObject removeObject) {
-		removeObject.transform.SetParent(_unuseMiniBulletRoot);
+		removeObject.transform.SetParent(_unuseMagicRoot);
 	}
 
 	/// <summary>
@@ -132,47 +134,15 @@ public class MagicObject : MonoBehaviour {
 	/// <param name="removeObject"></param>
 	public void RemoveMiniBulletAll() {
 		for (int i = 0, max = miniBulletObjects.Count; i < max; i++) {
-			miniBulletObjects[i].transform.SetParent(_unuseMiniBulletRoot);
+			miniBulletObjects[i].transform.SetParent(_unuseMagicRoot);
 		}
 	}
 
 	/// <summary>
 	/// 片付け
 	/// </summary>
-	public void Teardown(eMagicType magic) {
+	public void Teardown() {
 		ID = -1;
-		UnuseMagic(magic);
-	}
-
-	/// <summary>
-	/// 当たった時
-	/// </summary>
-	/// <param name="other"></param>
-	private void OnTriggerEnter(Collider other) {
-		// 同陣営どうしは当たり判定をとらない 
-		eSideType otherSide = eSideType.Invalid;
-		if (other.gameObject.tag == "Player") {
-			otherSide = eSideType.PlayerSide;
-		}
-		else if (other.gameObject.tag == "Enemy") {
-			otherSide = eSideType.EnemySide;
-		}
-		if (otherSide == activeSide) return;
-		MagicObject otherMagic = null;
-		if (otherSide == eSideType.Invalid) {
-			otherMagic = other.gameObject.GetComponent<MagicObject>();
-		}
-		if (otherMagic.activeSide == activeSide) return;
-
-		// 魔法ごとの当たり判定
-		switch (activeMagic) {
-			case eMagicType.Defense:
-				break;
-			case eMagicType.MiniBullet:
-				if (otherMagic.activeMagic == eMagicType.Defense)
-				RemoveMiniBullet(gameObject);
-				break;
-		}
-
+		UnuseMagic();
 	}
 }
