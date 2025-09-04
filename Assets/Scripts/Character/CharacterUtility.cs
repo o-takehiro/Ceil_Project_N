@@ -13,8 +13,8 @@ public class CharacterUtility {
     /// <summary>
     /// プレイヤーキャラクター生成
     /// </summary>
-    public static void UsePlayer() {
-        CharacterManager.instance.UsePlayer();
+    public static void UsePlayer(int masterID) {
+        CharacterManager.instance.UsePlayer(masterID);
     }
     /// <summary>
     /// 敵キャラクター生成
