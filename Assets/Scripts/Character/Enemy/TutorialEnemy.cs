@@ -27,6 +27,7 @@ public class TutorialEnemy : EnemyCharacter {
     public override void Setup(int masterID) {
         base.Setup(masterID);
         var masterData = GetCharacterMaster(masterID);
+        SetMaxHP(masterData.HP);
         SetHP(masterData.HP);
         SetRawAttack(masterData.Attack);
         SetRawDefense(masterData.Defense);
