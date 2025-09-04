@@ -28,8 +28,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 2036555516276205408}
+  m_Children: []
   m_Father: {fileID: 3731706933801379159}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1142549705436653228
@@ -96,6 +95,7 @@ Transform:
   - {fileID: 2963373647427008743}
   - {fileID: 7251893828974309424}
   - {fileID: 7736865871158182735}
+  - {fileID: 862659866594854987}
   m_Father: {fileID: 2740807844541493501}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &3148179819536465615
@@ -110,6 +110,7 @@ GameObject:
   - component: {fileID: 4504393295307993231}
   - component: {fileID: 3260951896054855481}
   - component: {fileID: 5284981522704595101}
+  - component: {fileID: 1745202588624040472}
   m_Layer: 0
   m_Name: DefenseObject
   m_TagString: Untagged
@@ -203,68 +204,27 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!1 &4105543958464288585
-GameObject:
+--- !u!114 &1745202588624040472
+MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1476049693873521712}
-  m_Layer: 0
-  m_Name: UnuseRoot
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!4 &1476049693873521712
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4105543958464288585}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -1}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 7736865871158182735}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &6242608617029570591
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2036555516276205408}
-  m_Layer: 0
-  m_Name: UnuseRoot
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!4 &2036555516276205408
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6242608617029570591}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 7251893828974309424}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_GameObject: {fileID: 3148179819536465615}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ea5d459d4493574898a14e9162afb8e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  miniBulletObjects: []
+  _useObjectRoot: {fileID: 0}
+  _unuseObjectRoot: {fileID: 0}
+  _unuseMagicRoot: {fileID: 0}
+  defense: {fileID: 0}
+  miniBullet: {fileID: 0}
+  satelliteOrbital: {fileID: 0}
+  originMiniBullet: {fileID: 0}
+  canUnuse: 1
 --- !u!1 &8316917138350095838
 GameObject:
   m_ObjectHideFlags: 0
@@ -293,8 +253,38 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 1476049693873521712}
+  m_Children: []
+  m_Father: {fileID: 3731706933801379159}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &8587264478188755619
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 862659866594854987}
+  m_Layer: 0
+  m_Name: UnuseMagic
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &862659866594854987
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8587264478188755619}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
   m_Father: {fileID: 3731706933801379159}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8657108629550860288
@@ -345,7 +335,7 @@ MonoBehaviour:
   miniBulletObjects: []
   _useObjectRoot: {fileID: 2740807844541493501}
   _unuseObjectRoot: {fileID: 3731706933801379159}
-  _unuseMiniBulletRoot: {fileID: 2036555516276205408}
+  _unuseMagicRoot: {fileID: 862659866594854987}
   defense: {fileID: 2963373647427008743}
   miniBullet: {fileID: 7251893828974309424}
   satelliteOrbital: {fileID: 7736865871158182735}

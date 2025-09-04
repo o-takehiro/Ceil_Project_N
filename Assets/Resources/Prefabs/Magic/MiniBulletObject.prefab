@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 8198481526042340266}
   - component: {fileID: 456659743169405646}
   - component: {fileID: 2992833670096012989}
+  - component: {fileID: 6746662642002732154}
   m_Layer: 0
   m_Name: MiniBulletObject
   m_TagString: Untagged
@@ -105,3 +106,24 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.5
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &6746662642002732154
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7323836922818739123}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ea5d459d4493574898a14e9162afb8e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  miniBulletObjects: []
+  _useObjectRoot: {fileID: 0}
+  _unuseObjectRoot: {fileID: 0}
+  _unuseMagicRoot: {fileID: 0}
+  defense: {fileID: 0}
+  miniBullet: {fileID: 0}
+  satelliteOrbital: {fileID: 0}
+  originMiniBullet: {fileID: 0}
+  canUnuse: 1
