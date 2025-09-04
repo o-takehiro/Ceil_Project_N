@@ -418,6 +418,17 @@
                 },
                 {
                     "name": "",
+                    "id": "58a22dcb-68e7-4c0a-8873-40400e609bc5",
+                    "path": "<NPad>/buttonWest",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Gamepad",
+                    "action": "Attack",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "1a6af8ba-ff80-41a4-8b51-772bee276319",
                     "path": "<Keyboard>/q",
                     "interactions": "",
