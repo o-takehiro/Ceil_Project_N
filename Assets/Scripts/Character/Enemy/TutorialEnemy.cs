@@ -15,7 +15,7 @@ using static CharacterUtility;
 using static CharacterMasterUtility;
 
 public class TutorialEnemy : EnemyCharacter {
-    private const float _CANVAS_POS_Y = 5.0f;
+    private const float _CANVAS_POS_Y = 4.0f;
 
     public override void Initialize() {
         base.Initialize();
