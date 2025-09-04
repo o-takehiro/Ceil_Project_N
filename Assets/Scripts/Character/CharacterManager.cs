@@ -65,10 +65,10 @@ public class CharacterManager : MonoBehaviour {
     /// 敵キャラクター生成
     /// </summary>
     /// <param name="ID"></param>
-    public void UseEnemy(int ID, int masterID) {
-        _useEnemyObject = _unuseEnemyList[ID];
+    public void UseEnemy(int arrayValue, int masterID) {
+        _useEnemyObject = _unuseEnemyList[arrayValue];
         //未使用敵オブジェクトを空にする
-        _unuseEnemyList[ID] = null;
+        _unuseEnemyList[arrayValue] = null;
         //親オブジェクトの移動
         _useEnemyObject.transform.SetParent(_useObjectRoot);
         //敵の使用準備
