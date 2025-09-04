@@ -1,7 +1,10 @@
 using Cysharp.Threading.Tasks;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
+
+using static CharacterUtility;
 /// <summary>
 /// プレイヤーの攻撃処理（コンボ管理、アニメーション再生など）
 /// </summary>
@@ -108,4 +111,8 @@ public class PlayerAttack {
             _ => AttackStep.First
         };
     }
+
+
+
+
 }

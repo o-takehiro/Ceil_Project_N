@@ -7,11 +7,16 @@ public class MageAnimationEvents : MonoBehaviour {
     [SerializeField] private Animator animator;
     // ダメージを与える相手
     private string _TARGET_TAG = "Enemy";
+    // プレイヤーの素の攻撃力
+    private int _playerRawAttack;
     void Start() {
         //AttackRenderer.enabled = false;
         if (attackCollider != null) {
             attackCollider.enabled = false; // 初期状態はオフにしておく
         }
+        // プレイヤーの素の攻撃力取得
+        _playerRawAttack = GetPlayer().GetRawAttack();
+
     }
 
     // 攻撃用アニメーションイベント
@@ -35,7 +40,7 @@ public class MageAnimationEvents : MonoBehaviour {
     void OnTriggerEnter(Collider other) {
         // タグで判定
         if (other.CompareTag(_TARGET_TAG)) {
-            //ToEnemyDamage()
+            ToEnemyDamage(_playerRawAttack);
         }
     }
 

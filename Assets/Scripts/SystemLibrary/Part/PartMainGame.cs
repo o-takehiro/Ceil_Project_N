@@ -26,6 +26,7 @@ public class PartMainGame : PartBase {
         // –‚–@ŠÇ—ƒNƒ‰ƒX‚Ì‰Šú‰»
         _magicManager?.Initialize();
         await MenuManager.Instance.Get<EnemyHPGauge>("Prefabs/Menu/CanvasEnemyUI").Initialize();
+        await MenuManager.Instance.Get<PlayerHPGauge>("Prefabs/Menu/CanvasPlayerUI").Initialize();
         await UniTask.CompletedTask;
     }
 
@@ -50,7 +51,7 @@ public class PartMainGame : PartBase {
     /// <returns></returns>
     /// <exception cref="System.NotImplementedException"></exception>
     public override async UniTask Execute() {
-
+        await MenuManager.Instance.Get<PlayerHPGauge>().Open();
 
         await UniTask.CompletedTask;
 
@@ -62,6 +63,8 @@ public class PartMainGame : PartBase {
     /// <returns></returns>
     public override async UniTask Teardown() {
         await base.Teardown();
+        await MenuManager.Instance.Get<PlayerHPGauge>().Close();
+
         await UniTask.CompletedTask;
 
     }

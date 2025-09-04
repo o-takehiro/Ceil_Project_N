@@ -8,6 +8,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CharacterUtility {
     /// <summary>
@@ -153,6 +154,7 @@ public class CharacterUtility {
     /// <param name="setValue"></param>
     public static void ToPlayerDamage(int setValue) {
         GetPlayer().RemoveHP(setValue);
+        SetPlayerSliderValue(GetPlayer().GetPlayerSliderValue());
     }
     /// <summary>
     /// ìGÇ÷ÇÃÉ_ÉÅÅ[ÉW
@@ -171,5 +173,13 @@ public class CharacterUtility {
 
     public static CharacterAIBase<EnemyCharacter> GetActionMachine() {
         return GetEnemy().GetActionMachine();
+    }
+
+    public static Slider GetPlayerSlider() {
+        return MenuManager.Instance.Get<PlayerHPGauge>().GetSlider();
+    }
+
+    public static void SetPlayerSliderValue(float setvalue) {
+        GetPlayerSlider().value = setvalue;
     }
 }

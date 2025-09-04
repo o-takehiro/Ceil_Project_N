@@ -4,12 +4,14 @@ using UnityEngine;
 
 using static CharacterUtility;
 using static CharacterMasterUtility;
+using UnityEngine.UIElements;
 /// <summary>
 /// プレイヤーキャラクター全体を統括するクラス
 /// ・移動、攻撃などの処理をサブクラスに委譲する
 /// ・入力やカメラ制御との橋渡しを行う
 /// </summary>
 public class PlayerCharacter : CharacterBase {
+
     private PlayerMovement _movement;   // 移動制御クラス
     private PlayerAttack _attack;       // 攻撃制御クラス
     private PlayerMagicAttack _magic;   // 魔法制御クラス
@@ -56,7 +58,7 @@ public class PlayerCharacter : CharacterBase {
         base.Setup(masterID);
         // マスター出たー
         var playerMasterID = GetCharacterMaster(masterID);
-
+        MenuManager.Instance.Get<PlayerHPGauge>().GetSlider().value = 0.2f;
         // ステータスのセット
         SetMaxHP(playerMasterID.HP);            // 最大HP
         SetHP(playerMasterID.HP);               // HP
@@ -128,6 +130,10 @@ public class PlayerCharacter : CharacterBase {
             SetPlayerRotation(transform.rotation);
 
         }
+    }
+
+    public float GetPlayerSliderValue() {
+        return HP / maxHP;
     }
 
     /// <summary>
