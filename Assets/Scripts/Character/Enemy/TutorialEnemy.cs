@@ -22,7 +22,7 @@ public class TutorialEnemy : EnemyCharacter {
         _actionMachine = new EnemyAI004_TutorialEnemyAction();
         _actionMachine.Initialize();
         _myAI = new CharacterAIMachine<EnemyCharacter>();
-        _enemyAnimator = GetComponent<Animator>();
+        enemyAnimator = GetComponent<Animator>();
     }
     public override void Setup(int masterID) {
         base.Setup(masterID);

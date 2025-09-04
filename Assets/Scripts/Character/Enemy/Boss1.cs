@@ -12,7 +12,7 @@ public class Boss1 : EnemyCharacter {
         base.Initialize();
         _actionMachine = new EnemyAI005_Boss1Action();
         _myAI = new CharacterAIMachine<EnemyCharacter>();
-        _enemyAnimator = GetComponent<Animator>();
+        enemyAnimator = GetComponent<Animator>();
     }
     public override void Setup(int masterID) {
         base.Setup(masterID);

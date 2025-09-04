@@ -162,6 +162,7 @@ public class CharacterUtility {
     /// <param name="setValue"></param>
     public static void ToEnemyDamage(int setValue) {
         GetEnemy().RemoveHP(setValue);
+        SetEnemySliderValue(GetEnemy().GetEnemySliderValue());
     }
     /// <summary>
     /// ƒvƒŒƒCƒ„[‚Æ“G‚Æ‚Ì‹——£‚Ìæ“¾
@@ -181,5 +182,13 @@ public class CharacterUtility {
 
     public static void SetPlayerSliderValue(float setvalue) {
         GetPlayerSlider().value = setvalue;
+    }
+
+    public static Slider GetEnemySlider() {
+        return GetEnemy().GetEnemySlider();
+    }
+
+    public static void SetEnemySliderValue(float setValue) {
+        GetEnemySlider().value = setValue;
     }
 }
