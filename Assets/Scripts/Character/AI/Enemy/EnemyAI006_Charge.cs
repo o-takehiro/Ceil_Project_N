@@ -53,5 +53,9 @@ public class EnemyAI006_Charge : CharacterAIBase<EnemyCharacter> {
     public override void Teardown() {
         base.Teardown();
     }
-
+    public void OnCollisionEnter(Collision collision) {
+        if (collision.gameObject.tag == "Player") {
+            ToPlayerDamage(GetEnemy().GetRawAttack());
+        }
+    }
 }

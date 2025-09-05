@@ -3,13 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class MagicHit : MagicObject {
+	// 親オブジェクト
+	MagicObject parentObject = null;
 
 	/// <summary>
 	/// 使用前準備
 	/// </summary>
-	public void Setup(eMagicType magic, eSideType side) {
-		activeMagic = magic;
-		activeSide = side;
+	public void Setup(MagicObject parent) {
+		activeMagic = parent.activeMagic;
+		activeSide = parent.activeSide;
+		parentObject = parent;
 	}
 
 	/// <summary>
@@ -17,7 +20,6 @@ public class MagicHit : MagicObject {
 	/// </summary>
 	/// <param name="other"></param>
 	private void OnTriggerEnter(Collider other) {
-		// 同陣営どうしは当たり判定をとらない 
 		eSideType otherSide = eSideType.Invalid;
 		if (other.gameObject.tag == "Player") {
 			otherSide = eSideType.PlayerSide;
@@ -25,10 +27,12 @@ public class MagicHit : MagicObject {
 		else if (other.gameObject.tag == "Enemy") {
 			otherSide = eSideType.EnemySide;
 		}
+		// 同陣営どうしは当たり判定をとらない 
 		if (otherSide == activeSide) return;
 		MagicHit otherMagic = null;
 		if (otherSide == eSideType.Invalid) {
 			otherMagic = other.gameObject.GetComponent<MagicHit>();
+			// 魔法の発動者の陣営が同じなら当たり判定をとらない
 			if (otherMagic.activeSide == activeSide) return;
 		}
 
@@ -37,12 +41,10 @@ public class MagicHit : MagicObject {
 			case eMagicType.Defense:
 				break;
 			case eMagicType.MiniBullet:
-				if (otherMagic == null) {
-					RemoveMiniBullet(gameObject);
-					break;
-				}
-				if (otherMagic.activeMagic != eMagicType.Defense) break;
-					RemoveMiniBullet(gameObject);
+				parentObject.RemoveMiniBullet(gameObject);
+				break;
+			case eMagicType.SatelliteOrbital:
+				parentObject.RemoveMiniBullet(gameObject);
 				break;
 		}
 

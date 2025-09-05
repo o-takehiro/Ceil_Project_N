@@ -29,17 +29,15 @@ public class MagicObject : MonoBehaviour {
 	[SerializeField]
 	private Transform _unuseMagicRoot = null;
 
-	// 魔法用のオブジェクト
-	public Transform defense = null;
-	public Transform miniBullet = null;
-	public Transform satelliteOrbital = null;
+	// 魔法用のオブジェクトリスト
+	public List<Transform> magicObjectList = new List<Transform>();
 
 	// 小型弾幕オブジェクトのオリジナル
 	public GameObject originMiniBullet = null;
 
 	// 発動中の魔法とその陣営
-	protected eMagicType activeMagic = eMagicType.Invalid;
-	protected eSideType activeSide = eSideType.Invalid;
+	public eMagicType activeMagic = eMagicType.Invalid;
+	public eSideType activeSide = eSideType.Invalid;
 
 	// 未使用化可能かどうか
 	public bool canUnuse = true;
@@ -76,14 +74,7 @@ public class MagicObject : MonoBehaviour {
 	/// </summary>
 	/// <param name="magicID"></param>
 	public void UseMagic() {
-		switch (activeMagic) {
-			case eMagicType.Defense:
-				defense.SetParent(_useObjectRoot);
-				return;
-			case eMagicType.MiniBullet:
-				miniBullet.SetParent(_useObjectRoot);
-				return;
-		}
+		magicObjectList[(int)activeMagic].SetParent(_useObjectRoot);
 	}
 
 	/// <summary>
@@ -91,15 +82,7 @@ public class MagicObject : MonoBehaviour {
 	/// </summary>
 	/// <param name="magicID"></param>
 	public void UnuseMagic() {
-		switch (activeMagic) {
-			case eMagicType.Defense:
-				defense.SetParent(_unuseObjectRoot);
-				return;
-			case eMagicType.MiniBullet:
-				RemoveMiniBulletAll();
-				miniBullet.SetParent(_unuseObjectRoot);
-				return;
-		}
+		magicObjectList[(int)activeMagic].SetParent(_unuseObjectRoot);
 	}
 
 	/// <summary>
@@ -108,14 +91,14 @@ public class MagicObject : MonoBehaviour {
 	public GameObject GenerateMiniBullet() {
 		// 非表示のオブジェクトを表示する
 		for (int i = 0, max = miniBulletObjects.Count; i < max; i++) {
-			if (miniBulletObjects[i].transform.parent == miniBullet) continue;
-			miniBulletObjects[i].transform.SetParent(miniBullet);
-			miniBulletObjects[i].GetComponent<MagicHit>().Setup(activeMagic, activeSide);
+			if (miniBulletObjects[i].transform.parent == magicObjectList[(int)activeMagic]) continue;
+			miniBulletObjects[i].transform.SetParent(magicObjectList[(int)activeMagic]);
+			miniBulletObjects[i].GetComponent<MagicHit>().Setup(this);
 			
 			return miniBulletObjects[i];
 		}
 		// 全て表示されている場合は生成
-		GameObject newBullet = Instantiate(originMiniBullet, miniBullet);
+		GameObject newBullet = Instantiate(originMiniBullet, magicObjectList[(int)activeMagic]);
 		miniBulletObjects.Add(newBullet);
 		return newBullet;
 	}
@@ -125,6 +108,7 @@ public class MagicObject : MonoBehaviour {
 	/// </summary>
 	/// <param name="removeObject"></param>
 	public void RemoveMiniBullet(GameObject removeObject) {
+		removeObject.transform.position = Vector3.zero;
 		removeObject.transform.SetParent(_unuseMagicRoot);
 	}
 

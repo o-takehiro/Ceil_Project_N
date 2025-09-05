@@ -40,6 +40,7 @@ public class EnemyCharacter : CharacterBase {
     }
     
     public override void Dead() {
+        _myAI.ChangeState(new EnemyAI008_Empty());
         enemyAnimator.SetTrigger("isDead");
     }
 
