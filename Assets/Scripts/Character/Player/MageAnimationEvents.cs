@@ -57,7 +57,7 @@ public class MageAnimationEvents : MonoBehaviour {
         if (attackData != null) {
             finalDamage = baseAttack * attackData.Damage;  // ‘f‚ÌUŒ‚—Í‚ÉƒRƒ“ƒ{”{—¦‚ğ‚©‚¯‚é
         }
-
+        Debug.Log((int)finalDamage);
         ToEnemyDamage((int)finalDamage);
     }
 
