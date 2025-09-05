@@ -52,7 +52,7 @@ public class MagicUtility {
 	/// 魔法のリセット
 	/// </summary>
 	public static void MagicReset(eSideType side, eMagicType magicID) {
-		MagicManager.instance.MagicReset(side, magicID);
+		UniTask task = MagicManager.instance.MagicReset(side, magicID);
 	}
 
 	public static bool IsMagicActive (eSideType side, eMagicType magic) {
@@ -71,7 +71,7 @@ public class MagicUtility {
 	/// </summary>
 	/// <param name="removeMagic"></param>
 	public static void RemoveMagic(MagicBase removeMagic) {
-		UniTask task = MagicManager.instance.UnuseMagicData(removeMagic);
+		MagicManager.instance.UnuseMagicData(removeMagic);
 	}
 
 	/// <summary>
