@@ -102,16 +102,18 @@ public class MagicManager : MonoBehaviour {
 		if (Input.GetKeyDown(KeyCode.X)) CreateMagic(eSideType.PlayerSide, eMagicType.MiniBullet);
 		if (Input.GetKeyDown(KeyCode.C)) CreateMagic(eSideType.EnemySide, eMagicType.Defense);
 		if (Input.GetKeyDown(KeyCode.V)) CreateMagic(eSideType.EnemySide, eMagicType.MiniBullet);
+		if (Input.GetKeyDown(KeyCode.N)) CreateMagic(eSideType.PlayerSide, eMagicType.SatelliteOrbital);
 		if (Input.GetKeyUp(KeyCode.Z)) MagicReset(eSideType.PlayerSide, eMagicType.Defense);
 		if (Input.GetKeyUp(KeyCode.X)) MagicReset(eSideType.PlayerSide, eMagicType.MiniBullet);
 		if (Input.GetKeyUp(KeyCode.C)) MagicReset(eSideType.EnemySide, eMagicType.Defense);
 		if (Input.GetKeyUp(KeyCode.V)) MagicReset(eSideType.EnemySide, eMagicType.MiniBullet);
+		if (Input.GetKeyUp(KeyCode.N)) MagicReset(eSideType.PlayerSide, eMagicType.SatelliteOrbital);
 		if (Input.GetKeyDown(KeyCode.B)) AnalysisMagicActivate();
 
 		if (_activeMagic == null) return;
 
 		for (int sideCount = 0; sideCount < (int)eSideType.Max; sideCount++) {
-			for (int i = 0, max = _activeMagicIDList.Count; i < max; i++) {
+			for (int i = 0, max = _activeMagicIDList[sideCount].Count; i < max; i++) {
 				if (_activeMagic[sideCount][i] == null || _activeMagicIDList[sideCount][i] < 0) continue;
 				_activeMagic[sideCount][i](GetMagicObject(_activeMagicIDList[sideCount][i]));
 			}
@@ -254,6 +256,9 @@ public class MagicManager : MonoBehaviour {
 			case eMagicType.MiniBullet:
 				_activeMagic[(int)side][(int)magic] = magicSyde.MiniBulletMagic;
 				break;
+			case eMagicType.SatelliteOrbital:
+				_activeMagic[(int)side][(int)magic] = magicSyde.SatelliteOrbitalMagic;
+				break;
 		}
 		return;
 		//}
@@ -269,34 +274,35 @@ public class MagicManager : MonoBehaviour {
 		MagicBase removeMagic = GetMagicData(activeMagic);
 		activeMagic = -1;
 		_activeMagicIDList[(int)sideType][(int)magicID] = activeMagic;
-		UnuseMagicData(removeMagic);
+		UniTask task = UnuseMagicData(removeMagic);
 	}
 
 	/// <summary>
 	/// 魔法を未使用状態にする
 	/// </summary>
 	/// <param name="unuseMagic"></param>
-	public void UnuseMagicData(MagicBase unuseMagic) {
+	public async UniTask UnuseMagicData(MagicBase unuseMagic) {
 		if (unuseMagic == null) return;
-		// データの未使用化
-		int unuseID = unuseMagic.ID;
+        // データの未使用化
+        int unuseID = unuseMagic.ID;
+		MagicObject magicObject = GetMagicObject(unuseID);
+        // 未使用化可能まで待つ
+        while (magicObject.canUnuse == false) {
+            await UniTask.DelayFrame(1);
+        }
 		_useList[unuseMagic.ID] = null;
 		unuseMagic.Teardown();
 		_unuseList[(int)unuseMagic.GetSide()].Add(unuseMagic);
 		// オブジェクトの未使用化
-		UniTask task = UnuseMagicObject(GetMagicObject(unuseID));
+		UnuseMagicObject(magicObject);
 	}
 
 	/// <summary>
 	/// 魔法オブジェクトを未使用状態にする
 	/// </summary>
 	/// <param name="unuseObject"></param>
-	public async UniTask UnuseMagicObject(MagicObject unuseObject) {
+	public void UnuseMagicObject(MagicObject unuseObject) {
 		if (unuseObject == null) return;
-		// 未使用化可能まで待つ
-		while (unuseObject.canUnuse == false) {
-			await UniTask.DelayFrame(1);
-		}
 		if (unuseObject.ID < 0) return;
 		// 未使用状態にする
 		_useObjectList[unuseObject.ID] = null;

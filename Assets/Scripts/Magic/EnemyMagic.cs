@@ -34,7 +34,7 @@ public class EnemyMagic : MagicBase {
 	/// –hŒä–‚–@
 	/// </summary>
 	public override void DefenseMagic(MagicObject magicObject) {
-		Transform defense = magicObject.defense;
+		Transform defense = magicObject.magicObjectList[(int)magicObject.activeMagic];
 		defense.position = GetEnemyPosition();
 		defense.rotation = GetEnemyRotation();
 
@@ -85,7 +85,7 @@ public class EnemyMagic : MagicBase {
 		magicObject.canUnuse = true;
 	}
 
-    public override void SatelliteOrbital(MagicObject magicObject) {
+    public override void SatelliteOrbitalMagic(MagicObject magicObject) {
         
     }
 }

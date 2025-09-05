@@ -71,7 +71,7 @@ public class MagicUtility {
 	/// </summary>
 	/// <param name="removeMagic"></param>
 	public static void RemoveMagic(MagicBase removeMagic) {
-		MagicManager.instance.UnuseMagicData(removeMagic);
+		UniTask task = MagicManager.instance.UnuseMagicData(removeMagic);
 	}
 
 	/// <summary>
@@ -79,7 +79,7 @@ public class MagicUtility {
 	/// </summary>
 	/// <param name="removeObject"></param>
 	public static void RemoveMagicObject(MagicObject removeObject) {
-		UniTask task = MagicManager.instance.UnuseMagicObject(removeObject);
+		MagicManager.instance.UnuseMagicObject(removeObject);
 	}
 
 	/// <summary>

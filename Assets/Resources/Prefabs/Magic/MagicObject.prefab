@@ -111,6 +111,7 @@ GameObject:
   - component: {fileID: 3260951896054855481}
   - component: {fileID: 5284981522704595101}
   - component: {fileID: 1745202588624040472}
+  - component: {fileID: 2394153789079097081}
   m_Layer: 0
   m_Name: DefenseObject
   m_TagString: Untagged
@@ -198,7 +199,7 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
@@ -220,11 +221,38 @@ MonoBehaviour:
   _useObjectRoot: {fileID: 0}
   _unuseObjectRoot: {fileID: 0}
   _unuseMagicRoot: {fileID: 0}
-  defense: {fileID: 0}
-  miniBullet: {fileID: 0}
-  satelliteOrbital: {fileID: 0}
+  magicObjectList: []
   originMiniBullet: {fileID: 0}
+  activeMagic: -1
+  activeSide: -1
   canUnuse: 1
+--- !u!54 &2394153789079097081
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3148179819536465615}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!1 &8316917138350095838
 GameObject:
   m_ObjectHideFlags: 0
@@ -336,8 +364,11 @@ MonoBehaviour:
   _useObjectRoot: {fileID: 2740807844541493501}
   _unuseObjectRoot: {fileID: 3731706933801379159}
   _unuseMagicRoot: {fileID: 862659866594854987}
-  defense: {fileID: 2963373647427008743}
-  miniBullet: {fileID: 7251893828974309424}
-  satelliteOrbital: {fileID: 7736865871158182735}
+  magicObjectList:
+  - {fileID: 2963373647427008743}
+  - {fileID: 7251893828974309424}
+  - {fileID: 7736865871158182735}
   originMiniBullet: {fileID: 7323836922818739123, guid: a23298bc5a87fbc44b7b8cee4680c942, type: 3}
+  activeMagic: -1
+  activeSide: -1
   canUnuse: 1
