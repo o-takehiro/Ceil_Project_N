@@ -21,8 +21,8 @@ public class CharacterUtility {
     /// 敵キャラクター生成
     /// </summary>
     /// <param name="ID"></param>
-    public static void UseEnemy(int ID, int masterID) {
-        CharacterManager.instance.UseEnemy(ID, masterID);
+    public static void UseEnemy(eEnemyType enemyType) {
+        CharacterManager.instance.UseEnemy(enemyType);
     }
     /// <summary>
     /// プレイヤーを未使用状態にする
