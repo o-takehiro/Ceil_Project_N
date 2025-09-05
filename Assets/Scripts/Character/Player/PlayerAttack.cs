@@ -49,9 +49,9 @@ public class PlayerAttack {
     /// </summary>
     public void SetupAttackData() {
         _attackDataMap = new Dictionary<AttackStep, AttackData> {
-            { AttackStep.First, new AttackData("attack", 10f, 500, 0) },
-            { AttackStep.Second, new AttackData("attack", 15f, 500, 0) },
-            { AttackStep.Third, new AttackData("attack", 20f, 1000, 3) }
+            { AttackStep.First, new AttackData("attack", 1.3f, 500, 0) },
+            { AttackStep.Second, new AttackData("attack", 1.5f, 500, 0) },
+            { AttackStep.Third, new AttackData("attack", 2.0f, 1000, 3) }
         };
     }
 
@@ -112,7 +112,16 @@ public class PlayerAttack {
         };
     }
 
-
+    /// <summary>
+    /// AttackDataÇÃÉfÅ[É^ÇÃï‘Ç∑
+    /// </summary>
+    /// <returns></returns>
+    public AttackData GetCurrentAttackData() {
+        if (_attackDataMap.TryGetValue(_currentAttack, out var data)) {
+            return data;
+        }
+        return null;
+    }
 
 
 }

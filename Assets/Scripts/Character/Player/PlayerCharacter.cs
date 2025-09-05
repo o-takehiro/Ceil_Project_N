@@ -23,7 +23,7 @@ public class PlayerCharacter : CharacterBase {
     private Animator _animator;         // アニメーション制御
     private bool _isLockedOn = false;
     public override bool isPlayer() => true;
-
+    public PlayerAttack GetAttackController() => _attack;
     /// <summary>
     /// 初期化処理
     /// </summary>

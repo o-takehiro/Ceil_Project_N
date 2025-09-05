@@ -9,13 +9,20 @@ public class MageAnimationEvents : MonoBehaviour {
     private string _TARGET_TAG = "Enemy";
     // プレイヤーの素の攻撃力
     private int _playerRawAttack;
+    // プレイヤー参照
+    private PlayerCharacter _player;
+    private PlayerAttack _playerAttack;
     void Start() {
         //AttackRenderer.enabled = false;
         if (attackCollider != null) {
-            attackCollider.enabled = false; // 初期状態はオフにしておく
+            attackCollider.enabled = false;
         }
-        // プレイヤーの素の攻撃力取得
-        _playerRawAttack = GetPlayer().GetRawAttack();
+
+        _player = GetPlayer();
+        if (_player != null) {
+            _playerRawAttack = _player.GetRawAttack();                 // 素の攻撃力
+            _playerAttack = _player.GetAttackController();            // 攻撃コントローラー
+        }
 
     }
 
@@ -38,10 +45,20 @@ public class MageAnimationEvents : MonoBehaviour {
     /// </summary>
     /// <param name="other"></param>
     void OnTriggerEnter(Collider other) {
-        // タグで判定
-        if (other.CompareTag(_TARGET_TAG)) {
-            ToEnemyDamage(_playerRawAttack);
+        if (!other.CompareTag(_TARGET_TAG)) return;
+
+        // 素の攻撃力
+        int baseAttack = _playerRawAttack;
+
+        // 現在の攻撃段階データ取得
+        var attackData = _playerAttack?.GetCurrentAttackData();
+        float finalDamage = baseAttack;
+
+        if (attackData != null) {
+            finalDamage = baseAttack * attackData.Damage;  // 素の攻撃力にコンボ倍率をかける
         }
+
+        ToEnemyDamage((int)finalDamage);
     }
 
 }
