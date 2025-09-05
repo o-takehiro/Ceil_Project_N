@@ -274,34 +274,35 @@ public class MagicManager : MonoBehaviour {
 		MagicBase removeMagic = GetMagicData(activeMagic);
 		activeMagic = -1;
 		_activeMagicIDList[(int)sideType][(int)magicID] = activeMagic;
-		UnuseMagicData(removeMagic);
+		UniTask task = UnuseMagicData(removeMagic);
 	}
 
 	/// <summary>
 	/// 魔法を未使用状態にする
 	/// </summary>
 	/// <param name="unuseMagic"></param>
-	public void UnuseMagicData(MagicBase unuseMagic) {
+	public async UniTask UnuseMagicData(MagicBase unuseMagic) {
 		if (unuseMagic == null) return;
-		// データの未使用化
-		int unuseID = unuseMagic.ID;
+        // データの未使用化
+        int unuseID = unuseMagic.ID;
+		MagicObject magicObject = GetMagicObject(unuseID);
+        // 未使用化可能まで待つ
+        while (magicObject.canUnuse == false) {
+            await UniTask.DelayFrame(1);
+        }
 		_useList[unuseMagic.ID] = null;
 		unuseMagic.Teardown();
 		_unuseList[(int)unuseMagic.GetSide()].Add(unuseMagic);
 		// オブジェクトの未使用化
-		UniTask task = UnuseMagicObject(GetMagicObject(unuseID));
+		UnuseMagicObject(magicObject);
 	}
 
 	/// <summary>
 	/// 魔法オブジェクトを未使用状態にする
 	/// </summary>
 	/// <param name="unuseObject"></param>
-	public async UniTask UnuseMagicObject(MagicObject unuseObject) {
+	public void UnuseMagicObject(MagicObject unuseObject) {
 		if (unuseObject == null) return;
-		// 未使用化可能まで待つ
-		while (unuseObject.canUnuse == false) {
-			await UniTask.DelayFrame(1);
-		}
 		if (unuseObject.ID < 0) return;
 		// 未使用状態にする
 		_useObjectList[unuseObject.ID] = null;

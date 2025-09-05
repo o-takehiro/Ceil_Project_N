@@ -12,6 +12,7 @@ using System.Xml;
 using Unity.Loading;
 using UnityEngine;
 using UnityEngine.Rendering;
+using UnityEngine.UIElements;
 using static CharacterUtility;
 
 public class PlayerMagic : MagicBase {
@@ -20,7 +21,7 @@ public class PlayerMagic : MagicBase {
 	private float distanceMAX = 20;
 	private float coolTime = 0.0f;
 	private float coolTimeMAX = 0.5f;
-
+	
 	private bool satelliteOn = false;
 
 	private const float SATELLITE_DISTANCE = 2;
@@ -109,8 +110,6 @@ public class PlayerMagic : MagicBase {
 			magicObject.canUnuse = false;
 			Transform bullet = magicObject.GenerateMiniBullet().transform;
 			satelliteList.Add(bullet.gameObject);
-			bullet.position = GetPlayerPosition();
-			bullet.rotation = GetPlayerRotation();
 			// 衛星配置
 			switch (i) {
 				case 0:
@@ -126,7 +125,7 @@ public class PlayerMagic : MagicBase {
 					bullet.position += new Vector3(0, 0, -SATELLITE_DISTANCE);
 					break;
 			}
-			UniTask task = SatelliteOrbitalMove(magicObject);
+			UniTask task = SatelliteOrbitalMove(magicObject, bullet);
 		}
 	}
 	/// <summary>
@@ -135,10 +134,14 @@ public class PlayerMagic : MagicBase {
 	/// <param name="magicObject"></param>
 	/// <param name="miniBullet"></param>
 	/// <returns></returns>
-	private async UniTask SatelliteOrbitalMove(MagicObject magicObject) {
+	private async UniTask SatelliteOrbitalMove(MagicObject magicObject, Transform bullet) {
 		bool loop = true;
 		// プレイヤーから一定距離離れるまで前に進める
 		while (loop) {
+			if (magicObject.magicObjectList[(int)eMagicType.SatelliteOrbital].transform.childCount > SATELLITE_MAX) {
+                magicObject.RemoveMiniBullet(bullet.gameObject);
+                return;
+			}
 			magicObject.transform.position = GetPlayerPosition();
 			Vector3 satelliteRotation = magicObject.transform.eulerAngles;
 			satelliteRotation.y += speed * Time.deltaTime;
