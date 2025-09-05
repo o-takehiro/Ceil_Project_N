@@ -163,6 +163,7 @@ public class CharacterUtility {
     public static void ToEnemyDamage(int setValue) {
         GetEnemy().RemoveHP(setValue);
         SetEnemySliderValue(GetEnemy().GetEnemySliderValue());
+        if(GetEnemy().isDead) GetEnemy().Dead();
     }
     /// <summary>
     /// ƒvƒŒƒCƒ„[‚Æ“G‚Æ‚Ì‹——£‚Ìæ“¾

@@ -40,7 +40,7 @@ public class EnemyCharacter : CharacterBase {
     }
     
     public override void Dead() {
-        UnuseEnemy();
+        enemyAnimator.SetTrigger("isDead");
     }
 
     protected void SetEnemyCanvas() {
