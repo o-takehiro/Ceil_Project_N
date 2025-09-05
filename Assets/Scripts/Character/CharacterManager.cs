@@ -91,7 +91,7 @@ public class CharacterManager : MonoBehaviour {
     /// </summary>
     /// <param name="ID"></param>
     public void UnuseEnemy() {
-        for (int i = 0, max = (int)eEnemyType.Max; i < max; i++) {
+        for (int i = 0, max = _originEnemyList.Count; i < max; i++) {
             if (_unuseEnemyList[i] != null) continue;
 
             _unuseEnemyList[i] = _useEnemyObject;
