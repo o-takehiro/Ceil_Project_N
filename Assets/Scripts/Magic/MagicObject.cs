@@ -15,8 +15,17 @@ public class MagicObject : MonoBehaviour {
 	// ユニークのID
 	public int ID { get; private set; } = -1;
 
-	// 小型弾幕のオブジェクト
-	public List<GameObject> miniBulletObjects = null;
+	// 防御魔法オブジェクトのオリジナル
+	public GameObject originDefense = null;
+
+	// 小型弾幕オブジェクトのオリジナル
+	public GameObject originMiniBullet = null;
+
+	// 防御魔法のオブジェクト
+	public GameObject defenseObject = null;
+
+    // 小型弾幕のオブジェクト
+    public List<GameObject> miniBulletObjects = null;
 
 	// 使用中オブジェクトの親オブジェクト
 	[SerializeField]
@@ -32,9 +41,6 @@ public class MagicObject : MonoBehaviour {
 	// 魔法用のオブジェクトリスト
 	public List<Transform> magicObjectList = new List<Transform>();
 
-	// 小型弾幕オブジェクトのオリジナル
-	public GameObject originMiniBullet = null;
-
 	// 発動中の魔法とその陣営
 	public eMagicType activeMagic = eMagicType.Invalid;
 	public eSideType activeSide = eSideType.Invalid;
@@ -49,6 +55,8 @@ public class MagicObject : MonoBehaviour {
 	/// 初期化
 	/// </summary>
 	public void Initialize() {
+		// 各魔法オブジェクトの準備
+		defenseObject = Instantiate(originDefense, _unuseObjectRoot);
 		miniBulletObjects = new List<GameObject>(_GENERATE_OBJECTS_MAX);
 		for (int i = 0, max = _GENERATE_OBJECTS_MAX; i < max; i++) {
 			miniBulletObjects.Add(Instantiate(originMiniBullet, _unuseMagicRoot));
@@ -86,9 +94,21 @@ public class MagicObject : MonoBehaviour {
 	}
 
 	/// <summary>
-	/// 小型弾幕の生成
+	/// 防御魔法の生成
 	/// </summary>
-	public GameObject GenerateMiniBullet() {
+	/// <returns></returns>
+	public GameObject GenerateDefense() {
+        // 非表示のオブジェクトを表示する
+        defenseObject.transform.SetParent(magicObjectList[(int)activeMagic]);
+        defenseObject.GetComponent<MagicHit>().Setup(this);
+
+        return defenseObject;
+    }
+
+    /// <summary>
+    /// 小型弾幕の生成
+    /// </summary>
+    public GameObject GenerateMiniBullet() {
 		// 非表示のオブジェクトを表示する
 		for (int i = 0, max = miniBulletObjects.Count; i < max; i++) {
 			if (miniBulletObjects[i].transform.parent == magicObjectList[(int)activeMagic]) continue;

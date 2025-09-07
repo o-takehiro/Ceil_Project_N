@@ -51,7 +51,8 @@ public class PlayerMagic : MagicBase {
 	/// </summary>
 	public override void DefenseMagic(MagicObject magicObject) {
 		if (magicObject == null) return;
-		Transform defense = magicObject.magicObjectList[(int)magicObject.activeMagic];
+		//Transform defense = magicObject.magicObjectList[(int)magicObject.activeMagic];
+		Transform defense = magicObject.GenerateDefense().transform;
 		defense.position = GetPlayerPosition();
 		defense.rotation = GetPlayerRotation();
 	}
@@ -129,7 +130,7 @@ public class PlayerMagic : MagicBase {
 		}
 	}
 	/// <summary>
-	/// 衛星起動魔法の移動
+	/// 衛星軌道魔法の移動
 	/// </summary>
 	/// <param name="magicObject"></param>
 	/// <param name="miniBullet"></param>
@@ -153,7 +154,10 @@ public class PlayerMagic : MagicBase {
 		// 未使用化可能
 		magicObject.canUnuse = true;
 	}
-
+	/// <summary>
+	/// 衛星軌道魔法のループ抜け処理
+	/// </summary>
+	/// <returns></returns>
 	private bool LoopChange() {
 		for (int i = 0, max = satelliteList.Count; i < max; i++) {
 			if (satelliteList[i].activeInHierarchy) return true;
