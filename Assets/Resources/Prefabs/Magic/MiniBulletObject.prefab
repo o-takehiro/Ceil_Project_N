@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 6746662642002732154}
   m_Layer: 0
   m_Name: MiniBulletObject
-  m_TagString: Untagged
+  m_TagString: Magic
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -118,12 +118,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6ea5d459d4493574898a14e9162afb8e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  originDefense: {fileID: 0}
+  originMiniBullet: {fileID: 0}
+  defenseObject: {fileID: 0}
   miniBulletObjects: []
   _useObjectRoot: {fileID: 0}
   _unuseObjectRoot: {fileID: 0}
   _unuseMagicRoot: {fileID: 0}
-  defense: {fileID: 0}
-  miniBullet: {fileID: 0}
-  satelliteOrbital: {fileID: 0}
-  originMiniBullet: {fileID: 0}
+  magicObjectList: []
+  activeMagic: -1
+  activeSide: -1
   canUnuse: 1

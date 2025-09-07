@@ -97,17 +97,18 @@ public class MagicManager : MonoBehaviour {
 	}
 
 	public void Update() {
+		UniTask task;
 		// デバッグ用
 		if (Input.GetKeyDown(KeyCode.Z)) CreateMagic(eSideType.PlayerSide, eMagicType.Defense);
 		if (Input.GetKeyDown(KeyCode.X)) CreateMagic(eSideType.PlayerSide, eMagicType.MiniBullet);
 		if (Input.GetKeyDown(KeyCode.C)) CreateMagic(eSideType.EnemySide, eMagicType.Defense);
 		if (Input.GetKeyDown(KeyCode.V)) CreateMagic(eSideType.EnemySide, eMagicType.MiniBullet);
 		if (Input.GetKeyDown(KeyCode.N)) CreateMagic(eSideType.PlayerSide, eMagicType.SatelliteOrbital);
-		if (Input.GetKeyUp(KeyCode.Z)) MagicReset(eSideType.PlayerSide, eMagicType.Defense);
-		if (Input.GetKeyUp(KeyCode.X)) MagicReset(eSideType.PlayerSide, eMagicType.MiniBullet);
-		if (Input.GetKeyUp(KeyCode.C)) MagicReset(eSideType.EnemySide, eMagicType.Defense);
-		if (Input.GetKeyUp(KeyCode.V)) MagicReset(eSideType.EnemySide, eMagicType.MiniBullet);
-		if (Input.GetKeyUp(KeyCode.N)) MagicReset(eSideType.PlayerSide, eMagicType.SatelliteOrbital);
+		if (Input.GetKeyUp(KeyCode.Z)) task = MagicReset(eSideType.PlayerSide, eMagicType.Defense);
+		if (Input.GetKeyUp(KeyCode.X)) task = MagicReset(eSideType.PlayerSide, eMagicType.MiniBullet);
+		if (Input.GetKeyUp(KeyCode.C)) task = MagicReset(eSideType.EnemySide, eMagicType.Defense);
+		if (Input.GetKeyUp(KeyCode.V)) task = MagicReset(eSideType.EnemySide, eMagicType.MiniBullet);
+		if (Input.GetKeyUp(KeyCode.N)) task = MagicReset(eSideType.PlayerSide, eMagicType.SatelliteOrbital);
 		if (Input.GetKeyDown(KeyCode.B)) AnalysisMagicActivate();
 
 		if (_activeMagic == null) return;
@@ -267,34 +268,35 @@ public class MagicManager : MonoBehaviour {
 	/// <summary>
 	/// 発動中の魔法を終了する
 	/// </summary>
-	public void MagicReset(eSideType sideType, eMagicType magicID) {
-		int activeMagic = _activeMagicIDList[(int)sideType][(int)magicID];
+	public async UniTask MagicReset(eSideType sideType, eMagicType magicID) {
+        int activeMagic = _activeMagicIDList[(int)sideType][(int)magicID];
 		// 魔法のリセット
 		_activeMagic[(int)sideType][(int)magicID] = null;
 		MagicBase removeMagic = GetMagicData(activeMagic);
 		activeMagic = -1;
-		_activeMagicIDList[(int)sideType][(int)magicID] = activeMagic;
-		UniTask task = UnuseMagicData(removeMagic);
+		if (removeMagic == null) return;
+        // 未使用化可能まで待つ
+        MagicObject magicObject = GetMagicObject(removeMagic.ID);
+        while (magicObject.canUnuse == false) {
+            await UniTask.DelayFrame(1);
+        }
+        _activeMagicIDList[(int)sideType][(int)magicID] = activeMagic;
+		UnuseMagicData(removeMagic);
 	}
 
 	/// <summary>
 	/// 魔法を未使用状態にする
 	/// </summary>
 	/// <param name="unuseMagic"></param>
-	public async UniTask UnuseMagicData(MagicBase unuseMagic) {
+	public void UnuseMagicData(MagicBase unuseMagic) {
 		if (unuseMagic == null) return;
         // データの未使用化
         int unuseID = unuseMagic.ID;
-		MagicObject magicObject = GetMagicObject(unuseID);
-        // 未使用化可能まで待つ
-        while (magicObject.canUnuse == false) {
-            await UniTask.DelayFrame(1);
-        }
-		_useList[unuseMagic.ID] = null;
+		_useList[unuseID] = null;
 		unuseMagic.Teardown();
 		_unuseList[(int)unuseMagic.GetSide()].Add(unuseMagic);
 		// オブジェクトの未使用化
-		UnuseMagicObject(magicObject);
+		UnuseMagicObject(GetMagicObject(unuseID));
 	}
 
 	/// <summary>
