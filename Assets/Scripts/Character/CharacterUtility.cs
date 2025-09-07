@@ -192,4 +192,8 @@ public class CharacterUtility {
     public static void SetEnemySliderValue(float setValue) {
         GetEnemySlider().value = setValue;
     }
+
+    public static void SetEnemyAttackCollider(int setValue, bool setFlag) {
+        GetEnemy().SetActiveCollider(setValue, setFlag);
+    }
 }

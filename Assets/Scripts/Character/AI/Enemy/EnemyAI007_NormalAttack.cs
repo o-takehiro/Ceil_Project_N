@@ -11,6 +11,7 @@ public class EnemyAI007_NormalAttack : CharacterAIBase<EnemyCharacter> {
     }
     public override void Setup() {
         base.Setup();
+        GetEnemy().GetEnemyAnimator().SetTrigger("isNormalAttack");
     }
     public override void Execute() {
         base.Execute();

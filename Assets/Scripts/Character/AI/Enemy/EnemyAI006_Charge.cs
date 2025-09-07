@@ -31,6 +31,7 @@ public class EnemyAI006_Charge : CharacterAIBase<EnemyCharacter> {
         LookAtPlayer();
         GetEnemy().GetEnemyAnimator().SetBool("isCharge", true);
         EnemySideRotation();
+        SetEnemyAttackCollider(1, true);
     }
     public override void Execute() {
         base.Execute();
@@ -48,6 +49,7 @@ public class EnemyAI006_Charge : CharacterAIBase<EnemyCharacter> {
             GetEnemy().GetEnemyAnimator().SetBool("isCharge", false);
             GetEnemy().SetRotation(Quaternion.identity);
             GetEnemy()._myAI.ChangeState(new EnemyAI001_Wait());
+            SetEnemyAttackCollider(1, false);
         }
     }
     public override void Teardown() {

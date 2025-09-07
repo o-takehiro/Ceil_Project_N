@@ -14,11 +14,13 @@ public class EnemyAI005_Boss1Action : CharacterAIBase<EnemyCharacter> {
     public override void Execute() {
         base.Execute();
         float distance = GetPlayerToEnemyDistance();
-        if(distance > 50) {
+        if (distance > 50) {
             GetEnemy()._myAI.ChangeState(new EnemyAI002_CloseMove());
-        }else if (distance < 40 && distance > 10) {
+        } else if (distance < 40 && distance > 10) {
             GetEnemy()._myAI.ChangeState(new EnemyAI006_Charge());
-        } else {
+        } else if (distance < 10) {
+            GetEnemy()._myAI.ChangeState(new EnemyAI007_NormalAttack());
+        }  else {
             GetEnemy()._myAI.ChangeState(new EnemyAI001_Wait());
         }
     }

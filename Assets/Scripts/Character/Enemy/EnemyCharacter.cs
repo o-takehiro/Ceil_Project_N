@@ -15,11 +15,12 @@ public class EnemyCharacter : CharacterBase {
     // ìGÇÃHPÉQÅ[ÉW
     [SerializeField]
     protected GameObject enemyCanvas = null;
+    [SerializeField]
+    private List<EnemyAttackCollider> _attackColliderList = null;
     protected Slider enemyHPGauge = null;
     protected Animator enemyAnimator = null;
     public CharacterAIMachine<EnemyCharacter> _myAI { get; protected set; } = null;
     public CharacterAIBase<EnemyCharacter> _actionMachine { get; protected set; } = null;
-    public List<eMagicType> _currentMagic { get; protected set; } = null;
 
     public override void Initialize() {
         base.Initialize();
@@ -74,5 +75,9 @@ public class EnemyCharacter : CharacterBase {
 
     public float GetEnemySliderValue() {
         return HP / maxHP;
+    }
+
+    public void SetActiveCollider(int setValue, bool setFlag) {
+        _attackColliderList[setValue].gameObject.SetActive(setFlag);
     }
 }
