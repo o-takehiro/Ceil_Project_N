@@ -3,18 +3,24 @@ using System.Collections.Generic;
 using UnityEngine;
 
 using static CharacterUtility;
+using static CharacterMasterUtility;
 
 public class Boss1 : EnemyCharacter {
-    private const float _CANVAS_POS_Y = 7.5f;
+    private const float _CANVAS_POS_Y = 5.5f;
 
     public override void Initialize() {
         base.Initialize();
         _actionMachine = new EnemyAI005_Boss1Action();
         _myAI = new CharacterAIMachine<EnemyCharacter>();
-        _enemyAnimator = GetComponent<Animator>();
+        enemyAnimator = GetComponent<Animator>();
     }
-    public override void Setup() {
-        base.Setup();
+    public override void Setup(int masterID) {
+        base.Setup(masterID);
+        var masterData = GetCharacterMaster(masterID);
+        SetMaxHP(masterData.HP);
+        SetHP(masterData.HP);
+        SetRawAttack(masterData.Attack);
+        SetRawDefense(masterData.Defense);
         //現在の位置更新
         SetEnemyPosition(transform.position);
         //一フレーム前の位置更新

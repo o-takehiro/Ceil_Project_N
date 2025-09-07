@@ -8,20 +8,21 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CharacterUtility {
     /// <summary>
     /// プレイヤーキャラクター生成
     /// </summary>
-    public static void UsePlayer() {
-        CharacterManager.instance.UsePlayer();
+    public static void UsePlayer(int masterID) {
+        CharacterManager.instance.UsePlayer(masterID);
     }
     /// <summary>
     /// 敵キャラクター生成
     /// </summary>
     /// <param name="ID"></param>
-    public static void UseEnemy(int ID) {
-        CharacterManager.instance.UseEnemy(ID);
+    public static void UseEnemy(eEnemyType enemyType) {
+        CharacterManager.instance.UseEnemy(enemyType);
     }
     /// <summary>
     /// プレイヤーを未使用状態にする
@@ -153,6 +154,7 @@ public class CharacterUtility {
     /// <param name="setValue"></param>
     public static void ToPlayerDamage(int setValue) {
         GetPlayer().RemoveHP(setValue);
+        SetPlayerSliderValue(GetPlayer().GetPlayerSliderValue());
     }
     /// <summary>
     /// 敵へのダメージ
@@ -160,6 +162,8 @@ public class CharacterUtility {
     /// <param name="setValue"></param>
     public static void ToEnemyDamage(int setValue) {
         GetEnemy().RemoveHP(setValue);
+        SetEnemySliderValue(GetEnemy().GetEnemySliderValue());
+        if(GetEnemy().isDead) GetEnemy().Dead();
     }
     /// <summary>
     /// プレイヤーと敵との距離の取得
@@ -171,5 +175,21 @@ public class CharacterUtility {
 
     public static CharacterAIBase<EnemyCharacter> GetActionMachine() {
         return GetEnemy().GetActionMachine();
+    }
+
+    public static Slider GetPlayerSlider() {
+        return MenuManager.Instance.Get<PlayerHPGauge>().GetSlider();
+    }
+
+    public static void SetPlayerSliderValue(float setvalue) {
+        GetPlayerSlider().value = setvalue;
+    }
+
+    public static Slider GetEnemySlider() {
+        return GetEnemy().GetEnemySlider();
+    }
+
+    public static void SetEnemySliderValue(float setValue) {
+        GetEnemySlider().value = setValue;
     }
 }

@@ -15,25 +15,87 @@ public sealed class PlayerInput : MonoBehaviour {
     private Animator _animator;         // Animator
     private PlayerCharacter _character; // プレイヤーキャラクター本体
 
+    /// <summary>
+    /// 移動入力の取得
+    /// </summary>
+    /// <param name="ctx"></param>
     public void OnMove(InputAction.CallbackContext ctx) {
         if (_character == null) return;
         _character.SetMoveInput(ctx.ReadValue<Vector2>());
     }
 
+    /// <summary>
+    /// ジャンプ入力の取得
+    /// </summary>
+    /// <param name="ctx"></param>
     public void OnJump(InputAction.CallbackContext ctx) {
         if (_character == null) return;
         if (ctx.performed) _character.RequestJump();
     }
 
+    /// <summary>
+    /// 攻撃入力の取得
+    /// </summary>
+    /// <param name="ctx"></param>
     public void OnAttack(InputAction.CallbackContext ctx) {
         if (_character == null) return;
         if (ctx.performed) _character.RequestAttack();
     }
 
+    /// <summary>
+    /// ロックオン入力の取得
+    /// </summary>
+    /// <param name="ctx"></param>
     public void OnLookOn(InputAction.CallbackContext ctx) {
         if (_character == null) return;
         if (ctx.performed) _character.RequestLookOn();
     }
+
+    // 魔法スロット １
+    public void OnCastSlot1(InputAction.CallbackContext ctx) {
+        if (ctx.performed) {
+            // 押されたとき
+            _character.RequestCastMagic(0);
+        }
+        else if (ctx.canceled) {
+            // 離されたとき
+            _character.RequestCastMagicEnd(0);
+        }
+    }
+    // 魔法スロット　２
+    public void OnCastSlot2(InputAction.CallbackContext ctx) {
+        if (ctx.performed) {
+            // 押されたとき
+            _character.RequestCastMagic(1);
+        }
+        else if (ctx.canceled) {
+            // 離されたとき
+            _character.RequestCastMagicEnd(1);
+        }
+    }
+    // 魔法スロット　３
+    public void OnCastSlot3(InputAction.CallbackContext ctx) {
+        if (ctx.performed) {
+            // 押されたとき
+            _character.RequestCastMagic(2);
+        }
+        else if (ctx.canceled) {
+            // 離されたとき
+            _character.RequestCastMagicEnd(2);
+        }
+    }
+    // 魔法スロット　４
+    public void OnCastSlot4(InputAction.CallbackContext ctx) {
+        if (ctx.performed) {
+            // 押されたとき
+            _character.RequestCastMagic(3);
+        }
+        else if (ctx.canceled) {
+            // 離されたとき
+            _character.RequestCastMagicEnd(3);
+        }
+    }
+
 
     /// <summary>
     /// 準備処理
@@ -41,18 +103,14 @@ public sealed class PlayerInput : MonoBehaviour {
     private async void Start() {
         // Rigidbody を取得
         _rigidbody = GetComponent<Rigidbody>();
-
-        // カメラを設定（未指定なら MainCamera を取得）
+        // カメラを設定
         if (_targetCamera == null) _targetCamera = Camera.main;
 
-        // Animator を取得（必須コンポーネント）
+        // Animatorの取得
         _animator = GetComponentInChildren<Animator>();
-        if (_animator == null) {
-            Debug.LogError("Animator が見つかりません。プレイヤーに Animator コンポーネントを追加してください。");
-            return;
-        }
+        if (_animator == null) return;
 
-        // PlayerCharacter を取得（なければ追加）
+        // PlayerCharacterを取得
         _character = GetComponent<PlayerCharacter>();
         if (_character == null) {
             _character = gameObject.AddComponent<PlayerCharacter>();
@@ -84,5 +142,6 @@ public sealed class PlayerInput : MonoBehaviour {
     /// </summary>
     public void ApplyRotation(Quaternion rot) {
         _rigidbody.MoveRotation(rot);
+
     }
 }

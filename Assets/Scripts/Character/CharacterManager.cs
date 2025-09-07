@@ -51,7 +51,7 @@ public class CharacterManager : MonoBehaviour {
     /// <summary>
     /// プレイヤーキャラクター生成
     /// </summary>
-    public void UsePlayer() {
+    public void UsePlayer(int masterID) {
         //プレイヤー情報のインスタンスを未使用オブジェクトから取得
         _usePlayerObject = _unusePlayerObject;
         //未使用プレイヤーオブジェクトを空にする
@@ -59,20 +59,20 @@ public class CharacterManager : MonoBehaviour {
         //親オブジェクトの移動
         _usePlayerObject.transform.SetParent(_useObjectRoot);
         //プレイヤーの使用準備
-        _usePlayerObject.Setup();
+        _usePlayerObject.Setup(masterID);
     }
     /// <summary>
     /// 敵キャラクター生成
     /// </summary>
     /// <param name="ID"></param>
-    public void UseEnemy(int ID) {
-        _useEnemyObject = _unuseEnemyList[ID];
+    public void UseEnemy(eEnemyType enemyType) {
+        _useEnemyObject = _unuseEnemyList[(int)enemyType];
         //未使用敵オブジェクトを空にする
-        _unuseEnemyList[ID] = null;
+        _unuseEnemyList[(int)enemyType] = null;
         //親オブジェクトの移動
         _useEnemyObject.transform.SetParent(_useObjectRoot);
         //敵の使用準備
-        _useEnemyObject.Setup();
+        _useEnemyObject.Setup((int)enemyType + 1);
     }
     /// <summary>
     /// プレイヤーを未使用状態にする
@@ -91,7 +91,7 @@ public class CharacterManager : MonoBehaviour {
     /// </summary>
     /// <param name="ID"></param>
     public void UnuseEnemy() {
-        for (int i = 0, max = (int)eEnemyType.Max; i < max; i++) {
+        for (int i = 0, max = _originEnemyList.Count; i < max; i++) {
             if (_unuseEnemyList[i] != null) continue;
 
             _unuseEnemyList[i] = _useEnemyObject;

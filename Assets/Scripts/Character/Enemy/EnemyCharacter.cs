@@ -14,9 +14,9 @@ using static CharacterUtility;
 public class EnemyCharacter : CharacterBase {
     // 敵のHPゲージ
     [SerializeField]
-    protected GameObject _enemyCanvas = null;
-    protected Slider _enemyHPGauge = null;
-    protected Animator _enemyAnimator = null;
+    protected GameObject enemyCanvas = null;
+    protected Slider enemyHPGauge = null;
+    protected Animator enemyAnimator = null;
     public CharacterAIMachine<EnemyCharacter> _myAI { get; protected set; } = null;
     public CharacterAIBase<EnemyCharacter> _actionMachine { get; protected set; } = null;
     public List<eMagicType> _currentMagic { get; protected set; } = null;
@@ -24,11 +24,12 @@ public class EnemyCharacter : CharacterBase {
     public override void Initialize() {
         base.Initialize();
     }
-    public override void Setup() {
-        base.Setup();
+    public override void Setup(int masterID) {
+        base.Setup(masterID);
     }
     public override void Teardown() {
         base.Teardown();
+        enemyHPGauge.value = 1.0f;
     }
     /// <summary>
     /// プレイヤーの判別
@@ -39,23 +40,24 @@ public class EnemyCharacter : CharacterBase {
     }
     
     public override void Dead() {
-        UnuseEnemy();
+        _myAI.ChangeState(new EnemyAI008_Empty());
+        enemyAnimator.SetTrigger("isDead");
     }
 
     protected void SetEnemyCanvas() {
-        if(_enemyHPGauge != null) return;
+        if(enemyHPGauge != null) return;
 
-        _enemyHPGauge = MenuManager.Instance.Get<EnemyHPGauge>().GetSlider();
+        enemyHPGauge = MenuManager.Instance.Get<EnemyHPGauge>().GetSlider();
     }
 
     protected void SetupCanvasPosition(float setPosY, Vector3 setSize) {
         Vector3 canvasPos = Vector3.zero;
         canvasPos.y = setPosY;
         SetEnemyCanvas();
-        _enemyHPGauge.transform.SetParent(_enemyCanvas.transform);
-        _enemyCanvas.transform.position = canvasPos;
-        _enemyCanvas.transform.localScale = setSize;
-        _enemyCanvas.gameObject.SetActive(true);
+        enemyHPGauge.transform.SetParent(enemyCanvas.transform);
+        enemyCanvas.transform.position = canvasPos;
+        enemyCanvas.transform.localScale = setSize;
+        enemyCanvas.gameObject.SetActive(true);
     }
 
     public CharacterAIBase<EnemyCharacter> GetActionMachine() {
@@ -63,6 +65,14 @@ public class EnemyCharacter : CharacterBase {
     }
 
     public Animator GetEnemyAnimator() {
-        return _enemyAnimator;
+        return enemyAnimator;
+    }
+
+    public Slider GetEnemySlider() {
+        return enemyHPGauge;
+    }
+
+    public float GetEnemySliderValue() {
+        return HP / maxHP;
     }
 }

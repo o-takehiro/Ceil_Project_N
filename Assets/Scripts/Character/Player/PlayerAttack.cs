@@ -1,7 +1,10 @@
 using Cysharp.Threading.Tasks;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
+
+using static CharacterUtility;
 /// <summary>
 /// プレイヤーの攻撃処理（コンボ管理、アニメーション再生など）
 /// </summary>
@@ -46,9 +49,9 @@ public class PlayerAttack {
     /// </summary>
     public void SetupAttackData() {
         _attackDataMap = new Dictionary<AttackStep, AttackData> {
-            { AttackStep.First, new AttackData("attack", 10f, 500, 0) },
-            { AttackStep.Second, new AttackData("attack", 15f, 500, 0) },
-            { AttackStep.Third, new AttackData("attack", 20f, 1000, 3) }
+            { AttackStep.First, new AttackData("attack", 1.3f, 500, 0) },
+            { AttackStep.Second, new AttackData("attack", 1.5f, 500, 0) },
+            { AttackStep.Third, new AttackData("attack", 2.0f, 1000, 3) }
         };
     }
 
@@ -108,4 +111,17 @@ public class PlayerAttack {
             _ => AttackStep.First
         };
     }
+
+    /// <summary>
+    /// AttackDataのデータの返す
+    /// </summary>
+    /// <returns></returns>
+    public AttackData GetCurrentAttackData() {
+        if (_attackDataMap.TryGetValue(_currentAttack, out var data)) {
+            return data;
+        }
+        return null;
+    }
+
+
 }

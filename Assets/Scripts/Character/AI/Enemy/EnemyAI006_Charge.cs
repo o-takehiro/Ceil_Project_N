@@ -4,17 +4,19 @@ using UnityEngine;
 
 using static EnemyCommonModule;
 using static CharacterUtility;
-using Unity.VisualScripting;
 
 public class EnemyAI006_Charge : CharacterAIBase<EnemyCharacter> {
     private Rigidbody _enemyRigidbody = null;
 
-    private Vector3 startPos = Vector3.zero;
-    private Vector3 targetPos = Vector3.zero;
-    private float chargeTime = -1;
+    private Vector3 _startPos = Vector3.zero;
+    private Vector3 _targetPos = Vector3.zero;
+    private float _chargeTime = -1;
+    private bool _isClosePlayer = false;
 
     private const float _CHARGE_TIME = 3.0f;
     private const float _MOVE_SPEED = 15.0f;
+    private const float _CLOSE_DISTANCE = 10.0f;
+    private const float _LEAVE_DISTANCE = 20.0f;
 
     public override void Initialize() {
         base.Initialize();
@@ -22,24 +24,26 @@ public class EnemyAI006_Charge : CharacterAIBase<EnemyCharacter> {
     public override void Setup() {
         base.Setup();
         _enemyRigidbody = ownerClass.GetComponent<Rigidbody>();
-        chargeTime = 0.0f;
-        startPos = ownerClass.transform.position;
-        targetPos = GetPlayerPosition();
+        _chargeTime = 0.0f;
+        _isClosePlayer = false;
+        _startPos = ownerClass.transform.position;
+        _targetPos = GetPlayerPosition();
         LookAtPlayer();
         GetEnemy().GetEnemyAnimator().SetBool("isCharge", true);
         EnemySideRotation();
-
     }
     public override void Execute() {
         base.Execute();
-        chargeTime += Time.deltaTime;
-        Vector3 norm = (targetPos - startPos).normalized;
+        float distance = GetPlayerToEnemyDistance();
+        if(distance < _CLOSE_DISTANCE) _isClosePlayer = true;
+        _chargeTime += Time.deltaTime;
+        Vector3 norm = (_targetPos - _startPos).normalized;
 
         norm.y = 0.0f;
 
         _enemyRigidbody.velocity = norm * _MOVE_SPEED;
 
-        if (chargeTime > _CHARGE_TIME) {
+        if (_chargeTime > _CHARGE_TIME || _isClosePlayer && distance > _LEAVE_DISTANCE) {
             _enemyRigidbody.velocity = Vector3.zero;
             GetEnemy().GetEnemyAnimator().SetBool("isCharge", false);
             GetEnemy().SetRotation(Quaternion.identity);
@@ -49,5 +53,9 @@ public class EnemyAI006_Charge : CharacterAIBase<EnemyCharacter> {
     public override void Teardown() {
         base.Teardown();
     }
-
+    public void OnCollisionEnter(Collision collision) {
+        if (collision.gameObject.tag == "Player") {
+            ToPlayerDamage(GetEnemy().GetRawAttack());
+        }
+    }
 }

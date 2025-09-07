@@ -24,13 +24,13 @@ public class EnemyAI004_TutorialEnemyAction : CharacterAIBase<EnemyCharacter> {
         if(distance < _DEFENSE_DISTANCE) {
             //–‚–@¶¬
             //GetEnemy().GetEnemyAnimator().SetTrigger("isMagicDefense");
-            //CreateMagic(eSideType.EnemySide, eMagicType.Defense);
+            CreateMagic(eSideType.EnemySide, eMagicType.Defense);
             GetEnemy()._myAI.ChangeState(new EnemyAI003_LeaveMove());
         }
         else if (distance > _CLOSE_DISTANCE) {
             GetEnemy()._myAI.ChangeState(new EnemyAI002_CloseMove());
         } else {
-            GetEnemy().GetEnemyAnimator().SetTrigger("isMagicAttack");
+            //GetEnemy().GetEnemyAnimator().SetTrigger("isMagicAttack");
             CreateMagic(eSideType.EnemySide, eMagicType.MiniBullet);
             GetEnemy()._myAI.ChangeState(new EnemyAI001_Wait());
         }

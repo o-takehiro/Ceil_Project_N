@@ -26,6 +26,7 @@ public class PartMainGame : PartBase {
         // 魔法管理クラスの初期化
         _magicManager?.Initialize();
         await MenuManager.Instance.Get<EnemyHPGauge>("Prefabs/Menu/CanvasEnemyUI").Initialize();
+        await MenuManager.Instance.Get<PlayerHPGauge>("Prefabs/Menu/CanvasPlayerUI").Initialize();
         await UniTask.CompletedTask;
     }
 
@@ -37,12 +38,10 @@ public class PartMainGame : PartBase {
         await base.SetUp();
         // 生成関連をここに。
         await FadeManager.Instance.FadeIn();
-        UsePlayer();
-        UseEnemy(0);
+        UsePlayer(0);
+        UseEnemy(eEnemyType.TutorialEnemy);
         await UniTask.CompletedTask;
     }
-
-
 
     /// <summary>
     /// パートの実行
@@ -50,7 +49,7 @@ public class PartMainGame : PartBase {
     /// <returns></returns>
     /// <exception cref="System.NotImplementedException"></exception>
     public override async UniTask Execute() {
-
+        await MenuManager.Instance.Get<PlayerHPGauge>().Open();
 
         await UniTask.CompletedTask;
 
@@ -62,6 +61,8 @@ public class PartMainGame : PartBase {
     /// <returns></returns>
     public override async UniTask Teardown() {
         await base.Teardown();
+        await MenuManager.Instance.Get<PlayerHPGauge>().Close();
+
         await UniTask.CompletedTask;
 
     }
