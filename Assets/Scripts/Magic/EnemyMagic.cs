@@ -43,7 +43,7 @@ public class EnemyMagic : MagicBase {
 	public override void DefenseMagic(MagicObject magicObject) {
 		if (magicObject == null) return;
 		Transform defense = magicObject.GenerateDefense().transform;
-		defense.position = GetEnemyCenterPosition();
+		defense.position = GetEnemyPosition();
 		defense.rotation = GetEnemyRotation();
 
 		//MagicManager.instance.activeEnemyMagicID = eMagicType.Defense;
