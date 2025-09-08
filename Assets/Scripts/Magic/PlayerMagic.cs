@@ -85,7 +85,7 @@ public class PlayerMagic : MagicBase {
 	private async UniTask MiniBulletMove(MagicObject magicObject, Transform miniBullet) {
 		float distance = 0;
 		// プレイヤーから一定距離離れるまで前に進める
-		while (distance < distanceMAX) {
+		while (distance < distanceMAX || miniBullet.gameObject.activeInHierarchy) {
 			distance = Vector3.Distance(miniBullet.position, GetPlayerCenterPosition());
 			miniBullet.rotation = GetOtherDirection(miniBullet.position);
 			miniBullet.position += miniBullet.forward * speed * Time.deltaTime;
