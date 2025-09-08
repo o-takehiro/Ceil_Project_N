@@ -4,6 +4,7 @@ using UnityEngine;
 
 using static EnemyCommonModule;
 using static CharacterUtility;
+using static MagicUtility;
 
 public class EnemyAI006_Charge : CharacterAIBase<EnemyCharacter> {
     private Rigidbody _enemyRigidbody = null;
@@ -15,7 +16,7 @@ public class EnemyAI006_Charge : CharacterAIBase<EnemyCharacter> {
 
     private const float _CHARGE_TIME = 3.0f;
     private const float _MOVE_SPEED = 15.0f;
-    private const float _CLOSE_DISTANCE = 10.0f;
+    private const float _CLOSE_DISTANCE = 15.0f;
     private const float _LEAVE_DISTANCE = 20.0f;
 
     public override void Initialize() {
@@ -31,6 +32,9 @@ public class EnemyAI006_Charge : CharacterAIBase<EnemyCharacter> {
         LookAtPlayer();
         GetEnemy().GetEnemyAnimator().SetBool("isCharge", true);
         EnemySideRotation();
+        GetEnemy().SetEnemyAttackValue(1);
+        SetEnemyAttackCollider(GetEnemy().GetEnemyAttackValue(), true);
+        CreateMagic(eSideType.EnemySide, eMagicType.SatelliteOrbital);
     }
     public override void Execute() {
         base.Execute();
@@ -48,6 +52,7 @@ public class EnemyAI006_Charge : CharacterAIBase<EnemyCharacter> {
             GetEnemy().GetEnemyAnimator().SetBool("isCharge", false);
             GetEnemy().SetRotation(Quaternion.identity);
             GetEnemy()._myAI.ChangeState(new EnemyAI001_Wait());
+            SetEnemyAttackCollider(1, false);
         }
     }
     public override void Teardown() {

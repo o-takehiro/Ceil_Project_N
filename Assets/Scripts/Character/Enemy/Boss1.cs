@@ -4,6 +4,7 @@ using UnityEngine;
 
 using static CharacterUtility;
 using static CharacterMasterUtility;
+using Cysharp.Threading.Tasks;
 
 public class Boss1 : EnemyCharacter {
     private const float _CANVAS_POS_Y = 5.5f;
@@ -48,5 +49,8 @@ public class Boss1 : EnemyCharacter {
     }
     public override void Teardown() {
         base.Teardown();
+    }
+    public override void Dead() {
+        base.Dead();
     }
 }

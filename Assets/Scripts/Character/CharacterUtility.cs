@@ -56,15 +56,22 @@ public class CharacterUtility {
     /// プレイヤーの1フレーム前の座標取得
     /// </summary>
     /// <returns></returns>
-    public static Vector3 GetPlayerPrevPos() {
+    public static Vector3 GetPlayerPrevPosition() {
         return GetPlayer().GetPrevPosition();
+    }
+    /// <summary>
+    /// プレイヤーの中心座標取得
+    /// </summary>
+    /// <returns></returns>
+    public static Vector3 GetPlayerCenterPosition() {
+        return GetPlayer().GetCenterPosition();
     }
     /// <summary>
     /// プレイヤーの現在のフレームから一フレーム前を引いた移動量計算
     /// </summary>
     /// <returns></returns>
     public static Vector3 GetPlayerMoveDelta() {
-        return GetPlayerPosition() - GetPlayerPrevPos();
+        return GetPlayerPosition() - GetPlayerPrevPosition();
     }
     /// <summary>
     /// プレイヤーの回転取得
@@ -85,6 +92,13 @@ public class CharacterUtility {
     /// </summary>
     public static void SetPlayerPrevPosition() {
         GetPlayer().SetPrevPosition();
+    }
+    /// <summary>
+    /// プレイヤーの中心座標設定
+    /// </summary>
+    /// <param name="setPosition"></param>
+    public static void SetPlayerCenterPosition(Vector3 setPosition) {
+        GetPlayer().SetCenterPosition(setPosition);
     }
     /// <summary>
     /// プレイヤー回転設定
@@ -115,6 +129,13 @@ public class CharacterUtility {
         return GetEnemy().GetPrevPosition();
     }
     /// <summary>
+    /// 敵の中心座標取得
+    /// </summary>
+    /// <returns></returns>
+    public static Vector3 GetEnemyCenterPosition() {
+        return GetEnemy().GetCenterPosition();
+    }
+    /// <summary>
     /// 敵の現在のフレームから一フレーム前を引いた移動量計算
     /// </summary>
     /// <returns></returns>
@@ -140,6 +161,13 @@ public class CharacterUtility {
     /// </summary>
     public static void SetEnemyPrevPosition() {
         GetEnemy().SetPrevPosition();
+    }
+    /// <summary>
+    /// 敵の中心座標設定
+    /// </summary>
+    /// <param name="setPosition"></param>
+    public static void SetEnemyCenterPosition(Vector3 setPosition) {
+        GetEnemy().SetCenterPosition(setPosition);
     }
     /// <summary>
     /// 敵回転設定
@@ -191,5 +219,9 @@ public class CharacterUtility {
 
     public static void SetEnemySliderValue(float setValue) {
         GetEnemySlider().value = setValue;
+    }
+
+    public static void SetEnemyAttackCollider(int setValue, bool setFlag) {
+        GetEnemy().SetActiveCollider(setValue, setFlag);
     }
 }

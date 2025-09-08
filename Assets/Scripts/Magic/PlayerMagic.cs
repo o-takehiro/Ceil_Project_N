@@ -137,7 +137,6 @@ public class PlayerMagic : MagicBase {
 	/// <returns></returns>
 	private async UniTask SatelliteOrbitalMove(MagicObject magicObject, Transform bullet) {
 		bool loop = true;
-		// プレイヤーから一定距離離れるまで前に進める
 		while (loop) {
 			if (magicObject.magicObjectList[(int)eMagicType.SatelliteOrbital].transform.childCount > SATELLITE_MAX) {
                 magicObject.RemoveMiniBullet(bullet.gameObject);

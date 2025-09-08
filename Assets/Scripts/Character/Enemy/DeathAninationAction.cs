@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -35,5 +36,6 @@ public class DeathAninationAction : StateMachineBehaviour {
         animator.applyRootMotion = true;
         Collider col = animator.GetComponent<CapsuleCollider>();
         if (col != null) col.enabled = true;
+        UniTask task = PartManager.Instance.TransitionPart(eGamePart.Ending);
     }
 }

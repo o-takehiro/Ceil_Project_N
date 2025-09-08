@@ -14,6 +14,8 @@ public abstract class CharacterBase : MonoBehaviour {
     public Vector3 prevPos { get; protected set; } = Vector3.zero;
     // 現在フレームの座標
     public Vector3 currentPos { get; protected set; } = Vector3.zero;
+    //中心座標
+    public Vector3 centerPos { get; protected set; } = Vector3.zero;
     // 現在フレームの回転
     public Quaternion currentRot { get; protected set; } = Quaternion.identity;
 
@@ -63,6 +65,9 @@ public abstract class CharacterBase : MonoBehaviour {
     public Vector3 GetPrevPosition() {
         return prevPos;
     }
+    public Vector3 GetCenterPosition() {
+        return centerPos;
+    }
     /// <summary>
     /// 座標の設定
     /// </summary>
@@ -75,6 +80,9 @@ public abstract class CharacterBase : MonoBehaviour {
     /// </summary>
     public void SetPrevPosition() {
         prevPos = currentPos;
+    }
+    public void SetCenterPosition(Vector3 setPosition) {
+        centerPos = setPosition;
     }
     /// <summary>
     /// 回転の取得

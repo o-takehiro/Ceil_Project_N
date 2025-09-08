@@ -471,7 +471,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   attackCollider: {fileID: 8608934331786285638}
-  AttackRenderer: {fileID: 0}
   animator: {fileID: 8213544153149856916}
 --- !u!135 &8608934331786285638
 SphereCollider:
