@@ -35,6 +35,7 @@ public class PlayerCharacter : CharacterBase {
         PlayerInput playerInput,
         Animator animator
     ) {
+        
         _rigidbody = rigidbody;
         _transform = transform;
         _camera = camera;
@@ -49,9 +50,8 @@ public class PlayerCharacter : CharacterBase {
         _attack.SetupAttackData();
         // 魔法用クラスの生成
         _magic = new PlayerMagicAttack(_animator);
-
+       
     }
-    
     /// <summary>
     /// 使用前準備
     /// </summary>
