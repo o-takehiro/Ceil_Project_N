@@ -19,8 +19,15 @@ public class EnemyMagic : MagicBase {
 	private float coolTime = 0f;
 	private float coolTimeMAX = 0.5f;
 
-	// 弾
-	List<GameObject> bulletList = new List<GameObject>();
+	private bool satelliteOn = false;
+
+	private const float SATELLITE_DISTANCE = 2;
+	private const int SATELLITE_MAX = 4;
+
+	// 小型弾幕のリスト
+	private List<GameObject> bulletList = new List<GameObject>();
+	// 衛星軌道のリスト
+	private List<GameObject> satelliteList = new List<GameObject>();
 
 	/// <summary>
 	/// 魔法陣営の取得
@@ -34,7 +41,8 @@ public class EnemyMagic : MagicBase {
 	/// 防御魔法
 	/// </summary>
 	public override void DefenseMagic(MagicObject magicObject) {
-		Transform defense = magicObject.magicObjectList[(int)magicObject.activeMagic];
+		if (magicObject == null) return;
+		Transform defense = magicObject.GenerateDefense().transform;
 		defense.position = GetEnemyPosition();
 		defense.rotation = GetEnemyRotation();
 
@@ -48,8 +56,8 @@ public class EnemyMagic : MagicBase {
 		if (coolTime < 0) {
 			// 未使用化不可能
 			magicObject.canUnuse = false;
-			GameObject bullet = magicObject.GenerateMiniBullet();
-			bulletList.Add(bullet);
+			Transform bullet = magicObject.GenerateMiniBullet().transform;
+			bulletList.Add(bullet.gameObject);
 			bullet.transform.position = GetEnemyPosition();
 			bullet.transform.rotation = GetEnemyRotation();
 			// 移動
@@ -66,17 +74,15 @@ public class EnemyMagic : MagicBase {
 	/// <param name="magicObject"></param>
 	/// <param name="miniBullet"></param>
 	/// <returns></returns>
-	private async UniTask MiniBulletMove(MagicObject magicObject, GameObject miniBullet) {
-		Transform magicTransform = miniBullet.transform;
+	private async UniTask MiniBulletMove(MagicObject magicObject, Transform miniBullet) {
 		float distance = 0;
 		// プレイヤーから一定距離離れるまで前に進める
 		while (distance < distanceMAX) {
-			distance = Vector3.Distance(magicTransform.position, GetEnemyPosition());
-			magicTransform.position += magicTransform.forward * speed * Time.deltaTime;
-			miniBullet.transform.position = magicTransform.position;
+			distance = Vector3.Distance(miniBullet.position, GetEnemyPosition());
+			miniBullet.position += miniBullet.forward * speed * Time.deltaTime;
 			await UniTask.DelayFrame(1);
 		}
-		magicObject.RemoveMiniBullet(miniBullet);
+		magicObject.RemoveMiniBullet(miniBullet.gameObject);
 		await UniTask.DelayFrame(1);
 		// 未使用化可能
 		for (int i = 0, max = bulletList.Count; i < max; i++) {
@@ -84,8 +90,69 @@ public class EnemyMagic : MagicBase {
 		}
 		magicObject.canUnuse = true;
 	}
-
-    public override void SatelliteOrbitalMagic(MagicObject magicObject) {
-        
-    }
+	/// <summary>
+	/// 衛星軌道魔法
+	/// </summary>
+	/// <param name="magicObject"></param>
+	public override void SatelliteOrbitalMagic(MagicObject magicObject) {
+		if (magicObject == null) return;
+		if (satelliteOn) return;
+		satelliteOn = true;
+		for (int i = 0; i < SATELLITE_MAX; i++) {
+			// 未使用化不可能
+			magicObject.canUnuse = false;
+			Transform bullet = magicObject.GenerateMiniBullet().transform;
+			satelliteList.Add(bullet.gameObject);
+			// 衛星配置
+			switch (i) {
+				case 0:
+					bullet.position += new Vector3(SATELLITE_DISTANCE, 0, 0);
+					break;
+				case 1:
+					bullet.position += new Vector3(-SATELLITE_DISTANCE, 0, 0);
+					break;
+				case 2:
+					bullet.position += new Vector3(0, 0, SATELLITE_DISTANCE);
+					break;
+				case 3:
+					bullet.position += new Vector3(0, 0, -SATELLITE_DISTANCE);
+					break;
+			}
+			UniTask task = SatelliteOrbitalMove(magicObject, bullet);
+		}
+	}
+	/// <summary>
+	/// 衛星軌道魔法の移動
+	/// </summary>
+	/// <param name="magicObject"></param>
+	/// <param name="miniBullet"></param>
+	/// <returns></returns>
+	private async UniTask SatelliteOrbitalMove(MagicObject magicObject, Transform bullet) {
+		bool loop = true;
+		while (loop) {
+			if (magicObject.magicObjectList[(int)eMagicType.SatelliteOrbital].transform.childCount > SATELLITE_MAX) {
+				magicObject.RemoveMiniBullet(bullet.gameObject);
+				return;
+			}
+			magicObject.transform.position = GetEnemyPosition();
+			Vector3 satelliteRotation = magicObject.transform.eulerAngles;
+			satelliteRotation.y += speed * Time.deltaTime;
+			magicObject.transform.eulerAngles = satelliteRotation;
+			await UniTask.DelayFrame(1);
+			loop = LoopChange();
+		}
+		satelliteOn = false;
+		// 未使用化可能
+		magicObject.canUnuse = true;
+	}
+	/// <summary>
+	/// 衛星軌道魔法のループ抜け処理
+	/// </summary>
+	/// <returns></returns>
+	private bool LoopChange() {
+		for (int i = 0, max = satelliteList.Count; i < max; i++) {
+			if (satelliteList[i].activeInHierarchy) return true;
+		}
+		return false;
+	}
 }
