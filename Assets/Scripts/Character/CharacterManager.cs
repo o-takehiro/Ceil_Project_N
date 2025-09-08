@@ -112,6 +112,7 @@ public class CharacterManager : MonoBehaviour {
     /// </summary>
     /// <returns></returns>
     public EnemyCharacter GetEnemy() {
+        if( _useEnemyObject == null) return null;
         return _useEnemyObject;
     }
 }
