@@ -79,6 +79,10 @@ public class PlayerCharacter : CharacterBase {
         SetPlayerRotation(transform.rotation);
         SetPlayerCenterPosition(transform.position + Vector3.up * 1.5f);
         SetPlayerPrevPosition();
+        if (_movement == null) _movement = new PlayerMovement(_rigidbody, transform, _camera, _animator);
+        if (_attack == null) _attack = new PlayerAttack(_rigidbody, _animator);
+        if (_magic == null) _magic = new PlayerMagicAttack(_animator);
+
 
         if (_attack != null) {
             _attack.SetupAttackData();
@@ -130,11 +134,11 @@ public class PlayerCharacter : CharacterBase {
         while (!token.IsCancellationRequested) {
             // 次フレームまで待機
             await UniTask.Yield(PlayerLoopTiming.FixedUpdate, token);
-            // 移動更新
-            _movement.Update(Time.deltaTime, _attack.IsAttacking);
+            if (_movement != null)
+                _movement.Update(Time.deltaTime, _attack?.IsAttacking ?? false);
 
-            // 攻撃更新
-            await _attack.Update(Time.deltaTime);
+            if (_attack != null)
+                await _attack.Update(Time.deltaTime);
 
             // 座標と回転の更新
             SetPlayerPosition(transform.position);
@@ -159,4 +163,20 @@ public class PlayerCharacter : CharacterBase {
         _movement._isDeath = true;
         _magic._isDeath = true;
     }
+
+    public override void Teardown() {
+        base.Teardown(); // CharacterBase の TearDown を呼ぶ
+
+        _movement?.ResetState();
+        _attack?.ResetState();
+        _magic?.ResetState();
+
+        // 入力や参照をクリア（必要に応じて）
+        _playerInput = null;
+
+        // Rigidbody の速度をリセット
+        if (_rigidbody != null) _rigidbody.velocity = Vector3.zero;
+    }
+
+
 }

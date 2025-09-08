@@ -101,4 +101,14 @@ public class PlayerMovement {
             }
         }
     }
+
+    public void ResetState() {
+        _inputMove = Vector2.zero;
+        _jumpRequested = false;
+        _isGrounded = false;
+        _wasGrounded = false;
+        _isDeath = true;  // ˆÚ“®•s‰Â‚Éİ’è
+        _rigidbody.velocity = Vector3.zero;
+    }
+
 }

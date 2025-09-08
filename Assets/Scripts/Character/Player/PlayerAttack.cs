@@ -122,6 +122,11 @@ public class PlayerAttack {
         }
         return null;
     }
-
+    public void ResetState() {
+        _attackRequested = false;
+        _isAttacking = false;
+        _currentAttack = AttackStep.Invalid;
+        _attackTimer = 0f;
+    }
 
 }
