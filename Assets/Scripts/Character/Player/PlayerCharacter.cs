@@ -51,7 +51,7 @@ public class PlayerCharacter : CharacterBase {
         _magic = new PlayerMagicAttack(_animator);
 
     }
-
+    
     /// <summary>
     /// 使用前準備
     /// </summary>
@@ -67,7 +67,12 @@ public class PlayerCharacter : CharacterBase {
         SetRawAttack(playerMasterID.Attack);    // Attack
         SetRawDefense(playerMasterID.Defense);  // Difence
 
-
+        // 座標と回転の更新
+        SetPlayerPosition(Vector3.zero);
+        SetPlayerRotation(Quaternion.identity);
+        // 中心座標の更新
+        //SetPlayerCenterPosition(transform.position + Vector3.up * 1.5f);
+        SetPlayerPrevPosition();
         // 攻撃データの初期化
         if (_attack != null) {
             _attack.SetupAttackData();
@@ -129,8 +134,10 @@ public class PlayerCharacter : CharacterBase {
             // 座標と回転の更新
             SetPlayerPosition(transform.position);
             SetPlayerRotation(transform.rotation);
+            // 1F前の座標更新
+            SetPlayerPrevPosition();
             // 中心座標の更新
-            SetPlayerCenterPosition(transform.position + Vector3.up * 1.5f);
+            //SetPlayerCenterPosition(transform.position + Vector3.up * 1.5f);
         }
     }
 

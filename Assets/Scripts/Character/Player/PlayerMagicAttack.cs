@@ -50,7 +50,7 @@ public class PlayerMagicAttack {
     /// 魔法発射解除
     /// </summary>
     /// <param name="slotIndex"></param>
-    public void RequestCancelMagic(int slotIndex) {
+    public async void RequestCancelMagic(int slotIndex) {
         if (slotIndex < 0 || slotIndex >= _eMagicList.Count) return;
         // スロット番目のeMagicTypeを渡す
         var magicType = _eMagicList[slotIndex];
@@ -58,7 +58,7 @@ public class PlayerMagicAttack {
         if (magicType == eMagicType.Invalid) return;
 
         // 魔法発射解除
-        instance.MagicReset(eSideType.PlayerSide, magicType);
+        await instance.MagicReset(eSideType.PlayerSide, magicType);
     }
 
     /// <summary>
