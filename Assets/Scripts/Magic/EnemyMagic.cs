@@ -58,7 +58,7 @@ public class EnemyMagic : MagicBase {
 			magicObject.canUnuse = false;
 			Transform bullet = magicObject.GenerateMiniBullet().transform;
 			bulletList.Add(bullet.gameObject);
-			bullet.transform.position = GetEnemyPosition();
+			bullet.transform.position = GetEnemyCenterPosition();
 			bullet.transform.rotation = GetEnemyRotation();
 			// ˆÚ“®
 			UniTask task = MiniBulletMove(magicObject, bullet);
