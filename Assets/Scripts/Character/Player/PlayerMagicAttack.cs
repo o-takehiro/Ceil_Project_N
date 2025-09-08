@@ -1,5 +1,4 @@
 using Cysharp.Threading.Tasks;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -11,6 +10,7 @@ using static MagicManager;
 public class PlayerMagicAttack {
     private readonly Animator _animator;    // Animator参照
     private List<eMagicType> _eMagicList;   // 魔法を保存するリスト
+    public bool _isDeath = false;
 
     /// <summary>
     /// コンストラクタ
@@ -19,7 +19,7 @@ public class PlayerMagicAttack {
     public PlayerMagicAttack(Animator animator) {
         _animator = animator;
         _eMagicList = new List<eMagicType>(4);  // 保存数4
-
+        _isDeath = false;
         // 初期は使用不可
         for (int i = 0; i < 4; i++) {
             _eMagicList.Add(eMagicType.Invalid);
@@ -41,16 +41,18 @@ public class PlayerMagicAttack {
         if (magicType == eMagicType.Invalid) {
             return;
         }
+        if (!_isDeath) {
 
-        // 魔法発射
-        instance.CreateMagic(eSideType.PlayerSide, magicType);
+            // 魔法発射
+            instance.CreateMagic(eSideType.PlayerSide, magicType);
+        }
     }
 
     /// <summary>
     /// 魔法発射解除
     /// </summary>
     /// <param name="slotIndex"></param>
-    public void RequestCancelMagic(int slotIndex) {
+    public async void RequestCancelMagic(int slotIndex) {
         if (slotIndex < 0 || slotIndex >= _eMagicList.Count) return;
         // スロット番目のeMagicTypeを渡す
         var magicType = _eMagicList[slotIndex];
@@ -58,7 +60,11 @@ public class PlayerMagicAttack {
         if (magicType == eMagicType.Invalid) return;
 
         // 魔法発射解除
-        instance.MagicReset(eSideType.PlayerSide, magicType);
+        await instance.MagicReset(eSideType.PlayerSide, magicType);
+
+        if (_isDeath) {
+            await instance.MagicReset(eSideType.PlayerSide, magicType);
+        }
     }
 
     /// <summary>
@@ -67,8 +73,6 @@ public class PlayerMagicAttack {
     /// </summary>
     /// <returns></returns>
     public async UniTask MagicUpdate() {
-
-
 
 
 

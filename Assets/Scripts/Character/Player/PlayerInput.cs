@@ -117,8 +117,8 @@ public sealed class PlayerInput : MonoBehaviour {
         }
 
         // PlayerCharacter 初期化
-        _character.Initialize(_rigidbody, transform, _targetCamera, this, _animator);
-
+        _character.InjectDependencies(_rigidbody, transform, _targetCamera, this, _animator);
+        _character.Initialize();
         // UniTask のキャンセルを考慮してループ開始
         try {
             await _character.PlayerMainLoop(this.GetCancellationTokenOnDestroy());
