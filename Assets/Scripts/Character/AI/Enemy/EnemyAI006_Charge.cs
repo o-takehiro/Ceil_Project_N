@@ -4,6 +4,7 @@ using UnityEngine;
 
 using static EnemyCommonModule;
 using static CharacterUtility;
+using static MagicUtility;
 
 public class EnemyAI006_Charge : CharacterAIBase<EnemyCharacter> {
     private Rigidbody _enemyRigidbody = null;
@@ -33,6 +34,7 @@ public class EnemyAI006_Charge : CharacterAIBase<EnemyCharacter> {
         EnemySideRotation();
         GetEnemy().SetEnemyAttackValue(1);
         SetEnemyAttackCollider(GetEnemy().GetEnemyAttackValue(), true);
+        CreateMagic(eSideType.EnemySide, eMagicType.SatelliteOrbital);
     }
     public override void Execute() {
         base.Execute();
