@@ -23,23 +23,11 @@ public class PlayerCharacter : CharacterBase {
     private bool _isLockedOn = false;
     public override bool isPlayer() => true;
     public PlayerAttack GetAttackController() => _attack;
+
     /// <summary>
     /// 初期化処理
     /// </summary>
-    public void Initialize(
-        Rigidbody rigidbody,
-        Transform transform,
-        Camera camera,
-        PlayerInput playerInput,
-        Animator animator
-    ) {
-        
-        _rigidbody = rigidbody;
-        _transform = transform;
-        _camera = camera;
-        _playerInput = playerInput;
-        _animator = animator;
-
+    public override void Initialize() {
         // 移動用クラスの生成
         _movement = new PlayerMovement(_rigidbody, _transform, _camera, _animator);
         // 攻撃用クラスの生成
@@ -48,8 +36,25 @@ public class PlayerCharacter : CharacterBase {
         _attack.SetupAttackData();
         // 魔法用クラスの生成
         _magic = new PlayerMagicAttack(_animator);
-       
     }
+
+    /// <summary>
+    /// コンストラクタ
+    /// </summary>
+    public void InjectDependencies(
+        Rigidbody rigidbody,
+        Transform transform,
+        Camera camera,
+        PlayerInput playerInput,
+        Animator animator
+    ) {
+        _rigidbody = rigidbody;
+        _transform = transform;
+        _camera = camera;
+        _playerInput = playerInput;
+        _animator = animator;
+    }
+
     /// <summary>
     /// 使用前準備
     /// </summary>
@@ -69,7 +74,7 @@ public class PlayerCharacter : CharacterBase {
         SetPlayerPosition(Vector3.zero);
         SetPlayerRotation(Quaternion.identity);
         // 中心座標の更新
-        //SetPlayerCenterPosition(transform.position + Vector3.up * 1.5f);
+        SetPlayerCenterPosition(transform.position + Vector3.up * 1.5f);
         SetPlayerPrevPosition();
         // 攻撃データの初期化
         if (_attack != null) {
@@ -135,7 +140,7 @@ public class PlayerCharacter : CharacterBase {
             // 1F前の座標更新
             SetPlayerPrevPosition();
             // 中心座標の更新
-            //SetPlayerCenterPosition(transform.position + Vector3.up * 1.5f);
+            SetPlayerCenterPosition(new Vector3(transform.position.x, transform.position.y + 2, transform.position.z));
         }
     }
 
@@ -150,5 +155,6 @@ public class PlayerCharacter : CharacterBase {
         // 死亡アニメーション再生
         _animator.SetTrigger("Death");
         _movement._isDeath = true;
+        _magic._isDeath = true;
     }
 }
