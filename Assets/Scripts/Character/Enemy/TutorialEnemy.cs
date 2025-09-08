@@ -35,6 +35,7 @@ public class TutorialEnemy : EnemyCharacter {
         SetEnemyPosition(transform.position);
         //一フレーム前の位置更新
         SetEnemyPrevPosition();
+        SetEnemyCenterPosition(new Vector3(transform.position.x, transform.position.y + 2, transform.position.z + 0.5f));
         //現在の回転更新
         SetEnemyRotation(transform.rotation);
         //HPゲージの更新
@@ -56,5 +57,6 @@ public class TutorialEnemy : EnemyCharacter {
         transform.rotation = currentRot;
         //1フレーム前の座標更新
         SetEnemyPrevPosition();
+        SetEnemyCenterPosition(new Vector3(transform.position.x, transform.position.y + 2, transform.position.z + 0.5f));
     }
 }
