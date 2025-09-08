@@ -8,6 +8,7 @@ using static CharacterUtility;
 
 public class EnemyCommonModule {
     public static void LookAtPlayer(float setTime = 0.1f) {
+        if(GetPlayer() == null) return;
         //ƒvƒŒƒCƒ„[‚Ì•ûŒü‚ğŒü‚«‘±‚¯‚é
         Quaternion enemyRotation = GetEnemyRotation();
         //•ûŒü‚ğŒˆ‚ß‚é
