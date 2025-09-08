@@ -41,7 +41,7 @@ public class PlayerMovement {
     /// <summary>
     /// 1フレーム分の移動処理
     /// </summary>
-    public void Update(float deltaTime, bool isAttacking) {
+    public void MoveUpdate(float deltaTime, bool isAttacking) {
         if (isAttacking || _isDeath) return; // 攻撃中は移動不可
 
         // 接地判定

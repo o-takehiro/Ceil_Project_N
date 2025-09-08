@@ -134,9 +134,11 @@ public class PlayerCharacter : CharacterBase {
         while (!token.IsCancellationRequested) {
             // 次フレームまで待機
             await UniTask.Yield(PlayerLoopTiming.FixedUpdate, token);
-            if (_movement != null)
-                _movement.Update(Time.deltaTime, _attack?.IsAttacking ?? false);
+            
+            // 移動の更新処理
+            _movement?.MoveUpdate(Time.deltaTime, _attack?.IsAttacking ?? false);
 
+            // 攻撃の更新処理
             if (_attack != null)
                 await _attack.Update(Time.deltaTime);
 
