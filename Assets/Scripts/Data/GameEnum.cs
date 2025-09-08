@@ -46,12 +46,13 @@ public enum eEnemyType {
 }
 
 /// <summary>
-/// 魔法を使う陣営の種類
+/// オブジェクトの陣営の種類
 /// </summary>
 public enum eSideType {
     Invalid = -1,
     PlayerSide,     // プレイヤー
     EnemySide,      // 敵
+    MagicSide,      // 魔法
 
     Max,
 }
