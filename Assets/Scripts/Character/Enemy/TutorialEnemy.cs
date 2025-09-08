@@ -32,14 +32,14 @@ public class TutorialEnemy : EnemyCharacter {
         SetRawAttack(masterData.Attack);
         SetRawDefense(masterData.Defense);
         //現在の位置更新
-        SetEnemyPosition(transform.position);
+        SetEnemyPosition(Vector3.zero);
         //一フレーム前の位置更新
         SetEnemyPrevPosition();
         SetEnemyCenterPosition(new Vector3(transform.position.x, transform.position.y + 2, transform.position.z + 0.5f));
         //現在の回転更新
-        SetEnemyRotation(transform.rotation);
+        SetEnemyRotation(Quaternion.identity);
         //HPゲージの更新
-        SetupCanvasPosition(_CANVAS_POS_Y, Vector3.one);
+        SetupCanvasPosition(_CANVAS_POS_Y, transform.position, Vector3.one);
         //ステートマシーンの初期化
         _myAI.Setup(this);
         _myAI.ChangeState(new EnemyAI001_Wait());
