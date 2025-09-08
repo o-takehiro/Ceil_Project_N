@@ -54,11 +54,12 @@ public class EnemyCharacter : CharacterBase {
     }
 
     protected void SetupCanvasPosition(float setPosY, Vector3 setPosition, Vector3 setSize) {
-        Vector3 canvasPos = setPosition;
+        Vector3 canvasPos = Vector3.zero;
         canvasPos.y = setPosY;
         SetEnemyCanvas();
         enemyHPGauge.transform.SetParent(enemyCanvas.transform);
-        enemyCanvas.transform.position = canvasPos;
+        enemyHPGauge.transform.localPosition = Vector3.zero;
+        //enemyCanvas.transform.position = canvasPos;
         enemyCanvas.transform.localScale = setSize;
         enemyCanvas.gameObject.SetActive(true);
     }
