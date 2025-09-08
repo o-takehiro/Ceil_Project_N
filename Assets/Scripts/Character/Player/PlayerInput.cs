@@ -101,24 +101,23 @@ public sealed class PlayerInput : MonoBehaviour {
     /// 準備処理
     /// </summary>
     private async void Start() {
-        // Rigidbody を取得
+        // Rigidbody を取得（移動用に必要）
         _rigidbody = GetComponent<Rigidbody>();
-        // カメラを設定
         if (_targetCamera == null) _targetCamera = Camera.main;
 
         // Animatorの取得
         _animator = GetComponentInChildren<Animator>();
         if (_animator == null) return;
 
-        // PlayerCharacterを取得
+        // PlayerCharacter を取得 or 追加
         _character = GetComponent<PlayerCharacter>();
         if (_character == null) {
             _character = gameObject.AddComponent<PlayerCharacter>();
         }
 
-        // PlayerCharacter 初期化
-        _character.InjectDependencies(_rigidbody, transform, _targetCamera, this, _animator);
+        // PlayerCharacter の初期化（引数不要）
         _character.Initialize();
+
         // UniTask のキャンセルを考慮してループ開始
         try {
             await _character.PlayerMainLoop(this.GetCancellationTokenOnDestroy());
