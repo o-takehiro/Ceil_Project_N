@@ -66,7 +66,7 @@ public class PlayerMagic : MagicBase {
 			magicObject.canUnuse = false;
 			Transform bullet = magicObject.GenerateMiniBullet().transform;
 			bulletList.Add(bullet.gameObject);
-			bullet.transform.position = GetPlayerPosition();
+			bullet.transform.position = GetPlayerCenterPosition();
 			bullet.transform.rotation = GetPlayerRotation();
 			// 移動
 			UniTask task = MiniBulletMove(magicObject, bullet);
@@ -85,8 +85,9 @@ public class PlayerMagic : MagicBase {
 	private async UniTask MiniBulletMove(MagicObject magicObject, Transform miniBullet) {
 		float distance = 0;
 		// プレイヤーから一定距離離れるまで前に進める
-		while (distance < distanceMAX) {
-			distance = Vector3.Distance(miniBullet.position, GetPlayerPosition());
+		while (distance < distanceMAX || miniBullet.gameObject.activeInHierarchy) {
+			distance = Vector3.Distance(miniBullet.position, GetPlayerCenterPosition());
+			miniBullet.rotation = GetOtherDirection(miniBullet.position);
 			miniBullet.position += miniBullet.forward * speed * Time.deltaTime;
 			await UniTask.DelayFrame(1);
 		}
@@ -97,6 +98,15 @@ public class PlayerMagic : MagicBase {
 			if (bulletList[i].activeInHierarchy) return;
 		}
 		magicObject.canUnuse = true;
+	}
+	/// <summary>
+	/// 相手の方向
+	/// </summary>
+	/// <param name="currentPos"></param>
+	/// <returns></returns>
+	private Quaternion GetOtherDirection(Vector3 currentPos) {
+		Vector3 direction = (GetEnemyCenterPosition() - currentPos).normalized;
+		return Quaternion.LookRotation(direction);
 	}
 	/// <summary>
 	/// 衛星軌道魔法
@@ -144,7 +154,7 @@ public class PlayerMagic : MagicBase {
                 magicObject.RemoveMiniBullet(bullet.gameObject);
                 return;
 			}
-			magicObject.transform.position = GetPlayerPosition();
+			magicObject.transform.position = GetPlayerCenterPosition();
 			Vector3 satelliteRotation = magicObject.transform.eulerAngles;
 			satelliteRotation.y += speed * Time.deltaTime;
 			magicObject.transform.eulerAngles = satelliteRotation;

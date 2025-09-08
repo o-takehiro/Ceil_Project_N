@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 2864613784357506883}
   - component: {fileID: 4273437901379070868}
   - component: {fileID: 2284534373676774474}
+  - component: {fileID: 9148553282496883349}
   m_Layer: 0
   m_Name: EnemyUIRoot
   m_TagString: Untagged
@@ -101,6 +102,18 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &9148553282496883349
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3423051008145358868}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e8dbe14403675142aaee599cef99489, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &6680616483058419530
 GameObject:
   m_ObjectHideFlags: 0

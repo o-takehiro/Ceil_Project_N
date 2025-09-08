@@ -20,8 +20,10 @@ public class PartTitle : PartBase {
     /// </summary>
     /// <returns></returns>
     public override async UniTask Execute() {
+        SoundManager.Instance.PlayBGM(0);
         // タイトルを表示
         await MenuManager.Instance.Get<MenuTitle>().Open();
+        SoundManager.Instance.StopBGM();
 
         // メインパートへ遷移
         UniTask task = PartManager.Instance.TransitionPart(eGamePart.MainGame);
