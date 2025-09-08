@@ -78,7 +78,7 @@ public class EnemyMagic : MagicBase {
 		float distance = 0;
 		// プレイヤーから一定距離離れるまで前に進める
 		while (distance < distanceMAX) {
-			distance = Vector3.Distance(miniBullet.position, GetEnemyPosition());
+			distance = Vector3.Distance(miniBullet.position, GetEnemyCenterPosition());
 			miniBullet.position += miniBullet.forward * speed * Time.deltaTime;
 			await UniTask.DelayFrame(1);
 		}
