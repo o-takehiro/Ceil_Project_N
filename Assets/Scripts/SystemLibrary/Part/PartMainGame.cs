@@ -49,6 +49,7 @@ public class PartMainGame : PartBase {
     /// <returns></returns>
     /// <exception cref="System.NotImplementedException"></exception>
     public override async UniTask Execute() {
+        SoundManager.Instance.PlayBGM(1);
         await MenuManager.Instance.Get<PlayerHPGauge>().Open();
 
         await UniTask.CompletedTask;
@@ -62,6 +63,7 @@ public class PartMainGame : PartBase {
     public override async UniTask Teardown() {
         await base.Teardown();
         await MenuManager.Instance.Get<PlayerHPGauge>().Close();
+        SoundManager.Instance.PlayBGM(0);
 
         await UniTask.CompletedTask;
 
