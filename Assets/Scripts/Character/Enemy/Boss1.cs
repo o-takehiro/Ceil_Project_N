@@ -47,7 +47,7 @@ public class Boss1 : EnemyCharacter {
         transform.rotation = currentRot;
         //1フレーム前の座標更新
         SetEnemyPrevPosition();
-        SetEnemyCenterPosition(new Vector3(transform.position.x, transform.position.y + 3, transform.position.z));
+        SetEnemyCenterPosition(new Vector3(transform.position.x, transform.position.y + 3 , transform.position.z));
 
     }
     public override void Teardown() {
