@@ -6,6 +6,7 @@
  */
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -21,6 +22,7 @@ public class EnemyCharacter : CharacterBase {
     protected Animator enemyAnimator = null;
     public CharacterAIMachine<EnemyCharacter> _myAI { get; protected set; } = null;
     public CharacterAIBase<EnemyCharacter> _actionMachine { get; protected set; } = null;
+    private int _enemyAttackValue = -1;
 
     public override void Initialize() {
         base.Initialize();
@@ -78,6 +80,13 @@ public class EnemyCharacter : CharacterBase {
     }
 
     public void SetActiveCollider(int setValue, bool setFlag) {
+        if(_attackColliderList[setValue].gameObject.activeSelf == setFlag) return;
         _attackColliderList[setValue].gameObject.SetActive(setFlag);
+    }
+    public int GetEnemyAttackValue() {
+        return _enemyAttackValue;
+    }
+    public void SetEnemyAttackValue(int setValue) {
+        _enemyAttackValue = setValue;
     }
 }

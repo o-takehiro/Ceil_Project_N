@@ -15,7 +15,7 @@ public class EnemyAI006_Charge : CharacterAIBase<EnemyCharacter> {
 
     private const float _CHARGE_TIME = 3.0f;
     private const float _MOVE_SPEED = 15.0f;
-    private const float _CLOSE_DISTANCE = 10.0f;
+    private const float _CLOSE_DISTANCE = 15.0f;
     private const float _LEAVE_DISTANCE = 20.0f;
 
     public override void Initialize() {
@@ -31,7 +31,8 @@ public class EnemyAI006_Charge : CharacterAIBase<EnemyCharacter> {
         LookAtPlayer();
         GetEnemy().GetEnemyAnimator().SetBool("isCharge", true);
         EnemySideRotation();
-        SetEnemyAttackCollider(1, true);
+        GetEnemy().SetEnemyAttackValue(1);
+        SetEnemyAttackCollider(GetEnemy().GetEnemyAttackValue(), true);
     }
     public override void Execute() {
         base.Execute();
