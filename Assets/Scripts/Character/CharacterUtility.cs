@@ -183,6 +183,7 @@ public class CharacterUtility {
     public static void ToPlayerDamage(int setValue) {
         GetPlayer().RemoveHP(setValue);
         SetPlayerSliderValue(GetPlayer().GetPlayerSliderValue());
+        if(GetPlayer().isDead) GetPlayer().Dead();
     }
     /// <summary>
     /// “G‚Ö‚Ìƒ_ƒ[ƒW

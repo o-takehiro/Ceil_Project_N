@@ -24,6 +24,7 @@ public class PlayerMovement {
     private bool _wasGrounded;               // 前フレームの接地状態
     private float _turnVelocity;             // 回転補間用の速度
     public bool _isGrounded;                // 現在の接地状態
+    public bool _isDeath = false;
 
     public PlayerMovement(Rigidbody rigidbody, Transform transform, Camera camera, Animator animator) {
         _rigidbody = rigidbody;
@@ -42,7 +43,7 @@ public class PlayerMovement {
     /// 1フレーム分の移動処理
     /// </summary>
     public void Update(float deltaTime, bool isAttacking) {
-        if (isAttacking) return; // 攻撃中は移動不可
+        if (isAttacking || _isDeath) return; // 攻撃中は移動不可
 
         // 接地判定
         _isGrounded = Physics.Raycast(

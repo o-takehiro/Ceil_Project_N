@@ -5,6 +5,7 @@ using UnityEngine;
 using static CharacterUtility;
 using static CharacterMasterUtility;
 using UnityEngine.UIElements;
+using UnityEngine.InputSystem.Composites;
 /// <summary>
 /// プレイヤーキャラクター全体を統括するクラス
 /// ・移動、攻撃などの処理をサブクラスに委譲する
@@ -128,7 +129,8 @@ public class PlayerCharacter : CharacterBase {
             // 座標と回転の更新
             SetPlayerPosition(transform.position);
             SetPlayerRotation(transform.rotation);
-
+            // 中心座標の更新
+            SetPlayerCenterPosition(transform.position + Vector3.up * 1.5f);
         }
     }
 
@@ -141,5 +143,7 @@ public class PlayerCharacter : CharacterBase {
     /// </summary>
     public override void Dead() {
         // 死亡アニメーション再生
+        _animator.SetTrigger("Death");
+        _movement._isDeath = true;
     }
 }
