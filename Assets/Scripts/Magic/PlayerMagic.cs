@@ -121,9 +121,11 @@ public class PlayerMagic : MagicBase {
 					break;
 				case 2:
 					bullet.position += new Vector3(0, 0, SATELLITE_DISTANCE);
+					bullet.eulerAngles += new Vector3(0, 90, 0);
 					break;
 				case 3:
 					bullet.position += new Vector3(0, 0, -SATELLITE_DISTANCE);
+					bullet.eulerAngles += new Vector3(0, 90, 0);
 					break;
 			}
 			UniTask task = SatelliteOrbitalMove(magicObject, bullet);
