@@ -29,7 +29,7 @@ public class Boss1 : EnemyCharacter {
         //現在の回転更新
         SetEnemyRotation(transform.rotation);
         //HPゲージの更新
-        SetupCanvasPosition(_CANVAS_POS_Y, Vector3.one * 3);
+        SetupCanvasPosition(_CANVAS_POS_Y, transform.position, Vector3.one * 3);
         _myAI.Setup(this);
         _myAI.ChangeState(new EnemyAI001_Wait());
     }
