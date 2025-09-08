@@ -28,8 +28,8 @@ public class PlayerMagicAttack {
 
         _eMagicList[0] = eMagicType.Defense;        // 楯
         _eMagicList[1] = eMagicType.MiniBullet;     // たま
-
-        Debug.Log("0番目と1番目にまほうがセットされた");
+        _eMagicList[2] = eMagicType.SatelliteOrbital;   // えいせい
+        Debug.Log("0番目と1番目と2番目にまほうがセットされた");
     }
 
     /// <summary>
