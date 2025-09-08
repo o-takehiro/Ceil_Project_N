@@ -99,11 +99,11 @@ public class MagicManager : MonoBehaviour {
 	public void Update() {
 		UniTask task;
 		// デバッグ用
-		if (Input.GetKeyDown(KeyCode.Z)) CreateMagic(eSideType.PlayerSide, eMagicType.Defense);
-		if (Input.GetKeyDown(KeyCode.X)) CreateMagic(eSideType.PlayerSide, eMagicType.MiniBullet);
-		if (Input.GetKeyDown(KeyCode.C)) CreateMagic(eSideType.EnemySide, eMagicType.Defense);
-		if (Input.GetKeyDown(KeyCode.V)) CreateMagic(eSideType.EnemySide, eMagicType.MiniBullet);
-		if (Input.GetKeyDown(KeyCode.N)) CreateMagic(eSideType.PlayerSide, eMagicType.SatelliteOrbital);
+		if (Input.GetKey(KeyCode.Z)) CreateMagic(eSideType.PlayerSide, eMagicType.Defense);
+		if (Input.GetKey(KeyCode.X)) CreateMagic(eSideType.PlayerSide, eMagicType.MiniBullet);
+		if (Input.GetKey(KeyCode.C)) CreateMagic(eSideType.EnemySide, eMagicType.Defense);
+		if (Input.GetKey(KeyCode.V)) CreateMagic(eSideType.EnemySide, eMagicType.MiniBullet);
+		if (Input.GetKey(KeyCode.N)) CreateMagic(eSideType.PlayerSide, eMagicType.SatelliteOrbital);
 		if (Input.GetKeyUp(KeyCode.Z)) task = MagicReset(eSideType.PlayerSide, eMagicType.Defense);
 		if (Input.GetKeyUp(KeyCode.X)) task = MagicReset(eSideType.PlayerSide, eMagicType.MiniBullet);
 		if (Input.GetKeyUp(KeyCode.C)) task = MagicReset(eSideType.EnemySide, eMagicType.Defense);
