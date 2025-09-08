@@ -43,7 +43,7 @@ public class EnemyMagic : MagicBase {
 	public override void DefenseMagic(MagicObject magicObject) {
 		if (magicObject == null) return;
 		Transform defense = magicObject.GenerateDefense().transform;
-		defense.position = GetEnemyPosition();
+		defense.position = GetEnemyCenterPosition();
 		defense.rotation = GetEnemyRotation();
 
 		//MagicManager.instance.activeEnemyMagicID = eMagicType.Defense;
@@ -134,7 +134,7 @@ public class EnemyMagic : MagicBase {
 				magicObject.RemoveMiniBullet(bullet.gameObject);
 				return;
 			}
-			magicObject.transform.position = GetEnemyPosition();
+			magicObject.transform.position = GetEnemyCenterPosition();
 			Vector3 satelliteRotation = magicObject.transform.eulerAngles;
 			satelliteRotation.y += speed * Time.deltaTime;
 			magicObject.transform.eulerAngles = satelliteRotation;

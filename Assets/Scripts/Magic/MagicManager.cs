@@ -292,6 +292,7 @@ public class MagicManager : MonoBehaviour {
 		if (unuseMagic == null) return;
         // データの未使用化
         int unuseID = unuseMagic.ID;
+		if (unuseID < 0) return;
 		_useList[unuseID] = null;
 		unuseMagic.Teardown();
 		_unuseList[(int)unuseMagic.GetSide()].Add(unuseMagic);
