@@ -21,7 +21,7 @@ public class EnemyMagic : MagicBase {
 
 	private bool satelliteOn = false;
 
-	private const float SATELLITE_DISTANCE = 2;
+	private const float SATELLITE_DISTANCE = 4;
 	private const int SATELLITE_MAX = 4;
 
 	// è¨å^íeñãÇÃÉäÉXÉg
