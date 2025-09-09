@@ -24,4 +24,18 @@ public class EffectManager : SystemObject {
 	public void PlayEffect() {
 
 	}
+
+	/// <summary>
+	/// ループエフェクト再生
+	/// </summary>
+	public void PlayLoopEffect() {
+
+	}
+
+	/// <summary>
+	/// エフェクト停止
+	/// </summary>
+	public void StopEffect() {
+
+	}
 }
