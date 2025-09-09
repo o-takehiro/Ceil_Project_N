@@ -1,19 +1,21 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Cysharp.Threading.Tasks;
 
 using static CharacterUtility;
 using static CharacterMasterUtility;
-using Cysharp.Threading.Tasks;
+using static GameConst;
 
 public class Boss1 : EnemyCharacter {
     private const float _CANVAS_POS_Y = 5.5f;
 
     public override void Initialize() {
         base.Initialize();
-        _actionMachine = new EnemyAI005_Boss1Action();
-        _myAI = new CharacterAIMachine<EnemyCharacter>();
+        actionMachine = new EnemyAI005_Boss1Action();
+        myAI = new CharacterAIMachine<EnemyCharacter>();
         enemyAnimator = GetComponent<Animator>();
+        magicTypeList = new List<eMagicType>(MAX_ENEMY_MAGIC);
     }
     public override void Setup(int masterID) {
         base.Setup(masterID);
@@ -31,8 +33,8 @@ public class Boss1 : EnemyCharacter {
         SetEnemyRotation(transform.rotation);
         //HPゲージの更新
         SetupCanvasPosition(_CANVAS_POS_Y, transform.position, Vector3.one * 3);
-        _myAI.Setup(this);
-        _myAI.ChangeState(new EnemyAI001_Wait());
+        myAI.Setup(this);
+        myAI.ChangeState(new EnemyAI001_Wait());
     }
     private void Update() {
         //現在の位置更新
@@ -40,7 +42,7 @@ public class Boss1 : EnemyCharacter {
         //現在の回転取得
         SetRotation(transform.rotation);
         //AIマシーンの更新
-        _myAI.Update();
+        myAI.Update();
         //オブジェクトの座標更新
         transform.position = currentPos;
         //オブジェクトの回転更新

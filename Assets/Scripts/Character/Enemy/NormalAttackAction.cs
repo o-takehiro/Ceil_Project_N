@@ -11,6 +11,6 @@ public class NormalAttackAction : StateMachineBehaviour {
 
     public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
         SetEnemyAttackCollider(GetEnemy().GetEnemyAttackValue(), false);
-        GetEnemy()._myAI.ChangeState(new EnemyAI001_Wait());
+        GetEnemy().myAI.ChangeState(new EnemyAI001_Wait());
     }
 }

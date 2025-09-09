@@ -34,7 +34,7 @@ public class EnemyAI001_Wait : CharacterAIBase<EnemyCharacter> {
 
         if(_waitTimePer < _randomWaitTime) return;
 
-        GetEnemy()._myAI.ChangeState(GetActionMachine());
+        GetEnemy().myAI.ChangeState(GetActionMachine());
     }
 
     public override void Teardown() {
