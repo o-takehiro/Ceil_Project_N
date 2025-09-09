@@ -135,7 +135,7 @@ public class EnemyCharacter : CharacterBase {
     /// </summary>
     public void CancelAllEnemyMagic() {
         if(IsEmpty(magicTypeList)) return;
-        for (int i = magicTypeList.Count - 1; i > 0; i--) {
+        for (int i = magicTypeList.Count - 1; i >= 0; i--) {
             MagicReset(eSideType.EnemySide, magicTypeList[i]);
             magicTypeList.Remove(magicTypeList[i]);
         }
