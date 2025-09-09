@@ -10,6 +10,8 @@ using UnityEngine;
 using UnityEngine.UI;
 
 using static CharacterUtility;
+using static MagicUtility;
+using static CommonModule;
 
 public class EnemyCharacter : CharacterBase {
     // 敵のHPゲージ
@@ -19,8 +21,11 @@ public class EnemyCharacter : CharacterBase {
     private List<EnemyAttackCollider> _attackColliderList = null;
     protected Slider enemyHPGauge = null;
     protected Animator enemyAnimator = null;
-    public CharacterAIMachine<EnemyCharacter> _myAI { get; protected set; } = null;
-    public CharacterAIBase<EnemyCharacter> _actionMachine { get; protected set; } = null;
+    public CharacterAIMachine<EnemyCharacter> myAI { get; protected set; } = null;
+    public CharacterAIBase<EnemyCharacter> actionMachine { get; protected set; } = null;
+
+    protected List<eMagicType> magicTypeList = null;
+
     private int _enemyAttackValue = -1;
 
     public override void Initialize() {
@@ -42,7 +47,8 @@ public class EnemyCharacter : CharacterBase {
     }
     
     public override void Dead() {
-        _myAI.ChangeState(new EnemyAI008_Empty());
+        CancelAllEnemyMagic();
+        myAI.ChangeState(new EnemyAI008_Empty());
         enemyAnimator.SetTrigger("isDead");
     }
 
@@ -64,7 +70,7 @@ public class EnemyCharacter : CharacterBase {
     }
 
     public CharacterAIBase<EnemyCharacter> GetActionMachine() {
-        return _actionMachine;
+        return actionMachine;
     }
 
     public Animator GetEnemyAnimator() {
@@ -88,5 +94,50 @@ public class EnemyCharacter : CharacterBase {
     }
     public void SetEnemyAttackValue(int setValue) {
         _enemyAttackValue = setValue;
+    }
+    /// <summary>
+    /// 指定した種類の魔法を取得
+    /// </summary>
+    /// <param name="magicType"></param>
+    /// <returns></returns>
+    public eMagicType GetEnemyMagicType(eMagicType magicType) {
+        for (int i = 0, max = magicTypeList.Count; i < max; i++) {
+            eMagicType magic = magicTypeList[i];
+            if (magic != magicType) continue;
+
+            return magic;
+        }
+        return eMagicType.Invalid;
+    }
+    /// <summary>
+    /// リストに魔法の種類を追加
+    /// </summary>
+    /// <param name="magicType"></param>
+    public void AddEnemyMagicList(eMagicType magicType) {
+        magicTypeList.Add(magicType);
+    }
+    /// <summary>
+    /// 指定した魔法の削除
+    /// </summary>
+    /// <param name="magicType"></param>
+    public void CancelEnemyMagic(eMagicType magicType) {
+        if(IsEmpty(magicTypeList)) return;
+        for (int i = 0, max = magicTypeList.Count; i < max; i++) {
+            eMagicType magic = magicTypeList[i];
+            if(magic != magicType) continue;
+
+            MagicReset(eSideType.EnemySide, magicType);
+            magicTypeList.Remove(magic);
+        }
+    }
+    /// <summary>
+    /// 敵の全ての魔法をリセット
+    /// </summary>
+    public void CancelAllEnemyMagic() {
+        if(IsEmpty(magicTypeList)) return;
+        for (int i = magicTypeList.Count - 1; i >= 0; i--) {
+            MagicReset(eSideType.EnemySide, magicTypeList[i]);
+            magicTypeList.Remove(magicTypeList[i]);
+        }
     }
 }

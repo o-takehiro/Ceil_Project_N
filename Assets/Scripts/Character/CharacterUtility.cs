@@ -233,4 +233,19 @@ public class CharacterUtility {
     public static void SetEnemyAttackCollider(int setValue, bool setFlag) {
         GetEnemy().SetActiveCollider(setValue, setFlag);
     }
+
+    public static eMagicType GetEnemyMagicType(eMagicType magicType) {
+        return GetEnemy().GetEnemyMagicType(magicType);
+    }
+    public static void AddEnemyMagicType(eMagicType magicType) {
+        GetEnemy().AddEnemyMagicList(magicType);
+    }
+
+    public static void CancelEnemyMagic(eMagicType magicType) {
+        GetEnemy().CancelEnemyMagic(magicType);
+    }
+
+    public static void CancelAllEnemyMagic() {
+        GetEnemy().CancelAllEnemyMagic();
+    }
 }

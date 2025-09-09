@@ -16,8 +16,8 @@ public class DeathAninationAction : StateMachineBehaviour {
         animator.applyRootMotion = true;
         // 3D—pFCollider ‚ğ–³Œø‰»
         Collider col = animator.GetComponent<CapsuleCollider>();
-        if (col != null)
-            col.enabled = false;
+         if (col != null)
+             col.enabled = false;
 
         // Rigidbody ‚ª‚ ‚é‚È‚ç•¨—‹““®‚à~‚ß‚é
         Rigidbody rb = animator.GetComponent<Rigidbody>();

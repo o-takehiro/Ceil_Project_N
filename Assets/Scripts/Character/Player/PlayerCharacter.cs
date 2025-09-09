@@ -131,9 +131,8 @@ public class PlayerCharacter : CharacterBase {
     /// 非同期のUpdate
     /// </summary>
     public async UniTask PlayerMainLoop(CancellationToken token) {
+        token = this.GetCancellationTokenOnDestroy();
         while (!token.IsCancellationRequested) {
-            // 次フレームまで待機
-            await UniTask.Delay(2);
             
             // 移動の更新処理
             _movement?.MoveUpdate(Time.deltaTime, _attack?.IsAttacking ?? false);
@@ -149,6 +148,9 @@ public class PlayerCharacter : CharacterBase {
             SetPlayerPrevPosition();
             // 中心座標の更新
             SetPlayerCenterPosition(new Vector3(transform.position.x, transform.position.y + 2, transform.position.z));
+
+            // 次フレームまで待機
+            await UniTask.Yield(PlayerLoopTiming.FixedUpdate, token);
         }
     }
 
