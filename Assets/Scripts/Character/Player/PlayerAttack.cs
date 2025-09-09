@@ -81,11 +81,24 @@ public class PlayerAttack {
             // アニメーション再生
             _animator.SetTrigger(attackData.AnimationName);
 
+            // SE再生
+            switch (_currentAttack) {
+                case AttackStep.First:
+                    SoundManager.Instance.PlaySE(0);
+                    break;
+                case AttackStep.Second:
+                    SoundManager.Instance.PlaySE(1);
+                    break;
+                case AttackStep.Third:
+                    SoundManager.Instance.PlaySE(2);
+                    break;
+            }
+
             // コライダー有効時間待機
             await UniTask.Delay(attackData.ColliderActiveDurationMs);
 
             // 硬直時間待機
-            await UniTask.Delay(attackData.PostDelayMs);
+            // await UniTask.Delay(attackData.PostDelayMs);
 
             _isAttacking = false;
         }
@@ -122,6 +135,11 @@ public class PlayerAttack {
         }
         return null;
     }
-
+    public void ResetState() {
+        _attackRequested = false;
+        _isAttacking = false;
+        _currentAttack = AttackStep.Invalid;
+        _attackTimer = 0f;
+    }
 
 }

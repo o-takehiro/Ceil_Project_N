@@ -28,11 +28,16 @@ public class PlayerCharacter : CharacterBase {
     /// 初期化処理
     /// </summary>
     public override void Initialize() {
+        // 依存コンポーネントは自前で取得
+        _rigidbody = GetComponent<Rigidbody>();
+        _animator = GetComponentInChildren<Animator>();
+        _playerInput = GetComponent<PlayerInput>();
+        _camera = Camera.main; // 必要なら差し替え可
+
         // 移動用クラスの生成
-        _movement = new PlayerMovement(_rigidbody, _transform, _camera, _animator);
+        _movement = new PlayerMovement(_rigidbody, transform, _camera, _animator);
         // 攻撃用クラスの生成
         _attack = new PlayerAttack(_rigidbody, _animator);
-        // 攻撃データの初期化
         _attack.SetupAttackData();
         // 魔法用クラスの生成
         _magic = new PlayerMagicAttack(_animator);
@@ -60,28 +65,29 @@ public class PlayerCharacter : CharacterBase {
     /// </summary>
     public override void Setup(int masterID) {
         base.Setup(masterID);
-        // マスター出たー
+
         var playerMasterID = GetCharacterMaster(masterID);
         MenuManager.Instance.Get<PlayerHPGauge>().GetSlider().value = 0.2f;
-        // ステータスのセット
-        SetMaxHP(playerMasterID.HP);            // 最大HP
-        SetHP(playerMasterID.HP);               // HP
-        //SetMaxMP(playerMasterID.MP);          // MP
-        SetRawAttack(playerMasterID.Attack);    // Attack
-        SetRawDefense(playerMasterID.Defense);  // Difence
+
+        SetMaxHP(playerMasterID.HP);
+        SetHP(playerMasterID.HP);
+        SetRawAttack(playerMasterID.Attack);
+        SetRawDefense(playerMasterID.Defense);
 
         // 座標と回転の更新
-        SetPlayerPosition(Vector3.zero);
-        SetPlayerRotation(Quaternion.identity);
-        // 中心座標の更新
+        SetPlayerPosition(transform.position);   // MonoBehaviour の transform を使う
+        SetPlayerRotation(transform.rotation);
         SetPlayerCenterPosition(transform.position + Vector3.up * 1.5f);
         SetPlayerPrevPosition();
-        // 攻撃データの初期化
+        if (_movement == null) _movement = new PlayerMovement(_rigidbody, transform, _camera, _animator);
+        if (_attack == null) _attack = new PlayerAttack(_rigidbody, _animator);
+        if (_magic == null) _magic = new PlayerMagicAttack(_animator);
+
+
         if (_attack != null) {
             _attack.SetupAttackData();
         }
 
-        // カメラターゲット設定
         if (CameraManager.Instance != null)
             CameraManager.Instance.SetTarget(this);
     }
@@ -127,12 +133,14 @@ public class PlayerCharacter : CharacterBase {
     public async UniTask PlayerMainLoop(CancellationToken token) {
         while (!token.IsCancellationRequested) {
             // 次フレームまで待機
-            await UniTask.Yield(PlayerLoopTiming.FixedUpdate, token);
-            // 移動更新
-            _movement.Update(Time.deltaTime, _attack.IsAttacking);
+            await UniTask.Delay(2);
+            
+            // 移動の更新処理
+            _movement?.MoveUpdate(Time.deltaTime, _attack?.IsAttacking ?? false);
 
-            // 攻撃更新
-            await _attack.Update(Time.deltaTime);
+            // 攻撃の更新処理
+            if (_attack != null)
+                await _attack.Update(Time.deltaTime);
 
             // 座標と回転の更新
             SetPlayerPosition(transform.position);
@@ -157,4 +165,21 @@ public class PlayerCharacter : CharacterBase {
         _movement._isDeath = true;
         _magic._isDeath = true;
     }
+
+    public override void Teardown() {
+        base.Teardown(); // CharacterBase の TearDown を呼ぶ
+        Debug.Log("Teardown");
+        _movement?.ResetState();
+        _attack?.ResetState();
+        _magic?.ResetState();
+
+        // 入力や参照をクリア
+        _playerInput = null;
+
+        // Rigidbody の速度をリセット
+        if (_rigidbody != null) _rigidbody.velocity = Vector3.zero;
+
+    }
+
+
 }

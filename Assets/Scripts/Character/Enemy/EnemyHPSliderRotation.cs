@@ -10,10 +10,8 @@ public class EnemyHPSliderRotation : MonoBehaviour {
     }
 
     private void LookatPlayer() {
-        if (GetPlayer() == null) return;
-
-        // プレイヤーへの方向
-        Vector3 direction = GetPlayerPosition() - transform.position;
+        // カメラへの方向
+        Vector3 direction = Camera.main.transform.position - transform.position;
 
         // 高さを無視して水平回転だけにする
         direction.y = 0;

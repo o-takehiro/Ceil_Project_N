@@ -93,6 +93,8 @@ public class PlayerMagicAttack {
         }
     }
 
-
+    public void ResetState() {
+        _isDeath = true;
+    }
 
 }

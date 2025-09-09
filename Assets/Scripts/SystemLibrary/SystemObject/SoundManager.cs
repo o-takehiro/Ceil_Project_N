@@ -60,7 +60,7 @@ public class SoundManager : SystemObject {
     /// SE再生
     /// </summary>
     /// <param name="seID"></param>
-    public async UniTask PlaySE(int seID) {
+    public void PlaySE(int seID) {
         if (!IsEnableIndex(_seAssign.seArray, seID)) return;
 
         // 再生中ではないオーディオソースを探してそれで再生
@@ -72,7 +72,7 @@ public class SoundManager : SystemObject {
             audioSource.clip = _seAssign.seArray[seID];
             audioSource.Play();
             // SEの終了待ち
-            while (audioSource.isPlaying) await UniTask.DelayFrame(1);
+            //while (audioSource.isPlaying) await UniTask.DelayFrame(1);
 
             return;
         }
