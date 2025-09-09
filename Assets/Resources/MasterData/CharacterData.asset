@@ -21,7 +21,7 @@ MonoBehaviour:
       Attack: 10
       Defense: 5
     - ID: 1
-      HP: 100
+      HP: 300
       MP: -1
       Attack: 5
       Defense: 2
