@@ -64,6 +64,7 @@ public class PartMainGame : PartBase {
         await base.Teardown();
         await MenuManager.Instance.Get<PlayerHPGauge>().Close();
         SoundManager.Instance.PlayBGM(0);
+        UnusePlayer();
 
         await UniTask.CompletedTask;
 

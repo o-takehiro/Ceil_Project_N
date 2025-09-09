@@ -133,7 +133,7 @@ public class PlayerCharacter : CharacterBase {
     public async UniTask PlayerMainLoop(CancellationToken token) {
         while (!token.IsCancellationRequested) {
             // 次フレームまで待機
-            await UniTask.Yield(PlayerLoopTiming.FixedUpdate, token);
+            await UniTask.Delay(2);
             
             // 移動の更新処理
             _movement?.MoveUpdate(Time.deltaTime, _attack?.IsAttacking ?? false);
@@ -168,16 +168,17 @@ public class PlayerCharacter : CharacterBase {
 
     public override void Teardown() {
         base.Teardown(); // CharacterBase の TearDown を呼ぶ
-
+        Debug.Log("Teardown");
         _movement?.ResetState();
         _attack?.ResetState();
         _magic?.ResetState();
 
-        // 入力や参照をクリア（必要に応じて）
+        // 入力や参照をクリア
         _playerInput = null;
 
         // Rigidbody の速度をリセット
         if (_rigidbody != null) _rigidbody.velocity = Vector3.zero;
+
     }
 
 
