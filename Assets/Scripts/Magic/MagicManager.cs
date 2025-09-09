@@ -216,6 +216,7 @@ public class MagicManager : MonoBehaviour {
 		_useObjectList[useID] = useObject;
 		useObject.transform.SetParent(_useObjectRoot);
 		MagicBase magicData = GetMagicData(useID);
+		magicData.SetMagicObject(useObject);
 		useObject.Setup(useID, magicData.GetSide(), magic);
 		return useObject;
 	}

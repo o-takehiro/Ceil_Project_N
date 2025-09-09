@@ -34,7 +34,15 @@ public class EnemyMagic : MagicBase {
 	/// </summary>
 	/// <returns></returns>
 	public override eSideType GetSide() {
-		return eSideType.EnemySide;
+		return eSideType.PlayerSide;
+	}
+
+	/// <summary>
+	/// 発動魔法セット
+	/// </summary>
+	/// <returns></returns>
+	public override void SetMagicObject(MagicObject setObject) {
+		useMagicObject = setObject;
 	}
 
 	/// <summary>

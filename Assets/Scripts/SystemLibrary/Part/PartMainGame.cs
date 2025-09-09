@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 using static CharacterUtility;
+using static MagicUtility;
 /// <summary>
 /// メインゲームパート
 /// </summary>
@@ -65,6 +66,7 @@ public class PartMainGame : PartBase {
         await MenuManager.Instance.Get<PlayerHPGauge>().Close();
         SoundManager.Instance.PlayBGM(0);
         UnusePlayer();
+        ExecuteAllMagic(magic => magic.UnuseSelf());
 
         await UniTask.CompletedTask;
 
