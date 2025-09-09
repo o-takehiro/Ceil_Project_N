@@ -42,7 +42,7 @@ public class EnemyAI003_LeaveMove : CharacterAIBase<EnemyCharacter> {
         _moveTimePer += Time.deltaTime;
         if (distance > _PLAYER_DISTANCE || _moveTimePer > _MOVE_TIME) {
             _enemyRigidbody.velocity = Vector3.zero;
-            GetEnemy()._myAI.ChangeState(new EnemyAI001_Wait());
+            GetEnemy().myAI.ChangeState(new EnemyAI001_Wait());
             GetEnemy().GetEnemyAnimator().SetBool("isMove", false);
         } else {
             _enemyRigidbody.velocity = LeaveMoveAngle(_angle) * _MOVE_SPEED;

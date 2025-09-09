@@ -38,6 +38,14 @@ public class EnemyMagic : MagicBase {
 	}
 
 	/// <summary>
+	/// 発動魔法セット
+	/// </summary>
+	/// <returns></returns>
+	public override void SetMagicObject(MagicObject setObject) {
+		useMagicObject = setObject;
+	}
+
+	/// <summary>
 	/// 防御魔法
 	/// </summary>
 	public override void DefenseMagic(MagicObject magicObject) {

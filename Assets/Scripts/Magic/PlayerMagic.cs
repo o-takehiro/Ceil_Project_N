@@ -41,6 +41,14 @@ public class PlayerMagic : MagicBase {
 	}
 
 	/// <summary>
+	/// 発動魔法セット
+	/// </summary>
+	/// <returns></returns>
+	public override void SetMagicObject(MagicObject setObject) {
+		useMagicObject = setObject;
+	}
+
+	/// <summary>
 	/// 解析魔法
 	/// </summary>
 	public void AnalysisMagic() {
@@ -85,7 +93,7 @@ public class PlayerMagic : MagicBase {
 	private async UniTask MiniBulletMove(MagicObject magicObject, Transform miniBullet) {
 		float distance = 0;
 		// プレイヤーから一定距離離れるまで前に進める
-		while (distance < distanceMAX || miniBullet.gameObject.activeInHierarchy) {
+		while (distance < distanceMAX && miniBullet.gameObject.activeInHierarchy) {
 			distance = Vector3.Distance(miniBullet.position, GetPlayerCenterPosition());
 			miniBullet.rotation = GetOtherDirection(miniBullet.position);
 			miniBullet.position += miniBullet.forward * speed * Time.deltaTime;
