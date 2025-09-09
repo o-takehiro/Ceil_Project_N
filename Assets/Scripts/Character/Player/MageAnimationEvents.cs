@@ -1,12 +1,14 @@
 using UnityEngine;
 
 using static CharacterUtility;
-using static UnityEditor.Experimental.GraphView.GraphView;
 
 public class MageAnimationEvents : MonoBehaviour {
-    [SerializeField] private Collider attackCollider;
+    [SerializeField] private Collider attackCollider;   
     private PlayerAttack _playerAttack;
 
+    /// <summary>
+    /// 初期化処理
+    /// </summary>
     void Start() {
         if (attackCollider != null) attackCollider.enabled = false;
         var player = CharacterUtility.GetPlayer();
@@ -30,10 +32,17 @@ public class MageAnimationEvents : MonoBehaviour {
         _playerAttack?.EndAttack();
     }
 
+    /// <summary>
+    /// 三段目入力拒否
+    /// </summary>
     public void DisableAttackInput() => _playerAttack?.SetCanReceiveInput(false);
     public void EnableAttackInput() => _playerAttack?.SetCanReceiveInput(true);
 
 
+    /// <summary>
+    /// 敵へのダメージ処理
+    /// </summary>
+    /// <param name="other"></param>
     void OnTriggerEnter(Collider other) {
         if (!other.CompareTag("Enemy")) return;
         int damage = _playerAttack?.GetDamageValue() ?? 0;
