@@ -83,7 +83,8 @@ public class CharacterManager : MonoBehaviour {
         //未使用プレイヤーオブジェクトに入れる
         _unusePlayerObject = _usePlayerObject;
         //片付け処理を呼ぶ
-        _usePlayerObject.Teardown();
+        _unusePlayerObject.Teardown();
+        _usePlayerObject = null;
         _unusePlayerObject.transform.SetParent(_unuseObjectRoot);
     }
     /// <summary>
@@ -96,6 +97,7 @@ public class CharacterManager : MonoBehaviour {
 
             _unuseEnemyList[i] = _useEnemyObject;
             _unuseEnemyList[i].Teardown();
+            _useEnemyObject = null;
             _unuseEnemyList[i].transform.SetParent(_unuseObjectRoot);
         }
     }
@@ -104,6 +106,7 @@ public class CharacterManager : MonoBehaviour {
     /// </summary>
     /// <returns></returns>
     public PlayerCharacter GetPlayer() {
+        if( _usePlayerObject == null) return null;
         return _usePlayerObject;
     }
 
@@ -112,6 +115,7 @@ public class CharacterManager : MonoBehaviour {
     /// </summary>
     /// <returns></returns>
     public EnemyCharacter GetEnemy() {
+        if( _useEnemyObject == null) return null;
         return _useEnemyObject;
     }
 }

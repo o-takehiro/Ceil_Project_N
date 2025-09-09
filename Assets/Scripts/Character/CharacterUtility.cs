@@ -85,12 +85,14 @@ public class CharacterUtility {
     /// </summary>
     /// <param name="setPosition"></param>
     public static void SetPlayerPosition(Vector3 setPosition) {
+        if (GetPlayer() == null) return;
         GetPlayer().SetPosition(setPosition);
     }
     /// <summary>
     /// プレイヤーの1フレーム前の座標設定
     /// </summary>
     public static void SetPlayerPrevPosition() {
+        if (GetPlayer() == null) return;
         GetPlayer().SetPrevPosition();
     }
     /// <summary>
@@ -98,6 +100,7 @@ public class CharacterUtility {
     /// </summary>
     /// <param name="setPosition"></param>
     public static void SetPlayerCenterPosition(Vector3 setPosition) {
+        if (GetPlayer() == null) return;
         GetPlayer().SetCenterPosition(setPosition);
     }
     /// <summary>
@@ -105,6 +108,7 @@ public class CharacterUtility {
     /// </summary>
     /// <param name="setRotation"></param>
     public static void SetPlayerRotation(Quaternion setRotation) {
+        if (GetPlayer() == null) return;
         GetPlayer().SetRotation(setRotation);
     }
     /// <summary>
@@ -154,12 +158,14 @@ public class CharacterUtility {
     /// </summary>
     /// <param name="setRotation"></param>
     public static void SetEnemyPosition(Vector3 setPosition) {
+        if (GetEnemy() == null) return;
         GetEnemy().SetPosition(setPosition);
     }
     /// <summary>
     /// 敵の1フレーム前の座標設定
     /// </summary>
     public static void SetEnemyPrevPosition() {
+        if (GetEnemy() == null) return;
         GetEnemy().SetPrevPosition();
     }
     /// <summary>
@@ -167,6 +173,7 @@ public class CharacterUtility {
     /// </summary>
     /// <param name="setPosition"></param>
     public static void SetEnemyCenterPosition(Vector3 setPosition) {
+        if (GetEnemy() == null) return;
         GetEnemy().SetCenterPosition(setPosition);
     }
     /// <summary>
@@ -174,6 +181,7 @@ public class CharacterUtility {
     /// </summary>
     /// <param name="setRotation"></param>
     public static void SetEnemyRotation(Quaternion setRotation) {
+        if (GetEnemy() == null) return;
         GetEnemy().SetRotation(setRotation);
     }
     /// <summary>
