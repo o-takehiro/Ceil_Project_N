@@ -34,7 +34,7 @@ public class EnemyMagic : MagicBase {
 	/// </summary>
 	/// <returns></returns>
 	public override eSideType GetSide() {
-		return eSideType.PlayerSide;
+		return eSideType.EnemySide;
 	}
 
 	/// <summary>
