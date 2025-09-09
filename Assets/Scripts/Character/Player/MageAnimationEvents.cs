@@ -3,14 +3,15 @@ using UnityEngine;
 using static CharacterUtility;
 
 public class MageAnimationEvents : MonoBehaviour {
-    [SerializeField] private Collider attackCollider;   
-    private PlayerAttack _playerAttack;
+    [SerializeField] private Collider attackCollider;   // コライダー
+    private PlayerAttack _playerAttack;                 // PlayerAttackクラス
 
     /// <summary>
     /// 初期化処理
     /// </summary>
     void Start() {
         if (attackCollider != null) attackCollider.enabled = false;
+        // プレイヤーを取得
         var player = CharacterUtility.GetPlayer();
         if (player != null) _playerAttack = player.GetAttackController();
     }
