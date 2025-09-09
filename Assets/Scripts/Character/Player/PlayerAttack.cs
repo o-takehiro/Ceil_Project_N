@@ -1,27 +1,20 @@
-using Cysharp.Threading.Tasks;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
-
-using static CharacterUtility;
-/// <summary>
-/// プレイヤーの攻撃処理（コンボ管理、アニメーション再生など）
-/// </summary>
 public class PlayerAttack {
-    private readonly Rigidbody _rigidbody;   // Rigidbody参照
-    private readonly Animator _animator;     // Animator参照
+    private readonly Rigidbody _rigidbody;
+    private readonly Animator _animator;
 
-    private Dictionary<AttackStep, AttackData> _attackDataMap; // 攻撃ごとの設定
-    private AttackStep _currentAttack = AttackStep.Invalid;    // 現在の攻撃段階
+    private Dictionary<AttackStep, AttackData> _attackDataMap;
+    private AttackStep _currentAttack = AttackStep.Invalid;
 
-    private bool _attackRequested;   // 攻撃要求フラグ
-    private bool _isAttacking;       // 攻撃中フラグ
-    private float _attackTimer;      // 攻撃リセット用のタイマー
+    private bool _attackRequested;  // 次の攻撃要求
+    private bool _isAttacking;      // 現在攻撃中
+    private float _attackTimer;
 
-    private const float ATTACK_RESET_TIME = 5f; // コンボリセットまでの秒数
-
-    // 攻撃段階
+    private const float ATTACK_RESET_TIME = 5f;
+    private int _playerRawAttack;
+    private bool _canReceiveInput = true;  // 入力受付フラグ
     private enum AttackStep {
         Invalid,
         First,
@@ -29,24 +22,26 @@ public class PlayerAttack {
         Third
     }
 
-    // 攻撃中かどうか外部から参照できる
     public bool IsAttacking => _isAttacking;
 
-    public PlayerAttack(Rigidbody rigidbody, Animator animator) {
+    public PlayerAttack(Rigidbody rigidbody, Animator animator, int rawAttack) {
         _rigidbody = rigidbody;
         _animator = animator;
+        _playerRawAttack = rawAttack;
     }
 
-    /// <summary>
-    /// 攻撃要求を受け付ける
-    /// </summary>
     public void RequestAttack() {
-        if (!_isAttacking) _attackRequested = true;
+        if (!_canReceiveInput) return;  // 入力禁止中なら無視
+
+        _attackRequested = true;
+
+        // 攻撃中じゃないなら、すぐに最初の攻撃を開始
+        if (!_isAttacking) {
+            StartAttack();
+        }
+
     }
 
-    /// <summary>
-    /// 攻撃データ（アニメーション名や硬直時間など）の初期化
-    /// </summary>
     public void SetupAttackData() {
         _attackDataMap = new Dictionary<AttackStep, AttackData> {
             { AttackStep.First, new AttackData("attack", 1.3f, 500, 0) },
@@ -55,56 +50,9 @@ public class PlayerAttack {
         };
     }
 
-    /// <summary>
-    /// 1フレーム分の攻撃処理（非同期）
-    /// </summary>
-    public async UniTask Update(float deltaTime) {
-
-        // 攻撃要求があった場合の処理
-        if (_attackRequested && !_isAttacking) {
-            _attackRequested = false;
-            _isAttacking = true;
-
-            // 攻撃開始時に移動を止める
-            _rigidbody.velocity = Vector3.zero;
-
-            // 次の攻撃段階に進める
-            AdvanceAttackStep();
-
-            // 攻撃データを取得
-            if (!_attackDataMap.TryGetValue(_currentAttack, out var attackData)) {
-                _isAttacking = false;
-                return;
-            }
-            if (_animator != null)
-                _animator.SetTrigger(attackData.AnimationName);
-            // アニメーション再生
-            _animator.SetTrigger(attackData.AnimationName);
-
-            // SE再生
-            switch (_currentAttack) {
-                case AttackStep.First:
-                    SoundManager.Instance.PlaySE(0);
-                    break;
-                case AttackStep.Second:
-                    SoundManager.Instance.PlaySE(1);
-                    break;
-                case AttackStep.Third:
-                    SoundManager.Instance.PlaySE(2);
-                    break;
-            }
-
-            // コライダー有効時間待機
-            await UniTask.Delay(attackData.ColliderActiveDurationMs);
-
-            // 硬直時間待機
-            // await UniTask.Delay(attackData.PostDelayMs);
-
-            _isAttacking = false;
-        }
-
-        // コンボリセット判定
-        if (_currentAttack != AttackStep.Invalid) {
+    public void AttackUpdate(float deltaTime) {
+        // コンボリセット管理
+        if (!_isAttacking && _currentAttack != AttackStep.Invalid) {
             _attackTimer += deltaTime;
             if (_attackTimer >= ATTACK_RESET_TIME) {
                 _currentAttack = AttackStep.Invalid;
@@ -114,8 +62,37 @@ public class PlayerAttack {
     }
 
     /// <summary>
-    /// 現在の攻撃段階を次に進める
+    /// 攻撃開始処理（最初の段 or 次段へ移行）
     /// </summary>
+    private void StartAttack() {
+        _isAttacking = true;
+        _attackRequested = false; // 今の入力は消費
+
+        AdvanceAttackStep();
+
+
+        if (_attackDataMap.TryGetValue(_currentAttack, out var attackData)) {
+            _animator?.SetTrigger(attackData.AnimationName);
+            _rigidbody.velocity = Vector3.zero;
+        }
+    }
+
+    /// <summary>
+    /// 攻撃アニメーション内の「次段移行タイミング」で呼ぶ
+    /// </summary>
+    public void TryNextCombo() {
+        if (_attackRequested) {
+            StartAttack();
+        }
+    }
+    /// <summary>
+    /// アニメーション終了時に呼ぶ
+    /// </summary>
+    public void EndAttack() {
+        _isAttacking = false;
+        _attackRequested = false;
+    }
+
     private void AdvanceAttackStep() {
         _currentAttack = _currentAttack switch {
             AttackStep.Invalid => AttackStep.First,
@@ -123,23 +100,24 @@ public class PlayerAttack {
             AttackStep.Second => AttackStep.Third,
             _ => AttackStep.First
         };
+        _attackTimer = 0f;
     }
 
-    /// <summary>
-    /// AttackDataのデータの返す
-    /// </summary>
-    /// <returns></returns>
-    public AttackData GetCurrentAttackData() {
+    public int GetDamageValue() {
         if (_attackDataMap.TryGetValue(_currentAttack, out var data)) {
-            return data;
+            return Mathf.RoundToInt(_playerRawAttack * data.Damage);
         }
-        return null;
+        return _playerRawAttack;
     }
+
+    public void SetCanReceiveInput(bool value) {
+        _canReceiveInput = value;
+    }
+
     public void ResetState() {
         _attackRequested = false;
         _isAttacking = false;
         _currentAttack = AttackStep.Invalid;
         _attackTimer = 0f;
     }
-
 }
