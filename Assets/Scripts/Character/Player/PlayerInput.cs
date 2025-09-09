@@ -127,20 +127,20 @@ public sealed class PlayerInput : MonoBehaviour {
         }
     }
 
-    /// <summary>
-    /// 移動処理（物理演算用）
-    /// - targetPosition に補間移動する
-    /// </summary>
-    public void ApplyMovement(Vector3 targetPosition) {
-        _rigidbody.MovePosition(targetPosition);
-    }
-
-    /// <summary>
-    /// 回転処理（物理演算用）
-    /// - rot に補間回転する
-    /// </summary>
-    public void ApplyRotation(Quaternion rot) {
-        _rigidbody.MoveRotation(rot);
-
-    }
+    // /// <summary>
+    // /// 移動処理（物理演算用）
+    // /// - targetPosition に補間移動する
+    // /// </summary>
+    // public void ApplyMovement(Vector3 targetPosition) {
+    //     _rigidbody.MovePosition(targetPosition);
+    // }
+    // 
+    // /// <summary>
+    // /// 回転処理（物理演算用）
+    // /// - rot に補間回転する
+    // /// </summary>
+    // public void ApplyRotation(Quaternion rot) {
+    //     _rigidbody.MoveRotation(rot);
+    // 
+    // }
 }

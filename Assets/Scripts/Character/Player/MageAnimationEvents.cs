@@ -1,64 +1,51 @@
 using UnityEngine;
 
 using static CharacterUtility;
+
 public class MageAnimationEvents : MonoBehaviour {
-    [SerializeField] private Collider attackCollider;
-    //[SerializeField] private Renderer AttackRenderer;
-    [SerializeField] private Animator animator;
-    // ダメージを与える相手
-    private string _TARGET_TAG = "Enemy";
-    // プレイヤーの素の攻撃力
-    private int _playerRawAttack;
-    // プレイヤー参照
-    private PlayerCharacter _player;
+    [SerializeField] private Collider attackCollider;   
     private PlayerAttack _playerAttack;
+
+    /// <summary>
+    /// 初期化処理
+    /// </summary>
     void Start() {
-        //AttackRenderer.enabled = false;
-        if (attackCollider != null) {
-            attackCollider.enabled = false;
-        }
-
-        _player = GetPlayer();
-        if (_player != null) {
-            _playerRawAttack = _player.GetRawAttack();                 // 素の攻撃力
-            _playerAttack = _player.GetAttackController();            // 攻撃コントローラー
-        }
-
+        if (attackCollider != null) attackCollider.enabled = false;
+        var player = CharacterUtility.GetPlayer();
+        if (player != null) _playerAttack = player.GetAttackController();
     }
 
-    // 攻撃用アニメーションイベント
-    public void OnCollider() {
-        if (attackCollider != null) {
-            attackCollider.enabled = true;
-            //AttackRenderer.enabled = true;
-        }
+    // コライダー制御
+    public void OnCollider() => attackCollider.enabled = true;
+    public void OffCollider() => attackCollider.enabled = false;
+
+    // 攻撃毎のサウンド
+    public void AttackPlaySE_1() => SoundManager.Instance.PlaySE(0);
+    public void AttackPlaySE_2() => SoundManager.Instance.PlaySE(1);
+    public void AttackPlaySE_3() => SoundManager.Instance.PlaySE(2);
+
+    // アニメーション内のイベント
+    public void OnComboCheck() {
+        _playerAttack?.TryNextCombo(); // 次段移行判定
     }
-    public void OffCollider() {
-        if (attackCollider != null) {
-            attackCollider.enabled = false;
-            //AttackRenderer.enabled = false;
-        }
+    public void OnAttackEnd() {
+        _playerAttack?.EndAttack();
     }
 
     /// <summary>
-    /// ダメージを与える
+    /// 三段目入力拒否
+    /// </summary>
+    public void DisableAttackInput() => _playerAttack?.SetCanReceiveInput(false);
+    public void EnableAttackInput() => _playerAttack?.SetCanReceiveInput(true);
+
+
+    /// <summary>
+    /// 敵へのダメージ処理
     /// </summary>
     /// <param name="other"></param>
     void OnTriggerEnter(Collider other) {
-        if (!other.CompareTag(_TARGET_TAG)) return;
-
-        // 素の攻撃力
-        int baseAttack = _playerRawAttack;
-
-        // 現在の攻撃段階データ取得
-        var attackData = _playerAttack?.GetCurrentAttackData();
-        float finalDamage = baseAttack;
-
-        if (attackData != null) {
-            finalDamage = baseAttack * attackData.Damage;  // 素の攻撃力にコンボ倍率をかける
-        }
-        Debug.Log((int)finalDamage);
-        ToEnemyDamage((int)finalDamage);
+        if (!other.CompareTag("Enemy")) return;
+        int damage = _playerAttack?.GetDamageValue() ?? 0;
+        ToEnemyDamage(damage);
     }
-
 }

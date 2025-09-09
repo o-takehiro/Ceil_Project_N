@@ -52,7 +52,7 @@ public class PlayerMagicAttack {
     /// 魔法発射解除
     /// </summary>
     /// <param name="slotIndex"></param>
-    public async void RequestCancelMagic(int slotIndex) {
+    public async UniTask RequestCancelMagic(int slotIndex) {
         if (slotIndex < 0 || slotIndex >= _eMagicList.Count) return;
         // スロット番目のeMagicTypeを渡す
         var magicType = _eMagicList[slotIndex];
