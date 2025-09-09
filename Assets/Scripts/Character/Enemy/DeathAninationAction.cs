@@ -33,7 +33,7 @@ public class DeathAninationAction : StateMachineBehaviour {
     /// <param name="layerIndex"></param>
     public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
         UnuseEnemy();
-        animator.applyRootMotion = true;
+        animator.applyRootMotion = false;
         Collider col = animator.GetComponent<CapsuleCollider>();
         if (col != null) col.enabled = true;
         UniTask task = PartManager.Instance.TransitionPart(eGamePart.Ending);
