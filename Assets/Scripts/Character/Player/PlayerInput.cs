@@ -100,7 +100,7 @@ public sealed class PlayerInput : MonoBehaviour {
     /// <summary>
     /// 準備処理
     /// </summary>
-    private async void Start() {
+    private void Start() {
         // Rigidbody を取得（移動用に必要）
         _rigidbody = GetComponent<Rigidbody>();
         if (_targetCamera == null) _targetCamera = Camera.main;
@@ -116,31 +116,15 @@ public sealed class PlayerInput : MonoBehaviour {
         }
 
         // PlayerCharacter の初期化（引数不要）
-        _character.Initialize();
+        // _character.Initialize();
 
-        // UniTask のキャンセルを考慮してループ開始
-        try {
-            await _character.PlayerMainLoop(this.GetCancellationTokenOnDestroy());
-        }
-        catch (OperationCanceledException) {
-            // Destroy 時にキャンセルされた場合は無視
-        }
+        // // UniTask のキャンセルを考慮してループ開始
+        // try {
+        //     await _character.PlayerMainLoop(this.GetCancellationTokenOnDestroy());
+        // }
+        // catch (OperationCanceledException) {
+        //     // Destroy 時にキャンセルされた場合は無視
+        // }
     }
 
-    // /// <summary>
-    // /// 移動処理（物理演算用）
-    // /// - targetPosition に補間移動する
-    // /// </summary>
-    // public void ApplyMovement(Vector3 targetPosition) {
-    //     _rigidbody.MovePosition(targetPosition);
-    // }
-    // 
-    // /// <summary>
-    // /// 回転処理（物理演算用）
-    // /// - rot に補間回転する
-    // /// </summary>
-    // public void ApplyRotation(Quaternion rot) {
-    //     _rigidbody.MoveRotation(rot);
-    // 
-    // }
 }

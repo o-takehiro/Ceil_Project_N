@@ -21,6 +21,7 @@ public class PlayerCharacter : CharacterBase {
     private PlayerInput _playerInput;   // 入力制御
     private Animator _animator;         // アニメーション制御
     private bool _isLockedOn = false;
+    private bool _isLoopRunning = false;
     public override bool isPlayer() => true;
     public PlayerAttack GetAttackController() => _attack;
 
@@ -28,19 +29,19 @@ public class PlayerCharacter : CharacterBase {
     /// 初期化処理
     /// </summary>
     public override void Initialize() {
-        // 依存コンポーネントは自前で取得
-        _rigidbody = GetComponent<Rigidbody>();
-        _animator = GetComponentInChildren<Animator>();
-        _playerInput = GetComponent<PlayerInput>();
-        _camera = Camera.main; // 必要なら差し替え可
-
-        // 移動用クラスの生成
-        _movement = new PlayerMovement(_rigidbody, transform, _camera, _animator);
-        // 攻撃用クラスの生成
-        _attack = new PlayerAttack(_rigidbody, _animator,GetRawAttack());
-        _attack.SetupAttackData();
-        // 魔法用クラスの生成
-        _magic = new PlayerMagicAttack(_animator);
+        // // 依存コンポーネントは自前で取得
+        // _rigidbody = GetComponent<Rigidbody>();
+        // _animator = GetComponentInChildren<Animator>();
+        // _playerInput = GetComponent<PlayerInput>();
+        // _camera = Camera.main; // 必要なら差し替え可
+        // 
+        // // 移動用クラスの生成
+        // _movement = new PlayerMovement(_rigidbody, transform, _camera, _animator);
+        // // 攻撃用クラスの生成
+        // _attack = new PlayerAttack(_rigidbody, _animator,GetRawAttack());
+        // _attack.SetupAttackData();
+        // // 魔法用クラスの生成
+        // _magic = new PlayerMagicAttack(_animator);
     }
 
     /// <summary>
@@ -48,6 +49,13 @@ public class PlayerCharacter : CharacterBase {
     /// </summary>
     public override void Setup(int masterID) {
         base.Setup(masterID);
+
+
+        // 依存コンポーネントは自前で取得
+        _rigidbody = GetComponent<Rigidbody>();
+        _animator = GetComponentInChildren<Animator>();
+        _playerInput = GetComponent<PlayerInput>();
+        _camera = Camera.main; // 必要なら差し替え可
 
         var playerMasterID = GetCharacterMaster(masterID);
         MenuManager.Instance.Get<PlayerHPGauge>().GetSlider().value = 0.2f;
@@ -72,6 +80,9 @@ public class PlayerCharacter : CharacterBase {
 
         if (CameraManager.Instance != null)
             CameraManager.Instance.SetTarget(this);
+
+        // メインループを開始する
+        StartPlayerLoop().Forget();
     }
 
     // 入力を受けつけて、各クラスで使用可能にする
@@ -139,6 +150,13 @@ public class PlayerCharacter : CharacterBase {
         }
     }
 
+    private async UniTaskVoid StartPlayerLoop() {
+        if (_isLoopRunning) return;
+        _isLoopRunning = true;
+        await PlayerMainLoop(this.GetCancellationTokenOnDestroy());
+        _isLoopRunning = false;
+    }
+
     public float GetPlayerSliderValue() {
         return HP / maxHP;
     }
@@ -159,8 +177,7 @@ public class PlayerCharacter : CharacterBase {
         _attack?.ResetState();
         _magic?.ResetState();
 
-        // 入力や参照をクリア
-        _playerInput = null;
+        _isLoopRunning = false;
 
         // Rigidbody の速度をリセット
         if (_rigidbody != null) _rigidbody.velocity = Vector3.zero;

@@ -107,7 +107,7 @@ public class PlayerMovement {
         _jumpRequested = false;
         _isGrounded = false;
         _wasGrounded = false;
-        _isDeath = true;  // ˆÚ“®•s‰Â‚Éİ’è
+        _isDeath = false;  // ˆÚ“®•s‰Â‚Éİ’è
         _rigidbody.velocity = Vector3.zero;
     }
 
