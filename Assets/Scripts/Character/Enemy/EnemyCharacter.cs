@@ -47,13 +47,15 @@ public class EnemyCharacter : CharacterBase {
     }
     
     public override void Dead() {
-        CancelAllEnemyMagic();
-        myAI.ChangeState(new EnemyAI008_Empty());
+        enemyHPGauge.gameObject.SetActive(false);
         enemyAnimator.SetTrigger("isDead");
+        CancelAllEnemyMagic();
+        SetAllActiveCollider(false);
+        myAI.ChangeState(new EnemyAI008_Empty());
     }
 
     protected void SetEnemyCanvas() {
-        if(enemyHPGauge != null) return;
+        if (enemyHPGauge != null) return;
 
         enemyHPGauge = MenuManager.Instance.Get<EnemyHPGauge>().GetSlider();
     }
@@ -67,6 +69,7 @@ public class EnemyCharacter : CharacterBase {
         //enemyCanvas.transform.position = canvasPos;
         enemyCanvas.transform.localScale = setSize;
         enemyCanvas.gameObject.SetActive(true);
+        enemyHPGauge.gameObject.SetActive(true);
     }
 
     public CharacterAIBase<EnemyCharacter> GetActionMachine() {
@@ -88,6 +91,14 @@ public class EnemyCharacter : CharacterBase {
     public void SetActiveCollider(int setValue, bool setFlag) {
         if(_attackColliderList[setValue].gameObject.activeSelf == setFlag) return;
         _attackColliderList[setValue].gameObject.SetActive(setFlag);
+    }
+    private void SetAllActiveCollider(bool setFlag) {
+        for (int i = 0, max = _attackColliderList.Count; i < max; i++) {
+            GameObject colliderObject = _attackColliderList[i].gameObject;
+            if (colliderObject.activeSelf == setFlag) continue;
+
+            colliderObject.SetActive(setFlag);
+        }
     }
     public int GetEnemyAttackValue() {
         return _enemyAttackValue;

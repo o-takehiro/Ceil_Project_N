@@ -31,12 +31,6 @@ public abstract class CharacterBase : MonoBehaviour {
 
     }
     /// <summary>
-    /// マスターデータ関連の使用準備処理
-    /// </summary>
-    protected virtual void SetupMaster() {
-
-    }
-    /// <summary>
     /// 使用準備処理
     /// </summary>
     public virtual void Setup(int masterID) {
