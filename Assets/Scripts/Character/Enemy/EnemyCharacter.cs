@@ -48,10 +48,10 @@ public class EnemyCharacter : CharacterBase {
     
     public override void Dead() {
         enemyHPGauge.gameObject.SetActive(false);
+        myAI.ChangeState(new EnemyAI008_Empty());
         enemyAnimator.SetTrigger("isDead");
         CancelAllEnemyMagic();
         SetAllActiveCollider(false);
-        myAI.ChangeState(new EnemyAI008_Empty());
     }
 
     protected void SetEnemyCanvas() {
@@ -60,13 +60,11 @@ public class EnemyCharacter : CharacterBase {
         enemyHPGauge = MenuManager.Instance.Get<EnemyHPGauge>().GetSlider();
     }
 
-    protected void SetupCanvasPosition(float setPosY, Vector3 setPosition, Vector3 setSize) {
+    protected void SetupCanvasPosition(Vector3 setSize) {
         Vector3 canvasPos = Vector3.zero;
-        canvasPos.y = setPosY;
         SetEnemyCanvas();
         enemyHPGauge.transform.SetParent(enemyCanvas.transform);
         enemyHPGauge.transform.localPosition = Vector3.zero;
-        //enemyCanvas.transform.position = canvasPos;
         enemyCanvas.transform.localScale = setSize;
         enemyCanvas.gameObject.SetActive(true);
         enemyHPGauge.gameObject.SetActive(true);

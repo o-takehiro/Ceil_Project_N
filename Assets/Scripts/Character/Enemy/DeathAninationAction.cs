@@ -36,6 +36,6 @@ public class DeathAninationAction : StateMachineBehaviour {
         animator.applyRootMotion = false;
         Collider col = animator.GetComponent<CapsuleCollider>();
         if (col != null) col.enabled = true;
-        UniTask task = PartManager.Instance.TransitionPart(eGamePart.Ending);
+        //UniTask task = PartManager.Instance.TransitionPart(eGamePart.Ending);
     }
 }

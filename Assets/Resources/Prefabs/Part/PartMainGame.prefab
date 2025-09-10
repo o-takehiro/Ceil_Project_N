@@ -131,6 +131,7 @@ MonoBehaviour:
   _originEnemyList:
   - {fileID: 2861289428992066396, guid: e4768d5fd1de91d48a3b0a19b96ea201, type: 3}
   - {fileID: 5081871034179024946, guid: c77b02d41f7a8994a871d8dc9714f3b8, type: 3}
+  - {fileID: 1247440050699734625, guid: a2e3685883dbcf54ea5f80a829d49b4a, type: 3}
 --- !u!1 &4136215333099490308
 GameObject:
   m_ObjectHideFlags: 0

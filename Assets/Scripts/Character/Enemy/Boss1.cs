@@ -28,11 +28,12 @@ public class Boss1 : EnemyCharacter {
         SetEnemyPosition(transform.position);
         //一フレーム前の位置更新
         SetEnemyPrevPosition();
+        //中心座標更新
         SetEnemyCenterPosition(new Vector3(transform.position.x, transform.position.y + 2, transform.position.z));
         //現在の回転更新
         SetEnemyRotation(transform.rotation);
         //HPゲージの更新
-        SetupCanvasPosition(_CANVAS_POS_Y, transform.position, Vector3.one * 3);
+        SetupCanvasPosition(Vector3.one * 3);
         myAI.Setup(this);
         myAI.ChangeState(new EnemyAI001_Wait());
     }
