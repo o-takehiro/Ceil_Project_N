@@ -4,35 +4,59 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class goalObject : StageObjectBase {
+    // 自身のCollider
+    private Collider _collider;
 
     public override void SetUp() {
         base.SetUp();
-
+        if (_collider == null) {
+            _collider = GetComponent<Collider>();
+        }
+        _collider.enabled = false;
     }
 
+    /// <summary>
+    /// 更新処理
+    /// </summary>
     protected override void OnUpdate() {
+        var enemy = CharacterUtility.GetEnemy();
+        if (enemy != null && enemy.isDead) {
+            GetComponent<Collider>().enabled = true;
+        }
+
     }
 
-    private void OnTriggerEnter(Collider collision) {
-        if (collision.gameObject.tag == "Player") {
-            // SE再生
+    private async void OnTriggerEnter(Collider other) {
+        if (!other.CompareTag("Player")) return;
 
-            // 遷移処理
-            eStageState stage = eStageState.Max;
-            if (stage == eStageState.Stage3) {
-                // タイトルに遷移
-                UniTask task = PartManager.Instance.TransitionPart(eGamePart.Title);
-            }
-            else if (stage == eStageState.Stage2) {
-                // [ステージ2]のとき[ステージ3]に
-                UniTask task = StageManager.Instance.TransitionStage(eStageState.Stage3);
-            }
-            else if (stage == eStageState.Stage1) {
-                // [ステージ1]のとき[ステージ2]に
-                UniTask task = StageManager.Instance.TransitionStage(eStageState.Stage2);
-            }
+        // 現在のステージを取得
+        eStageState stage = StageManager.Instance.GetCurrentStageState();
+        // ステージ遷移
+        switch (stage) {
+            case eStageState.Stage3:
+                // Stage3 → タイトル
+                await PartManager.Instance.TransitionPart(eGamePart.Title);
+                break;
 
+            case eStageState.Stage2:
+                // Stage2 → Stage3
+                await StageManager.Instance.TransitionStage(eStageState.Stage3);
+                break;
+
+            case eStageState.Stage1:
+                // Stage1 → Stage2
+                await StageManager.Instance.TransitionStage(eStageState.Stage2);
+                break;
+
+            case eStageState.Tutorial:
+                // Tutorial → Stage1
+                await FadeManager.Instance.FadeOut();
+                await PartManager.Instance.RetryCurrentPart();
+                await StageManager.Instance.TransitionStage(eStageState.Stage1);
+                await PartManager.Instance.TransitionPart(eGamePart.MainGame);
+                break;
         }
     }
+
 
 }

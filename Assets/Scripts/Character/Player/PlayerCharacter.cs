@@ -50,7 +50,6 @@ public class PlayerCharacter : CharacterBase {
     public override void Setup(int masterID) {
         base.Setup(masterID);
 
-
         // 依存コンポーネントは自前で取得
         _rigidbody = GetComponent<Rigidbody>();
         _animator = GetComponentInChildren<Animator>();
@@ -182,6 +181,8 @@ public class PlayerCharacter : CharacterBase {
         // Rigidbody の速度をリセット
         if (_rigidbody != null) _rigidbody.velocity = Vector3.zero;
         if (_rigidbody != null) _rigidbody.angularVelocity = Vector3.zero;
+
+
 
     }
 
