@@ -26,17 +26,17 @@ MonoBehaviour:
       Attack: 5
       Defense: 2
     - ID: 2
-      HP: 200
-      MP: -1
-      Attack: 10
-      Defense: 5
-    - ID: 3
-      HP: 300
-      MP: -1
-      Attack: 20
-      Defense: 6
-    - ID: 4
-      HP: 400
+      HP: 500
       MP: -1
       Attack: 30
-      Defense: 7
+      Defense: 10
+    - ID: 3
+      HP: 800
+      MP: -1
+      Attack: 20
+      Defense: 5
+    - ID: 4
+      HP: 1500
+      MP: -1
+      Attack: 50
+      Defense: 30
