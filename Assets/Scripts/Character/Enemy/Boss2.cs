@@ -8,6 +8,7 @@ using static CharacterMasterUtility;
 public class Boss2 : EnemyCharacter {
     public override void Initialize() {
         base.Initialize();
+        actionMachine = new EnemyAI009_Boss2Action();
     }
 
     public override void Setup(int masterID) {
@@ -27,8 +28,12 @@ public class Boss2 : EnemyCharacter {
         SetEnemyRotation(transform.rotation);
         //HPゲージの更新
         SetupCanvasPosition(Vector3.one * 3);
+
     }
 
+    private void Update() {
+        
+    }
     public override void Teardown() {
         base.Teardown();
     }
