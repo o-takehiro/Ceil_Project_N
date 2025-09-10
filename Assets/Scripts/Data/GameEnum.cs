@@ -69,3 +69,16 @@ public enum eMagicType {
 
     Max,
 }
+
+/// <summary>
+/// ステージ列挙体
+/// </summary>
+public enum eStageState {
+    Invalid = -1,
+    Tutorial,
+    Stage1,
+    Stage2,
+    Stage3,
+
+    Max
+}

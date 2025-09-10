@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-using static MagicManager;
+using static MagicUtility;
 /// <summary>
 /// プレイヤーの魔法を撃つ処理
 /// </summary>
@@ -44,7 +44,7 @@ public class PlayerMagicAttack {
         if (!_isDeath) {
 
             // 魔法発射
-            instance.CreateMagic(eSideType.PlayerSide, magicType);
+            CreateMagic(eSideType.PlayerSide, magicType);
         }
     }
 
@@ -52,7 +52,7 @@ public class PlayerMagicAttack {
     /// 魔法発射解除
     /// </summary>
     /// <param name="slotIndex"></param>
-    public async UniTask RequestCancelMagic(int slotIndex) {
+    public void RequestCancelMagic(int slotIndex) {
         if (slotIndex < 0 || slotIndex >= _eMagicList.Count) return;
         // スロット番目のeMagicTypeを渡す
         var magicType = _eMagicList[slotIndex];
@@ -60,10 +60,10 @@ public class PlayerMagicAttack {
         if (magicType == eMagicType.Invalid) return;
 
         // 魔法発射解除
-        await instance.MagicReset(eSideType.PlayerSide, magicType);
+        MagicReset(eSideType.PlayerSide, magicType);
 
         if (_isDeath) {
-            await instance.MagicReset(eSideType.PlayerSide, magicType);
+            MagicReset(eSideType.PlayerSide, magicType);
         }
     }
 
