@@ -102,7 +102,7 @@ public class PlayerCharacter : CharacterBase {
     /// 魔法のキャンセル入力の受付x4
     /// </summary>
     /// <param name="slotIndex"></param>
-    public async void RequestCastMagicEnd(int slotIndex) => await _magic.RequestCancelMagic(slotIndex);
+    public void RequestCastMagicEnd(int slotIndex) => _magic.RequestCancelMagic(slotIndex);
 
     // カメラのロックオン受付
     public void RequestLookOn() {

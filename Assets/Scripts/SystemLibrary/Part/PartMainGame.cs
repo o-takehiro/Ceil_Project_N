@@ -43,8 +43,8 @@ public class PartMainGame : PartBase {
         await base.SetUp();
         // ¶¬ŠÖ˜A‚ğ‚±‚±‚ÉB
         await FadeManager.Instance.FadeIn();
-        UseEnemy(eEnemyType.TutorialEnemy);
-        UsePlayer(0);
+        //UseEnemy(eEnemyType.TutorialEnemy);
+        //UsePlayer(0);
         await UniTask.CompletedTask;
     }
 
