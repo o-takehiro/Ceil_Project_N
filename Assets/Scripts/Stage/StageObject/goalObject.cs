@@ -4,13 +4,26 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class goalObject : StageObjectBase {
+    // é©êgÇÃCollider
+    private Collider _collider;
 
     public override void SetUp() {
         base.SetUp();
-
+        if (_collider == null) {
+            _collider = GetComponent<Collider>();
+        }
+        _collider.enabled = false;
     }
 
+    /// <summary>
+    /// çXêVèàóù
+    /// </summary>
     protected override void OnUpdate() {
+        var enemy = CharacterUtility.GetEnemy();
+        if (enemy != null && enemy.isDead) {
+            GetComponent<Collider>().enabled = true;
+        }
+
     }
 
     private async void OnTriggerEnter(Collider other) {
@@ -37,8 +50,9 @@ public class goalObject : StageObjectBase {
 
             case eStageState.Tutorial:
                 // Tutorial Å® Stage1
-                await StageManager.Instance.TransitionStage(eStageState.Stage1);
+                await FadeManager.Instance.FadeOut();
                 await PartManager.Instance.RetryCurrentPart();
+                await StageManager.Instance.TransitionStage(eStageState.Stage1);
                 await PartManager.Instance.TransitionPart(eGamePart.MainGame);
                 break;
         }

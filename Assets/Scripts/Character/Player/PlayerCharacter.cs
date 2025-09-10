@@ -182,6 +182,8 @@ public class PlayerCharacter : CharacterBase {
         if (_rigidbody != null) _rigidbody.velocity = Vector3.zero;
         if (_rigidbody != null) _rigidbody.angularVelocity = Vector3.zero;
 
+
+
     }
 
 
