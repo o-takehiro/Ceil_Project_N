@@ -49,7 +49,7 @@ public class EnemyCharacter : CharacterBase {
     public override void Dead() {
         enemyHPGauge.gameObject.SetActive(false);
         myAI.ChangeState(new EnemyAI008_Empty());
-        enemyAnimator.SetTrigger("isDead");
+        enemyAnimator.SetBool("isDead", true);
         CancelAllEnemyMagic();
         SetAllActiveCollider(false);
     }
