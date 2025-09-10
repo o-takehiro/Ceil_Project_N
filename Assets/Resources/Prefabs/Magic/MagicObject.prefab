@@ -204,8 +204,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 58275c87ae2730749b698e14b17bad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  originDefense: {fileID: 3852491701366735063, guid: eef85179373ea5a4590d5843b373e68f, type: 3}
-  originMiniBullet: {fileID: 7323836922818739123, guid: a23298bc5a87fbc44b7b8cee4680c942, type: 3}
+  _originDefense: {fileID: 3852491701366735063, guid: eef85179373ea5a4590d5843b373e68f, type: 3}
+  _originMiniBullet: {fileID: 7323836922818739123, guid: a23298bc5a87fbc44b7b8cee4680c942, type: 3}
   defenseObject: {fileID: 0}
   miniBulletObjects: []
   _useObjectRoot: {fileID: 2740807844541493501}

@@ -16,10 +16,12 @@ public class MagicObject : MonoBehaviour {
 	public int ID { get; private set; } = -1;
 
 	// 防御魔法オブジェクトのオリジナル
-	public GameObject originDefense = null;
+	[SerializeField]
+	private GameObject _originDefense = null;
 
 	// 小型弾幕オブジェクトのオリジナル
-	public GameObject originMiniBullet = null;
+	[SerializeField]
+	private GameObject _originMiniBullet = null;
 
 	// 防御魔法のオブジェクト
 	public GameObject defenseObject = null;
@@ -56,10 +58,10 @@ public class MagicObject : MonoBehaviour {
 	/// </summary>
 	public void Initialize() {
 		// 各魔法オブジェクトの準備
-		defenseObject = Instantiate(originDefense, _unuseObjectRoot);
+		defenseObject = Instantiate(_originDefense, _unuseObjectRoot);
 		miniBulletObjects = new List<GameObject>(_GENERATE_OBJECTS_MAX);
-		for (int i = 0, max = _GENERATE_OBJECTS_MAX; i < max; i++) {
-			miniBulletObjects.Add(Instantiate(originMiniBullet, _unuseMagicRoot));
+		for (int i = 0; i < _GENERATE_OBJECTS_MAX; i++) {
+			miniBulletObjects.Add(Instantiate(_originMiniBullet, _unuseMagicRoot));
 		}
 	}
 
@@ -118,7 +120,7 @@ public class MagicObject : MonoBehaviour {
 			return miniBulletObjects[i];
 		}
 		// 全て表示されている場合は生成
-		GameObject newBullet = Instantiate(originMiniBullet, magicObjectList[(int)activeMagic]);
+		GameObject newBullet = Instantiate(_originMiniBullet, magicObjectList[(int)activeMagic]);
 		miniBulletObjects.Add(newBullet);
 		return newBullet;
 	}

@@ -225,21 +225,22 @@ public class MagicManager : MonoBehaviour {
 	/// 魔法生成
 	/// </summary>
 	/// <param name="magicID"></param>
-	public void CreateMagic(eSideType side, eMagicType magicID) {
-		if (_activeMagicIDList[(int)side][(int)magicID] >= 0) return;
+	public void CreateMagic(eSideType sideType, eMagicType magicType) {
+		int side = (int)sideType, magicID = (int)magicType;
+		if (_activeMagicIDList[side][magicID] >= 0) return;
 		// データを使用状態にする
-		_activeMagicIDList[(int)side][(int)magicID] = UseMagicData((int)side);
-		MagicBase magicSide = GetMagicData(_activeMagicIDList[(int)side][(int)magicID]);
-		magicSide?.Setup(_activeMagicIDList[(int)side][(int)magicID]);
+		_activeMagicIDList[side][magicID] = UseMagicData(side);
+		MagicBase magicSide = GetMagicData(_activeMagicIDList[side][magicID]);
+		magicSide?.Setup(_activeMagicIDList[side][magicID]);
 		// オブジェクトを生成する
-		MagicObject magicObject = GetMagicObject(_activeMagicIDList[(int)side][(int)magicID]);
+		MagicObject magicObject = GetMagicObject(_activeMagicIDList[side][magicID]);
 		if (magicObject == null) {
-			magicObject = UseMagicObject(_activeMagicIDList[(int)side][(int)magicID], magicID);
+			UseMagicObject(_activeMagicIDList[side][magicID], magicType);
 		}
 		// オブジェクト内のオブジェクト生成
 		//magicObject.GenerateMiniBullet();
 		// 魔法実行
-		MagicActivate(magicSide, side, magicID);
+		MagicActivate(magicSide, sideType, magicType);
 		return;
 
 	}
@@ -248,18 +249,19 @@ public class MagicManager : MonoBehaviour {
 	/// 指定された魔法の関数を実行する
 	/// </summary>
 	/// <param name="magic"></param>
-	private void MagicActivate(MagicBase magicSyde, eSideType side, eMagicType magic) {
-		//for (int i = 0, max = _activeMagic[(int)side].Count; i < max; i++) {
-		//	if (_activeMagic[(int)side][i] != null) continue;
-		switch (magic) {
+	private void MagicActivate(MagicBase magicSyde, eSideType sideType, eMagicType magicType) {
+		int side = (int)sideType, magic = (int)magicType;
+		//for (int i = 0, max = _activeMagic[side].Count; i < max; i++) {
+		//	if (_activeMagic[side][i] != null) continue;
+		switch (magicType) {
 			case eMagicType.Defense:
-				_activeMagic[(int)side][(int)magic] = magicSyde.DefenseMagic;
+				_activeMagic[side][magic] = magicSyde.DefenseMagic;
 				break;
 			case eMagicType.MiniBullet:
-				_activeMagic[(int)side][(int)magic] = magicSyde.MiniBulletMagic;
+				_activeMagic[side][magic] = magicSyde.MiniBulletMagic;
 				break;
 			case eMagicType.SatelliteOrbital:
-				_activeMagic[(int)side][(int)magic] = magicSyde.SatelliteOrbitalMagic;
+				_activeMagic[side][magic] = magicSyde.SatelliteOrbitalMagic;
 				break;
 		}
 		return;
@@ -269,10 +271,11 @@ public class MagicManager : MonoBehaviour {
 	/// <summary>
 	/// 発動中の魔法を終了する
 	/// </summary>
-	public async UniTask MagicReset(eSideType sideType, eMagicType magicID) {
-        int activeMagic = _activeMagicIDList[(int)sideType][(int)magicID];
+	public async UniTask MagicReset(eSideType sideType, eMagicType magicType) {
+		int side = (int)sideType, magicID = (int)magicType;
+		int activeMagic = _activeMagicIDList[side][magicID];
 		// 魔法のリセット
-		_activeMagic[(int)sideType][(int)magicID] = null;
+		_activeMagic[side][magicID] = null;
 		MagicBase removeMagic = GetMagicData(activeMagic);
 		activeMagic = -1;
 		if (removeMagic == null) return;
@@ -281,7 +284,7 @@ public class MagicManager : MonoBehaviour {
         while (magicObject.canUnuse == false) {
             await UniTask.DelayFrame(1);
         }
-        _activeMagicIDList[(int)sideType][(int)magicID] = activeMagic;
+        _activeMagicIDList[side][magicID] = activeMagic;
 		UnuseMagicData(removeMagic);
 	}
 
