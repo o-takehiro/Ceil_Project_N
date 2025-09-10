@@ -60,13 +60,11 @@ public class EnemyCharacter : CharacterBase {
         enemyHPGauge = MenuManager.Instance.Get<EnemyHPGauge>().GetSlider();
     }
 
-    protected void SetupCanvasPosition(float setPosY, Vector3 setPosition, Vector3 setSize) {
+    protected void SetupCanvasPosition(Vector3 setSize) {
         Vector3 canvasPos = Vector3.zero;
-        canvasPos.y = setPosY;
         SetEnemyCanvas();
         enemyHPGauge.transform.SetParent(enemyCanvas.transform);
         enemyHPGauge.transform.localPosition = Vector3.zero;
-        //enemyCanvas.transform.position = canvasPos;
         enemyCanvas.transform.localScale = setSize;
         enemyCanvas.gameObject.SetActive(true);
         enemyHPGauge.gameObject.SetActive(true);
