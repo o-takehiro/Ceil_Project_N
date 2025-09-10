@@ -118,6 +118,7 @@ MonoBehaviour:
   _stageObject:
   - {fileID: 5042899112173340328}
   - {fileID: 4570989665319373373}
+  _stageState: 1
 --- !u!1 &8742514995000210175
 GameObject:
   m_ObjectHideFlags: 0
@@ -681,7 +682,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2030308415784544086, guid: 32067ab8f00227042afb2daab1377b3a, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 5.27
+      value: 5.46
       objectReference: {fileID: 0}
     - target: {fileID: 2030308415784544086, guid: 32067ab8f00227042afb2daab1377b3a, type: 3}
       propertyPath: m_LocalPosition.z

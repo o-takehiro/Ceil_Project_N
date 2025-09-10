@@ -50,7 +50,6 @@ public class PlayerCharacter : CharacterBase {
     public override void Setup(int masterID) {
         base.Setup(masterID);
 
-
         // 依存コンポーネントは自前で取得
         _rigidbody = GetComponent<Rigidbody>();
         _animator = GetComponentInChildren<Animator>();

@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,10 +11,11 @@ public class StartObject : StageObjectBase {
     [SerializeField]
     private GameObject EnemyStartPos = null;
 
-    public override void SetUp() {
+    public override async void SetUp() {
         base.SetUp();
-        CreateEnemy();
         CreatePlayer();
+        CreateEnemy();
+        await UniTask.DelayFrame(1);
     }
     protected override void OnUpdate() {
     }

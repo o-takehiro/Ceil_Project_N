@@ -55,5 +55,8 @@ public class StageManager : MonoBehaviour {
         UniTask task = _currentStage.Execute();
     }
 
-
+    public eStageState GetCurrentStageState() {
+        if (_currentStage == null) return eStageState.Invalid;
+        return _currentStage.StageState;
+    }
 }

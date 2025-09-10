@@ -5,8 +5,9 @@ public abstract class StageBase : MonoBehaviour {
 
     [SerializeField]
     protected StageObjectBase[] _stageObject = null;
-
-
+    [SerializeField]
+    private eStageState _stageState;
+    public eStageState StageState => _stageState;
     /// <summary>
     /// ‰Šú‰»ˆ—
     /// </summary>
