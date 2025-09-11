@@ -55,6 +55,8 @@ public class CharacterData_importer : AssetPostprocessor {
 					cell = row.GetCell(3); p.MP = (int)(cell == null ? 0 : cell.NumericCellValue);
 					cell = row.GetCell(4); p.Attack = (int)(cell == null ? 0 : cell.NumericCellValue);
 					cell = row.GetCell(5); p.Defense = (int)(cell == null ? 0 : cell.NumericCellValue);
+					cell = row.GetCell(6); p.MinActionTime = (float)(cell == null ? 0 : cell.NumericCellValue);
+					cell = row.GetCell(7); p.MaxActionTime = (float)(cell == null ? 0 : cell.NumericCellValue);
 						s.list.Add (p);
 					}
 					data.sheets.Add(s);
