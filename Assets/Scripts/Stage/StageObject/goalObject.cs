@@ -51,7 +51,7 @@ public class goalObject : StageObjectBase {
             case eStageState.Tutorial:
                 // Tutorial Å® Stage1
                 await FadeManager.Instance.FadeOut();
-                await PartManager.Instance.RetryCurrentPart();
+                // await PartManager.Instance.RetryCurrentPart();
                 await StageManager.Instance.TransitionStage(eStageState.Stage1);
                 await PartManager.Instance.TransitionPart(eGamePart.MainGame);
                 break;
