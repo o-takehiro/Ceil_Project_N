@@ -49,12 +49,6 @@ public class PlayerMagic : MagicBase {
 	}
 
 	/// <summary>
-	/// ‰ğÍ–‚–@
-	/// </summary>
-	public void AnalysisMagic() {
-
-	}
-	/// <summary>
 	/// –hŒä–‚–@
 	/// </summary>
 	public override void DefenseMagic(MagicObject magicObject) {

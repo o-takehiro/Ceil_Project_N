@@ -10,6 +10,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
+using static CharacterUtility;
+using static PlayerMagicAttack;
 using static CommonModule;
 using Cysharp.Threading.Tasks;
 
@@ -42,8 +44,8 @@ public class MagicManager : MonoBehaviour {
 	// 発動中の魔法ID
 	private List<List<int>> _activeMagicIDList = null;
 	//private eMagicType activeEnemyMagicID = eMagicType.Invalid;
-	// コピーした魔法ID
-	private List<int> _copyMagicIDList = null;
+	// コピーした魔法
+	private List<eMagicType> _copyMagicList = null;
 
 	private const int _MAGIC_MAX = 8;
 
@@ -73,7 +75,7 @@ public class MagicManager : MonoBehaviour {
 
 		// 魔法の種類分のリストを生成しておく
 		int magicTypeMax = (int)eMagicType.Max;
-		_copyMagicIDList = new List<int>(magicTypeMax);
+		_copyMagicList = new List<eMagicType>(magicTypeMax);
 
 		// 発動中の魔法リストをある程度生成
 		_activeMagicIDList = new List<List<int>>(sideTypeMax);
@@ -120,9 +122,9 @@ public class MagicManager : MonoBehaviour {
 			}
 		}
 
-		for (int i = 0, max = _copyMagicIDList.Count; i < max; i++) {
-			Debug.Log(_copyMagicIDList[i]);
-		}
+		//for (int magic = 0, magicMax = _copyMagicList.Count; magic < magicMax; magic++) {
+		//	Debug.Log(_copyMagicList[magic]);
+		//}
 	}
 
 	/// <summary>
@@ -251,8 +253,8 @@ public class MagicManager : MonoBehaviour {
 	/// <param name="magic"></param>
 	private void MagicActivate(MagicBase magicSyde, eSideType sideType, eMagicType magicType) {
 		int side = (int)sideType, magic = (int)magicType;
-		//for (int i = 0, max = _activeMagic[side].Count; i < max; i++) {
-		//	if (_activeMagic[side][i] != null) continue;
+		//for (int magic = 0, magicMax = _activeMagic[side].Count; magic < magicMax; magic++) {
+		//	if (_activeMagic[side][magic] != null) continue;
 		switch (magicType) {
 			case eMagicType.Defense:
 				_activeMagic[side][magic] = magicSyde.DefenseMagic;
@@ -345,13 +347,26 @@ public class MagicManager : MonoBehaviour {
 	/// 解析魔法の発動
 	/// </summary>
 	public void AnalysisMagicActivate() {
-		int activeEnemyMagic = -1;
-		// 敵の発動中の魔法を取得
-		for (int i = 0, max = _copyMagicIDList.Count; i < max; i++) {
-			activeEnemyMagic = _activeMagicIDList[(int)eSideType.EnemySide][i];
-			if (_copyMagicIDList[i] == activeEnemyMagic) return;
+	 	_copyMagicList = GetMagicStorageSlot();
+		int enemy = (int)eSideType.EnemySide;
+		// 発動中の魔法を探す
+		for (int magic = 0, magicMax = _activeMagicIDList[enemy].Count; magic < magicMax; magic++) {
+			// 魔法発動中かつ、コピー済みでなければセット
+			if (_activeMagicIDList[enemy][magic] < 0 && GetMagicCopied(magic)) continue;
+			UniTask task = EffectManager.Instance.PlayEffect(eEffectType.Analysis, GetEnemyCenterPosition());
+			SetMagicStorageSlot((eMagicType)magic);
 		}
-		_copyMagicIDList.Add(activeEnemyMagic);
+	}
+
+	/// <summary>
+	/// 特定の魔法を既にコピーしているかどうか
+	/// </summary>
+	/// <returns></returns>
+	private bool GetMagicCopied(int magicID) { 
+		for (int i = 0, max = _copyMagicList.Count; i < max; i++) {
+			if ((int)_copyMagicList[i] == magicID) return true;
+		}
+		return false;
 	}
 
 	/// <summary>
