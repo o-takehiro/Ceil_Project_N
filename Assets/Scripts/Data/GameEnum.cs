@@ -77,6 +77,7 @@ public enum eEffectType {
 	Invalid = -1,
 	Elimination,        // 削除エフェクト
 	Hit,                // ヒットエフェクト
+    Analysis,           // 解析エフェクト
 
 	max,
 }

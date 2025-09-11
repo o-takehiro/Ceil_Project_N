@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
+using static CharacterUtility;
 using static PlayerMagicAttack;
 using static CommonModule;
 using Cysharp.Threading.Tasks;
@@ -352,6 +353,7 @@ public class MagicManager : MonoBehaviour {
 		for (int magic = 0, magicMax = _activeMagicIDList[enemy].Count; magic < magicMax; magic++) {
 			// 魔法発動中かつ、コピー済みでなければセット
 			if (_activeMagicIDList[enemy][magic] < 0 && GetMagicCopied(magic)) continue;
+			UniTask task = EffectManager.Instance.PlayEffect(eEffectType.Analysis, GetEnemyCenterPosition());
 			SetMagicStorageSlot((eMagicType)magic);
 		}
 	}
