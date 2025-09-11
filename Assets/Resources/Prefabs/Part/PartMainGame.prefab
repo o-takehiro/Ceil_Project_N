@@ -1,5 +1,54 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &2341739848601056446
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1021648475630088896}
+  - component: {fileID: 5007236208558543527}
+  m_Layer: 0
+  m_Name: StageManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1021648475630088896
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2341739848601056446}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 104297474352890880}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5007236208558543527
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2341739848601056446}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c40429da1b53f1d44b11a816ec66d1a5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _stageOriginList:
+  - {fileID: 7692017929440564447, guid: 801b1385978015649a3dea9cc77b5753, type: 3}
+  - {fileID: 3736400565758937706, guid: cc8fe9e0d964edd4aabbc47ff631dba2, type: 3}
+  - {fileID: 6492726763994374613, guid: ab168d9c9ea39c645b2827e70bc0e396, type: 3}
+  - {fileID: 354630969027662358, guid: 1d7b1b92f57b6214085fa6ccba6fe935, type: 3}
 --- !u!1 &2822482820126428136
 GameObject:
   m_ObjectHideFlags: 0
@@ -82,6 +131,7 @@ MonoBehaviour:
   _originEnemyList:
   - {fileID: 2861289428992066396, guid: e4768d5fd1de91d48a3b0a19b96ea201, type: 3}
   - {fileID: 5081871034179024946, guid: c77b02d41f7a8994a871d8dc9714f3b8, type: 3}
+  - {fileID: 1247440050699734625, guid: a2e3685883dbcf54ea5f80a829d49b4a, type: 3}
 --- !u!1 &4136215333099490308
 GameObject:
   m_ObjectHideFlags: 0
@@ -114,6 +164,7 @@ Transform:
   m_Children:
   - {fileID: 66638720319009661}
   - {fileID: 6758909383166510561}
+  - {fileID: 1021648475630088896}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1936784161947398875
@@ -130,6 +181,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _characterManager: {fileID: 6817332763211751135}
   _magicManager: {fileID: 6045975050343071542}
+  _stageManager: {fileID: 5007236208558543527}
 --- !u!1 &4765642567195213250
 GameObject:
   m_ObjectHideFlags: 0

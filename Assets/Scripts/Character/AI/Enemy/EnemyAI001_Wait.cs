@@ -22,7 +22,9 @@ public class EnemyAI001_Wait : CharacterAIBase<EnemyCharacter> {
     public override void Setup() {
         base.Setup();
         _waitTimePer = 0.0f;
-        _randomWaitTime = Random.Range(_MIN_TIME, _MAX_TIME);
+        float minTime = GetEnemy().GetMinActionTime();
+        float maxTime = GetEnemy().GetMaxActionTime();
+        _randomWaitTime = Random.Range(minTime, maxTime);
     }
 
     public override void Execute() {

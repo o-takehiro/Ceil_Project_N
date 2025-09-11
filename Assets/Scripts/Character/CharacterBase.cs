@@ -26,14 +26,10 @@ public abstract class CharacterBase : MonoBehaviour {
     public bool isDead { get { return HP <= 0; } }
     public int rawAttack { get; protected set; } = -1;
     public int rawDefense { get; protected set; } = -1;
+    public  float minActionTime { get; protected set; } = -1;
+    public float maxActionTime { get; protected set; } = -1;
 
     public virtual void Initialize() {
-
-    }
-    /// <summary>
-    /// マスターデータ関連の使用準備処理
-    /// </summary>
-    protected virtual void SetupMaster() {
 
     }
     /// <summary>
@@ -153,6 +149,19 @@ public abstract class CharacterBase : MonoBehaviour {
     /// <param name="removeValue"></param>
     public void RemoveHP(int removeValue) {
         SetHP(HP - removeValue);
+    }
+
+    public float GetMinActionTime() {
+        return minActionTime;
+    }
+    public void SetMinActionTime(float setValue) {
+        minActionTime = setValue;
+    }
+    public float GetMaxActionTime() {
+        return maxActionTime;
+    }
+    public void SetMaxActionTime(float setValue) {
+        maxActionTime = setValue;
     }
     /// <summary>
     /// キャラクターの死亡

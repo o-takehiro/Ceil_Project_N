@@ -71,12 +71,14 @@ public enum eMagicType {
 }
 
 /// <summary>
-/// エフェクトの種類
+/// ステージ列挙体
 /// </summary>
-public enum eEffectType {
+public enum eStageState {
     Invalid = -1,
-    Elimination,        // 削除エフェクト
-    Hit,                // ヒットエフェクト
+    Tutorial,
+    Stage1,
+    Stage2,
+    Stage3,
 
-    max,
+    Max
 }

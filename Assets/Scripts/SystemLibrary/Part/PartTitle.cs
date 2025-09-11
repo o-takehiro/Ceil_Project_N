@@ -26,7 +26,17 @@ public class PartTitle : PartBase {
         SoundManager.Instance.StopBGM();
 
         // メインパートへ遷移
-        UniTask task = PartManager.Instance.TransitionPart(eGamePart.MainGame);
+        eStageState stageNum = eStageState.Tutorial;
+
+        if (stageNum == eStageState.Max) {
+            UniTask task = PartManager.Instance.TransitionPart(eGamePart.Title);
+        }
+        else {
+            await StageManager.Instance.TransitionStage(stageNum);
+            UniTask task = PartManager.Instance.TransitionPart(eGamePart.MainGame);
+
+        }
+
         await UniTask.CompletedTask;
 
     }

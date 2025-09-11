@@ -31,7 +31,7 @@ public class CharacterManager : MonoBehaviour {
     private PlayerCharacter _usePlayerObject = null;
     // 使用中の敵オブジェクト
     private EnemyCharacter _useEnemyObject = null;
-    
+
     /// <summary>
     /// 初期化処理
     /// </summary>
@@ -45,7 +45,7 @@ public class CharacterManager : MonoBehaviour {
         for (int i = 0; i < maxEnemyCount; i++) {
             EnemyCharacter createEnemy = Instantiate(_originEnemyList[i], _unuseObjectRoot);
             createEnemy.Initialize();
-            _unuseEnemyList.Add(createEnemy);   
+            _unuseEnemyList.Add(createEnemy);
         }
     }
     /// <summary>
@@ -79,7 +79,7 @@ public class CharacterManager : MonoBehaviour {
     /// </summary>
     /// <param name="unusePlayer"></param>
     public void UnusePlayer() {
-        if(_usePlayerObject == null) return;
+        if (_usePlayerObject == null) return;
         //未使用プレイヤーオブジェクトに入れる
         _unusePlayerObject = _usePlayerObject;
         //片付け処理を呼ぶ
@@ -106,7 +106,7 @@ public class CharacterManager : MonoBehaviour {
     /// </summary>
     /// <returns></returns>
     public PlayerCharacter GetPlayer() {
-        if( _usePlayerObject == null) return null;
+        if (_usePlayerObject == null) return null;
         return _usePlayerObject;
     }
 
@@ -115,7 +115,15 @@ public class CharacterManager : MonoBehaviour {
     /// </summary>
     /// <returns></returns>
     public EnemyCharacter GetEnemy() {
-        if( _useEnemyObject == null) return null;
+        if (_useEnemyObject == null) return null;
         return _useEnemyObject;
+    }
+
+    public void SetUsePlayerPosition(Vector3 position) {
+        _usePlayerObject.transform.position = position;
+    }
+
+    public void SetUseEnemyPosition(Vector3 positoin) {
+        _useEnemyObject.transform.position = positoin;
     }
 }
