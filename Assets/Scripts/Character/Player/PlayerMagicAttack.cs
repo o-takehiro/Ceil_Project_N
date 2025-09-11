@@ -93,6 +93,10 @@ public class PlayerMagicAttack {
         }
     }
 
+    /// <summary>
+    /// 取得した魔法を最大数まで保存
+    /// </summary>
+    /// <param name="magicType"></param>
     public void SetMagicStorageSlot(eMagicType magicType) {
         // 空いているリストに保存
         for (int i = 0; i < _eMagicStorageList.Count; i++) {
@@ -102,6 +106,16 @@ public class PlayerMagicAttack {
             }
         }
     }
+
+    /// <summary>
+    /// リストの要素すべてを取得
+    /// </summary>
+    /// <returns></returns>
+    public List<eMagicType> GetMagicStorageSlot() {
+        return _eMagicStorageList;
+
+    }
+
 
     public void ResetState() {
         _isDeath = false;
