@@ -70,7 +70,7 @@ public class PartManager : SystemObject {
 
     public async UniTask RetryCurrentPart() {
         // 現在のパートの片付け
-        if (_currentPart != null) await _currentPart.Teardown();
+        //if (_currentPart != null) await _currentPart.Teardown();
 
         await _currentPart.SetUp();
         // 次のパートの実行処理
