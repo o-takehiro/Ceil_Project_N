@@ -48,6 +48,7 @@ MonoBehaviour:
   _originEffectList:
   - {fileID: 260389139693808691, guid: 618b4a2db4952ac48a63816f067eafb4, type: 3}
   - {fileID: 8788605888415713557, guid: df4d2f57465dd264d9d87fc034643fd2, type: 3}
+  - {fileID: 3806013424103599143, guid: 1f85988e46092854fa1495cb6b10b4c8, type: 3}
   _useObjectRoot: {fileID: 6204161666262572177}
   _unuseObjectRoot: {fileID: 7899687243440784766}
 --- !u!1 &6612989913978755383
