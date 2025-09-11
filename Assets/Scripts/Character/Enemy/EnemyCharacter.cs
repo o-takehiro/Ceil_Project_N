@@ -12,6 +12,7 @@ using UnityEngine.UI;
 using static CharacterUtility;
 using static MagicUtility;
 using static CommonModule;
+using static CharacterMasterUtility;
 
 public class EnemyCharacter : CharacterBase {
     // 敵のHPゲージ
@@ -33,6 +34,23 @@ public class EnemyCharacter : CharacterBase {
     }
     public override void Setup(int masterID) {
         base.Setup(masterID);
+        var masterData = GetCharacterMaster(masterID);
+        SetMaxHP(masterData.HP);
+        SetHP(masterData.HP);
+        SetRawAttack(masterData.Attack);
+        SetRawDefense(masterData.Defense);
+        SetMinActionTime(masterData.MinActionTime);
+        SetMaxActionTime(masterData.MaxActionTime);
+        //現在の位置更新
+        SetEnemyPosition(Vector3.zero);
+        //一フレーム前の位置更新
+        SetEnemyPrevPosition();
+        //中心座標の更新
+        SetEnemyCenterPosition(new Vector3(transform.position.x, transform.position.y + 2, transform.position.z));
+        //現在の回転更新
+        SetEnemyRotation(Quaternion.identity);
+        //HPゲージの更新
+        SetupCanvasPosition(Vector3.one);
     }
     public override void Teardown() {
         base.Teardown();
@@ -49,7 +67,7 @@ public class EnemyCharacter : CharacterBase {
     public override void Dead() {
         enemyHPGauge.gameObject.SetActive(false);
         myAI.ChangeState(new EnemyAI008_Empty());
-        enemyAnimator.SetTrigger("isDead");
+        enemyAnimator.SetBool("isDead", true);
         CancelAllEnemyMagic();
         SetAllActiveCollider(false);
     }

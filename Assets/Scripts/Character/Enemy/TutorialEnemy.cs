@@ -28,20 +28,6 @@ public class TutorialEnemy : EnemyCharacter {
     }
     public override void Setup(int masterID) {
         base.Setup(masterID);
-        var masterData = GetCharacterMaster(masterID);
-        SetMaxHP(masterData.HP);
-        SetHP(masterData.HP);
-        SetRawAttack(masterData.Attack);
-        SetRawDefense(masterData.Defense);
-        //現在の位置更新
-        SetEnemyPosition(Vector3.zero);
-        //一フレーム前の位置更新
-        SetEnemyPrevPosition();
-        SetEnemyCenterPosition(new Vector3(transform.position.x, transform.position.y + 2, transform.position.z));
-        //現在の回転更新
-        SetEnemyRotation(Quaternion.identity);
-        //HPゲージの更新
-        SetupCanvasPosition(Vector3.one);
         //ステートマシーンの初期化
         myAI.Setup(this);
         myAI.ChangeState(new EnemyAI001_Wait());
