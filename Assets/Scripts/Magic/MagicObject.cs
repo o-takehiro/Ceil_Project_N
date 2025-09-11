@@ -129,9 +129,10 @@ public class MagicObject : MonoBehaviour {
 	/// ì¡íËÇÃè¨å^íeñãÇÃçÌèú
 	/// </summary>
 	/// <param name="removeObject"></param>
-	public void RemoveMiniBullet(GameObject removeObject) {
-		removeObject.transform.position = Vector3.zero;
-		removeObject.transform.SetParent(_unuseMagicRoot);
+	public void RemoveMiniBullet(GameObject gameObject) {
+		Transform removeObject = gameObject.transform;
+		removeObject.position = Vector3.zero;
+		removeObject.SetParent(_unuseMagicRoot);
 	}
 
 	/// <summary>

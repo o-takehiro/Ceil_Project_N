@@ -1,3 +1,10 @@
+/*
+ * @file    EffectManager.cs
+ * @brief   エフェクトオブジェクトクラス
+ * @author  Riku
+ * @date    2025/9/9
+ */
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -67,5 +74,18 @@ public class EffectObject : MonoBehaviour {
 		GameObject result = _unuseEffectObjectsList[effect][0];
 		_unuseEffectObjectsList[effect].RemoveAt(0);
 		return result;
+	}
+
+	/// <summary>
+	/// エフェクトを未使用状態にする
+	/// </summary>
+	/// <param name="effect"></param>
+	/// <returns></returns>
+	public void UnuseEffect(int effect, int number) {
+		GameObject result = _useEffectObjectsList[effect][number];
+		_unuseEffectObjectsList[effect].Add(result);
+		_useEffectObjectsList[effect].RemoveAt(number);
+		result.transform.SetParent(_unuseObjectRoot);
+
 	}
 }
