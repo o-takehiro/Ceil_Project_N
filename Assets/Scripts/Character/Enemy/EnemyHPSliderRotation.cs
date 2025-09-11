@@ -6,6 +6,7 @@ using static CharacterUtility;
 
 public class EnemyHPSliderRotation : MonoBehaviour {
     private void Update() {
+        if(GetEnemy() == null) return;
         LookatPlayer();  
     }
 
@@ -16,8 +17,7 @@ public class EnemyHPSliderRotation : MonoBehaviour {
         // ‚‚³‚ğ–³‹‚µ‚Ä…•½‰ñ“]‚¾‚¯‚É‚·‚é
         direction.y = 0;
 
-        if (direction.sqrMagnitude < 0.001f)
-            return; // ƒ[ƒœ‚¯
+        if (direction.sqrMagnitude < 0.001f) return; // ƒ[ƒœ‚¯
 
         // ‚»‚Ì‚Ü‚Ü‰ñ“]‚ğ“K—pi•âŠÔ‚È‚µAu‚É‰ñ“]j
         transform.rotation = Quaternion.LookRotation(direction, Vector3.up);
