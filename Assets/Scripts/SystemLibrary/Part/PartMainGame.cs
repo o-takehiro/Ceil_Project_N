@@ -69,7 +69,7 @@ public class PartMainGame : PartBase {
         await base.Teardown();
         await MenuManager.Instance.Get<PlayerHPGauge>().Close();
         SoundManager.Instance.PlayBGM(0);
-        UnusePlayer();
+        //UnusePlayer();
         ExecuteAllMagic(magic => magic.UnuseSelf());
 
         await UniTask.CompletedTask;

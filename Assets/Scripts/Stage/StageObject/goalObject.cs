@@ -58,5 +58,8 @@ public class goalObject : StageObjectBase {
         }
     }
 
-
+    public override void Teardown() {
+        base.Teardown();
+        CharacterUtility.UnusePlayer();
+    }
 }

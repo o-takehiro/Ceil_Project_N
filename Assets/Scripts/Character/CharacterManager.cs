@@ -56,10 +56,10 @@ public class CharacterManager : MonoBehaviour {
         _usePlayerObject = _unusePlayerObject;
         //未使用プレイヤーオブジェクトを空にする
         _unusePlayerObject = null;
-        //親オブジェクトの移動
-        _usePlayerObject.transform.SetParent(_useObjectRoot);
         //プレイヤーの使用準備
         _usePlayerObject.Setup(masterID);
+        //親オブジェクトの移動
+        _usePlayerObject.transform.SetParent(_useObjectRoot);
     }
     /// <summary>
     /// 敵キャラクター生成
@@ -69,10 +69,10 @@ public class CharacterManager : MonoBehaviour {
         _useEnemyObject = _unuseEnemyList[(int)enemyType];
         //未使用敵オブジェクトを空にする
         _unuseEnemyList[(int)enemyType] = null;
-        //親オブジェクトの移動
-        _useEnemyObject.transform.SetParent(_useObjectRoot);
         //敵の使用準備
         _useEnemyObject.Setup((int)enemyType + 1);
+        //親オブジェクトの移動
+        _useEnemyObject.transform.SetParent(_useObjectRoot);
     }
     /// <summary>
     /// プレイヤーを未使用状態にする
