@@ -90,6 +90,7 @@ public class EnemyMagic : MagicBase {
 			miniBullet.position += miniBullet.forward * speed * Time.deltaTime;
 			await UniTask.DelayFrame(1);
 		}
+		UniTask task = EffectManager.Instance.PlayEffect(eEffectType.Elimination, miniBullet.position);
 		magicObject.RemoveMiniBullet(miniBullet.gameObject);
 		await UniTask.DelayFrame(1);
 		// –¢Žg—p‰»‰Â”\

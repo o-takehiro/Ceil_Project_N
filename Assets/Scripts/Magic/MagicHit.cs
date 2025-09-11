@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -47,6 +48,7 @@ public class MagicHit : MagicObject {
 				break;
 			case eMagicType.MiniBullet:
 				GiveDamage(otherSide, 10);
+				UniTask task = EffectManager.Instance.PlayEffect(eEffectType.Hit, gameObject.transform.position);
 				parentObject.RemoveMiniBullet(gameObject);
 				break;
 			case eMagicType.SatelliteOrbital:
