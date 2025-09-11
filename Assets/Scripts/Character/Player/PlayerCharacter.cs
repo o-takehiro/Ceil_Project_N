@@ -71,7 +71,7 @@ public class PlayerCharacter : CharacterBase {
         SetPlayerPrevPosition();
 
         if (_movement == null) _movement = new PlayerMovement(_rigidbody, transform, _camera, _animator);
-        if (_magic == null) _magic = new PlayerMagicAttack(_animator);
+        if (_magic == null) _magic = new PlayerMagicAttack();
         if (_attack == null) {
             _attack = new PlayerAttack(_rigidbody, _animator, GetRawAttack());
             _attack.SetupAttackData();

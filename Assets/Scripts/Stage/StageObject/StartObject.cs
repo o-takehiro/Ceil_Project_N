@@ -26,7 +26,6 @@ public class StartObject : StageObjectBase {
     private void CreatePlayer() {
         CharacterUtility.UsePlayer(0);
         CharacterManager.instance.SetUsePlayerPosition(PlayerStartPos.transform.position);
-        Debug.Log("[StartObject] CreatePlayer ŒÄ‚Î‚ê‚Ü‚µ‚½");
     }
 
     private void CreateEnemy() {

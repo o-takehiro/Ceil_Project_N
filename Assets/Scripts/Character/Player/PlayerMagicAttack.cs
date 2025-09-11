@@ -8,17 +8,17 @@ using static MagicUtility;
 /// プレイヤーの魔法を撃つ処理
 /// </summary>
 public class PlayerMagicAttack {
-    private readonly Animator _animator;    // Animator参照
-    private List<eMagicType> _eMagicList;   // 魔法を保存するリスト
+    private List<eMagicType> _eMagicList;           // 魔法を保存するリスト
+    private List<eMagicType> _eMagicStorageList;    // 取得したすべての魔法を保存するリスト
     public bool _isDeath = false;
 
     /// <summary>
     /// コンストラクタ
     /// </summary>
     /// <param name="animator"></param>
-    public PlayerMagicAttack(Animator animator) {
-        _animator = animator;
+    public PlayerMagicAttack() {
         _eMagicList = new List<eMagicType>(4);  // 保存数4
+        _eMagicStorageList = new List<eMagicType>((int)eMagicType.Max); // 最大保存
         _isDeath = false;
         // 初期は使用不可
         for (int i = 0; i < 4; i++) {
@@ -88,6 +88,16 @@ public class PlayerMagicAttack {
         for (int i = 0; i < _eMagicList.Count; i++) {
             if (_eMagicList[i] == eMagicType.Invalid) {
                 _eMagicList[i] = magicType;
+                return;
+            }
+        }
+    }
+
+    public void SetMagicStorageSlot(eMagicType magicType) {
+        // 空いているリストに保存
+        for (int i = 0; i < _eMagicStorageList.Count; i++) {
+            if (_eMagicStorageList[i] == eMagicType.Invalid) {
+                _eMagicStorageList[i] = magicType;
                 return;
             }
         }

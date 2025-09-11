@@ -42,7 +42,7 @@ public class PartMainGame : PartBase {
     public override async UniTask SetUp() {
         await base.SetUp();
         // ¶¬ŠÖ˜A‚ğ‚±‚±‚ÉB
-        await FadeManager.Instance.FadeIn();
+        //await FadeManager.Instance.FadeIn();
         //UseEnemy(eEnemyType.TutorialEnemy);
         //UsePlayer(0);
         await UniTask.CompletedTask;
@@ -54,6 +54,8 @@ public class PartMainGame : PartBase {
     /// <returns></returns>
     /// <exception cref="System.NotImplementedException"></exception>
     public override async UniTask Execute() {
+        await FadeManager.Instance.FadeIn();
+
         SoundManager.Instance.PlayBGM(1);
         await MenuManager.Instance.Get<PlayerHPGauge>().Open();
 
