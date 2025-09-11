@@ -9,7 +9,7 @@ using static MagicUtility;
 /// </summary>
 public class PlayerMagicAttack {
     private List<eMagicType> _eMagicList;           // 魔法を保存するリスト
-    private List<eMagicType> _eMagicStorageList;    // 取得したすべての魔法を保存するリスト
+    private static List<eMagicType> _eMagicStorageList;    // 取得したすべての魔法を保存するリスト
     public bool _isDeath = false;
 
     /// <summary>
@@ -97,7 +97,7 @@ public class PlayerMagicAttack {
     /// 取得した魔法を最大数まで保存
     /// </summary>
     /// <param name="magicType"></param>
-    public void SetMagicStorageSlot(eMagicType magicType) {
+    public static void SetMagicStorageSlot(eMagicType magicType) {
         // 空いているリストに保存
         for (int i = 0; i < _eMagicStorageList.Count; i++) {
             if (_eMagicStorageList[i] == eMagicType.Invalid) {
@@ -111,7 +111,7 @@ public class PlayerMagicAttack {
     /// リストの要素すべてを取得
     /// </summary>
     /// <returns></returns>
-    public List<eMagicType> GetMagicStorageSlot() {
+    public static List<eMagicType> GetMagicStorageSlot() {
         return _eMagicStorageList;
 
     }
