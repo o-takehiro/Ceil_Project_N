@@ -20,33 +20,33 @@ MonoBehaviour:
       MP: 50
       Attack: 10
       Defense: 5
-      MinActionTime: 0
-      MaxActionTime: 0
+      MinActionTime: -1
+      MaxActionTime: -1
     - ID: 1
       HP: 300
       MP: -1
       Attack: 5
       Defense: 2
-      MinActionTime: 0
-      MaxActionTime: 0
+      MinActionTime: 2
+      MaxActionTime: 4
     - ID: 2
       HP: 500
       MP: -1
       Attack: 30
       Defense: 10
-      MinActionTime: 0
-      MaxActionTime: 0
+      MinActionTime: 2
+      MaxActionTime: 3.5
     - ID: 3
       HP: 800
       MP: -1
       Attack: 20
       Defense: 5
-      MinActionTime: 0
-      MaxActionTime: 0
+      MinActionTime: 1.5
+      MaxActionTime: 2.5
     - ID: 4
       HP: 1500
       MP: -1
       Attack: 50
       Defense: 30
-      MinActionTime: 0
-      MaxActionTime: 0
+      MinActionTime: 1
+      MaxActionTime: 2

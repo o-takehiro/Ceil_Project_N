@@ -42,17 +42,29 @@ public class MagicHit : MagicObject {
 			if (otherMagic.activeSide == activeSide) return;
 		}
 
+		UniTask task;
 		// –‚–@‚²‚Æ‚Ì“–‚½‚è”»’è
 		switch (activeMagic) {
 			case eMagicType.Defense:
 				break;
 			case eMagicType.MiniBullet:
 				GiveDamage(otherSide, 10);
-				UniTask task = EffectManager.Instance.PlayEffect(eEffectType.Hit, gameObject.transform.position);
+				if (otherSide == eSideType.MagicSide) {
+					task = EffectManager.Instance.PlayEffect(eEffectType.Elimination, gameObject.transform.position);
+				}
+				else {
+					task = EffectManager.Instance.PlayEffect(eEffectType.Hit, gameObject.transform.position);
+				}
 				parentObject.RemoveMiniBullet(gameObject);
 				break;
 			case eMagicType.SatelliteOrbital:
 				GiveDamage(otherSide, 10);
+				if (otherSide == eSideType.MagicSide) {
+					task = EffectManager.Instance.PlayEffect(eEffectType.Elimination, gameObject.transform.position);
+				}
+				else {
+					task = EffectManager.Instance.PlayEffect(eEffectType.Hit, gameObject.transform.position);
+				}
 				parentObject.RemoveMiniBullet(gameObject);
 				break;
 		}
