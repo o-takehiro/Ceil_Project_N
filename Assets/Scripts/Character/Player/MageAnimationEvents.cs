@@ -5,7 +5,7 @@ using static CharacterUtility;
 public class MageAnimationEvents : MonoBehaviour {
     [SerializeField] private Collider attackCollider;   // コライダー
     private PlayerAttack _playerAttack;                 // PlayerAttackクラス
-
+    private PlayerMovement _playerMovement;             // PlayerMovementクラス
     /// <summary>
     /// 初期化処理
     /// </summary>
@@ -13,7 +13,11 @@ public class MageAnimationEvents : MonoBehaviour {
         if (attackCollider != null) attackCollider.enabled = false;
         // プレイヤーを取得
         var player = CharacterUtility.GetPlayer();
+        // PlayerAttackクラスを取得
         if (player != null) _playerAttack = player.GetAttackController();
+        // PlayerMovementクラスを取得
+        if (player != null) _playerMovement = player.GetPlayerMovement();
+
     }
 
     // コライダー制御
@@ -33,6 +37,14 @@ public class MageAnimationEvents : MonoBehaviour {
         _playerAttack?.EndAttack();
     }
 
+    public void IsSetAttack() {
+        _playerAttack._isAttacking = true;
+    }
+
+    public void IsNotSetAttack() {
+        _playerAttack._isAttacking = false;
+    }
+
     /// <summary>
     /// 三段目入力拒否
     /// </summary>
@@ -48,5 +60,13 @@ public class MageAnimationEvents : MonoBehaviour {
         if (!other.CompareTag("Enemy")) return;
         int damage = _playerAttack?.GetDamageValue() ?? 0;
         ToEnemyDamage(damage);
+    }
+
+    // アニメーションイベントから呼ばれる
+    public void DisableJump() {
+        _playerMovement._canJump = false;
+    }
+    public void EnableJump() {
+        _playerMovement._canJump = true;
     }
 }

@@ -9,7 +9,7 @@ public class PlayerAttack {
     private AttackStep _currentAttack = AttackStep.Invalid;
 
     private bool _attackRequested;  // Ÿ‚ÌUŒ‚—v‹
-    private bool _isAttacking;      // Œ»İUŒ‚’†
+    public bool _isAttacking;      // Œ»İUŒ‚’†
     private float _attackTimer;     // UŒ‚‚Ì‘JˆÚŠÔ
 
     private const float ATTACK_RESET_TIME = 5f;     // UŒ‚‚ªƒŠƒZƒbƒg‚³‚ê‚éŠÔ

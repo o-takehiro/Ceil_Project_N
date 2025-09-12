@@ -10,6 +10,7 @@ public class PlayerMovement {
     private readonly Transform _transform;   // Transform
     private readonly Camera _camera;         // カメラ参照
     private readonly Animator _animator;     // アニメーション制御
+    private readonly GroundCheck _groundCheck;
 
     // 定数
     private const float MOVE_SPEED = 10f;    // 移動速度
@@ -18,18 +19,20 @@ public class PlayerMovement {
     // 入力情報
     private Vector2 _inputMove;              // 移動入力
     private bool _jumpRequested;             // ジャンプ要求フラグ
+    public bool _canJump = true;
 
     // 状態管理
     private bool _wasGrounded;               // 前フレームの接地状態
     private float _turnVelocity;             // 回転補間用の速度
-    public bool _isGrounded;                // 現在の接地状態
-    public bool _isDeath = false;
+    public bool _isGrounded;                 // 現在の接地状態
+    public bool _isDeath = false;            // 死亡判定
 
-    public PlayerMovement(Rigidbody rigidbody, Transform transform, Camera camera, Animator animator) {
+    public PlayerMovement(Rigidbody rigidbody, Transform transform, Camera camera, Animator animator, GroundCheck groundCheck) {
         _rigidbody = rigidbody;
         _transform = transform;
         _camera = camera;
         _animator = animator;
+        _groundCheck = groundCheck;
     }
 
     // 移動入力を受け取る
@@ -44,18 +47,16 @@ public class PlayerMovement {
     public void MoveUpdate(float deltaTime, bool isAttacking) {
         if (isAttacking || _isDeath) return; // 攻撃中は移動不可
 
-        // 接地判定
-        _isGrounded = Physics.Raycast(
-            _transform.position + Vector3.up * 0.1f,
-            Vector3.down,
-            0.3f,
-            LayerMask.GetMask("Ground")
-        );
+        // コライダーで地面接地判定
+        _isGrounded = _groundCheck.IsGrounded;
+
 
         // ジャンプ処理
-        if (_jumpRequested && _isGrounded) {
+        if (_jumpRequested && _isGrounded && _canJump) {
             _rigidbody.AddForce(Vector3.up * JUMP_FORCE, ForceMode.VelocityChange);
             _animator.SetTrigger("jumpT");
+            _jumpRequested = false;
+            return;
         }
         _jumpRequested = false;
         _wasGrounded = _isGrounded;
@@ -107,7 +108,7 @@ public class PlayerMovement {
         _jumpRequested = false;
         _isGrounded = false;
         _wasGrounded = false;
-        _isDeath = false;  // 移動不可に設定
+        _isDeath = false;
         _rigidbody.velocity = Vector3.zero;
     }
 
