@@ -8,7 +8,7 @@ using static MagicUtility;
 /// プレイヤーの魔法を撃つ処理
 /// </summary>
 public class PlayerMagicAttack {
-    private List<eMagicType> _eMagicList;           // 魔法を保存するリスト
+    private static List<eMagicType> _eMagicList;                  // 魔法を保存するリスト
     private static List<eMagicType> _eMagicStorageList;    // 取得したすべての魔法を保存するリスト
     public bool _isDeath = false;
 
@@ -25,11 +25,11 @@ public class PlayerMagicAttack {
             _eMagicList.Add(eMagicType.Invalid);
         }
 
-
-        _eMagicList[0] = eMagicType.Defense;        // 楯
-        _eMagicList[1] = eMagicType.MiniBullet;     // たま
-        _eMagicList[2] = eMagicType.SatelliteOrbital;   // えいせい
-        Debug.Log("0番目と1番目と2番目にまほうがセットされた");
+        //
+        //_eMagicList[0] = eMagicType.Defense;        // 楯
+        //_eMagicList[1] = eMagicType.MiniBullet;     // たま
+        //_eMagicList[2] = eMagicType.SatelliteOrbital;   // えいせい
+        //Debug.Log("0番目と1番目と2番目にまほうがセットされた");
     }
 
     /// <summary>
@@ -68,6 +68,14 @@ public class PlayerMagicAttack {
     }
 
     /// <summary>
+    /// 解析魔法発動
+    /// </summary>
+    public void RequestAnalysis() {
+        // SetMagicStorageSlotに魔法を保存していく
+        AnalysisMagicActivate();
+    }
+
+    /// <summary>
     /// 1フレーム分の発射処理
     /// 非同期
     /// </summary>
@@ -98,13 +106,18 @@ public class PlayerMagicAttack {
     /// </summary>
     /// <param name="magicType"></param>
     public static void SetMagicStorageSlot(eMagicType magicType) {
-        // 空いているリストに保存
+        // 保存済みの魔法かどうか
+        if (_eMagicStorageList.Contains(magicType)) return;
+
+        // 取得した魔法全てを保持
         for (int i = 0; i < _eMagicStorageList.Count; i++) {
             if (_eMagicStorageList[i] == eMagicType.Invalid) {
                 _eMagicStorageList[i] = magicType;
-                return;
+                break;
             }
         }
+        
+        TrySetMagicToSlotFromStorage(magicType);
     }
 
     /// <summary>
@@ -116,7 +129,23 @@ public class PlayerMagicAttack {
 
     }
 
+    /// <summary>
+    /// ストレージの中から、MagicListに保存する
+    /// </summary>
+    /// <param name="magicType"></param>
+    private static void TrySetMagicToSlotFromStorage(eMagicType magicType) {
+        for (int i = 0; i < _eMagicList.Count; i++) {
+            if (_eMagicList[i] == eMagicType.Invalid) {
+                _eMagicList[i] = magicType;
+                Debug.Log($"{magicType} をスロット {i} にセットした");
+                return;
+            }
+        }
+    }
 
+
+
+    // 片付け処理
     public void ResetState() {
         _isDeath = false;
     }

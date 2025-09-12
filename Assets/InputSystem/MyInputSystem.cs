@@ -180,6 +180,15 @@ public partial class @CameraInputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Magic_A"",
+                    ""type"": ""Button"",
+                    ""id"": ""b6ad7ac1-842c-4e9e-a757-77054c138774"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -620,6 +629,28 @@ public partial class @CameraInputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": "";Gamepad"",
                     ""action"": ""Magic_ZL"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""24a25904-66ef-4dd9-94b3-7d2aabecc370"",
+                    ""path"": ""<NPad>/buttonEast"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Gamepad"",
+                    ""action"": ""Magic_A"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""8f0414dc-3504-4169-8e52-4667a1a4b5f4"",
+                    ""path"": ""<XInputController>/buttonEast"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Gamepad"",
+                    ""action"": ""Magic_A"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1256,6 +1287,7 @@ public partial class @CameraInputActions: IInputActionCollection2, IDisposable
         m_Player_Magic_ZR = m_Player.FindAction("Magic_ZR", throwIfNotFound: true);
         m_Player_Magic_L = m_Player.FindAction("Magic_L", throwIfNotFound: true);
         m_Player_Magic_ZL = m_Player.FindAction("Magic_ZL", throwIfNotFound: true);
+        m_Player_Magic_A = m_Player.FindAction("Magic_A", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -1363,6 +1395,7 @@ public partial class @CameraInputActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Magic_ZR;
     private readonly InputAction m_Player_Magic_L;
     private readonly InputAction m_Player_Magic_ZL;
+    private readonly InputAction m_Player_Magic_A;
     /// <summary>
     /// Provides access to input actions defined in input action map "Player".
     /// </summary>
@@ -1414,6 +1447,10 @@ public partial class @CameraInputActions: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Player/Magic_ZL".
         /// </summary>
         public InputAction @Magic_ZL => m_Wrapper.m_Player_Magic_ZL;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/Magic_A".
+        /// </summary>
+        public InputAction @Magic_A => m_Wrapper.m_Player_Magic_A;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -1470,6 +1507,9 @@ public partial class @CameraInputActions: IInputActionCollection2, IDisposable
             @Magic_ZL.started += instance.OnMagic_ZL;
             @Magic_ZL.performed += instance.OnMagic_ZL;
             @Magic_ZL.canceled += instance.OnMagic_ZL;
+            @Magic_A.started += instance.OnMagic_A;
+            @Magic_A.performed += instance.OnMagic_A;
+            @Magic_A.canceled += instance.OnMagic_A;
         }
 
         /// <summary>
@@ -1511,6 +1551,9 @@ public partial class @CameraInputActions: IInputActionCollection2, IDisposable
             @Magic_ZL.started -= instance.OnMagic_ZL;
             @Magic_ZL.performed -= instance.OnMagic_ZL;
             @Magic_ZL.canceled -= instance.OnMagic_ZL;
+            @Magic_A.started -= instance.OnMagic_A;
+            @Magic_A.performed -= instance.OnMagic_A;
+            @Magic_A.canceled -= instance.OnMagic_A;
         }
 
         /// <summary>
@@ -1977,6 +2020,13 @@ public partial class @CameraInputActions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnMagic_ZL(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Magic_A" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnMagic_A(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "UI" which allows adding and removing callbacks.
