@@ -26,6 +26,8 @@ public class Boss2 : EnemyCharacter {
         SetEnemyPosition(transform.position);
         //現在の回転更新
         SetEnemyRotation(transform.rotation);
+        //中心座標更新
+        SetEnemyCenterPosition(new Vector3(transform.position.x, transform.position.y + 2, transform.position.z));
         //ステートマシーンの更新
         myAI.Update();
         //座標の更新
@@ -33,8 +35,6 @@ public class Boss2 : EnemyCharacter {
         transform.rotation = GetEnemyRotation();
         //一フレーム前の位置更新
         SetEnemyPrevPosition();
-        //中心座標更新
-        SetEnemyCenterPosition(new Vector3(transform.position.x, transform.position.y + 2, transform.position.z));
     }
     public override void Teardown() {
         base.Teardown();

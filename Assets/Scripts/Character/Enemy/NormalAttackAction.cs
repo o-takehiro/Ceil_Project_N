@@ -6,11 +6,11 @@ using static CharacterUtility;
 
 public class NormalAttackAction : StateMachineBehaviour {
     public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
-        SetEnemyAttackCollider(GetEnemy().GetEnemyAttackValue(), true);
+       // SetEnemyAttackCollider(GetEnemy().GetEnemyAttackValue(), true);
     }
 
     public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
-        SetEnemyAttackCollider(GetEnemy().GetEnemyAttackValue(), false);
+        //SetEnemyAttackCollider(GetEnemy().GetEnemyAttackValue(), false);
         GetEnemy().myAI.ChangeState(new EnemyAI001_Wait());
     }
 }
