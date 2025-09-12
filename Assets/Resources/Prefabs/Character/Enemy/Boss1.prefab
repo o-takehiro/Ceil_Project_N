@@ -179,6 +179,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4817380710489194691}
   - component: {fileID: 5081871034179024946}
+  - component: {fileID: 8400196720570198275}
   - component: {fileID: 1166077887664335052}
   - component: {fileID: 7646717966346149733}
   - component: {fileID: -1504636881713448718}
@@ -225,6 +226,20 @@ MonoBehaviour:
   _attackColliderList:
   - {fileID: 9028152365473200481}
   - {fileID: 5356399896235155219}
+--- !u!114 &8400196720570198275
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6680616483058419530}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a38e4fa57f385964281185a734982635, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _normalAttackCollider: {fileID: 6800475016204149246}
+  _chargeAttackCollider: {fileID: 7026169732073578250}
 --- !u!136 &1166077887664335052
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -359,7 +374,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6800475016204149246}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 24c61dec8a35fe94b9b9f5a9a5e6ec93, type: 3}
   m_Name: 
@@ -427,7 +442,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7026169732073578250}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 24c61dec8a35fe94b9b9f5a9a5e6ec93, type: 3}
   m_Name: 
