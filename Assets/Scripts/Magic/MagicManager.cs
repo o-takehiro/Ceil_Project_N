@@ -55,7 +55,7 @@ public class MagicManager : MonoBehaviour {
 		// 魔法のクラスをある程度生成して未使用状態にしておく
 		_useList = new List<MagicBase>(_MAGIC_MAX);
 
-		int sideTypeMax = (int)eSideType.Max;
+		int sideTypeMax = (int)eSideType.Max - 1;
 		_unuseList = new List<List<MagicBase>>(sideTypeMax);
 		for (int i = 0; i < sideTypeMax; i++) {
 			_unuseList.Add(new List<MagicBase>(_MAGIC_MAX));
@@ -115,7 +115,7 @@ public class MagicManager : MonoBehaviour {
 
 		if (_activeMagic == null) return;
 
-		for (int sideCount = 0; sideCount < (int)eSideType.Max; sideCount++) {
+		for (int sideCount = 0; sideCount < (int)eSideType.Max - 1; sideCount++) {
 			for (int i = 0, max = _activeMagicIDList[sideCount].Count; i < max; i++) {
 				if (_activeMagic[sideCount][i] == null || _activeMagicIDList[sideCount][i] < 0) continue;
 				_activeMagic[sideCount][i](GetMagicObject(_activeMagicIDList[sideCount][i]));
@@ -347,13 +347,13 @@ public class MagicManager : MonoBehaviour {
 	/// 解析魔法の発動
 	/// </summary>
 	public void AnalysisMagicActivate() {
+		UniTask task = EffectManager.Instance.PlayEffect(eEffectType.Analysis, GetEnemyCenterPosition());
 	 	_copyMagicList = GetMagicStorageSlot();
 		int enemy = (int)eSideType.EnemySide;
 		// 発動中の魔法を探す
 		for (int magic = 0, magicMax = _activeMagicIDList[enemy].Count; magic < magicMax; magic++) {
 			// 魔法発動中かつ、コピー済みでなければセット
-			if (_activeMagicIDList[enemy][magic] < 0 && GetMagicCopied(magic)) continue;
-			UniTask task = EffectManager.Instance.PlayEffect(eEffectType.Analysis, GetEnemyCenterPosition());
+			if (_activeMagicIDList[enemy][magic] < 0 || GetMagicCopied(magic)) continue;
 			SetMagicStorageSlot((eMagicType)magic);
 			return;
 		}
