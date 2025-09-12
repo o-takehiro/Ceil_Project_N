@@ -96,6 +96,15 @@ public sealed class PlayerInput : MonoBehaviour {
         }
     }
 
+    // ‰ğÍ–‚–@
+    public void OnAnalysis(InputAction.CallbackContext ctx) {
+        if (ctx.performed) {
+            _character.RequestAnalysis();
+        }
+        else if (ctx.canceled) {
+
+        }
+    }
 
     /// <summary>
     /// €”õˆ—

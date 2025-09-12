@@ -103,6 +103,8 @@ public class PlayerCharacter : CharacterBase {
     /// <param name="slotIndex"></param>
     public void RequestCastMagicEnd(int slotIndex) => _magic.RequestCancelMagic(slotIndex);
 
+    public void RequestAnalysis() => _magic.RequestAnalysis();
+
     // カメラのロックオン受付
     public void RequestLookOn() {
         if (_isLockedOn) {

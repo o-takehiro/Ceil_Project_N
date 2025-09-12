@@ -266,6 +266,22 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: 0555dc42-a2f9-40d2-b88d-bead3e941f9e
     m_ActionName: Player/Magic_ZL[/XInputControllerWindows/leftTrigger]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 6322934370783552657}
+        m_TargetAssemblyTypeName: PlayerInput, Assembly-CSharp
+        m_MethodName: OnAnalysis
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: b6ad7ac1-842c-4e9e-a757-77054c138774
+    m_ActionName: Player/Magic_A[/XInputControllerWindows/buttonEast]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player
@@ -296,7 +312,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6bc646798d4f2064cae26b3921b37503, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _collider: {fileID: 3268177335543914689}
 --- !u!23 &5353654764999440528
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -472,7 +487,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   attackCollider: {fileID: 8608934331786285638}
-  animator: {fileID: 8213544153149856916}
 --- !u!135 &8608934331786285638
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -494,8 +508,3 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 30
   m_Center: {x: 0, y: 100, z: 50}
---- !u!95 &8213544153149856916 stripped
-Animator:
-  m_CorrespondingSourceObject: {fileID: 5866666021909216657, guid: 6d86cff018c523d49a3aeb1e253f5661, type: 3}
-  m_PrefabInstance: {fileID: 2348287774957461765}
-  m_PrefabAsset: {fileID: 0}

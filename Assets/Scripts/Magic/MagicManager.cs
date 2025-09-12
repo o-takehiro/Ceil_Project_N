@@ -355,6 +355,7 @@ public class MagicManager : MonoBehaviour {
 			if (_activeMagicIDList[enemy][magic] < 0 && GetMagicCopied(magic)) continue;
 			UniTask task = EffectManager.Instance.PlayEffect(eEffectType.Analysis, GetEnemyCenterPosition());
 			SetMagicStorageSlot((eMagicType)magic);
+			return;
 		}
 	}
 

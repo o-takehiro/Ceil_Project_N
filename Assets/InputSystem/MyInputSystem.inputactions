@@ -94,6 +94,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "Magic_A",
+                    "type": "Button",
+                    "id": "b6ad7ac1-842c-4e9e-a757-77054c138774",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -534,6 +543,28 @@
                     "processors": "",
                     "groups": ";Gamepad",
                     "action": "Magic_ZL",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "24a25904-66ef-4dd9-94b3-7d2aabecc370",
+                    "path": "<NPad>/buttonEast",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Gamepad",
+                    "action": "Magic_A",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "8f0414dc-3504-4169-8e52-4667a1a4b5f4",
+                    "path": "<XInputController>/buttonEast",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Gamepad",
+                    "action": "Magic_A",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
