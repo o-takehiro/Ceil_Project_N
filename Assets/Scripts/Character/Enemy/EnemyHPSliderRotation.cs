@@ -5,21 +5,33 @@ using UnityEngine;
 using static CharacterUtility;
 
 public class EnemyHPSliderRotation : MonoBehaviour {
-    private void Update() {
-        if(GetEnemy() == null) return;
-        LookatPlayer();  
+    private Transform cam;
+
+    private void Start() {
+        cam = Camera.main.transform;
     }
 
-    private void LookatPlayer() {
-        // カメラへの方向
-        Vector3 direction = Camera.main.transform.position - transform.position;
+    private void LateUpdate() {
+        if (GetEnemy() == null)
+            return;
+        LookAtCamera();
+    }
 
-        // 高さを無視して水平回転だけにする
-        direction.y = 0;
+    private void LookAtCamera() {
+        Vector3 pos = transform.position;
+        Vector3 targetPos = cam.position;
 
-        if (direction.sqrMagnitude < 0.001f) return; // ゼロ除け
+        // 高さを固定（y座標を同じにする）
+        targetPos.y = pos.y;
 
-        // そのまま回転を適用（補間なし、瞬時に回転）
-        transform.rotation = Quaternion.LookRotation(direction, Vector3.up);
+        Vector3 dir = targetPos - pos;
+        if (dir.sqrMagnitude < 0.001f)
+            return;
+
+        // ワールド回転を直接適用（親の回転は無視される）
+        transform.rotation = Quaternion.LookRotation(-dir, Vector3.up);
+
+        // 裏返るときは180°補正
+        transform.Rotate(0, 180f, 0);
     }
 }
