@@ -67,6 +67,9 @@ public class MagicHit : MagicObject {
 				}
 				parentObject.RemoveMiniBullet(gameObject);
 				break;
+			case eMagicType.LaserBeam:
+				GiveDamage(otherSide, 30);
+				break;
 		}
 
 	}

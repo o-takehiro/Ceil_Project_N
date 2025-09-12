@@ -106,11 +106,13 @@ public class MagicManager : MonoBehaviour {
 		if (Input.GetKey(KeyCode.C)) CreateMagic(eSideType.EnemySide, eMagicType.Defense);
 		if (Input.GetKey(KeyCode.V)) CreateMagic(eSideType.EnemySide, eMagicType.MiniBullet);
 		if (Input.GetKey(KeyCode.N)) CreateMagic(eSideType.PlayerSide, eMagicType.SatelliteOrbital);
+		if (Input.GetKey(KeyCode.M)) CreateMagic(eSideType.PlayerSide, eMagicType.LaserBeam);
 		if (Input.GetKeyUp(KeyCode.Z)) task = MagicReset(eSideType.PlayerSide, eMagicType.Defense);
 		if (Input.GetKeyUp(KeyCode.X)) task = MagicReset(eSideType.PlayerSide, eMagicType.MiniBullet);
 		if (Input.GetKeyUp(KeyCode.C)) task = MagicReset(eSideType.EnemySide, eMagicType.Defense);
 		if (Input.GetKeyUp(KeyCode.V)) task = MagicReset(eSideType.EnemySide, eMagicType.MiniBullet);
 		if (Input.GetKeyUp(KeyCode.N)) task = MagicReset(eSideType.PlayerSide, eMagicType.SatelliteOrbital);
+		if (Input.GetKeyUp(KeyCode.M)) task = MagicReset(eSideType.PlayerSide, eMagicType.LaserBeam);
 		if (Input.GetKeyDown(KeyCode.B)) AnalysisMagicActivate();
 
 		if (_activeMagic == null) return;
@@ -265,6 +267,9 @@ public class MagicManager : MonoBehaviour {
 			case eMagicType.SatelliteOrbital:
 				_activeMagic[side][magic] = magicSyde.SatelliteOrbitalMagic;
 				break;
+			case eMagicType.LaserBeam:
+				_activeMagic[side][magic] = magicSyde.LaserBeamMagic;
+				break;
 		}
 		return;
 		//}
@@ -347,6 +352,7 @@ public class MagicManager : MonoBehaviour {
 	/// âêÕñÇñ@ÇÃî≠ìÆ
 	/// </summary>
 	public void AnalysisMagicActivate() {
+		if (GetEnemy() == null) return;
 		UniTask task = EffectManager.Instance.PlayEffect(eEffectType.Analysis, GetEnemyCenterPosition());
 	 	_copyMagicList = GetMagicStorageSlot();
 		int enemy = (int)eSideType.EnemySide;

@@ -65,7 +65,7 @@ public enum eMagicType {
 	Defense,            // –hŒä–‚–@
 	MiniBullet,         // ¬Œ^’e–‹–‚–@
     SatelliteOrbital,   // ‰q¯‹O“¹–‚–@
-
+    LaserBeam,          // ƒr[ƒ€(‰¡)–‚–@
 
     Max,
 }

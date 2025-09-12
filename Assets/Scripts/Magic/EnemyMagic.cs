@@ -166,4 +166,10 @@ public class EnemyMagic : MagicBase {
 		}
 		return false;
 	}
+	/// <summary>
+	/// ƒr[ƒ€(‰¡)–‚–@
+	/// </summary>
+	/// <param name="magicObject"></param>
+	public override void LaserBeamMagic(MagicObject magicObject) {
+	}
 }

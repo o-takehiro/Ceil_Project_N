@@ -23,11 +23,18 @@ public class MagicObject : MonoBehaviour {
 	[SerializeField]
 	private GameObject _originMiniBullet = null;
 
+	// ビームオブジェクトのオリジナル
+	[SerializeField]
+	private GameObject _originBeam = null;
+
 	// 防御魔法のオブジェクト
 	public GameObject defenseObject = null;
 
     // 小型弾幕のオブジェクト
     public List<GameObject> miniBulletObjects = null;
+
+	// ビーム魔法のオブジェクト
+	public GameObject beamObject = null;
 
 	// 使用中オブジェクトの親オブジェクト
 	[SerializeField]
@@ -63,6 +70,7 @@ public class MagicObject : MonoBehaviour {
 		for (int i = 0; i < _GENERATE_OBJECTS_MAX; i++) {
 			miniBulletObjects.Add(Instantiate(_originMiniBullet, _unuseMagicRoot));
 		}
+		beamObject = Instantiate(_originBeam, _unuseObjectRoot);
 	}
 
 	/// <summary>
@@ -123,6 +131,18 @@ public class MagicObject : MonoBehaviour {
 		GameObject newBullet = Instantiate(_originMiniBullet, magicObjectList[(int)activeMagic]);
 		miniBulletObjects.Add(newBullet);
 		return newBullet;
+	}
+
+	/// <summary>
+	/// ビーム魔法の生成
+	/// </summary>
+	/// <returns></returns>
+	public GameObject GenerateBeam() {
+		// 非表示のオブジェクトを表示する
+		beamObject.transform.SetParent(magicObjectList[(int)activeMagic]);
+		beamObject.GetComponent<MagicHit>().Setup(this);
+
+		return beamObject;
 	}
 
 	/// <summary>

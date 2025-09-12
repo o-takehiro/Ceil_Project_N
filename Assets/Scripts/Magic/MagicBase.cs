@@ -27,6 +27,7 @@ public abstract class MagicBase {
 	public abstract void DefenseMagic(MagicObject magicObject);
 	public abstract void MiniBulletMagic(MagicObject magicObject);
 	public abstract void SatelliteOrbitalMagic(MagicObject magicObject);
+	public abstract void LaserBeamMagic(MagicObject magicObject);
 
 	/// <summary>
 	/// èÄîı
