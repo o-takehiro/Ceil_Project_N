@@ -89,7 +89,9 @@ public class PlayerMagic : MagicBase {
 		// プレイヤーから一定距離離れるまで前に進める
 		while (distance < distanceMAX && miniBullet.gameObject.activeInHierarchy) {
 			distance = Vector3.Distance(miniBullet.position, GetPlayerCenterPosition());
-			miniBullet.rotation = GetOtherDirection(miniBullet.position);
+			// miniBullet.rotation = カメラローテーション
+			if (GetEnemy() != null) 
+				miniBullet.rotation = GetOtherDirection(miniBullet.position);
 			miniBullet.position += miniBullet.forward * speed * Time.deltaTime;
 			await UniTask.DelayFrame(1);
 		}
