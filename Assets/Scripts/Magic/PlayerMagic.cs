@@ -186,6 +186,7 @@ public class PlayerMagic : MagicBase {
 		Transform beam = magicObject.GenerateBeam().transform;
 		beam.position = GetPlayerCenterPosition();
 		beam.rotation = GetPlayerRotation();
+		beam.localScale = Vector3.one;
 		if (GetEnemy() != null)
 			beam.rotation = GetOtherDirection(beam.position);
 		UniTask task = LaserBeamMove(magicObject, beam);
