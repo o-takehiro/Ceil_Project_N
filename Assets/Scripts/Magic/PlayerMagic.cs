@@ -190,17 +190,26 @@ public class PlayerMagic : MagicBase {
 		if (GetEnemy() != null)
 			beam.rotation = GetOtherDirection(beam.position);
 		UniTask task = LaserBeamMove(magicObject, beam);
+		task = EffectManager.Instance.PlayEffect(eEffectType.BeamShot, beam.position);
 	}
+	/// <summary>
+	/// ÉrÅ[ÉÄ(â°)ñÇñ@ÇÃìÆÇ´
+	/// </summary>
+	/// <param name="magicObject"></param>
+	/// <param name="beam"></param>
+	/// <returns></returns>
 	private async UniTask LaserBeamMove(MagicObject magicObject, Transform beam) {
 		Vector3 beamScale = beam.localScale;
 		beamScale.x = 1f;
 		while (beamScale.x < 3) {
-			beamScale.x += 20 * Time.deltaTime;
+            beamScale = beam.localScale;
+            beamScale.x += 20 * Time.deltaTime;
 			beam.localScale = beamScale;
 			await UniTask.DelayFrame(1);
 		}
 		while (beamScale.x > -1) {
-			beamScale.x -= 10 * Time.deltaTime;
+            beamScale = beam.localScale;
+            beamScale.x -= 10 * Time.deltaTime;
 			beam.localScale = beamScale;
 			await UniTask.DelayFrame(1);
 		}

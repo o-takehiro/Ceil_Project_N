@@ -78,6 +78,8 @@ public enum eEffectType {
 	Elimination,        // 削除エフェクト
 	Hit,                // ヒットエフェクト
     Analysis,           // 解析エフェクト
+    BeamDefense,        // ビームを防いだエフェクト
+    BeamShot,           // ビーム発射エフェクト
 
 	max,
 }

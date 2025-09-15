@@ -10,7 +10,7 @@ public class MagicHit : MagicObject {
 	MagicObject parentObject = null;
 
 	private const float _BEAM_RANGE_MAX = 20;
-	private const float _DEFENSE_RADIUS_MAX = 1.65f;
+	private const float _DEFENSE_RADIUS_MAX = 3;
 
 	/// <summary>
 	/// 使用前準備
@@ -31,8 +31,9 @@ public class MagicHit : MagicObject {
 		eMagicType otherMagic = GetOtherMagic(other, otherSide);
 		Vector3 thisPosition = gameObject.transform.position;
 		Vector3 otherPosition = other.transform.position;
-		
-		UniTask task;
+		MagicHit otherMagicData = GetMagicHit(otherSide, other);
+
+        UniTask task;
 		// 魔法ごとの当たり判定
 		switch (activeMagic) {
 			case eMagicType.Defense:
@@ -68,13 +69,21 @@ public class MagicHit : MagicObject {
 					Vector3 thisDirection = (thisPosition - otherPosition).normalized;
 					// 相手の防御魔法の正面位置
                     Vector3 otherDefenseForwardPos = otherPosition + thisDirection * _DEFENSE_RADIUS_MAX;
-					// ビームがディフェンスに当たったまでの長さ
-					float beamRange = _BEAM_RANGE_MAX - Vector3.Distance(thisPosition, otherDefenseForwardPos);
+					// y座標調整
+					if (otherMagicData.activeSide == eSideType.PlayerSide) {
+						otherDefenseForwardPos.y = GetPlayerCenterPosition().y;
+					}
+                    if (otherMagicData.activeSide == eSideType.EnemySide) {
+                        otherDefenseForwardPos.y = GetEnemyCenterPosition().y;
+                    }
+                    // ビームがディフェンスに当たったまでの長さ
+                    float beamRange = _BEAM_RANGE_MAX - Vector3.Distance(thisPosition, otherDefenseForwardPos);
 					// ビームの長さを調整
 					Vector3 beamScale = gameObject.transform.localScale;
-					beamScale.z = beamRange / _BEAM_RANGE_MAX;
+					beamScale.z = 1 - (beamRange / _BEAM_RANGE_MAX);
                     gameObject.transform.localScale = beamScale;
-                    
+					// 当たっている位置にエフェクト生成
+					task = EffectManager.Instance.PlayEffect(eEffectType.BeamDefense, otherDefenseForwardPos);
                 }
 				break;
 		}
@@ -102,14 +111,23 @@ public class MagicHit : MagicObject {
         }
         // 同陣営どうしは当たり判定をとらない 
         if (otherSide == activeSide) return eSideType.Invalid;
-        MagicHit otherMagic = null;
-        if (otherSide == eSideType.MagicSide)
-        {
-            otherMagic = other.gameObject.GetComponent<MagicHit>();
-            // 魔法の発動者の陣営が同じなら当たり判定をとらない
-            if (otherMagic.activeSide == activeSide) return eSideType.Invalid;
-        }
-		return otherSide;
+        // 魔法の発動者の陣営が同じなら当たり判定をとらない
+		MagicHit otherMagicData = GetMagicHit(otherSide, other);
+		if (otherMagicData == null) return otherSide;
+        if (otherMagicData.activeSide == activeSide) return eSideType.Invalid;
+        return otherSide;
+    }
+
+	/// <summary>
+	/// 当たった相手のスクリプト
+	/// </summary>
+	/// <param name="otherSide"></param>
+	/// <param name="other"></param>
+	/// <returns></returns>
+	private MagicHit GetMagicHit(eSideType otherSide, Collider other) {
+        if (otherSide != eSideType.MagicSide) return null;
+        MagicHit otherMagicData = otherMagicData = other.gameObject.GetComponent<MagicHit>();
+        return otherMagicData;
     }
 
 	/// <summary>

@@ -20,8 +20,9 @@ public class EnemyMagic : MagicBase {
 	private float coolTimeMAX = 0.5f;
 
 	private bool satelliteOn = false;
+    private bool beamOn = false;
 
-	private const float SATELLITE_DISTANCE = 4;
+    private const float SATELLITE_DISTANCE = 4;
 	private const int SATELLITE_MAX = 4;
 
 	// 小型弾幕のリスト
@@ -166,10 +167,62 @@ public class EnemyMagic : MagicBase {
 		}
 		return false;
 	}
-	/// <summary>
-	/// ビーム(横)魔法
-	/// </summary>
-	/// <param name="magicObject"></param>
-	public override void LaserBeamMagic(MagicObject magicObject) {
-	}
+    /// <summary>
+    /// ビーム(横)魔法
+    /// </summary>
+    /// <param name="magicObject"></param>
+    public override void LaserBeamMagic(MagicObject magicObject)
+    {
+        if (magicObject == null) return;
+        if (beamOn) return;
+        beamOn = true;
+        // 未使用化不可能
+        magicObject.canUnuse = false;
+        Transform beam = magicObject.GenerateBeam().transform;
+        beam.position = GetEnemyCenterPosition();
+        beam.rotation = GetEnemyRotation();
+        beam.localScale = Vector3.one;
+        if (GetPlayer() != null)
+            beam.rotation = GetOtherDirection(beam.position);
+        UniTask task = LaserBeamMove(magicObject, beam);
+        task = EffectManager.Instance.PlayEffect(eEffectType.BeamShot, beam.position);
+    }
+    /// <summary>
+    /// ビーム(横)魔法の動き
+    /// </summary>
+    /// <param name="magicObject"></param>
+    /// <param name="beam"></param>
+    /// <returns></returns>
+    private async UniTask LaserBeamMove(MagicObject magicObject, Transform beam)
+    {
+        Vector3 beamScale = beam.localScale;
+        beamScale.x = 1f;
+        while (beamScale.x < 3)
+        {
+            beamScale = beam.localScale;
+            beamScale.x += 20 * Time.deltaTime;
+            beam.localScale = beamScale;
+            await UniTask.DelayFrame(1);
+        }
+        while (beamScale.x > -1)
+        {
+            beamScale = beam.localScale;
+            beamScale.x -= 10 * Time.deltaTime;
+            beam.localScale = beamScale;
+            await UniTask.DelayFrame(1);
+        }
+        beamOn = false;
+        // 未使用化可能
+        magicObject.canUnuse = true;
+    }
+    /// <summary>
+    /// 相手の方向
+    /// </summary>
+    /// <param name="currentPos"></param>
+    /// <returns></returns>
+    private Quaternion GetOtherDirection(Vector3 currentPos)
+    {
+        Vector3 direction = (GetPlayerCenterPosition() - currentPos).normalized;
+        return Quaternion.LookRotation(direction);
+    }
 }
