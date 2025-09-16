@@ -96,10 +96,10 @@ public class PlayerMagic : MagicBase {
 		while (distance < distanceMAX && miniBullet.gameObject.activeInHierarchy) {
 			distance = Vector3.Distance(miniBullet.position, GetPlayerCenterPosition());
 			// miniBullet.rotation = カメラローテーション
-			if (GetEnemy() != null) 
+			if (GetEnemy() != null)
 				miniBullet.rotation = GetOtherDirection(miniBullet.position);
 			miniBullet.position += miniBullet.forward * speed * Time.deltaTime;
-			await UniTask.DelayFrame(1);
+			await UniTask.DelayFrame(1, PlayerLoopTiming.Update, useMagicObject.token);
 		}
 		UniTask task = EffectManager.Instance.PlayEffect(eEffectType.Elimination, miniBullet.position);
 		magicObject.RemoveMiniBullet(miniBullet.gameObject);
@@ -153,14 +153,14 @@ public class PlayerMagic : MagicBase {
 		bool loop = true;
 		while (loop) {
 			if (magicObject.magicObjectList[(int)eMagicType.SatelliteOrbital].transform.childCount > SATELLITE_MAX) {
-                magicObject.RemoveMiniBullet(bullet.gameObject);
-                return;
+				magicObject.RemoveMiniBullet(bullet.gameObject);
+				return;
 			}
 			magicObject.transform.position = GetPlayerCenterPosition();
 			Vector3 satelliteRotation = magicObject.transform.eulerAngles;
 			satelliteRotation.y += speed * Time.deltaTime;
 			magicObject.transform.eulerAngles = satelliteRotation;
-			await UniTask.DelayFrame(1);
+			await UniTask.DelayFrame(1, PlayerLoopTiming.Update, useMagicObject.token);
 			loop = LoopChange();
 		}
 		satelliteOn = false;
@@ -204,9 +204,9 @@ public class PlayerMagic : MagicBase {
 	/// ビームが防御魔法に当たるかどうか
 	/// </summary>
 	/// <returns></returns>
-	private bool GetLaserBeamDefecseHit () { 
+	private bool GetLaserBeamDefecseHit() {
 		if (GetEnemy() == null) return false;
-		if (GetPlayerToEnemyDistance() - _DEFENSE_RADIUS_MAX >= _BEAM_RANGE_MAX || 
+		if (GetPlayerToEnemyDistance() - _DEFENSE_RADIUS_MAX >= _BEAM_RANGE_MAX ||
 			!GetMagicActive((int)eSideType.EnemySide, (int)eMagicType.Defense)) return false;
 		return true;
 	}
@@ -240,16 +240,16 @@ public class PlayerMagic : MagicBase {
 		Vector3 beamScale = beam.localScale;
 		beamScale.x = 1f;
 		while (beamScale.x < 3) {
-            beamScale = beam.localScale;
-            beamScale.x += 20 * Time.deltaTime;
+			beamScale = beam.localScale;
+			beamScale.x += 20 * Time.deltaTime;
 			beam.localScale = beamScale;
-			await UniTask.DelayFrame(1);
+			await UniTask.DelayFrame(1, PlayerLoopTiming.Update, useMagicObject.token);
 		}
 		while (beamScale.x > -1) {
-            beamScale = beam.localScale;
-            beamScale.x -= 10 * Time.deltaTime;
+			beamScale = beam.localScale;
+			beamScale.x -= 10 * Time.deltaTime;
 			beam.localScale = beamScale;
-			await UniTask.DelayFrame(1);
+			await UniTask.DelayFrame(1, PlayerLoopTiming.Update, useMagicObject.token);
 		}
 		beamOn = false;
 		// 未使用化可能

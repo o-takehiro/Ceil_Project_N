@@ -15,6 +15,7 @@ using static PlayerMagicAttack;
 using static CommonModule;
 using Cysharp.Threading.Tasks;
 using static UnityEngine.EventSystems.EventTrigger;
+using System.Threading;
 
 public class MagicManager : MonoBehaviour {
 	// ©g‚Ö‚ÌQÆ
