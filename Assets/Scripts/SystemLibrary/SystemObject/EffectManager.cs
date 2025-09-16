@@ -28,7 +28,7 @@ public class EffectManager : SystemObject {
 	// 使用中のエフェクトリスト
 	private List<List<GameObject>> _useEffectList = null;
 
-	// 入力受付タスク中断用トークン
+	// タスク中断用トークン
 	private CancellationToken _token;
 
 	public override async UniTask Initialize() {

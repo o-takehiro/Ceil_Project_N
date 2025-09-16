@@ -8,6 +8,7 @@
 using Cysharp.Threading.Tasks;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEditor;
 using UnityEngine;
 
@@ -60,6 +61,9 @@ public class MagicObject : MonoBehaviour {
 	// 魔法用のオブジェクトの生成数
 	public const int _GENERATE_OBJECTS_MAX = 16;
 
+	// タスク中断用トークン
+	public CancellationToken token;
+
 	/// <summary>
 	/// 初期化
 	/// </summary>
@@ -71,6 +75,9 @@ public class MagicObject : MonoBehaviour {
 			miniBulletObjects.Add(Instantiate(_originMiniBullet, _unuseMagicRoot));
 		}
 		beamObject = Instantiate(_originBeam, _unuseObjectRoot);
+
+		// オブジェクト破棄時に処理されるタスク中断用トークンを取得
+		token = this.GetCancellationTokenOnDestroy();
 	}
 
 	/// <summary>
