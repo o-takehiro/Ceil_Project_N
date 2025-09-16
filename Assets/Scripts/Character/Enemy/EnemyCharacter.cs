@@ -49,8 +49,6 @@ public class EnemyCharacter : CharacterBase {
         SetEnemyCenterPosition(new Vector3(transform.position.x, transform.position.y + 2, transform.position.z));
         //現在の回転更新
         SetEnemyRotation(Quaternion.identity);
-        //HPゲージの更新
-        SetupCanvasPosition(Vector3.one);
     }
     public override void Teardown() {
         base.Teardown();
