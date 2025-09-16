@@ -20,13 +20,17 @@ using static CharacterUtility;
 
 public class PlayerMagic : MagicBase {
 	// 弾のスピード
-	private float _speed = 20;
+	private float _bulletSpeed = 20;
 	// 弾の最大飛距離
-	private float _distanceMAX = 20;
+	private float _bulletDistanceMax = 20;
 	// 弾のクールタイム
-	private float _coolTime = 0.0f;
+	private float _bulletCoolTime = 0.0f;
 	// 弾のクールタイムの最大
-	private float _coolTimeMAX = 0.5f;
+	private float _bulletCoolTimeMax = 0.5f;
+	// 時間差弾のクールタイム
+	private float _delayBulletCoolTime = 0.0f;
+	// 時間差弾のクールタイムの最大
+	private float _delayBulletCoolTimeMax = 5.0f;
 
 	// 魔法の発動中フラグ
 	private bool _satelliteOn = false;
@@ -43,9 +47,11 @@ public class PlayerMagic : MagicBase {
 	private const float _DEFENSE_RADIUS = 3;
 	// 時間差弾の最大数
 	private const int _DELAY_BULLET_MAX = 5;
+    // 時間差弾の半径
+    private const float _DELAY_BULLET_RADIUS = 4;
 
-	// 小型弾幕のリスト
-	private List<GameObject> bulletList = new List<GameObject>();
+    // 小型弾幕のリスト
+    private List<GameObject> bulletList = new List<GameObject>();
 	// 衛星軌道のリスト
 	private List<GameObject> satelliteList = new List<GameObject>();
 	// 時間差弾のリスト
@@ -82,7 +88,7 @@ public class PlayerMagic : MagicBase {
 	/// </summary>
 	public override void MiniBulletMagic(MagicObject magicObject) {
 		if (magicObject == null) return;
-		if (_coolTime < 0) {
+		if (_bulletCoolTime < 0) {
 			// 未使用化不可能
 			magicObject.canUnuse = false;
 			Transform bullet = magicObject.GenerateMiniBullet().transform;
@@ -91,10 +97,10 @@ public class PlayerMagic : MagicBase {
 			bullet.transform.rotation = GetPlayerRotation();
 			// 移動
 			UniTask task = MiniBulletMove(magicObject, bullet);
-			_coolTime = _coolTimeMAX;
+			_bulletCoolTime = _bulletCoolTimeMax;
 		}
 		else {
-			_coolTime -= Time.deltaTime;
+			_bulletCoolTime -= Time.deltaTime;
 		}
 	}
 	/// <summary>
@@ -106,12 +112,12 @@ public class PlayerMagic : MagicBase {
 	private async UniTask MiniBulletMove(MagicObject magicObject, Transform miniBullet) {
 		float distance = 0;
 		// プレイヤーから一定距離離れるまで前に進める
-		while (distance < _distanceMAX && miniBullet.gameObject.activeInHierarchy) {
+		while (distance < _bulletDistanceMax && miniBullet.gameObject.activeInHierarchy) {
 			distance = Vector3.Distance(miniBullet.position, GetPlayerCenterPosition());
 			// miniBullet.rotation = カメラローテーション
 			if (GetEnemy() != null)
 				miniBullet.rotation = GetOtherDirection(miniBullet.position);
-			miniBullet.position += miniBullet.forward * _speed * Time.deltaTime;
+			miniBullet.position += miniBullet.forward * _bulletSpeed * Time.deltaTime;
 			await UniTask.DelayFrame(1, PlayerLoopTiming.Update, useMagicObject.token);
 		}
 		UniTask task = EffectManager.Instance.PlayEffect(eEffectType.Elimination, miniBullet.position);
@@ -171,7 +177,7 @@ public class PlayerMagic : MagicBase {
 			}
 			magicObject.transform.position = GetPlayerCenterPosition();
 			Vector3 satelliteRotation = magicObject.transform.eulerAngles;
-			satelliteRotation.y += _speed * Time.deltaTime;
+			satelliteRotation.y += _bulletSpeed * Time.deltaTime;
 			magicObject.transform.eulerAngles = satelliteRotation;
 			await UniTask.DelayFrame(1, PlayerLoopTiming.Update, useMagicObject.token);
 			loop = LoopChange();
@@ -281,30 +287,64 @@ public class PlayerMagic : MagicBase {
 			// 衛星配置
 			switch (i) {
 				case 0:
-					bullet.position += new Vector3(_SATELLITE_RADIUS, 0, 0);
+					bullet.position += new Vector3(_DELAY_BULLET_RADIUS, 0, 0);
 					break;
 				case 1:
-					bullet.position += new Vector3(-_SATELLITE_RADIUS, 0, 0);
+					bullet.position += new Vector3(-_DELAY_BULLET_RADIUS, 0, 0);
 					break;
 				case 2:
-					bullet.position += new Vector3(0, 0, _SATELLITE_RADIUS);
-					bullet.eulerAngles += new Vector3(0, 90, 0);
+					bullet.position += new Vector3(0, _DELAY_BULLET_RADIUS, 0);
 					break;
 				case 3:
-					bullet.position += new Vector3(0, 0, -_SATELLITE_RADIUS);
-					bullet.eulerAngles += new Vector3(0, 90, 0);
+					bullet.position += new Vector3(_DELAY_BULLET_RADIUS / 2, _DELAY_BULLET_RADIUS / 2, 0);
+					break;
+				case 4:
+					bullet.position += new Vector3(-_DELAY_BULLET_RADIUS / 2, _DELAY_BULLET_RADIUS / 2, 0);
 					break;
 			}
-			UniTask task = SatelliteOrbitalMove(magicObject, bullet);
+            _delayBulletCoolTime = _delayBulletCoolTimeMax;
+            UniTask task = DelayBulletMove(magicObject, bullet);
 		}
 	}
+    /// <summary>
+    /// 時間差魔法の移動
+    /// </summary>
+    /// <param name="magicObject"></param>
+    /// <param name="delayBullet"></param>
+    /// <returns></returns>
+    private async UniTask DelayBulletMove(MagicObject magicObject, Transform delayBullet) {
+        while (_delayBulletCoolTime >= 0) {
+            magicObject.transform.position = GetPlayerCenterPosition();
+            magicObject.transform.rotation = GetPlayerRotation();
+            _delayBulletCoolTime -= Time.deltaTime;
+            await UniTask.Yield(PlayerLoopTiming.Update, useMagicObject.token);
+        }
+        float distance = 0;
+        // プレイヤーから一定距離離れるまで前に進める
+        while (distance < _bulletDistanceMax && delayBullet.gameObject.activeInHierarchy) {
+            distance = Vector3.Distance(delayBullet.position, GetPlayerCenterPosition());
+            if (GetEnemy() != null)
+                delayBullet.rotation = GetOtherDirection(delayBullet.position);
+            delayBullet.position += delayBullet.forward * _bulletSpeed * Time.deltaTime;
+            await UniTask.Yield(PlayerLoopTiming.Update, useMagicObject.token);
+        }
+        UniTask task = EffectManager.Instance.PlayEffect(eEffectType.Elimination, delayBullet.position);
+        magicObject.RemoveMiniBullet(delayBullet.gameObject);
+        await UniTask.DelayFrame(1);
+        // 未使用化可能
+        for (int i = 0, max = bulletList.Count; i < max; i++) {
+            if (bulletList[i].activeInHierarchy) return;
+        }
+		_delayBulletOn = false;
+        magicObject.canUnuse = true;
+    }
 
-	/// <summary>
-	/// 相手の方向
-	/// </summary>
-	/// <param name="currentPos"></param>
-	/// <returns></returns>
-	private Quaternion GetOtherDirection(Vector3 currentPos) {
+    /// <summary>
+    /// 相手の方向
+    /// </summary>
+    /// <param name="currentPos"></param>
+    /// <returns></returns>
+    private Quaternion GetOtherDirection(Vector3 currentPos) {
 		Vector3 direction = (GetEnemyCenterPosition() - currentPos).normalized;
 		return Quaternion.LookRotation(direction);
 	}
