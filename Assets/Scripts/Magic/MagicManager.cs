@@ -98,7 +98,7 @@ public class MagicManager : MonoBehaviour {
 		}
 	}
 
-	public void Update() {
+	public async UniTask Execute() {
 		UniTask task;
 		// デバッグ用
 		if (Input.GetKey(KeyCode.Z)) CreateMagic(eSideType.PlayerSide, eMagicType.Defense);
@@ -123,7 +123,7 @@ public class MagicManager : MonoBehaviour {
 				_activeMagic[sideCount][i](GetMagicObject(_activeMagicIDList[sideCount][i]));
 			}
 		}
-
+		await UniTask.CompletedTask;
 		//for (int magic = 0, magicMax = _copyMagicList.Count; magic < magicMax; magic++) {
 		//	Debug.Log(_copyMagicList[magic]);
 		//}
