@@ -15,7 +15,7 @@ using static CharacterUtility;
 
 public class EnemyMagic : MagicBase {
 
-	private float speed = 20;
+	private float speed = 40;
 	private float distanceMAX = 20;
 	private float coolTime = 0f;
 	private float coolTimeMAX = 0.5f;
