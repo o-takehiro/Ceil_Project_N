@@ -10,6 +10,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+using static MagicUtility;
 using static CharacterUtility;
 
 public class EnemyMagic : MagicBase {
@@ -24,6 +25,8 @@ public class EnemyMagic : MagicBase {
 
     private const float SATELLITE_DISTANCE = 4;
 	private const int SATELLITE_MAX = 4;
+	private const float _BEAM_RANGE_MAX = 30;
+	private const float _DEFENSE_RADIUS_MAX = 3;
 
 	// 小型弾幕のリスト
 	private List<GameObject> bulletList = new List<GameObject>();
@@ -182,18 +185,52 @@ public class EnemyMagic : MagicBase {
         beam.position = GetEnemyCenterPosition();
         beam.rotation = GetEnemyRotation();
         beam.localScale = Vector3.one;
-        if (GetPlayer() != null)
+		// ビームが相手の防御魔法に当たるなら長さを調節
+		if (GetLaserBeamDefecseHit()) {
+			LaserBeamDefenseRange(beam);
+		}
+		if (GetPlayer() != null)
             beam.rotation = GetOtherDirection(beam.position);
         UniTask task = LaserBeamMove(magicObject, beam);
         task = EffectManager.Instance.PlayEffect(eEffectType.BeamShot, beam.position);
     }
-    /// <summary>
-    /// ビーム(横)魔法の動き
-    /// </summary>
-    /// <param name="magicObject"></param>
-    /// <param name="beam"></param>
-    /// <returns></returns>
-    private async UniTask LaserBeamMove(MagicObject magicObject, Transform beam)
+	/// <summary>
+	/// ビームが防御魔法に当たるかどうか
+	/// </summary>
+	/// <returns></returns>
+	private bool GetLaserBeamDefecseHit() {
+		if (GetPlayer() == null) return false;
+		if (GetPlayerToEnemyDistance() - _DEFENSE_RADIUS_MAX >= _BEAM_RANGE_MAX ||
+			!GetMagicActive((int)eSideType.PlayerSide, (int)eMagicType.Defense)) return false;
+		return true;
+	}
+	/// <summary>
+	/// ビーム(横)の長さ調整
+	/// </summary>
+	/// <param name="laserBeam"></param>
+	private void LaserBeamDefenseRange(Transform laserBeam) {
+		if (GetPlayer() == null) return;
+		// 相手から自分までの方向
+		Vector3 thisDirection = (GetEnemyCenterPosition() - GetPlayerCenterPosition()).normalized;
+		// 相手の防御魔法の正面位置
+		Vector3 otherDefenseForwardPos = GetPlayerCenterPosition() + thisDirection * _DEFENSE_RADIUS_MAX;
+		// ビームがディフェンスに当たったまでの長さ
+		float beamRange = _BEAM_RANGE_MAX - Vector3.Distance(GetEnemyCenterPosition(), otherDefenseForwardPos);
+		// ビームの長さを調整
+		Vector3 beamScale = laserBeam.localScale;
+		beamScale.z = 1 - (beamRange / _BEAM_RANGE_MAX);
+		laserBeam.localScale = beamScale;
+		// 当たっている位置にエフェクト生成
+		UniTask task = EffectManager.Instance.PlayEffect(eEffectType.BeamDefense, otherDefenseForwardPos);
+
+	}
+	/// <summary>
+	/// ビーム(横)魔法の動き
+	/// </summary>
+	/// <param name="magicObject"></param>
+	/// <param name="beam"></param>
+	/// <returns></returns>
+	private async UniTask LaserBeamMove(MagicObject magicObject, Transform beam)
     {
         Vector3 beamScale = beam.localScale;
         beamScale.x = 1f;
