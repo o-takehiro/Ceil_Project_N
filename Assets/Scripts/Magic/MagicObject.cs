@@ -19,21 +19,17 @@ public class MagicObject : MonoBehaviour {
 	// 防御魔法オブジェクトのオリジナル
 	[SerializeField]
 	private GameObject _originDefense = null;
-
 	// 小型弾幕オブジェクトのオリジナル
 	[SerializeField]
 	private GameObject _originMiniBullet = null;
-
 	// ビームオブジェクトのオリジナル
 	[SerializeField]
 	private GameObject _originBeam = null;
 
 	// 防御魔法のオブジェクト
 	public GameObject defenseObject = null;
-
     // 小型弾幕のオブジェクト
     public List<GameObject> miniBulletObjects = null;
-
 	// ビーム魔法のオブジェクト
 	public GameObject beamObject = null;
 
