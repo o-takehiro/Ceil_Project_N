@@ -9,7 +9,7 @@ public class MagicHit : MagicObject {
 	// 親オブジェクト
 	MagicObject parentObject = null;
 
-	private const float _BEAM_RANGE_MAX = 20;
+	private const float _BEAM_RANGE_MAX = 30;
 	private const float _DEFENSE_RADIUS_MAX = 3;
 
 	/// <summary>
