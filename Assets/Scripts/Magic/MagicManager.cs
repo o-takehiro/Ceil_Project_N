@@ -231,6 +231,7 @@ public class MagicManager : MonoBehaviour {
 	/// <param name="magicID"></param>
 	public void CreateMagic(eSideType sideType, eMagicType magicType) {
 		int side = (int)sideType, magicID = (int)magicType;
+		if (side < 0 || magicID < 0) return;
 		if (_activeMagicIDList[side][magicID] >= 0) return;
 		// データを使用状態にする
 		_activeMagicIDList[side][magicID] = UseMagicData(side);
