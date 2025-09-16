@@ -9,9 +9,6 @@ public class MagicHit : MagicObject {
 	// 親オブジェクト
 	MagicObject parentObject = null;
 
-	private const float _BEAM_RANGE_MAX = 30;
-	private const float _DEFENSE_RADIUS_MAX = 3;
-
 	/// <summary>
 	/// 使用前準備
 	/// </summary>
@@ -61,30 +58,8 @@ public class MagicHit : MagicObject {
 				parentObject.RemoveMiniBullet(gameObject);
 				break;
 			case eMagicType.LaserBeam:
-				if (otherMagic != eMagicType.Defense) {
-					GiveDamage(otherSide, 1);
-				}
-				else {
-					// 相手から自分までの方向
-					Vector3 thisDirection = (thisPosition - otherPosition).normalized;
-					// 相手の防御魔法の正面位置
-                    Vector3 otherDefenseForwardPos = otherPosition + thisDirection * _DEFENSE_RADIUS_MAX;
-					// y座標調整
-					if (otherMagicData.activeSide == eSideType.PlayerSide) {
-						otherDefenseForwardPos.y = GetPlayerCenterPosition().y;
-					}
-                    if (otherMagicData.activeSide == eSideType.EnemySide) {
-                        otherDefenseForwardPos.y = GetEnemyCenterPosition().y;
-                    }
-                    // ビームがディフェンスに当たったまでの長さ
-                    float beamRange = _BEAM_RANGE_MAX - Vector3.Distance(thisPosition, otherDefenseForwardPos);
-					// ビームの長さを調整
-					Vector3 beamScale = gameObject.transform.localScale;
-					beamScale.z = 1 - (beamRange / _BEAM_RANGE_MAX);
-                    gameObject.transform.localScale = beamScale;
-					// 当たっている位置にエフェクト生成
-					task = EffectManager.Instance.PlayEffect(eEffectType.BeamDefense, otherDefenseForwardPos);
-                }
+				if (otherMagic == eMagicType.Defense) return;
+				GiveDamage(otherSide, 1);
 				break;
 		}
 
