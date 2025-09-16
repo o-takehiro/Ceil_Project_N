@@ -16,7 +16,8 @@ public class Boss2 : EnemyCharacter {
 
     public override void Setup(int masterID) {
         base.Setup(masterID);
-
+        //HPƒQ[ƒW‚Ìİ’è
+        SetupCanvasPosition(Vector3.one * 2);
         myAI.Setup(this);
         myAI.ChangeState(new EnemyAI001_Wait());
     }

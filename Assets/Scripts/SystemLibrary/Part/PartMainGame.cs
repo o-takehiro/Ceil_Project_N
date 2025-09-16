@@ -56,7 +56,7 @@ public class PartMainGame : PartBase {
     public override async UniTask Execute() {
         await FadeManager.Instance.FadeIn();
 
-        SoundManager.Instance.PlayBGM(1);
+        //SoundManager.Instance.PlayBGM(1);
         await MenuManager.Instance.Get<PlayerHPGauge>().Open();
 
         await UniTask.CompletedTask;
@@ -70,7 +70,7 @@ public class PartMainGame : PartBase {
     public override async UniTask Teardown() {
         await base.Teardown();
         await MenuManager.Instance.Get<PlayerHPGauge>().Close();
-        SoundManager.Instance.PlayBGM(0);
+        //SoundManager.Instance.PlayBGM(0);
         //UnusePlayer();
         ExecuteAllMagic(magic => magic.UnuseSelf());
 

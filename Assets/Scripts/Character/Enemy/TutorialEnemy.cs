@@ -28,6 +28,8 @@ public class TutorialEnemy : EnemyCharacter {
     }
     public override void Setup(int masterID) {
         base.Setup(masterID);
+        //HPゲージの更新
+        SetupCanvasPosition(Vector3.one);
         //ステートマシーンの初期化
         myAI.Setup(this);
         myAI.ChangeState(new EnemyAI001_Wait());
