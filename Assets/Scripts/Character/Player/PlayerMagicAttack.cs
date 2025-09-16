@@ -1,5 +1,6 @@
 using Cysharp.Threading.Tasks;
 using System.Collections.Generic;
+using System.Transactions;
 using UnityEngine;
 
 
@@ -24,28 +25,24 @@ public class PlayerMagicAttack {
         for (int i = 0; i < 4; i++) {
             _eMagicList.Add(eMagicType.Invalid);
         }
-
-        //
-        //_eMagicList[0] = eMagicType.Defense;        // 楯
-        //_eMagicList[1] = eMagicType.MiniBullet;     // たま
-        //_eMagicList[2] = eMagicType.SatelliteOrbital;   // えいせい
-        //Debug.Log("0番目と1番目と2番目にまほうがセットされた");
     }
 
     /// <summary>
     /// 魔法発射
     /// </summary>
     public void RequestAttack(int slotIndex) {
+        float currentMP = CharacterUtility.GetPlayerCurrentMP();
         if (slotIndex < 0 || slotIndex >= _eMagicList.Count) return;
         var magicType = _eMagicList[slotIndex];
         if (magicType == eMagicType.Invalid) {
             return;
         }
-        if (!_isDeath) {
+        if (!_isDeath && currentMP > 0.0f) {
 
             // 魔法発射
             CreateMagic(eSideType.PlayerSide, magicType);
-            CharacterUtility.ToPlayerMPDamage(1);
+            // Debug
+            CharacterUtility.ToPlayerMPDamage(10);
         }
     }
 

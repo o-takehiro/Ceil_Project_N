@@ -4,6 +4,7 @@ using UnityEngine;
 
 using static CharacterUtility;
 using static CharacterMasterUtility;
+using UnityEngine.UIElements;
 /// <summary>
 /// プレイヤーキャラクター全体を統括するクラス
 /// ・移動、攻撃などの処理をサブクラスに委譲する
@@ -171,6 +172,14 @@ public class PlayerCharacter : CharacterBase {
     }
 
     /// <summary>
+    /// 現在のMP量を返す
+    /// </summary>
+    /// <returns></returns>
+    public float GetPlayerCurrentMP() {
+        return MP;
+    }
+
+    /// <summary>
     /// キャラクター死亡処理
     /// </summary>
     public override void Dead() {
@@ -195,6 +204,8 @@ public class PlayerCharacter : CharacterBase {
 
 
     }
+
+
 
 
 }
