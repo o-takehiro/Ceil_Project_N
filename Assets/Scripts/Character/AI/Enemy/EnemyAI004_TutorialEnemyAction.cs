@@ -32,9 +32,8 @@ public class EnemyAI004_TutorialEnemyAction : CharacterAIBase<EnemyCharacter> {
         else if (distance > _CLOSE_DISTANCE) {
             GetEnemy().myAI.ChangeState(new EnemyAI002_CloseMove());
         } else {
-            //GetEnemy().GetEnemyAnimator().SetTrigger("isMagicAttack");
             AddEnemyMagicType(eMagicType.MiniBullet);
-            CreateMagic(eSideType.EnemySide, GetEnemyMagicType(eMagicType.MiniBullet));
+            GetEnemy().GetEnemyAnimator().SetTrigger("isMagicAttack");
             GetEnemy().myAI.ChangeState(new EnemyAI001_Wait());
         }
     }

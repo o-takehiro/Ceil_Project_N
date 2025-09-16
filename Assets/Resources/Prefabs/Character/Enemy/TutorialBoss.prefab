@@ -124,6 +124,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5112059682241232217}
   - component: {fileID: 2861289428992066396}
+  - component: {fileID: 6529332370698128279}
   - component: {fileID: -1756505754701040238}
   - component: {fileID: 3030512311797376684}
   - component: {fileID: 3104124567857857785}
@@ -166,6 +167,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enemyCanvas: {fileID: 455294113858088446}
   _attackColliderList: []
+--- !u!114 &6529332370698128279
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5142102454024747431}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ebb70730212e4c2498a3eede77909b85, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!136 &-1756505754701040238
 CapsuleCollider:
   m_ObjectHideFlags: 0
