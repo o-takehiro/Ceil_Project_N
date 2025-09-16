@@ -24,7 +24,7 @@ public class PlayerCharacter : CharacterBase {
     private bool _isLoopRunning = false;
     public override bool isPlayer() => true;
     public PlayerAttack GetAttackController() => _attack;
-
+    public PlayerMovement GetPlayerMovement() => _movement;
     /// <summary>
     /// ‰Šú‰»ˆ—
     /// </summary>
@@ -70,7 +70,10 @@ public class PlayerCharacter : CharacterBase {
         SetPlayerCenterPosition(transform.position + Vector3.up * 1.5f);
         SetPlayerPrevPosition();
 
-        if (_movement == null) _movement = new PlayerMovement(_rigidbody, transform, _camera, _animator);
+        // Ú’n”»’è‚ğæ“¾
+        var groundCheck = GetComponentInChildren<GroundCheck>();
+
+        if (_movement == null) _movement = new PlayerMovement(_rigidbody, transform, _camera, _animator, groundCheck);
         if (_magic == null) _magic = new PlayerMagicAttack();
         if (_attack == null) {
             _attack = new PlayerAttack(_rigidbody, _animator, GetRawAttack());

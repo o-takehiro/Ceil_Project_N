@@ -57,15 +57,15 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
-      - time: 0.32801822
-        functionName: OnCollider
+      - time: 0.24641149
+        functionName: IsSetAttack
         data: 
         objectReferenceParameter: {fileID: 11500000, guid: d326c710f26571c41bfd13ade0c1ca70, type: 3}
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: 0.66287017
-        functionName: OffCollider
+      - time: 0.32801822
+        functionName: OnCollider
         data: 
         objectReferenceParameter: {fileID: 11500000, guid: d326c710f26571c41bfd13ade0c1ca70, type: 3}
         floatParameter: 0
@@ -78,15 +78,29 @@ ModelImporter:
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: 0.9270455
-        functionName: OnAttackEnd
+      - time: 0.6058632
+        functionName: OnComboCheck
         data: 
         objectReferenceParameter: {fileID: 11500000, guid: d326c710f26571c41bfd13ade0c1ca70, type: 3}
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: 0.6058632
-        functionName: OnComboCheck
+      - time: 0.66287017
+        functionName: OffCollider
+        data: 
+        objectReferenceParameter: {fileID: 11500000, guid: d326c710f26571c41bfd13ade0c1ca70, type: 3}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.8451366
+        functionName: IsNotSetAttack
+        data: 
+        objectReferenceParameter: {fileID: 11500000, guid: d326c710f26571c41bfd13ade0c1ca70, type: 3}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.9270455
+        functionName: OnAttackEnd
         data: 
         objectReferenceParameter: {fileID: 11500000, guid: d326c710f26571c41bfd13ade0c1ca70, type: 3}
         floatParameter: 0

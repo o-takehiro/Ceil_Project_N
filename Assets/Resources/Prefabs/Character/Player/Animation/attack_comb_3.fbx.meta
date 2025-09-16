@@ -57,6 +57,34 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
+      - time: 0
+        functionName: DisableAttackInput
+        data: 
+        objectReferenceParameter: {fileID: 11500000, guid: d326c710f26571c41bfd13ade0c1ca70, type: 3}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.21737124
+        functionName: DisableJump
+        data: 
+        objectReferenceParameter: {fileID: 11500000, guid: d326c710f26571c41bfd13ade0c1ca70, type: 3}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.2200957
+        functionName: IsSetAttack
+        data: 
+        objectReferenceParameter: {fileID: 11500000, guid: d326c710f26571c41bfd13ade0c1ca70, type: 3}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.2801303
+        functionName: AttackPlaySE_3
+        data: 
+        objectReferenceParameter: {fileID: 11500000, guid: d326c710f26571c41bfd13ade0c1ca70, type: 3}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
       - time: 0.30068335
         functionName: OnCollider
         data: 
@@ -71,22 +99,15 @@ ModelImporter:
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: 0.2801303
-        functionName: AttackPlaySE_3
+      - time: 0.7257604
+        functionName: EnableJump
         data: 
         objectReferenceParameter: {fileID: 11500000, guid: d326c710f26571c41bfd13ade0c1ca70, type: 3}
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: 0.9967135
-        functionName: OnAttackEnd
-        data: 
-        objectReferenceParameter: {fileID: 11500000, guid: d326c710f26571c41bfd13ade0c1ca70, type: 3}
-        floatParameter: 0
-        intParameter: 0
-        messageOptions: 0
-      - time: 0
-        functionName: DisableAttackInput
+      - time: 0.9457959
+        functionName: IsNotSetAttack
         data: 
         objectReferenceParameter: {fileID: 11500000, guid: d326c710f26571c41bfd13ade0c1ca70, type: 3}
         floatParameter: 0
@@ -94,6 +115,13 @@ ModelImporter:
         messageOptions: 0
       - time: 0.9739414
         functionName: EnableAttackInput
+        data: 
+        objectReferenceParameter: {fileID: 11500000, guid: d326c710f26571c41bfd13ade0c1ca70, type: 3}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.9967135
+        functionName: OnAttackEnd
         data: 
         objectReferenceParameter: {fileID: 11500000, guid: d326c710f26571c41bfd13ade0c1ca70, type: 3}
         floatParameter: 0
