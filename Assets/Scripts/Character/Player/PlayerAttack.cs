@@ -57,9 +57,9 @@ public class PlayerAttack {
     /// </summary>
     public void SetupAttackData() {
         _attackDataMap = new Dictionary<AttackStep, AttackData> {
-            { AttackStep.First, new AttackData("attack", 1.3f, 500, 0) },
-            { AttackStep.Second, new AttackData("attack", 1.5f, 500, 0) },
-            { AttackStep.Third, new AttackData("attack", 2.0f, 1000, 3) }
+            { AttackStep.First, new AttackData("attack", 1.3f,  500, 0, 10) },
+            { AttackStep.Second,new AttackData("attack", 1.5f,  500, 0, 15) },
+            { AttackStep.Third, new AttackData("attack", 2.0f, 1000, 3, 20) }
         };
     }
 

@@ -266,4 +266,9 @@ public class CharacterUtility {
     public static void CancelAllEnemyMagic() {
         GetEnemy().CancelAllEnemyMagic();
     }
+
+
+    public static float GetPlayerCurrentMP() {
+        return GetPlayer().GetPlayerCurrentMP();
+    }
 }
