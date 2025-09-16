@@ -65,7 +65,7 @@ public enum eMagicType {
 	Defense,            // 防御魔法
 	MiniBullet,         // 小型弾幕魔法
     SatelliteOrbital,   // 衛星軌道魔法
-
+    LaserBeam,          // ビーム(横)魔法
 
     Max,
 }
@@ -78,6 +78,8 @@ public enum eEffectType {
 	Elimination,        // 削除エフェクト
 	Hit,                // ヒットエフェクト
     Analysis,           // 解析エフェクト
+    BeamDefense,        // ビームを防いだエフェクト
+    BeamShot,           // ビーム発射エフェクト
 
 	max,
 }
