@@ -14,6 +14,7 @@ using static CharacterUtility;
 using static PlayerMagicAttack;
 using static CommonModule;
 using Cysharp.Threading.Tasks;
+using static UnityEngine.EventSystems.EventTrigger;
 
 public class MagicManager : MonoBehaviour {
 	// 自身への参照
@@ -98,7 +99,7 @@ public class MagicManager : MonoBehaviour {
 		}
 	}
 
-	public async UniTask Execute() {
+	public void Update() {
 		UniTask task;
 		// デバッグ用
 		if (Input.GetKey(KeyCode.Z)) CreateMagic(eSideType.PlayerSide, eMagicType.Defense);
@@ -123,7 +124,6 @@ public class MagicManager : MonoBehaviour {
 				_activeMagic[sideCount][i](GetMagicObject(_activeMagicIDList[sideCount][i]));
 			}
 		}
-		await UniTask.CompletedTask;
 		//for (int magic = 0, magicMax = _copyMagicList.Count; magic < magicMax; magic++) {
 		//	Debug.Log(_copyMagicList[magic]);
 		//}
@@ -291,15 +291,15 @@ public class MagicManager : MonoBehaviour {
         while (magicObject.canUnuse == false) {
             await UniTask.DelayFrame(1);
         }
+		await UnuseMagicData(removeMagic);
         _activeMagicIDList[side][magicID] = activeMagic;
-		UnuseMagicData(removeMagic);
 	}
 
 	/// <summary>
 	/// 魔法を未使用状態にする
 	/// </summary>
 	/// <param name="unuseMagic"></param>
-	public void UnuseMagicData(MagicBase unuseMagic) {
+	public async UniTask UnuseMagicData(MagicBase unuseMagic) {
 		if (unuseMagic == null) return;
         // データの未使用化
         int unuseID = unuseMagic.ID;
@@ -308,14 +308,14 @@ public class MagicManager : MonoBehaviour {
 		unuseMagic.Teardown();
 		_unuseList[(int)unuseMagic.GetSide()].Add(unuseMagic);
 		// オブジェクトの未使用化
-		UnuseMagicObject(GetMagicObject(unuseID));
+		await UnuseMagicObject(GetMagicObject(unuseID));
 	}
 
 	/// <summary>
 	/// 魔法オブジェクトを未使用状態にする
 	/// </summary>
 	/// <param name="unuseObject"></param>
-	public void UnuseMagicObject(MagicObject unuseObject) {
+	public async UniTask UnuseMagicObject(MagicObject unuseObject) {
 		if (unuseObject == null) return;
 		if (unuseObject.ID < 0) return;
 		// 未使用状態にする
@@ -323,6 +323,7 @@ public class MagicManager : MonoBehaviour {
 		unuseObject.Teardown();
 		_unuseObjectList.Add(unuseObject);
 		unuseObject.transform.SetParent(_unuseObjectRoot);
+		await UniTask.CompletedTask;
 	}
 
 	/// <summary>
@@ -359,10 +360,20 @@ public class MagicManager : MonoBehaviour {
 		// 発動中の魔法を探す
 		for (int magic = 0, magicMax = _activeMagicIDList[enemy].Count; magic < magicMax; magic++) {
 			// 魔法発動中かつ、コピー済みでなければセット
-			if (_activeMagicIDList[enemy][magic] < 0 || GetMagicCopied(magic)) continue;
+			if (!GetMagicActive(enemy, magic) || GetMagicCopied(magic)) continue;
 			SetMagicStorageSlot((eMagicType)magic);
 			return;
 		}
+	}
+
+	/// <summary>
+	/// 特定の魔法が発動中かどうか
+	/// </summary>
+	/// <param name="side"></param>
+	/// <param name="magic"></param>
+	/// <returns></returns>
+	public bool GetMagicActive(int side, int magic) {
+		return _activeMagicIDList[side][magic] >= 0;
 	}
 
 	/// <summary>
