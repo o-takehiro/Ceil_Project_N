@@ -32,8 +32,10 @@ public class PartMainGame : PartBase {
         _stageManager?.Initialize();
         await MenuManager.Instance.Get<EnemyHPGauge>("Prefabs/Menu/CanvasEnemyUI").Initialize();
         await MenuManager.Instance.Get<PlayerHPGauge>("Prefabs/Menu/CanvasPlayerUI").Initialize();
+        await MenuManager.Instance.Get<PlayerMPGauge>("Prefabs/Menu/CanvasPlayerUI_MP").Initialize();
         await UniTask.CompletedTask;
     }
+
 
     /// <summary>
     /// ƒp[ƒg‚Ì€”õ
@@ -58,7 +60,7 @@ public class PartMainGame : PartBase {
 
         //SoundManager.Instance.PlayBGM(1);
         await MenuManager.Instance.Get<PlayerHPGauge>().Open();
-
+        await MenuManager.Instance.Get<PlayerMPGauge>().Open();
         await UniTask.CompletedTask;
 
     }
@@ -70,6 +72,7 @@ public class PartMainGame : PartBase {
     public override async UniTask Teardown() {
         await base.Teardown();
         await MenuManager.Instance.Get<PlayerHPGauge>().Close();
+        await MenuManager.Instance.Get<PlayerMPGauge>().Close();
         //SoundManager.Instance.PlayBGM(0);
         //UnusePlayer();
         ExecuteAllMagic(magic => magic.UnuseSelf());

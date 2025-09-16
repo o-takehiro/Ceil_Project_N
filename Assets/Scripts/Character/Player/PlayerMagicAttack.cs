@@ -45,6 +45,7 @@ public class PlayerMagicAttack {
 
             // 魔法発射
             CreateMagic(eSideType.PlayerSide, magicType);
+            CharacterUtility.ToPlayerMPDamage(1);
         }
     }
 
@@ -106,18 +107,8 @@ public class PlayerMagicAttack {
     /// </summary>
     /// <param name="magicType"></param>
     public static void SetMagicStorageSlot(eMagicType magicType) {
-        //// 保存済みの魔法かどうか
-        //if (_eMagicStorageList.Contains(magicType)) return;
-        //
-        //// 取得した魔法全てを保持
-        //for (int i = 0; i < _eMagicStorageList.Count; i++) {
-        //    if (_eMagicStorageList[i] == eMagicType.Invalid) {
-        //        _eMagicStorageList[i] = magicType;
-        //        break;
-        //    }
-        //}
         _eMagicStorageList.Add(magicType);
-        
+
         TrySetMagicToSlotFromStorage(magicType);
     }
 
