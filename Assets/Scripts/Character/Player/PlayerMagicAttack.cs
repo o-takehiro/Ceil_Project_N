@@ -1,16 +1,15 @@
 using Cysharp.Threading.Tasks;
 using System.Collections.Generic;
-using System.Transactions;
 using UnityEngine;
 
-
+// MagicUtility省略用
 using static MagicUtility;
 /// <summary>
 /// プレイヤーの魔法を撃つ処理
 /// </summary>
 public class PlayerMagicAttack {
     private static List<eMagicType> _eMagicList;                  // 魔法を保存するリスト
-    private static List<eMagicType> _eMagicStorageList;    // 取得したすべての魔法を保存するリスト
+    private static List<eMagicType> _eMagicStorageList;           // 取得したすべての魔法を保存するリスト
     public bool _isDeath = false;
 
     /// <summary>
