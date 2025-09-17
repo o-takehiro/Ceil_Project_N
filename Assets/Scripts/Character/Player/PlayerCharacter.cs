@@ -4,7 +4,6 @@ using UnityEngine;
 
 using static CharacterUtility;
 using static CharacterMasterUtility;
-using UnityEngine.UIElements;
 /// <summary>
 /// プレイヤーキャラクター全体を統括するクラス
 /// ・移動、攻撃などの処理をサブクラスに委譲する
@@ -17,7 +16,6 @@ public class PlayerCharacter : CharacterBase {
     private PlayerMagicAttack _magic;   // 魔法制御クラス
 
     private Rigidbody _rigidbody;       // 物理挙動
-    private Transform _transform;       // キャラクターのTransform
     private Camera _camera;             // カメラ参照
     private PlayerInput _playerInput;   // 入力制御
     private Animator _animator;         // アニメーション制御
@@ -26,23 +24,15 @@ public class PlayerCharacter : CharacterBase {
     public override bool isPlayer() => true;
     public PlayerAttack GetAttackController() => _attack;
     public PlayerMovement GetPlayerMovement() => _movement;
+
+    // 魔法の発射場所
+    [SerializeField] private GameObject[] magicSpawnPoints = new GameObject[4];
+
+
     /// <summary>
     /// 初期化処理
     /// </summary>
     public override void Initialize() {
-        // // 依存コンポーネントは自前で取得
-        // _rigidbody = GetComponent<Rigidbody>();
-        // _animator = GetComponentInChildren<Animator>();
-        // _playerInput = GetComponent<PlayerInput>();
-        // _camera = Camera.main; // 必要なら差し替え可
-        // 
-        // // 移動用クラスの生成
-        // _movement = new PlayerMovement(_rigidbody, transform, _camera, _animator);
-        // // 攻撃用クラスの生成
-        // _attack = new PlayerAttack(_rigidbody, _animator,GetRawAttack());
-        // _attack.SetupAttackData();
-        // // 魔法用クラスの生成
-        // _magic = new PlayerMagicAttack(_animator);
     }
 
     /// <summary>
@@ -78,6 +68,13 @@ public class PlayerCharacter : CharacterBase {
 
         if (_movement == null) _movement = new PlayerMovement(_rigidbody, transform, _camera, _animator, groundCheck);
         if (_magic == null) _magic = new PlayerMagicAttack();
+
+        // スロットごとの発射位置を登録
+        for (int i = 0; i < magicSpawnPoints.Length; i++) {
+            _magic.SetMagicSpawnPosition(i, magicSpawnPoints[i]);
+            
+        }
+
         if (_attack == null) {
             _attack = new PlayerAttack(_rigidbody, _animator, GetRawAttack());
             _attack.SetupAttackData();
@@ -90,9 +87,18 @@ public class PlayerCharacter : CharacterBase {
         StartPlayerLoop().Forget();
     }
 
-    // 入力を受けつけて、各クラスで使用可能にする
+    /// <summary>
+    /// 移動用入力受付
+    /// </summary>
+    /// <param name="input"></param>
     public void SetMoveInput(Vector2 input) => _movement.SetMoveInput(input);
+    /// <summary>
+    /// ジャンプ用入力受付
+    /// </summary>
     public void RequestJump() => _movement.RequestJump();
+    /// <summary>
+    /// 近接攻撃用入力受付
+    /// </summary>
     public void RequestAttack() {
         if (_movement._isGrounded) {
             _attack.RequestAttack();
@@ -189,6 +195,10 @@ public class PlayerCharacter : CharacterBase {
         _magic._isDeath = true;
     }
 
+
+    /// <summary>
+    /// プレイヤーの片付け
+    /// </summary>
     public override void Teardown() {
         base.Teardown();
         _movement?.ResetState();

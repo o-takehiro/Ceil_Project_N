@@ -40,8 +40,7 @@ public class PlayerAttack {
     /// 入力を受け付ける
     /// </summary>
     public void RequestAttack() {
-        if (!_canReceiveInput) return;  // 入力禁止中なら無視
-
+        if (!_canReceiveInput) return;
 
         _attackRequested = true;
 
@@ -109,6 +108,7 @@ public class PlayerAttack {
     public void EndAttack() {
         _isAttacking = false;
         _attackRequested = false;
+
     }
 
     /// <summary>
@@ -143,6 +143,11 @@ public class PlayerAttack {
         _canReceiveInput = value;
     }
 
+    public void AddMP() {
+        if (_attackDataMap.TryGetValue(_currentAttack, out var attackData)) {
+            CharacterUtility.ToPlayerAddMP(attackData.HealMP);
+        }
+    }
     /// <summary>
     /// 攻撃関連をリセットする
     /// </summary>
