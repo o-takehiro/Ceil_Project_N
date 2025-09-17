@@ -57,14 +57,14 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
-      - time: 0.21737124
+      - time: 0
         functionName: DisableJump
         data: 
         objectReferenceParameter: {fileID: 11500000, guid: d326c710f26571c41bfd13ade0c1ca70, type: 3}
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: 0.2200957
+      - time: 0.19617225
         functionName: IsSetAttack
         data: 
         objectReferenceParameter: {fileID: 11500000, guid: d326c710f26571c41bfd13ade0c1ca70, type: 3}
@@ -92,13 +92,6 @@ ModelImporter:
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: 0.6291866
-        functionName: DisableAttackInput
-        data: 
-        objectReferenceParameter: {fileID: 11500000, guid: d326c710f26571c41bfd13ade0c1ca70, type: 3}
-        floatParameter: 0
-        intParameter: 0
-        messageOptions: 0
       - time: 0.7257604
         functionName: EnableJump
         data: 
@@ -113,15 +106,15 @@ ModelImporter:
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: 0.9739414
-        functionName: EnableAttackInput
+      - time: 0.9967135
+        functionName: OnAttackEnd
         data: 
         objectReferenceParameter: {fileID: 11500000, guid: d326c710f26571c41bfd13ade0c1ca70, type: 3}
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: 0.9967135
-        functionName: OnAttackEnd
+      - time: 1
+        functionName: EnableAttackInput
         data: 
         objectReferenceParameter: {fileID: 11500000, guid: d326c710f26571c41bfd13ade0c1ca70, type: 3}
         floatParameter: 0

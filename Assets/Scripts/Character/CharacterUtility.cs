@@ -212,6 +212,11 @@ public class CharacterUtility {
         SetPlayerMPSliderValue(GetPlayer().GetPlayerMPSliderValue());
     }
 
+    public static void ToPlayerAddMP(int setValue) {
+        GetPlayer().AddMP(setValue);
+        SetPlayerMPSliderValue(GetPlayer().GetPlayerMPSliderValue());
+    }
+
     /// <summary>
     /// ƒvƒŒƒCƒ„[‚Æ“G‚Æ‚Ì‹——£‚Ìæ“¾
     /// </summary>
