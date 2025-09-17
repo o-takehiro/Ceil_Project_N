@@ -54,8 +54,6 @@ public class PlayerMagicAttack {
             // –‚–@”­ŽË
             CreateMagic(eSideType.PlayerSide, magicType, spawnPoint);
             spawnPoint.SetActive(true);
-            // Debug
-            CharacterUtility.ToPlayerMPDamage(5);
         }
     }
 
