@@ -66,8 +66,10 @@ public enum eMagicType {
 	MiniBullet,         // 小型弾幕魔法
     SatelliteOrbital,   // 衛星軌道魔法
     LaserBeam,          // ビーム(横)魔法
+	DelayBullet,        // 時間差弾魔法
 
-    Max,
+
+	Max,
 }
 
 /// <summary>

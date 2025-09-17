@@ -49,6 +49,7 @@ public class MagicManager : MonoBehaviour {
 	// コピーした魔法
 	private List<eMagicType> _copyMagicList = null;
 
+	// ある程度の生成数
 	private const int _MAGIC_MAX = 8;
 
 	public void Initialize() {
@@ -109,12 +110,14 @@ public class MagicManager : MonoBehaviour {
 		if (Input.GetKey(KeyCode.V)) CreateMagic(eSideType.EnemySide, eMagicType.MiniBullet);
 		if (Input.GetKey(KeyCode.N)) CreateMagic(eSideType.PlayerSide, eMagicType.SatelliteOrbital);
 		if (Input.GetKey(KeyCode.M)) CreateMagic(eSideType.PlayerSide, eMagicType.LaserBeam);
+		if (Input.GetKey(KeyCode.L)) CreateMagic(eSideType.PlayerSide, eMagicType.DelayBullet);
 		if (Input.GetKeyUp(KeyCode.Z)) task = MagicReset(eSideType.PlayerSide, eMagicType.Defense);
 		if (Input.GetKeyUp(KeyCode.X)) task = MagicReset(eSideType.PlayerSide, eMagicType.MiniBullet);
 		if (Input.GetKeyUp(KeyCode.C)) task = MagicReset(eSideType.EnemySide, eMagicType.Defense);
 		if (Input.GetKeyUp(KeyCode.V)) task = MagicReset(eSideType.EnemySide, eMagicType.MiniBullet);
 		if (Input.GetKeyUp(KeyCode.N)) task = MagicReset(eSideType.PlayerSide, eMagicType.SatelliteOrbital);
 		if (Input.GetKeyUp(KeyCode.M)) task = MagicReset(eSideType.PlayerSide, eMagicType.LaserBeam);
+		if (Input.GetKeyUp(KeyCode.L)) task = MagicReset(eSideType.PlayerSide, eMagicType.DelayBullet);
 		if (Input.GetKeyDown(KeyCode.B)) AnalysisMagicActivate();
 
 		if (_activeMagic == null) return;
@@ -230,14 +233,15 @@ public class MagicManager : MonoBehaviour {
 	/// 魔法生成
 	/// </summary>
 	/// <param name="magicID"></param>
-	public void CreateMagic(eSideType sideType, eMagicType magicType) {
+	public void CreateMagic(eSideType sideType, eMagicType magicType, GameObject setObject = null) {
+		//Vector3 activePosition = setPosition ?? Vector3.zero;
 		int side = (int)sideType, magicID = (int)magicType;
 		if (side < 0 || magicID < 0) return;
 		if (_activeMagicIDList[side][magicID] >= 0) return;
 		// データを使用状態にする
 		_activeMagicIDList[side][magicID] = UseMagicData(side);
 		MagicBase magicSide = GetMagicData(_activeMagicIDList[side][magicID]);
-		magicSide?.Setup(_activeMagicIDList[side][magicID]);
+		magicSide?.Setup(_activeMagicIDList[side][magicID], setObject);
 		// オブジェクトを生成する
 		MagicObject magicObject = GetMagicObject(_activeMagicIDList[side][magicID]);
 		if (magicObject == null) {
@@ -272,7 +276,10 @@ public class MagicManager : MonoBehaviour {
 			case eMagicType.LaserBeam:
 				_activeMagic[side][magic] = magicSyde.LaserBeamMagic;
 				break;
-		}
+            case eMagicType.DelayBullet:
+                _activeMagic[side][magic] = magicSyde.DelayBulletMagic;
+                break;
+        }
 		return;
 		//}
 	}

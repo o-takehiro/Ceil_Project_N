@@ -52,7 +52,7 @@ public class PlayerMagicAttack {
             GameObject spawnPoint = _magicSpawnPos[slotIndex];
             if (spawnPoint == null) return;
             // –‚–@”­ŽË
-            CreateMagic(eSideType.PlayerSide, magicType);
+            CreateMagic(eSideType.PlayerSide, magicType, spawnPoint);
             spawnPoint.SetActive(true);
             // Debug
             CharacterUtility.ToPlayerMPDamage(5);
