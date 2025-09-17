@@ -198,7 +198,7 @@ public class CharacterUtility {
     /// </summary>
     /// <param name="setValue"></param>
     public static void ToEnemyDamage(int setValue) {
-        GetEnemy().RemoveHP(setValue);
+        GetEnemy().Damage(setValue);
         SetEnemySliderValue(GetEnemy().GetEnemySliderValue());
         if (GetEnemy().isDead) GetEnemy().Dead();
     }
