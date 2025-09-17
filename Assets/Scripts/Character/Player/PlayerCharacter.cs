@@ -4,7 +4,6 @@ using UnityEngine;
 
 using static CharacterUtility;
 using static CharacterMasterUtility;
-using UnityEngine.UIElements;
 /// <summary>
 /// プレイヤーキャラクター全体を統括するクラス
 /// ・移動、攻撃などの処理をサブクラスに委譲する
@@ -17,7 +16,6 @@ public class PlayerCharacter : CharacterBase {
     private PlayerMagicAttack _magic;   // 魔法制御クラス
 
     private Rigidbody _rigidbody;       // 物理挙動
-    private Transform _transform;       // キャラクターのTransform
     private Camera _camera;             // カメラ参照
     private PlayerInput _playerInput;   // 入力制御
     private Animator _animator;         // アニメーション制御
@@ -30,19 +28,6 @@ public class PlayerCharacter : CharacterBase {
     /// 初期化処理
     /// </summary>
     public override void Initialize() {
-        // // 依存コンポーネントは自前で取得
-        // _rigidbody = GetComponent<Rigidbody>();
-        // _animator = GetComponentInChildren<Animator>();
-        // _playerInput = GetComponent<PlayerInput>();
-        // _camera = Camera.main; // 必要なら差し替え可
-        // 
-        // // 移動用クラスの生成
-        // _movement = new PlayerMovement(_rigidbody, transform, _camera, _animator);
-        // // 攻撃用クラスの生成
-        // _attack = new PlayerAttack(_rigidbody, _animator,GetRawAttack());
-        // _attack.SetupAttackData();
-        // // 魔法用クラスの生成
-        // _magic = new PlayerMagicAttack(_animator);
     }
 
     /// <summary>
@@ -189,6 +174,10 @@ public class PlayerCharacter : CharacterBase {
         _magic._isDeath = true;
     }
 
+
+    /// <summary>
+    /// プレイヤーの片付け
+    /// </summary>
     public override void Teardown() {
         base.Teardown();
         _movement?.ResetState();

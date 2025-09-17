@@ -41,6 +41,7 @@ public class PlayerAttack {
     /// </summary>
     public void RequestAttack() {
         if (!_canReceiveInput) return;
+
         _attackRequested = true;
 
         // ‰Œ‚‚ğo‚·
