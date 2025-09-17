@@ -15,17 +15,22 @@ using static CharacterUtility;
 
 public class EnemyMagic : MagicBase {
 	// 弾のスピード
-	private float _speed = 40;
+	private float _bulletSpeed = 40;
 	// 弾の最大飛距離
-	private float _distanceMAX = 20;
+	private float _bulletDistanceMax = 20;
 	// 弾のクールタイム
-	private float _coolTime = 0f;
+	private float _bulletCoolTime = 0f;
 	// 弾のクールタイムの最大
-	private float _coolTimeMAX = 0.5f;
+	private float _bulletCoolTimeMax = 0.5f;
+	// 時間差弾のクールタイム
+	private float _delayBulletCoolTime = 0.0f;
+	// 時間差弾のクールタイムの最大
+	private float _delayBulletCoolTimeMax = 10.0f;
 
 	// 魔法の発動中フラグ
 	private bool _satelliteOn = false;
-	private bool _beamOn = false;
+	private bool _laserBeamOn = false;
+	private bool _delayBulletOn = false;
 
 	// 衛星の半径
 	private const float _SATELLITE_RADIUS = 4;
@@ -35,11 +40,20 @@ public class EnemyMagic : MagicBase {
 	private const float _BEAM_RANGE_MAX = 30;
 	// 防御魔法の半径
 	private const float _DEFENSE_RADIUS = 3;
+	// 時間差弾の最大数
+	private const int _DELAY_BULLET_MAX = 6;
+	// 時間差弾の半径
+	private const float _DELAY_BULLET_RADIUS = 3;
 
 	// 小型弾幕のリスト
 	private List<GameObject> bulletList = new List<GameObject>();
 	// 衛星軌道のリスト
 	private List<GameObject> satelliteList = new List<GameObject>();
+	// 時間差弾のリスト
+	private List<GameObject> delayBulletList = new List<GameObject>();
+
+	// カメラ
+	Transform camera = Camera.main.transform;
 
 	/// <summary>
 	/// 魔法陣営の取得
@@ -73,7 +87,7 @@ public class EnemyMagic : MagicBase {
 	/// </summary>
 	public override void MiniBulletMagic(MagicObject magicObject) {
 		if (magicObject == null) return;
-		if (_coolTime < 0) {
+		if (_bulletCoolTime < 0) {
 			// 未使用化不可能
 			magicObject.canUnuse = false;
 			Transform bullet = magicObject.GenerateMiniBullet().transform;
@@ -82,10 +96,10 @@ public class EnemyMagic : MagicBase {
 			bullet.transform.rotation = GetEnemyRotation();
 			// 移動
 			UniTask task = MiniBulletMove(magicObject, bullet);
-			_coolTime = _coolTimeMAX;
+			_bulletCoolTime = _bulletCoolTimeMax;
 		}
 		else {
-			_coolTime -= Time.deltaTime;
+			_bulletCoolTime -= Time.deltaTime;
 		}
 	}
 	/// <summary>
@@ -97,9 +111,9 @@ public class EnemyMagic : MagicBase {
 	private async UniTask MiniBulletMove(MagicObject magicObject, Transform miniBullet) {
 		float distance = 0;
 		// プレイヤーから一定距離離れるまで前に進める
-		while (distance < _distanceMAX) {
+		while (distance < _bulletDistanceMax) {
 			distance = Vector3.Distance(miniBullet.position, GetEnemyCenterPosition());
-			miniBullet.position += miniBullet.forward * _speed * Time.deltaTime;
+			miniBullet.position += miniBullet.forward * _bulletSpeed * Time.deltaTime;
 			await UniTask.DelayFrame(1, PlayerLoopTiming.Update, useMagicObject.token);
 		}
 		UniTask task = EffectManager.Instance.PlayEffect(eEffectType.Elimination, miniBullet.position);
@@ -127,18 +141,18 @@ public class EnemyMagic : MagicBase {
 			// 衛星配置
 			switch (i) {
 				case 0:
-					bullet.position += new Vector3(_SATELLITE_RADIUS, 0, 0);
+					bullet.localPosition = new Vector3(_SATELLITE_RADIUS, 0, 0);
 					break;
 				case 1:
-					bullet.position += new Vector3(-_SATELLITE_RADIUS, 0, 0);
+					bullet.localPosition = new Vector3(-_SATELLITE_RADIUS, 0, 0);
 					break;
 				case 2:
-					bullet.position += new Vector3(0, 0, _SATELLITE_RADIUS);
-					bullet.eulerAngles += new Vector3(90, 0, 0);
+					bullet.localPosition = new Vector3(0, 0, _SATELLITE_RADIUS);
+					bullet.eulerAngles = new Vector3(90, 0, 0);
 					break;
 				case 3:
-					bullet.position += new Vector3(0, 0, -_SATELLITE_RADIUS);
-					bullet.eulerAngles += new Vector3(90, 0, 0);
+					bullet.localPosition = new Vector3(0, 0, -_SATELLITE_RADIUS);
+					bullet.eulerAngles = new Vector3(90, 0, 0);
 					break;
 			}
 			UniTask task = SatelliteOrbitalMove(magicObject, bullet);
@@ -160,10 +174,11 @@ public class EnemyMagic : MagicBase {
 			}
 			magicObject.transform.position = GetEnemyCenterPosition();
 			Vector3 satelliteRotation = magicObject.transform.eulerAngles;
-			satelliteRotation.y += _speed * Time.deltaTime;
+			satelliteRotation.y += _bulletSpeed * Time.deltaTime;
 			magicObject.transform.eulerAngles = satelliteRotation;
 			await UniTask.DelayFrame(1, PlayerLoopTiming.Update, useMagicObject.token);
 			loop = LoopChange();
+			if (GetEnemy() == null) loop = false;
 		}
 		_satelliteOn = false;
 		// 未使用化可能
@@ -185,10 +200,19 @@ public class EnemyMagic : MagicBase {
 	/// <param name="magicObject"></param>
 	public override void LaserBeamMagic(MagicObject magicObject) {
 		if (magicObject == null) return;
-		if (_beamOn) return;
-		_beamOn = true;
+		if (_laserBeamOn) return;
+		UniTask task;
+		_laserBeamOn = true;
 		// 未使用化不可能
 		magicObject.canUnuse = false;
+		// ビームが相手の防御魔法内で生成されるならその前に終了
+		if (GetLaserBeamInDefense()) {
+			task = EffectManager.Instance.PlayEffect(eEffectType.BeamDefense, GetEnemyCenterPosition());
+			_laserBeamOn = false;
+			// 未使用化可能
+			magicObject.canUnuse = true;
+			return;
+		}
 		Transform beam = magicObject.GenerateBeam().transform;
 		beam.position = GetEnemyCenterPosition();
 		beam.rotation = GetEnemyRotation();
@@ -198,8 +222,8 @@ public class EnemyMagic : MagicBase {
 			LaserBeamDefenseRange(beam);
 		}
 		if (GetPlayer() != null)
-			beam.rotation = GetOtherDirection(beam.position);
-		UniTask task = LaserBeamMove(magicObject, beam);
+			beam.rotation = GetOtherDirection(GetEnemyCenterPosition());
+		task = LaserBeamMove(magicObject, beam);
 		task = EffectManager.Instance.PlayEffect(eEffectType.BeamShot, beam.position);
 	}
 	/// <summary>
@@ -209,6 +233,16 @@ public class EnemyMagic : MagicBase {
 	private bool GetLaserBeamDefecseHit() {
 		if (GetPlayer() == null) return false;
 		if (GetPlayerToEnemyDistance() - _DEFENSE_RADIUS >= _BEAM_RANGE_MAX ||
+			!GetMagicActive((int)eSideType.PlayerSide, (int)eMagicType.Defense)) return false;
+		return true;
+	}
+	/// <summary>
+	/// ビームが防御魔法の中かどうか
+	/// </summary>
+	/// <returns></returns>
+	private bool GetLaserBeamInDefense() {
+		if (GetPlayer() == null) return false;
+		if (GetPlayerToEnemyDistance() >= _DEFENSE_RADIUS ||
 			!GetMagicActive((int)eSideType.PlayerSide, (int)eMagicType.Defense)) return false;
 		return true;
 	}
@@ -253,13 +287,79 @@ public class EnemyMagic : MagicBase {
 			beam.localScale = beamScale;
 			await UniTask.DelayFrame(1, PlayerLoopTiming.Update, useMagicObject.token);
 		}
-		_beamOn = false;
+		_laserBeamOn = false;
 		// 未使用化可能
 		magicObject.canUnuse = true;
 	}
-
+	/// <summary>
+	/// 時間差弾魔法
+	/// </summary>
+	/// <param name="magicObject"></param>
 	public override void DelayBulletMagic(MagicObject magicObject) {
-
+		if (magicObject == null) return;
+		if (_delayBulletOn) return;
+		_delayBulletOn = true;
+		for (int i = 0; i < _DELAY_BULLET_MAX; i++) {
+			// 未使用化不可能
+			magicObject.canUnuse = false;
+			Transform bullet = magicObject.GenerateMiniBullet().transform;
+			delayBulletList.Add(bullet.gameObject);
+			// 衛星配置
+			switch (i) {
+				case 0:
+					bullet.localPosition = new Vector3(_DELAY_BULLET_RADIUS, 0, 0);
+					break;
+				case 1:
+					bullet.localPosition = new Vector3(-_DELAY_BULLET_RADIUS, 0, 0);
+					break;
+				case 2:
+					bullet.localPosition = new Vector3(_DELAY_BULLET_RADIUS / 2, _DELAY_BULLET_RADIUS / 2, 0);
+					break;
+				case 3:
+					bullet.localPosition = new Vector3(-_DELAY_BULLET_RADIUS / 2, _DELAY_BULLET_RADIUS / 2, 0);
+					break;
+				case 4:
+					bullet.localPosition = new Vector3(_DELAY_BULLET_RADIUS / 2, -_DELAY_BULLET_RADIUS / 2, 0);
+					break;
+				case 5:
+					bullet.localPosition = new Vector3(-_DELAY_BULLET_RADIUS / 2, -_DELAY_BULLET_RADIUS / 2, 0);
+					break;
+			}
+			_delayBulletCoolTime = _delayBulletCoolTimeMax;
+			UniTask task = DelayBulletMove(magicObject, bullet);
+		}
+	}
+	/// <summary>
+	/// 時間差魔法の移動
+	/// </summary>
+	/// <param name="magicObject"></param>
+	/// <param name="delayBullet"></param>
+	/// <returns></returns>
+	private async UniTask DelayBulletMove(MagicObject magicObject, Transform delayBullet) {
+		while (_delayBulletCoolTime >= 0) {
+			magicObject.transform.position = GetEnemyCenterPosition();
+			magicObject.transform.rotation = GetEnemyRotation();
+			_delayBulletCoolTime -= Time.deltaTime;
+			await UniTask.Yield(PlayerLoopTiming.Update, useMagicObject.token);
+		}
+		float distance = 0;
+		// 一定距離離れるまで前に進める
+		while (distance < _bulletDistanceMax * 2 && delayBullet.gameObject.activeInHierarchy) {
+			distance = Vector3.Distance(delayBullet.position, GetEnemyCenterPosition());
+			if (GetEnemy() != null)
+				delayBullet.rotation = GetOtherDirection(delayBullet.position);
+			delayBullet.position += delayBullet.forward * _bulletSpeed * 3 * Time.deltaTime;
+			await UniTask.Yield(PlayerLoopTiming.Update, useMagicObject.token);
+		}
+		UniTask task = EffectManager.Instance.PlayEffect(eEffectType.Elimination, delayBullet.position);
+		magicObject.RemoveMiniBullet(delayBullet.gameObject);
+		await UniTask.DelayFrame(1);
+		// 未使用化可能
+		for (int i = 0, max = bulletList.Count; i < max; i++) {
+			if (bulletList[i].activeInHierarchy) return;
+		}
+		_delayBulletOn = false;
+		magicObject.canUnuse = true;
 	}
 
 	/// <summary>

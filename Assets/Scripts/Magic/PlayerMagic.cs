@@ -81,10 +81,11 @@ public class PlayerMagic : MagicBase {
 	/// </summary>
 	public override void DefenseMagic(MagicObject magicObject) {
 		if (magicObject == null) return;
-		//Transform defense = magicObject.magicObjectList[(int)magicObject.activeMagic];
 		Transform defense = magicObject.GenerateDefense().transform;
 		defense.position = GetPlayerPosition();
 		defense.rotation = GetPlayerRotation();
+		// MP消費
+		ToPlayerMPDamage(0.1f);
 	}
 	/// <summary>
 	/// 小型弾幕魔法
@@ -94,10 +95,19 @@ public class PlayerMagic : MagicBase {
 		if (_bulletCoolTime < 0) {
 			// 未使用化不可能
 			magicObject.canUnuse = false;
+			Vector3 activePos;
+			if (magicActiveObject == null) {
+				activePos = GetPlayerCenterPosition();
+			}
+			else {
+				activePos = magicActiveObject.transform.position;
+			}
 			Transform bullet = magicObject.GenerateMiniBullet().transform;
 			bulletList.Add(bullet.gameObject);
-			bullet.transform.position = magicActiveObject.transform.position;
+			bullet.transform.position = activePos;
 			bullet.transform.rotation = GetPlayerRotation();
+			// MP消費
+			ToPlayerMPDamage(1);
 			// 移動
 			UniTask task = MiniBulletMove(magicObject, bullet);
 			_bulletCoolTime = _bulletCoolTimeMax;
@@ -164,6 +174,8 @@ public class PlayerMagic : MagicBase {
 			}
 			UniTask task = SatelliteOrbitalMove(magicObject, bullet);
 		}
+		// MP消費
+		ToPlayerMPDamage(5);
 	}
 	/// <summary>
 	/// 衛星軌道魔法の移動
@@ -184,6 +196,7 @@ public class PlayerMagic : MagicBase {
 			magicObject.transform.eulerAngles = satelliteRotation;
 			await UniTask.DelayFrame(1, PlayerLoopTiming.Update, useMagicObject.token);
 			loop = LoopChange();
+			if (GetPlayer() == null) loop = false;
 		}
 		_satelliteOn = false;
 		// 未使用化可能
@@ -209,17 +222,35 @@ public class PlayerMagic : MagicBase {
 		_laserBeamOn = true;
 		// 未使用化不可能
 		magicObject.canUnuse = false;
+		Vector3 activePos;
+		if (magicActiveObject == null) {
+			activePos = GetPlayerCenterPosition();
+		}
+		else {
+			activePos = magicActiveObject.transform.position;
+		}
+		UniTask task;
+		// ビームが相手の防御魔法内で生成されるならその前に終了
+		if (GetLaserBeamInDefense()) {
+			task = EffectManager.Instance.PlayEffect(eEffectType.BeamDefense, activePos);
+			_laserBeamOn = false;
+			// 未使用化可能
+			magicObject.canUnuse = true;
+			return;
+		}
 		Transform beam = magicObject.GenerateBeam().transform;
-		beam.position = magicActiveObject.transform.position;
+		beam.position = activePos;
 		beam.rotation = camera.rotation;
 		beam.localScale = Vector3.one;
+		// MP消費
+		ToPlayerMPDamage(10);
 		// ビームが相手の防御魔法に当たるなら長さを調節
 		if (GetLaserBeamDefecseHit()) {
 			LaserBeamDefenseRange(beam);
 		}
 		if (GetEnemy() != null)
 			beam.rotation = GetOtherDirection(beam.position);
-		UniTask task = LaserBeamMove(magicObject, beam);
+		task = LaserBeamMove(magicObject, beam);
 		task = EffectManager.Instance.PlayEffect(eEffectType.BeamShot, beam.position);
 	}
 	/// <summary>
@@ -233,17 +264,34 @@ public class PlayerMagic : MagicBase {
 		return true;
 	}
 	/// <summary>
+	/// ビームが防御魔法の中かどうか
+	/// </summary>
+	/// <returns></returns>
+	private bool GetLaserBeamInDefense() {
+		if (GetPlayer() == null) return false;
+		if (GetPlayerToEnemyDistance() >= _DEFENSE_RADIUS ||
+			!GetMagicActive((int)eSideType.EnemySide, (int)eMagicType.Defense)) return false;
+		return true;
+	}
+	/// <summary>
 	/// ビーム(横)の長さ調整
 	/// </summary>
 	/// <param name="laserBeam"></param>
 	private void LaserBeamDefenseRange(Transform laserBeam) {
 		if (GetEnemy() == null) return;
+		Vector3 activePos;
+		if (magicActiveObject == null) {
+			activePos = GetPlayerCenterPosition();
+		}
+		else {
+			activePos = magicActiveObject.transform.position;
+		}
 		// 相手から自分までの方向
-		Vector3 thisDirection = (magicActiveObject.transform.position - GetEnemyCenterPosition()).normalized;
+		Vector3 thisDirection = (activePos - GetEnemyCenterPosition()).normalized;
 		// 相手の防御魔法の正面位置
 		Vector3 otherDefenseForwardPos = GetEnemyCenterPosition() + thisDirection * _DEFENSE_RADIUS;
 		// ビームがディフェンスに当たったまでの長さ
-		float beamRange = _BEAM_RANGE_MAX - Vector3.Distance(magicActiveObject.transform.position, otherDefenseForwardPos);
+		float beamRange = _BEAM_RANGE_MAX - Vector3.Distance(activePos, otherDefenseForwardPos);
 		// ビームの長さを調整
 		Vector3 beamScale = laserBeam.localScale;
 		beamScale.z = 1 - (beamRange / _BEAM_RANGE_MAX);
@@ -314,6 +362,8 @@ public class PlayerMagic : MagicBase {
             _delayBulletCoolTime = _delayBulletCoolTimeMax;
             UniTask task = DelayBulletMove(magicObject, bullet);
 		}
+		// MP消費
+		ToPlayerMPDamage(5);
 	}
     /// <summary>
     /// 時間差魔法の移動
@@ -330,11 +380,11 @@ public class PlayerMagic : MagicBase {
         }
         float distance = 0;
         // プレイヤーから一定距離離れるまで前に進める
-        while (distance < _bulletDistanceMax && delayBullet.gameObject.activeInHierarchy) {
+        while (distance < _bulletDistanceMax * 2 && delayBullet.gameObject.activeInHierarchy) {
             distance = Vector3.Distance(delayBullet.position, GetPlayerCenterPosition());
             if (GetEnemy() != null)
                 delayBullet.rotation = GetOtherDirection(delayBullet.position);
-            delayBullet.position += delayBullet.forward * _bulletSpeed * Time.deltaTime;
+            delayBullet.position += delayBullet.forward * _bulletSpeed * 3 *  Time.deltaTime;
             await UniTask.Yield(PlayerLoopTiming.Update, useMagicObject.token);
         }
         UniTask task = EffectManager.Instance.PlayEffect(eEffectType.Elimination, delayBullet.position);

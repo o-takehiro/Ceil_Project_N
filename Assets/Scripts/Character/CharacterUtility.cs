@@ -198,7 +198,7 @@ public class CharacterUtility {
     /// </summary>
     /// <param name="setValue"></param>
     public static void ToEnemyDamage(int setValue) {
-        GetEnemy().RemoveHP(setValue);
+        GetEnemy().Damage(setValue);
         SetEnemySliderValue(GetEnemy().GetEnemySliderValue());
         if (GetEnemy().isDead) GetEnemy().Dead();
     }
@@ -207,7 +207,7 @@ public class CharacterUtility {
     /// ÉvÉåÉCÉÑÅ[ÇÃMPå∏è≠
     /// </summary>
     /// <param name="setValue"></param>
-    public static void ToPlayerMPDamage(int setValue) {
+    public static void ToPlayerMPDamage(float setValue) {
         GetPlayer().RemoveMP(setValue);
         SetPlayerMPSliderValue(GetPlayer().GetPlayerMPSliderValue());
     }

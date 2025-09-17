@@ -49,8 +49,8 @@ public abstract class CharacterBase : MonoBehaviour {
 
     public abstract bool isPlayer();
 
-    public virtual void Damage(float damage) {
-
+    public virtual void Damage(int damage) {
+        RemoveHP(damage);
     }
     /// <summary>
     /// ç¿ïWÇÃéÊìæ
@@ -179,7 +179,7 @@ public abstract class CharacterBase : MonoBehaviour {
     /// MPå∏è≠
     /// </summary>
     /// <param name="removeValue"></param>
-    public void RemoveMP(int removeValue) {
+    public void RemoveMP(float removeValue) {
         SetMP(MP - removeValue);
     }
 
