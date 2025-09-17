@@ -398,6 +398,25 @@ public class PlayerMagic : MagicBase {
         magicObject.canUnuse = true;
     }
 
+    public override void HealingMagic(MagicObject magicObject)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public override void BuffMagic(MagicObject magicObject)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public override void GroundShockMagic(MagicObject magicObject)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public override void BigBulletMagic(MagicObject magicObject)
+    {
+        throw new System.NotImplementedException();
+    }
     /// <summary>
     /// ‘ŠŽè‚Ì•ûŒü
     /// </summary>
@@ -407,4 +426,5 @@ public class PlayerMagic : MagicBase {
 		Vector3 direction = (GetEnemyCenterPosition() - currentPos).normalized;
 		return Quaternion.LookRotation(direction);
 	}
+
 }

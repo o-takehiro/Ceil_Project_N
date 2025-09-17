@@ -362,6 +362,26 @@ public class EnemyMagic : MagicBase {
 		magicObject.canUnuse = true;
 	}
 
+    public override void HealingMagic(MagicObject magicObject)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public override void BuffMagic(MagicObject magicObject)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public override void GroundShockMagic(MagicObject magicObject)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public override void BigBulletMagic(MagicObject magicObject)
+    {
+        throw new System.NotImplementedException();
+    }
+
 	/// <summary>
 	/// ‘ŠŽè‚Ì•ûŒü
 	/// </summary>

@@ -67,7 +67,10 @@ public enum eMagicType {
     SatelliteOrbital,   // 衛星軌道魔法
     LaserBeam,          // ビーム(横)魔法
 	DelayBullet,        // 時間差弾魔法
-
+    Healing,            // 回復魔法
+    Buff,               // バフ魔法
+    GroundShock,        // 衝撃波魔法
+    BigBullet,          // 大型弾幕魔法
 
 	Max,
 }
@@ -82,6 +85,7 @@ public enum eEffectType {
     Analysis,           // 解析エフェクト
     BeamDefense,        // ビームを防いだエフェクト
     BeamShot,           // ビーム発射エフェクト
+    Healing,            // 回復エフェクト
 
 	max,
 }
