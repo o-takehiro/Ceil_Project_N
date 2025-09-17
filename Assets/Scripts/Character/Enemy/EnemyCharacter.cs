@@ -74,14 +74,15 @@ public class EnemyCharacter : CharacterBase {
         if (enemyHPGauge != null) return;
 
         enemyHPGauge = MenuManager.Instance.Get<EnemyHPGauge>().GetSlider();
-        enemyHPGauge.transform.localEulerAngles = new Vector3(0, 180, 0);
     }
 
     protected void SetupCanvasPosition(Vector3 setSize) {
         Vector3 canvasPos = Vector3.zero;
         SetEnemyCanvas();
         enemyHPGauge.transform.SetParent(enemyCanvas.transform);
+        enemyHPGauge.transform.SetParent(enemyCanvas.transform, false);
         enemyHPGauge.transform.localPosition = Vector3.zero;
+        enemyHPGauge.transform.localRotation = Quaternion.Euler(0, 180f, 0); // –ˆ‰ñ180“x‚ÉŠm’è
         enemyCanvas.transform.localScale = setSize;
         enemyCanvas.gameObject.SetActive(true);
         enemyHPGauge.gameObject.SetActive(true);
