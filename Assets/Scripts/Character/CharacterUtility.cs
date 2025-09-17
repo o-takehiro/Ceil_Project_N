@@ -207,7 +207,7 @@ public class CharacterUtility {
     /// ÉvÉåÉCÉÑÅ[ÇÃMPå∏è≠
     /// </summary>
     /// <param name="setValue"></param>
-    public static void ToPlayerMPDamage(int setValue) {
+    public static void ToPlayerMPDamage(float setValue) {
         GetPlayer().RemoveMP(setValue);
         SetPlayerMPSliderValue(GetPlayer().GetPlayerMPSliderValue());
     }

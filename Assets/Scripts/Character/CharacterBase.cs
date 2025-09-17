@@ -179,7 +179,7 @@ public abstract class CharacterBase : MonoBehaviour {
     /// MPå∏è≠
     /// </summary>
     /// <param name="removeValue"></param>
-    public void RemoveMP(int removeValue) {
+    public void RemoveMP(float removeValue) {
         SetMP(MP - removeValue);
     }
 
