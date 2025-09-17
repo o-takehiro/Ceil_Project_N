@@ -50,4 +50,12 @@ public class TutorialEnemy : EnemyCharacter {
         //1フレーム前の座標更新
         SetEnemyPrevPosition();
     }
+
+    public override void Damage(int damage) {
+        base.Damage(damage);
+        if (isDead || enemyAnimator.GetCurrentAnimatorStateInfo(0).IsName("isMagicAttack"))
+            return;
+
+        enemyAnimator.SetTrigger("isDamage");
+    }
 }

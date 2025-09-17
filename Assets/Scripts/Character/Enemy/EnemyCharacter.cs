@@ -61,12 +61,6 @@ public class EnemyCharacter : CharacterBase {
     public override bool isPlayer() {
         return false;
     }
-    public override void Damage(int damage) {
-        base.Damage(damage);
-        if(isDead) return;
-
-        enemyAnimator.SetTrigger("isDamage");
-    }
     public override void Dead() {
         enemyHPGauge.gameObject.SetActive(false);
         myAI.ChangeState(new EnemyAI008_Empty());

@@ -45,7 +45,11 @@ public class Boss1 : EnemyCharacter {
     public override void Teardown() {
         base.Teardown();
     }
-    public override void Dead() {
-        base.Dead();
+
+    public override void Damage(int damage) {
+        base.Damage(damage);
+        if (isDead) return;
+
+        enemyAnimator.SetTrigger("isDamage");
     }
 }

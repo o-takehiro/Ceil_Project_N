@@ -21,7 +21,12 @@ public class Boss2 : EnemyCharacter {
         myAI.Setup(this);
         myAI.ChangeState(new EnemyAI001_Wait());
     }
+    public override void Damage(int damage) {
+        base.Damage(damage);
+        if (isDead || enemyAnimator.GetCurrentAnimatorStateInfo(0).IsName("isMagicAttack")) return;
 
+        enemyAnimator.SetTrigger("isDamage");
+    }
     private void Update() {
         //åªç›ÇÃà íuçXêV
         SetEnemyPosition(transform.position);
