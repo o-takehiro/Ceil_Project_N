@@ -24,6 +24,11 @@ public class PlayerCharacter : CharacterBase {
     public override bool isPlayer() => true;
     public PlayerAttack GetAttackController() => _attack;
     public PlayerMovement GetPlayerMovement() => _movement;
+
+    // 魔法の発射場所
+    [SerializeField] private GameObject[] magicSpawnPoints = new GameObject[4];
+
+
     /// <summary>
     /// 初期化処理
     /// </summary>
@@ -63,6 +68,12 @@ public class PlayerCharacter : CharacterBase {
 
         if (_movement == null) _movement = new PlayerMovement(_rigidbody, transform, _camera, _animator, groundCheck);
         if (_magic == null) _magic = new PlayerMagicAttack();
+
+        // スロットごとの発射位置を登録
+        for (int i = 0; i < magicSpawnPoints.Length; i++) {
+            _magic.SetMagicSpawnPosition(i, magicSpawnPoints[i]);
+        }
+
         if (_attack == null) {
             _attack = new PlayerAttack(_rigidbody, _animator, GetRawAttack());
             _attack.SetupAttackData();
@@ -75,9 +86,18 @@ public class PlayerCharacter : CharacterBase {
         StartPlayerLoop().Forget();
     }
 
-    // 入力を受けつけて、各クラスで使用可能にする
+    /// <summary>
+    /// 移動用入力受付
+    /// </summary>
+    /// <param name="input"></param>
     public void SetMoveInput(Vector2 input) => _movement.SetMoveInput(input);
+    /// <summary>
+    /// ジャンプ用入力受付
+    /// </summary>
     public void RequestJump() => _movement.RequestJump();
+    /// <summary>
+    /// 近接攻撃用入力受付
+    /// </summary>
     public void RequestAttack() {
         if (_movement._isGrounded) {
             _attack.RequestAttack();

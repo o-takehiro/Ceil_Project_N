@@ -10,6 +10,7 @@ using static MagicUtility;
 public class PlayerMagicAttack {
     private static List<eMagicType> _eMagicList;                  // 魔法を保存するリスト
     private static List<eMagicType> _eMagicStorageList;           // 取得したすべての魔法を保存するリスト
+    private GameObject[] _magicSpawnPos = new GameObject[4];  　    // 魔法を発射する場所
     public bool _isDeath = false;
 
     /// <summary>
@@ -27,6 +28,17 @@ public class PlayerMagicAttack {
     }
 
     /// <summary>
+    /// スロットに発射位置を設定
+    /// </summary>
+    /// <param name="slotIndex"></param>
+    /// <param name="position"></param>
+    public void SetMagicSpawnPosition(int slotIndex, GameObject position) {
+        if (slotIndex < 0 || slotIndex >= _magicSpawnPos.Length) return;
+        _magicSpawnPos[slotIndex] = position;
+        _magicSpawnPos[slotIndex].SetActive(false);
+    }
+
+    /// <summary>
     /// 魔法発射
     /// </summary>
     public void RequestAttack(int slotIndex) {
@@ -37,11 +49,13 @@ public class PlayerMagicAttack {
             return;
         }
         if (!_isDeath && currentMP > 0.0f) {
-
+            GameObject spawnPoint = _magicSpawnPos[slotIndex];
+            if (spawnPoint == null) return;
             // 魔法発射
             CreateMagic(eSideType.PlayerSide, magicType);
+            spawnPoint.SetActive(true);
             // Debug
-            CharacterUtility.ToPlayerMPDamage(10);
+            CharacterUtility.ToPlayerMPDamage(5);
         }
     }
 
@@ -53,12 +67,15 @@ public class PlayerMagicAttack {
         if (slotIndex < 0 || slotIndex >= _eMagicList.Count) return;
         // スロット番目のeMagicTypeを渡す
         var magicType = _eMagicList[slotIndex];
+        GameObject spawnPoint = _magicSpawnPos[slotIndex];
         // 渡された魔法がInvalid出なければ
         if (magicType == eMagicType.Invalid) return;
-
+        if (spawnPoint != null) {
+            spawnPoint.SetActive(false);
+        }
         // 魔法発射解除
         MagicReset(eSideType.PlayerSide, magicType);
-
+        spawnPoint.SetActive(false);
         if (_isDeath) {
             MagicReset(eSideType.PlayerSide, magicType);
         }

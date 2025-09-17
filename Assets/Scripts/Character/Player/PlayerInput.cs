@@ -124,16 +124,6 @@ public sealed class PlayerInput : MonoBehaviour {
             _character = gameObject.AddComponent<PlayerCharacter>();
         }
 
-        // PlayerCharacter の初期化（引数不要）
-        // _character.Initialize();
-
-        // // UniTask のキャンセルを考慮してループ開始
-        // try {
-        //     await _character.PlayerMainLoop(this.GetCancellationTokenOnDestroy());
-        // }
-        // catch (OperationCanceledException) {
-        //     // Destroy 時にキャンセルされた場合は無視
-        // }
     }
 
 }
