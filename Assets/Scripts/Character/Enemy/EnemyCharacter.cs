@@ -74,6 +74,7 @@ public class EnemyCharacter : CharacterBase {
         if (enemyHPGauge != null) return;
 
         enemyHPGauge = MenuManager.Instance.Get<EnemyHPGauge>().GetSlider();
+        enemyHPGauge.transform.localEulerAngles = new Vector3(0, 180, 0);
     }
 
     protected void SetupCanvasPosition(Vector3 setSize) {
