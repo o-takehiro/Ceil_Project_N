@@ -18,6 +18,8 @@ public abstract class MagicBase {
 	public int masterID { get; private set; } = -1;
 	// 使用する魔法オブジェクト
 	public MagicObject useMagicObject = null;
+	// 魔法を発射する位置
+	public Vector3 magicActivePosition = Vector3.zero;
 	
 	// 魔法陣営取得
 	public abstract eSideType GetSide();
@@ -28,12 +30,14 @@ public abstract class MagicBase {
 	public abstract void MiniBulletMagic(MagicObject magicObject);
 	public abstract void SatelliteOrbitalMagic(MagicObject magicObject);
 	public abstract void LaserBeamMagic(MagicObject magicObject);
+	public abstract void DelayBulletMagic(MagicObject magicObject);
 
 	/// <summary>
 	/// 準備
 	/// </summary>
 	/// <param name="setID"></param>
-	public void Setup(int setID) {
+	public void Setup(int setID, Vector3 setPosition) {
+		magicActivePosition = setPosition;
 		ID = setID;
 	}
 

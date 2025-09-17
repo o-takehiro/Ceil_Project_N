@@ -61,7 +61,17 @@ public class MagicHit : MagicObject {
 				if (otherMagic == eMagicType.Defense) return;
 				GiveDamage(otherSide, 1);
 				break;
-		}
+            case eMagicType.DelayBullet:
+                GiveDamage(otherSide, 10);
+                if (otherSide == eSideType.MagicSide) {
+                    task = EffectManager.Instance.PlayEffect(eEffectType.Elimination, thisPosition);
+                }
+                else {
+                    task = EffectManager.Instance.PlayEffect(eEffectType.Hit, thisPosition);
+                }
+                parentObject.RemoveMiniBullet(gameObject);
+                break;
+        }
 
 	}
 
