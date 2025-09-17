@@ -92,6 +92,13 @@ ModelImporter:
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
+      - time: 0.70295966
+        functionName: DisableAttackInput
+        data: 
+        objectReferenceParameter: {fileID: 11500000, guid: d326c710f26571c41bfd13ade0c1ca70, type: 3}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
       - time: 0.8451366
         functionName: IsNotSetAttack
         data: 

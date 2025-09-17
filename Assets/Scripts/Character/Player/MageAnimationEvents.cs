@@ -59,6 +59,7 @@ public class MageAnimationEvents : MonoBehaviour {
     void OnTriggerEnter(Collider other) {
         if (!other.CompareTag("Enemy")) return;
         int damage = _playerAttack?.GetDamageValue() ?? 0;
+        _playerAttack.AddMP();
         ToEnemyDamage(damage);
     }
 
