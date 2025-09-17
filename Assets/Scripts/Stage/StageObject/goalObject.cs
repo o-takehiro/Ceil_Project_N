@@ -35,12 +35,15 @@ public class goalObject : StageObjectBase {
         switch (stage) {
             case eStageState.Stage3:
                 // Stage3 Å® É^ÉCÉgÉã
+                await FadeManager.Instance.FadeOut();
                 await PartManager.Instance.TransitionPart(eGamePart.Title);
                 break;
 
             case eStageState.Stage2:
                 // Stage2 Å® Stage3
+                await FadeManager.Instance.FadeOut();
                 await StageManager.Instance.TransitionStage(eStageState.Stage3);
+                await PartManager.Instance.TransitionPart(eGamePart.MainGame);
                 break;
 
             case eStageState.Stage1:

@@ -13,10 +13,17 @@ public class PlayerHPGauge : MenuBase {
         return _hpSlider;
     }
 
-    
+
     public override async UniTask Open() {
         await base.Open();
         _hpSlider.value = 1.0f;
+
+        while (!CharacterUtility.GetPlayer().isDead) {
+            await UniTask.DelayFrame(1);
+
+        }
+
+        await Close();
     }
 
 }

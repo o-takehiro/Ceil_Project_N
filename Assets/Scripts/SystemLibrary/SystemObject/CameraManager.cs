@@ -57,8 +57,11 @@ public class CameraManager : SystemObject {
     /// </summary>
     public override async UniTask Initialize() {
         Instance = this; // シングルトンとして登録
+        CameraSetUp();
+        await UniTask.CompletedTask;
+    }
 
-        await UniTask.DelayFrame(1); // プレイヤー生成を待つ
+    public void CameraSetUp() {
 
         // シーン内からメインカメラを探す
         _camera = GameObject.Find(_CAMERA_NAME).GetComponent<Camera>();
@@ -77,8 +80,6 @@ public class CameraManager : SystemObject {
             GameObject player = GameObject.FindWithTag("Player");
             if (player != null) _target = player.transform;
         }
-
-        await UniTask.CompletedTask;
     }
 
     /// <summary>
@@ -89,9 +90,15 @@ public class CameraManager : SystemObject {
         _target = target.transform;
         playerTarget = _target;
 
-        // 追従開始時にプレイヤーの角度とそろえる
-        _currentYaw = _target.eulerAngles.y;
-        _currentPitch = 0f;
+        // プレイヤーの向きは無視してカメラのYawを維持
+        // _currentYaw はカメラの現状を保持する
+        Vector3 camEuler = _camera.transform.rotation.eulerAngles;
+        _currentYaw = camEuler.y;
+        _currentPitch = camEuler.x > 180f ? camEuler.x - 360f : camEuler.x;
+
+        // キャッシュもリセット
+        _cachedCameraRotation = _camera.transform.rotation;
+        _cachedCameraPosition = _camera.transform.position;
     }
 
     /// <summary>
@@ -172,7 +179,7 @@ public class CameraManager : SystemObject {
             // カメラの位置を求める
             Quaternion rotation = Quaternion.Euler(_currentPitch, _currentYaw, 0f);
             Vector3 desiredPosition = _target.position + rotation * offset;
-            
+
             // 補間でスムーズに移動
             _camera.transform.position = Vector3.Lerp(_camera.transform.position, desiredPosition, followSpeed * Time.deltaTime);
 
@@ -195,6 +202,32 @@ public class CameraManager : SystemObject {
     /// </summary>
     public void UnlockTarget() {
         _lockOnSystem.Unlock();
+    }
+
+
+    /// <summary>
+    /// 片付け処理
+    /// </summary>
+    public void TearDown() {
+        // プレイヤー参照をクリア
+        playerTarget = null;
+        _target = null;
+
+        // 入力をリセット
+        _lookInput = Vector2.zero;
+
+        // 回転値リセット
+        _currentYaw = 0f;
+        _currentPitch = 0f;
+
+        // キャッシュリセット
+        _cachedCameraRotation = Quaternion.identity;
+        _cachedCameraPosition = Vector3.zero;
+        _cachedCameraDirection = Vector3.zero;
+
+        // ロックオン解除
+        _lockOnSystem.Unlock();
+        _wasLockedOnLastFrame = false;
     }
 
     /// <summary>

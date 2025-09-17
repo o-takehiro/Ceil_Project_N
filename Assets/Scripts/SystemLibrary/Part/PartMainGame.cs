@@ -43,10 +43,7 @@ public class PartMainGame : PartBase {
     /// <returns></returns>
     public override async UniTask SetUp() {
         await base.SetUp();
-        // ê∂ê¨ä÷òAÇÇ±Ç±Ç…ÅB
-        //await FadeManager.Instance.FadeIn();
-        //UseEnemy(eEnemyType.TutorialEnemy);
-        //UsePlayer(0);
+        MageAnimationEvents.isGameOver = false;
         await UniTask.CompletedTask;
     }
 
@@ -59,8 +56,20 @@ public class PartMainGame : PartBase {
         await FadeManager.Instance.FadeIn();
 
         //SoundManager.Instance.PlayBGM(1);
-        await MenuManager.Instance.Get<PlayerHPGauge>().Open();
-        await MenuManager.Instance.Get<PlayerMPGauge>().Open();
+
+        await UniTask.WhenAll(
+              MenuManager.Instance.Get<PlayerHPGauge>().Open(),
+              MenuManager.Instance.Get<PlayerMPGauge>().Open()
+        );
+
+        while (!MageAnimationEvents.isGameOver) {
+            await UniTask.DelayFrame(1);
+        }
+
+        UniTask task = PartManager.Instance.TransitionPart(eGamePart.Title);
+        UnuseEnemy();
+
+
         await UniTask.CompletedTask;
 
     }

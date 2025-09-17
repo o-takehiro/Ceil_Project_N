@@ -16,5 +16,13 @@ public class PlayerMPGauge : MenuBase {
     public override async UniTask Open() {
         await base.Open();
         _mpSlider.value = 1.0f;
+
+        while (!CharacterUtility.GetPlayer().isDead) {
+            await UniTask.DelayFrame(1);
+
+        }
+
+        await Close();
+
     }
 }

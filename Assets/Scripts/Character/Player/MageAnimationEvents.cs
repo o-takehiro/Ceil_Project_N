@@ -6,6 +6,7 @@ public class MageAnimationEvents : MonoBehaviour {
     [SerializeField] private Collider attackCollider;   // コライダー
     private PlayerAttack _playerAttack;                 // PlayerAttackクラス
     private PlayerMovement _playerMovement;             // PlayerMovementクラス
+    public static bool isGameOver = false;
     /// <summary>
     /// 初期化処理
     /// </summary>
@@ -17,7 +18,7 @@ public class MageAnimationEvents : MonoBehaviour {
         if (player != null) _playerAttack = player.GetAttackController();
         // PlayerMovementクラスを取得
         if (player != null) _playerMovement = player.GetPlayerMovement();
-
+        isGameOver = false;
     }
 
     // コライダー制御
@@ -69,5 +70,10 @@ public class MageAnimationEvents : MonoBehaviour {
     }
     public void EnableJump() {
         _playerMovement._canJump = true;
+    }
+
+    public void UnusePlayerFlag() {
+        UnusePlayer();
+        isGameOver = true;
     }
 }

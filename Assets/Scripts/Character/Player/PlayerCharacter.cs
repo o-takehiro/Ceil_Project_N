@@ -47,6 +47,9 @@ public class PlayerCharacter : CharacterBase {
         _playerInput = GetComponent<PlayerInput>();
         _camera = Camera.main; // 必要なら差し替え可
 
+        if (CameraManager.Instance != null)
+            CameraManager.Instance.SetTarget(this);
+
         var playerMasterID = GetCharacterMaster(masterID);
         MenuManager.Instance.Get<PlayerHPGauge>().GetSlider().value = 1.0f;
 
@@ -72,16 +75,13 @@ public class PlayerCharacter : CharacterBase {
         // スロットごとの発射位置を登録
         for (int i = 0; i < magicSpawnPoints.Length; i++) {
             _magic.SetMagicSpawnPosition(i, magicSpawnPoints[i]);
-            
+
         }
 
         if (_attack == null) {
             _attack = new PlayerAttack(_rigidbody, _animator, GetRawAttack());
             _attack.SetupAttackData();
         }
-
-        if (CameraManager.Instance != null)
-            CameraManager.Instance.SetTarget(this);
 
         // メインループを開始する
         StartPlayerLoop().Forget();
@@ -193,6 +193,7 @@ public class PlayerCharacter : CharacterBase {
         _animator.SetTrigger("Death");
         _movement._isDeath = true;
         _magic._isDeath = true;
+
     }
 
 
@@ -211,7 +212,11 @@ public class PlayerCharacter : CharacterBase {
         if (_rigidbody != null) _rigidbody.velocity = Vector3.zero;
         if (_rigidbody != null) _rigidbody.angularVelocity = Vector3.zero;
 
+        if (CameraManager.Instance != null)
+            CameraManager.Instance.UnlockTarget(); // ロック解除
 
+        // カメラのTearDownを呼ぶ
+        CameraManager.Instance.TearDown();
 
     }
 
