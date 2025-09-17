@@ -30,7 +30,7 @@ public class PlayerMagic : MagicBase {
 	// 時間差弾のクールタイム
 	private float _delayBulletCoolTime = 0.0f;
 	// 時間差弾のクールタイムの最大
-	private float _delayBulletCoolTimeMax = 5.0f;
+	private float _delayBulletCoolTimeMax = 10.0f;
 
 	// 魔法の発動中フラグ
 	private bool _satelliteOn = false;
@@ -46,9 +46,9 @@ public class PlayerMagic : MagicBase {
 	// 防御魔法の半径
 	private const float _DEFENSE_RADIUS = 3;
 	// 時間差弾の最大数
-	private const int _DELAY_BULLET_MAX = 5;
+	private const int _DELAY_BULLET_MAX = 6;
     // 時間差弾の半径
-    private const float _DELAY_BULLET_RADIUS = 4;
+    private const float _DELAY_BULLET_RADIUS = 3;
 
     // 小型弾幕のリスト
     private List<GameObject> bulletList = new List<GameObject>();
@@ -56,6 +56,9 @@ public class PlayerMagic : MagicBase {
 	private List<GameObject> satelliteList = new List<GameObject>();
 	// 時間差弾のリスト
 	private List<GameObject> delayBulletList = new List<GameObject>();
+
+	// カメラ
+	Transform camera = Camera.main.transform;
 
 	/// <summary>
 	/// 魔法陣営の取得
@@ -93,7 +96,7 @@ public class PlayerMagic : MagicBase {
 			magicObject.canUnuse = false;
 			Transform bullet = magicObject.GenerateMiniBullet().transform;
 			bulletList.Add(bullet.gameObject);
-			bullet.transform.position = GetPlayerCenterPosition();
+			bullet.transform.position = magicActivePosition;
 			bullet.transform.rotation = GetPlayerRotation();
 			// 移動
 			UniTask task = MiniBulletMove(magicObject, bullet);
@@ -114,7 +117,7 @@ public class PlayerMagic : MagicBase {
 		// プレイヤーから一定距離離れるまで前に進める
 		while (distance < _bulletDistanceMax && miniBullet.gameObject.activeInHierarchy) {
 			distance = Vector3.Distance(miniBullet.position, GetPlayerCenterPosition());
-			// miniBullet.rotation = カメラローテーション
+			miniBullet.rotation = camera.rotation;
 			if (GetEnemy() != null)
 				miniBullet.rotation = GetOtherDirection(miniBullet.position);
 			miniBullet.position += miniBullet.forward * _bulletSpeed * Time.deltaTime;
@@ -145,18 +148,18 @@ public class PlayerMagic : MagicBase {
 			// 衛星配置
 			switch (i) {
 				case 0:
-					bullet.position += new Vector3(_SATELLITE_RADIUS, 0, 0);
+					bullet.localPosition = new Vector3(_SATELLITE_RADIUS, 0, 0);
 					break;
 				case 1:
-					bullet.position += new Vector3(-_SATELLITE_RADIUS, 0, 0);
+					bullet.localPosition = new Vector3(-_SATELLITE_RADIUS, 0, 0);
 					break;
 				case 2:
-					bullet.position += new Vector3(0, 0, _SATELLITE_RADIUS);
-					bullet.eulerAngles += new Vector3(0, 90, 0);
+					bullet.localPosition = new Vector3(0, 0, _SATELLITE_RADIUS);
+					bullet.eulerAngles = new Vector3(0, 90, 0);
 					break;
 				case 3:
-					bullet.position += new Vector3(0, 0, -_SATELLITE_RADIUS);
-					bullet.eulerAngles += new Vector3(0, 90, 0);
+					bullet.localPosition = new Vector3(0, 0, -_SATELLITE_RADIUS);
+					bullet.eulerAngles = new Vector3(0, 90, 0);
 					break;
 			}
 			UniTask task = SatelliteOrbitalMove(magicObject, bullet);
@@ -207,8 +210,8 @@ public class PlayerMagic : MagicBase {
 		// 未使用化不可能
 		magicObject.canUnuse = false;
 		Transform beam = magicObject.GenerateBeam().transform;
-		beam.position = GetPlayerCenterPosition();
-		beam.rotation = GetPlayerRotation();
+		beam.position = magicActivePosition;
+		beam.rotation = camera.rotation;
 		beam.localScale = Vector3.one;
 		// ビームが相手の防御魔法に当たるなら長さを調節
 		if (GetLaserBeamDefecseHit()) {
@@ -236,11 +239,11 @@ public class PlayerMagic : MagicBase {
 	private void LaserBeamDefenseRange(Transform laserBeam) {
 		if (GetEnemy() == null) return;
 		// 相手から自分までの方向
-		Vector3 thisDirection = (GetPlayerCenterPosition() - GetEnemyCenterPosition()).normalized;
+		Vector3 thisDirection = (magicActivePosition - GetEnemyCenterPosition()).normalized;
 		// 相手の防御魔法の正面位置
 		Vector3 otherDefenseForwardPos = GetEnemyCenterPosition() + thisDirection * _DEFENSE_RADIUS;
 		// ビームがディフェンスに当たったまでの長さ
-		float beamRange = _BEAM_RANGE_MAX - Vector3.Distance(GetPlayerCenterPosition(), otherDefenseForwardPos);
+		float beamRange = _BEAM_RANGE_MAX - Vector3.Distance(magicActivePosition, otherDefenseForwardPos);
 		// ビームの長さを調整
 		Vector3 beamScale = laserBeam.localScale;
 		beamScale.z = 1 - (beamRange / _BEAM_RANGE_MAX);
@@ -274,7 +277,10 @@ public class PlayerMagic : MagicBase {
 		// 未使用化可能
 		magicObject.canUnuse = true;
 	}
-
+	/// <summary>
+	/// 時間差弾魔法
+	/// </summary>
+	/// <param name="magicObject"></param>
 	public override void DelayBulletMagic(MagicObject magicObject) {
 		if (magicObject == null) return;
 		if (_delayBulletOn) return;
@@ -287,19 +293,22 @@ public class PlayerMagic : MagicBase {
 			// 衛星配置
 			switch (i) {
 				case 0:
-					bullet.position += new Vector3(_DELAY_BULLET_RADIUS, 0, 0);
+					bullet.localPosition = new Vector3(_DELAY_BULLET_RADIUS, 0, 0);
 					break;
 				case 1:
-					bullet.position += new Vector3(-_DELAY_BULLET_RADIUS, 0, 0);
+					bullet.localPosition = new Vector3(-_DELAY_BULLET_RADIUS, 0, 0);
 					break;
 				case 2:
-					bullet.position += new Vector3(0, _DELAY_BULLET_RADIUS, 0);
+					bullet.localPosition = new Vector3(_DELAY_BULLET_RADIUS / 2, _DELAY_BULLET_RADIUS / 2, 0);
 					break;
 				case 3:
-					bullet.position += new Vector3(_DELAY_BULLET_RADIUS / 2, _DELAY_BULLET_RADIUS / 2, 0);
+					bullet.localPosition = new Vector3(-_DELAY_BULLET_RADIUS / 2, _DELAY_BULLET_RADIUS / 2, 0);
 					break;
 				case 4:
-					bullet.position += new Vector3(-_DELAY_BULLET_RADIUS / 2, _DELAY_BULLET_RADIUS / 2, 0);
+					bullet.localPosition = new Vector3(_DELAY_BULLET_RADIUS / 2, -_DELAY_BULLET_RADIUS / 2, 0);
+					break;
+				case 5:
+					bullet.localPosition = new Vector3(-_DELAY_BULLET_RADIUS / 2, -_DELAY_BULLET_RADIUS / 2, 0);
 					break;
 			}
             _delayBulletCoolTime = _delayBulletCoolTimeMax;
@@ -315,7 +324,7 @@ public class PlayerMagic : MagicBase {
     private async UniTask DelayBulletMove(MagicObject magicObject, Transform delayBullet) {
         while (_delayBulletCoolTime >= 0) {
             magicObject.transform.position = GetPlayerCenterPosition();
-            magicObject.transform.rotation = GetPlayerRotation();
+            magicObject.transform.rotation = camera.rotation;
             _delayBulletCoolTime -= Time.deltaTime;
             await UniTask.Yield(PlayerLoopTiming.Update, useMagicObject.token);
         }

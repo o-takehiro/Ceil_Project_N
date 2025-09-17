@@ -155,6 +155,7 @@ public class MagicObject : MonoBehaviour {
 	public void RemoveMiniBullet(GameObject gameObject) {
 		Transform removeObject = gameObject.transform;
 		removeObject.position = Vector3.zero;
+		removeObject.rotation = Quaternion.identity;
 		removeObject.SetParent(_unuseMagicRoot);
 	}
 
@@ -173,6 +174,8 @@ public class MagicObject : MonoBehaviour {
 	/// </summary>
 	public void Teardown() {
 		ID = -1;
+		gameObject.transform.position = Vector3.zero;
+		gameObject.transform.rotation = Quaternion.identity;
 		UnuseMagic();
 	}
 }

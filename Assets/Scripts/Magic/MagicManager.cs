@@ -49,6 +49,7 @@ public class MagicManager : MonoBehaviour {
 	// コピーした魔法
 	private List<eMagicType> _copyMagicList = null;
 
+	// ある程度の生成数
 	private const int _MAGIC_MAX = 8;
 
 	public void Initialize() {
@@ -232,14 +233,15 @@ public class MagicManager : MonoBehaviour {
 	/// 魔法生成
 	/// </summary>
 	/// <param name="magicID"></param>
-	public void CreateMagic(eSideType sideType, eMagicType magicType) {
+	public void CreateMagic(eSideType sideType, eMagicType magicType, Vector3? setPosition = null) {
+		Vector3 activePosition = setPosition ?? Vector3.zero;
 		int side = (int)sideType, magicID = (int)magicType;
 		if (side < 0 || magicID < 0) return;
 		if (_activeMagicIDList[side][magicID] >= 0) return;
 		// データを使用状態にする
 		_activeMagicIDList[side][magicID] = UseMagicData(side);
 		MagicBase magicSide = GetMagicData(_activeMagicIDList[side][magicID]);
-		magicSide?.Setup(_activeMagicIDList[side][magicID]);
+		magicSide?.Setup(_activeMagicIDList[side][magicID], activePosition);
 		// オブジェクトを生成する
 		MagicObject magicObject = GetMagicObject(_activeMagicIDList[side][magicID]);
 		if (magicObject == null) {
