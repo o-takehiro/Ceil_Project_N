@@ -20,8 +20,8 @@ public class EnemyAI009_Boss2Action : CharacterAIBase<EnemyCharacter> {
         float distance = GetPlayerToEnemyDistance();
         if(distance < 20) {
             AddEnemyMagicType(eMagicType.LaserBeam);
-            CreateMagic(eSideType.EnemySide, GetEnemy().GetEnemyMagicType(eMagicType.LaserBeam));
-            GetEnemy().myAI.ChangeState(new EnemyAI001_Wait());
+            GetEnemy().GetEnemyAnimator().SetTrigger("isMagicAttack");
+            GetEnemy().myAI.ChangeState(new EnemyAI010_LookAtPlayer());
             
         } else {
             GetEnemy().myAI.ChangeState(new EnemyAI002_CloseMove());
