@@ -64,15 +64,15 @@ ModelImporter:
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: 0
-        functionName: DisableAttackInput
+      - time: 0.0013670574
+        functionName: IsSetAttack
         data: 
         objectReferenceParameter: {fileID: 11500000, guid: d326c710f26571c41bfd13ade0c1ca70, type: 3}
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: 0.0013670574
-        functionName: IsSetAttack
+      - time: 0.012987013
+        functionName: DisableAttackInput
         data: 
         objectReferenceParameter: {fileID: 11500000, guid: d326c710f26571c41bfd13ade0c1ca70, type: 3}
         floatParameter: 0
