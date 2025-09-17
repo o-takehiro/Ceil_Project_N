@@ -11,6 +11,7 @@ public class TutorialBossAttackAction : MonoBehaviour {
     }
 
     public void DisableAttackMagic() {
-        CancelEnemyMagic(GetEnemyMagicType(eMagicType.MiniBullet));
+        CancelAllEnemyMagic();
+        GetEnemy().myAI.ChangeState(new EnemyAI001_Wait());
     }
 }

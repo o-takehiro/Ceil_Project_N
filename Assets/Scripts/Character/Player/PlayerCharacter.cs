@@ -4,6 +4,7 @@ using UnityEngine;
 
 using static CharacterUtility;
 using static CharacterMasterUtility;
+using UnityEngine.UIElements;
 /// <summary>
 /// プレイヤーキャラクター全体を統括するクラス
 /// ・移動、攻撃などの処理をサブクラスに委譲する
@@ -57,12 +58,14 @@ public class PlayerCharacter : CharacterBase {
         _camera = Camera.main; // 必要なら差し替え可
 
         var playerMasterID = GetCharacterMaster(masterID);
-        MenuManager.Instance.Get<PlayerHPGauge>().GetSlider().value = 0.2f;
+        MenuManager.Instance.Get<PlayerHPGauge>().GetSlider().value = 1.0f;
 
-        SetMaxHP(playerMasterID.HP);
-        SetHP(playerMasterID.HP);
-        SetRawAttack(playerMasterID.Attack);
-        SetRawDefense(playerMasterID.Defense);
+        SetMaxHP(playerMasterID.HP);            // プレイヤーの最大HP設定
+        SetHP(playerMasterID.HP);               // プレイヤーのHP設定
+        SetMaxMP(playerMasterID.MP);            // プレイヤーの最大MPせてち
+        SetMP(playerMasterID.MP);               // プレイヤーのMP接地絵
+        SetRawAttack(playerMasterID.Attack);    // プレイーの基礎攻撃力設定
+        SetRawDefense(playerMasterID.Defense);  // プレイヤーの基礎防御力設定
 
         // 座標と回転の更新
         SetPlayerPosition(transform.position);
@@ -135,7 +138,6 @@ public class PlayerCharacter : CharacterBase {
 
             // 移動の更新処理
             _movement?.MoveUpdate(fd, _attack?.IsAttacking ?? false);
-
             // 攻撃の更新処理
             _attack?.AttackUpdate(fd);
 
@@ -165,6 +167,18 @@ public class PlayerCharacter : CharacterBase {
         return HP / maxHP;
     }
 
+    public float GetPlayerMPSliderValue() {
+        return MP / maxMP;
+    }
+
+    /// <summary>
+    /// 現在のMP量を返す
+    /// </summary>
+    /// <returns></returns>
+    public float GetPlayerCurrentMP() {
+        return MP;
+    }
+
     /// <summary>
     /// キャラクター死亡処理
     /// </summary>
@@ -190,6 +204,8 @@ public class PlayerCharacter : CharacterBase {
 
 
     }
+
+
 
 
 }

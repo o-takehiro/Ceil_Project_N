@@ -190,8 +190,8 @@ public class CharacterUtility {
     /// <param name="setValue"></param>
     public static void ToPlayerDamage(int setValue) {
         GetPlayer().RemoveHP(setValue);
-        SetPlayerSliderValue(GetPlayer().GetPlayerSliderValue());
-        if(GetPlayer().isDead) GetPlayer().Dead();
+        SetPlayerHPSliderValue(GetPlayer().GetPlayerSliderValue());
+        if (GetPlayer().isDead) GetPlayer().Dead();
     }
     /// <summary>
     /// 敵へのダメージ
@@ -200,8 +200,18 @@ public class CharacterUtility {
     public static void ToEnemyDamage(int setValue) {
         GetEnemy().RemoveHP(setValue);
         SetEnemySliderValue(GetEnemy().GetEnemySliderValue());
-        if(GetEnemy().isDead) GetEnemy().Dead();
+        if (GetEnemy().isDead) GetEnemy().Dead();
     }
+
+    /// <summary>
+    /// プレイヤーのMP減少
+    /// </summary>
+    /// <param name="setValue"></param>
+    public static void ToPlayerMPDamage(int setValue) {
+        GetPlayer().RemoveMP(setValue);
+        SetPlayerMPSliderValue(GetPlayer().GetPlayerMPSliderValue());
+    }
+
     /// <summary>
     /// プレイヤーと敵との距離の取得
     /// </summary>
@@ -214,12 +224,20 @@ public class CharacterUtility {
         return GetEnemy().GetActionMachine();
     }
 
-    public static Slider GetPlayerSlider() {
+    public static Slider GetPlayerHPSlider() {
         return MenuManager.Instance.Get<PlayerHPGauge>().GetSlider();
     }
 
-    public static void SetPlayerSliderValue(float setvalue) {
-        GetPlayerSlider().value = setvalue;
+    public static void SetPlayerHPSliderValue(float setvalue) {
+        GetPlayerHPSlider().value = setvalue;
+    }
+
+    public static Slider GetPlayerMPSlider() {
+        return MenuManager.Instance.Get<PlayerMPGauge>().GetSlider();
+    }
+
+    public static void SetPlayerMPSliderValue(float setvalue) {
+        GetPlayerMPSlider().value = setvalue;
     }
 
     public static Slider GetEnemySlider() {
@@ -247,5 +265,10 @@ public class CharacterUtility {
 
     public static void CancelAllEnemyMagic() {
         GetEnemy().CancelAllEnemyMagic();
+    }
+
+
+    public static float GetPlayerCurrentMP() {
+        return GetPlayer().GetPlayerCurrentMP();
     }
 }
