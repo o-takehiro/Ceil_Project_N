@@ -96,7 +96,7 @@ public class PlayerMagic : MagicBase {
 			magicObject.canUnuse = false;
 			Transform bullet = magicObject.GenerateMiniBullet().transform;
 			bulletList.Add(bullet.gameObject);
-			bullet.transform.position = magicActivePosition;
+			bullet.transform.position = magicActiveObject.transform.position;
 			bullet.transform.rotation = GetPlayerRotation();
 			// 移動
 			UniTask task = MiniBulletMove(magicObject, bullet);
@@ -210,7 +210,7 @@ public class PlayerMagic : MagicBase {
 		// 未使用化不可能
 		magicObject.canUnuse = false;
 		Transform beam = magicObject.GenerateBeam().transform;
-		beam.position = magicActivePosition;
+		beam.position = magicActiveObject.transform.position;
 		beam.rotation = camera.rotation;
 		beam.localScale = Vector3.one;
 		// ビームが相手の防御魔法に当たるなら長さを調節
@@ -239,11 +239,11 @@ public class PlayerMagic : MagicBase {
 	private void LaserBeamDefenseRange(Transform laserBeam) {
 		if (GetEnemy() == null) return;
 		// 相手から自分までの方向
-		Vector3 thisDirection = (magicActivePosition - GetEnemyCenterPosition()).normalized;
+		Vector3 thisDirection = (magicActiveObject.transform.position - GetEnemyCenterPosition()).normalized;
 		// 相手の防御魔法の正面位置
 		Vector3 otherDefenseForwardPos = GetEnemyCenterPosition() + thisDirection * _DEFENSE_RADIUS;
 		// ビームがディフェンスに当たったまでの長さ
-		float beamRange = _BEAM_RANGE_MAX - Vector3.Distance(magicActivePosition, otherDefenseForwardPos);
+		float beamRange = _BEAM_RANGE_MAX - Vector3.Distance(magicActiveObject.transform.position, otherDefenseForwardPos);
 		// ビームの長さを調整
 		Vector3 beamScale = laserBeam.localScale;
 		beamScale.z = 1 - (beamRange / _BEAM_RANGE_MAX);

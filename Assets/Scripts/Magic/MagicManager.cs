@@ -233,15 +233,15 @@ public class MagicManager : MonoBehaviour {
 	/// 魔法生成
 	/// </summary>
 	/// <param name="magicID"></param>
-	public void CreateMagic(eSideType sideType, eMagicType magicType, Vector3? setPosition = null) {
-		Vector3 activePosition = setPosition ?? Vector3.zero;
+	public void CreateMagic(eSideType sideType, eMagicType magicType, GameObject setObject = null) {
+		//Vector3 activePosition = setPosition ?? Vector3.zero;
 		int side = (int)sideType, magicID = (int)magicType;
 		if (side < 0 || magicID < 0) return;
 		if (_activeMagicIDList[side][magicID] >= 0) return;
 		// データを使用状態にする
 		_activeMagicIDList[side][magicID] = UseMagicData(side);
 		MagicBase magicSide = GetMagicData(_activeMagicIDList[side][magicID]);
-		magicSide?.Setup(_activeMagicIDList[side][magicID], activePosition);
+		magicSide?.Setup(_activeMagicIDList[side][magicID], setObject);
 		// オブジェクトを生成する
 		MagicObject magicObject = GetMagicObject(_activeMagicIDList[side][magicID]);
 		if (magicObject == null) {
