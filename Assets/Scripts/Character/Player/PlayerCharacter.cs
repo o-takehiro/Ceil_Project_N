@@ -72,6 +72,7 @@ public class PlayerCharacter : CharacterBase {
         // スロットごとの発射位置を登録
         for (int i = 0; i < magicSpawnPoints.Length; i++) {
             _magic.SetMagicSpawnPosition(i, magicSpawnPoints[i]);
+            
         }
 
         if (_attack == null) {
