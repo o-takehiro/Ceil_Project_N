@@ -15,7 +15,7 @@ using static CharacterUtility;
 
 public class EnemyMagic : MagicBase {
 	// 弾のスピード
-	private float _speed = 20;
+	private float _speed = 40;
 	// 弾の最大飛距離
 	private float _distanceMAX = 20;
 	// 弾のクールタイム
