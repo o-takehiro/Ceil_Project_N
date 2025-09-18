@@ -48,12 +48,18 @@ public class PlayerMagicAttack {
         if (magicType == eMagicType.Invalid) {
             return;
         }
-        if (!_isDeath && currentMP > 0.0f) {
+        if (currentMP <= 0.0f) {
+            RequestCancelMagic(slotIndex);
+            return;
+        }
+
+        if (!_isDeath) {
             GameObject spawnPoint = _magicSpawnPos[slotIndex];
             if (spawnPoint == null) return;
             // –‚–@”­ŽË
             CreateMagic(eSideType.PlayerSide, magicType, spawnPoint);
             spawnPoint.SetActive(true);
+
         }
     }
 
@@ -94,7 +100,12 @@ public class PlayerMagicAttack {
     /// <returns></returns>
     public async UniTask MagicUpdate() {
 
-
+        for (int i = 0; i < _eMagicList.Count; i++) {
+            float currentMP = CharacterUtility.GetPlayerCurrentMP();
+            if (currentMP <= 0.0f) {
+                RequestCancelMagic(i);
+            }
+        }
 
         await UniTask.CompletedTask;
     }
