@@ -17,6 +17,7 @@ using UnityEngine.UIElements;
 
 using static MagicUtility;
 using static CharacterUtility;
+using System;
 
 public class PlayerMagic : MagicBase {
 	// 弾のスピード
@@ -31,11 +32,15 @@ public class PlayerMagic : MagicBase {
 	private float _delayBulletCoolTime = 0.0f;
 	// 時間差弾のクールタイムの最大
 	private float _delayBulletCoolTimeMax = 10.0f;
+	// バフの継続時間(ミリ秒)
+	private int _buffTime = 10000;
 
 	// 魔法の発動中フラグ
 	private bool _satelliteOn = false;
 	private bool _laserBeamOn = false;
 	private bool _delayBulletOn = false;
+	private bool _healingOn = false;
+	private bool _buffOn = false;
 
 	// 衛星の半径
 	private const float _SATELLITE_RADIUS = 2;
@@ -47,11 +52,11 @@ public class PlayerMagic : MagicBase {
 	private const float _DEFENSE_RADIUS = 3;
 	// 時間差弾の最大数
 	private const int _DELAY_BULLET_MAX = 6;
-    // 時間差弾の半径
-    private const float _DELAY_BULLET_RADIUS = 3;
+	// 時間差弾の半径
+	private const float _DELAY_BULLET_RADIUS = 3;
 
-    // 小型弾幕のリスト
-    private List<GameObject> bulletList = new List<GameObject>();
+	// 小型弾幕のリスト
+	private List<GameObject> bulletList = new List<GameObject>();
 	// 衛星軌道のリスト
 	private List<GameObject> satelliteList = new List<GameObject>();
 	// 時間差弾のリスト
@@ -186,7 +191,7 @@ public class PlayerMagic : MagicBase {
 	private async UniTask SatelliteOrbitalMove(MagicObject magicObject, Transform bullet) {
 		bool loop = true;
 		while (loop) {
-			if (magicObject.magicObjectList[(int)eMagicType.SatelliteOrbital].transform.childCount > _SATELLITE_MAX) {
+			if (magicObject.GetActiveMagicParent().childCount > _SATELLITE_MAX) {
 				magicObject.RemoveMiniBullet(bullet.gameObject);
 				return;
 			}
@@ -359,72 +364,130 @@ public class PlayerMagic : MagicBase {
 					bullet.localPosition = new Vector3(-_DELAY_BULLET_RADIUS / 2, -_DELAY_BULLET_RADIUS / 2, 0);
 					break;
 			}
-            _delayBulletCoolTime = _delayBulletCoolTimeMax;
-            UniTask task = DelayBulletMove(magicObject, bullet);
+			_delayBulletCoolTime = _delayBulletCoolTimeMax;
+			UniTask task = DelayBulletMove(magicObject, bullet);
 		}
 		// MP消費
 		ToPlayerMPDamage(5);
 	}
-    /// <summary>
-    /// 時間差魔法の移動
-    /// </summary>
-    /// <param name="magicObject"></param>
-    /// <param name="delayBullet"></param>
-    /// <returns></returns>
-    private async UniTask DelayBulletMove(MagicObject magicObject, Transform delayBullet) {
-        while (_delayBulletCoolTime >= 0) {
-            magicObject.transform.position = GetPlayerCenterPosition();
-            magicObject.transform.rotation = camera.rotation;
-            _delayBulletCoolTime -= Time.deltaTime;
-            await UniTask.Yield(PlayerLoopTiming.Update, useMagicObject.token);
-        }
-        float distance = 0;
-        // プレイヤーから一定距離離れるまで前に進める
-        while (distance < _bulletDistanceMax * 2 && delayBullet.gameObject.activeInHierarchy) {
-            distance = Vector3.Distance(delayBullet.position, GetPlayerCenterPosition());
-            if (GetEnemy() != null)
-                delayBullet.rotation = GetOtherDirection(delayBullet.position);
-            delayBullet.position += delayBullet.forward * _bulletSpeed * 3 *  Time.deltaTime;
-            await UniTask.Yield(PlayerLoopTiming.Update, useMagicObject.token);
-        }
-        UniTask task = EffectManager.Instance.PlayEffect(eEffectType.Elimination, delayBullet.position);
-        magicObject.RemoveMiniBullet(delayBullet.gameObject);
-        await UniTask.DelayFrame(1);
-        // 未使用化可能
-        for (int i = 0, max = bulletList.Count; i < max; i++) {
-            if (bulletList[i].activeInHierarchy) return;
-        }
+	/// <summary>
+	/// 時間差魔法の移動
+	/// </summary>
+	/// <param name="magicObject"></param>
+	/// <param name="delayBullet"></param>
+	/// <returns></returns>
+	private async UniTask DelayBulletMove(MagicObject magicObject, Transform delayBullet) {
+		while (_delayBulletCoolTime >= 0) {
+			magicObject.transform.position = GetPlayerCenterPosition();
+			magicObject.transform.rotation = camera.rotation;
+			_delayBulletCoolTime -= Time.deltaTime;
+			await UniTask.Yield(PlayerLoopTiming.Update, useMagicObject.token);
+		}
+		float distance = 0;
+		// プレイヤーから一定距離離れるまで前に進める
+		while (distance < _bulletDistanceMax * 2 && delayBullet.gameObject.activeInHierarchy) {
+			distance = Vector3.Distance(delayBullet.position, GetPlayerCenterPosition());
+			if (GetEnemy() != null)
+				delayBullet.rotation = GetOtherDirection(delayBullet.position);
+			delayBullet.position += delayBullet.forward * _bulletSpeed * 3 * Time.deltaTime;
+			await UniTask.Yield(PlayerLoopTiming.Update, useMagicObject.token);
+		}
+		UniTask task = EffectManager.Instance.PlayEffect(eEffectType.Elimination, delayBullet.position);
+		magicObject.RemoveMiniBullet(delayBullet.gameObject);
+		await UniTask.DelayFrame(1);
+		// 未使用化可能
+		for (int i = 0, max = bulletList.Count; i < max; i++) {
+			if (bulletList[i].activeInHierarchy) return;
+		}
 		_delayBulletOn = false;
-        magicObject.canUnuse = true;
-    }
+		magicObject.canUnuse = true;
+	}
+	/// <summary>
+	/// 回復魔法
+	/// </summary>
+	/// <param name="magicObject"></param>
+	public override void HealingMagic(MagicObject magicObject) {
+		if (magicObject == null) return;
+		if (_healingOn) return;
+		_healingOn = true;
+		// 未使用化不可能
+		magicObject.canUnuse = false;
+		// MP消費
+		ToPlayerMPDamage(30);
+		// 待機用処理関数
+		UniTask task = HealingExecute(magicObject);
+		task = ParentObjectMove(magicObject, () => _healingOn);
+	}
+	/// <summary>
+	/// 待機用回復魔法実行処理
+	/// </summary>
+	/// <returns></returns>
+	private async UniTask HealingExecute(MagicObject magicObject) {
+		// 親オブジェクトを指定してエフェクト再生
+		await EffectManager.Instance.PlayEffect(
+			eEffectType.Healing, GetPlayerPosition(),
+			magicObject.GetActiveMagicParent());
+		_healingOn = false;
+		// 未使用化可能
+		magicObject.canUnuse = true;
+	}
+	/// <summary>
+	/// バフ魔法
+	/// </summary>
+	/// <param name="magicObject"></param>
+	public override void BuffMagic(MagicObject magicObject) {
+		if (magicObject == null) return;
+		if (_buffOn) return;
+		_buffOn = true;
+		// 未使用化不可能
+		magicObject.canUnuse = false;
+		// MP消費
+		ToPlayerMPDamage(20);
+		// 待機用処理関数
+		UniTask task = BuffExecute(magicObject);
+		task = ParentObjectMove(magicObject, () => _buffOn);
+	}
+	/// <summary>
+	/// 待機用バフ魔法実行処理
+	/// </summary>
+	/// <returns></returns>
+	private async UniTask BuffExecute(MagicObject magicObject) {
+		magicObject.GenerateBuff();
+		await UniTask.Delay(_buffTime);
+		_buffOn = false;
+		// 未使用化可能
+		magicObject.canUnuse = true;
+	}
+	/// <summary>
+	/// 衝撃波魔法
+	/// </summary>
+	/// <param name="magicObject"></param>
+	public override void GroundShockMagic(MagicObject magicObject) {
+	}
+	/// <summary>
+	/// 大型弾幕魔法
+	/// </summary>
+	/// <param name="magicObject"></param>
+	public override void BigBulletMagic(MagicObject magicObject) {
+	}
 
-    public override void HealingMagic(MagicObject magicObject)
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public override void BuffMagic(MagicObject magicObject)
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public override void GroundShockMagic(MagicObject magicObject)
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public override void BigBulletMagic(MagicObject magicObject)
-    {
-        throw new System.NotImplementedException();
-    }
-    /// <summary>
-    /// 相手の方向
-    /// </summary>
-    /// <param name="currentPos"></param>
-    /// <returns></returns>
-    private Quaternion GetOtherDirection(Vector3 currentPos) {
+	/// <summary>
+	/// 相手の方向
+	/// </summary>
+	/// <param name="currentPos"></param>
+	/// <returns></returns>
+	private Quaternion GetOtherDirection(Vector3 currentPos) {
 		Vector3 direction = (GetEnemyCenterPosition() - currentPos).normalized;
 		return Quaternion.LookRotation(direction);
 	}
-
+	/// <summary>
+	/// 魔法の親の移動
+	/// </summary>
+	/// <param name="magicObject"></param>
+	private async UniTask ParentObjectMove(MagicObject magicObject, Func<bool> loopCondition) {
+		while (loopCondition()) {
+			magicObject.transform.position = GetPlayerPosition();
+			await UniTask.Yield(PlayerLoopTiming.Update, useMagicObject.token);
+		}
+	}
 }

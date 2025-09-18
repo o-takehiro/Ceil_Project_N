@@ -168,7 +168,7 @@ public class EnemyMagic : MagicBase {
 		bool loop = true;
 		while (loop) {
 			if (GetEnemy() == null) return;
-			if (magicObject.magicObjectList[(int)eMagicType.SatelliteOrbital].transform.childCount > _SATELLITE_MAX) {
+			if (magicObject.GetActiveMagicParent().childCount > _SATELLITE_MAX) {
 				magicObject.RemoveMiniBullet(bullet.gameObject);
 				return;
 			}
