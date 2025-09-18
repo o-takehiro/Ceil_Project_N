@@ -62,33 +62,34 @@ public enum eSideType {
 /// </summary>
 public enum eMagicType {
     Invalid = -1,
-	Defense,            // 防御魔法
-	MiniBullet,         // 小型弾幕魔法
+    Defense,            // 防御魔法
+    MiniBullet,         // 小型弾幕魔法
     SatelliteOrbital,   // 衛星軌道魔法
     LaserBeam,          // ビーム(横)魔法
-	DelayBullet,        // 時間差弾魔法
+    DelayBullet,        // 時間差弾魔法
     Healing,            // 回復魔法
     Buff,               // バフ魔法
     GroundShock,        // 衝撃波魔法
     BigBullet,          // 大型弾幕魔法
 
-	Max,
+    Max,
 }
 
 /// <summary>
 /// エフェクトの種類
 /// </summary>
 public enum eEffectType {
-	Invalid = -1,
-	Elimination,        // 削除エフェクト
-	Hit,                // ヒットエフェクト
+    Invalid = -1,
+    Elimination,        // 削除エフェクト
+    Hit,                // ヒットエフェクト
     Analysis,           // 解析エフェクト
     BeamDefense,        // ビームを防いだエフェクト
     BeamShot,           // ビーム発射エフェクト
     Healing,            // 回復エフェクト
     GroundShock,        // 衝撃波エフェクト
+    PunchHit,           // 近接攻撃エフェクト
 
-	max,
+    max,
 }
 
 /// <summary>
