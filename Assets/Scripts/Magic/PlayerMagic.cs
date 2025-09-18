@@ -41,6 +41,7 @@ public class PlayerMagic : MagicBase {
 	private bool _delayBulletOn = false;
 	private bool _healingOn = false;
 	private bool _buffOn = false;
+	private bool _groundShockOn = false;
 
 	// 衛星の半径
 	private const float _SATELLITE_RADIUS = 2;
@@ -453,7 +454,7 @@ public class PlayerMagic : MagicBase {
 	/// <returns></returns>
 	private async UniTask BuffExecute(MagicObject magicObject) {
 		magicObject.GenerateBuff();
-		await UniTask.Delay(_buffTime);
+		await UniTask.Delay(_buffTime, false, PlayerLoopTiming.Update, useMagicObject.token);
 		_buffOn = false;
 		// 未使用化可能
 		magicObject.canUnuse = true;
@@ -463,6 +464,29 @@ public class PlayerMagic : MagicBase {
 	/// </summary>
 	/// <param name="magicObject"></param>
 	public override void GroundShockMagic(MagicObject magicObject) {
+		if (magicObject == null) return;
+		if (_healingOn) return;
+		_healingOn = true;
+		// 未使用化不可能
+		magicObject.canUnuse = false;
+		magicObject.transform.position = GetPlayerPosition();
+		// MP消費
+		ToPlayerMPDamage(30);
+		// 待機用処理関数
+		UniTask task = GroundShockExecute(magicObject);
+	}
+	/// <summary>
+	/// 待機用衝撃波魔法実行処理
+	/// </summary>
+	/// <returns></returns>
+	private async UniTask GroundShockExecute(MagicObject magicObject) {
+		// 親オブジェクトを指定してエフェクト再生
+		await EffectManager.Instance.PlayEffect(
+			eEffectType.GroundShock, GetPlayerPosition(),
+			magicObject.GetActiveMagicParent());
+		_groundShockOn = false;
+		// 未使用化可能
+		magicObject.canUnuse = true;
 	}
 	/// <summary>
 	/// 大型弾幕魔法

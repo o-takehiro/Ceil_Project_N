@@ -1,18 +1,11 @@
 using Cysharp.Threading.Tasks;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.UIElements;
 
 /// <summary>
 /// カメラの挙動を制御するクラス
-/// - プレイヤーを追いかける
-/// - 入力で視点を動かす
-/// - 敵にロックオンして注視する
 /// </summary>
 public class CameraManager : SystemObject {
-    // このクラスをどこからでも呼び出せるようにするためのシングルトン
     public static CameraManager Instance { get; private set; } = null;
 
     // 敵を記録してロックオン管理する仕組み
@@ -33,8 +26,8 @@ public class CameraManager : SystemObject {
     private float _currentPitch; // 縦回転
 
     // 追従対象（プレイヤーなど）
-    public Transform playerTarget;   // インスペクタで設定可能
-    private Transform _target;       // 実際に使う参照
+    public Transform playerTarget;
+    private Transform _target;
 
     // カメラの動きに関する設定値
     private Vector3 offset = new Vector3(0f, 4f, -8f); // プレイヤーからどの位置に置くか
@@ -52,15 +45,16 @@ public class CameraManager : SystemObject {
 
     /// <summary>
     /// 初期化処理
-    /// - カメラや入力を準備する
-    /// - プレイヤーを探して追従対象にする
     /// </summary>
     public override async UniTask Initialize() {
-        Instance = this; // シングルトンとして登録
+        Instance = this;
         CameraSetUp();
         await UniTask.CompletedTask;
     }
 
+    /// <summary>
+    /// 準備
+    /// </summary>
     public void CameraSetUp() {
 
         // シーン内からメインカメラを探す
@@ -72,7 +66,7 @@ public class CameraManager : SystemObject {
         _inputActions.Camera.Look.canceled += ctx => _lookInput = Vector2.zero;              // 入力をやめたらリセット
         _inputActions.Enable();
 
-        // プレイヤーの参照を取得（指定がなければタグで探す）
+        // プレイヤーの参照を取得
         if (playerTarget != null) {
             _target = playerTarget;
         }
@@ -84,11 +78,14 @@ public class CameraManager : SystemObject {
 
     /// <summary>
     /// プレイヤーを追従対象に設定する
-    /// - プレイヤーの位置に合わせてカメラ回転を初期化する
     /// </summary>
     public void SetTarget(PlayerCharacter target) {
         _target = target.transform;
         playerTarget = _target;
+
+        // プレイヤーの正面を向く
+        _camera.transform.rotation = Quaternion.LookRotation(_target.forward, Vector3.up);
+
 
         // プレイヤーの向きは無視してカメラのYawを維持
         // _currentYaw はカメラの現状を保持する

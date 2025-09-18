@@ -4,7 +4,7 @@ using UnityEngine;
 /// プレイヤーの地面接地判定
 /// </summary>
 public class GroundCheck : MonoBehaviour {
-    public bool IsGrounded { get; private set; }
+    public static bool IsGrounded { get; private set; }
 
     /// <summary>
     /// 地面に触れているか
@@ -12,7 +12,7 @@ public class GroundCheck : MonoBehaviour {
     /// <param name="other"></param>
     private void OnTriggerEnter(Collider other) {
         if (other.gameObject.layer == LayerMask.NameToLayer("Ground")) {
-            IsGrounded = true;
+            IsGrounded = true;  
         }
     }
 
