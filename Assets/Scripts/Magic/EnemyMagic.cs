@@ -247,7 +247,7 @@ public class EnemyMagic : MagicBase {
 	/// </summary>
 	/// <returns></returns>
 	private bool GetLaserBeamInDefense() {
-		if (GetPlayer() == null) return false;
+		if (GetPlayer() == null || GetEnemy() == null) return false;
 		if (GetPlayerToEnemyDistance() >= _DEFENSE_RADIUS ||
 			!GetMagicActive((int)eSideType.PlayerSide, (int)eMagicType.Defense)) return false;
 		return true;

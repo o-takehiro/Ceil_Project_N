@@ -91,7 +91,7 @@ public class PlayerMagic : MagicBase {
 		defense.position = GetPlayerPosition();
 		defense.rotation = GetPlayerRotation();
 		// MP消費
-		ToPlayerMPDamage(0.1f);
+		ToPlayerMPDamage(0.3f);
 	}
 	/// <summary>
 	/// 小型弾幕魔法
@@ -274,7 +274,7 @@ public class PlayerMagic : MagicBase {
 	/// </summary>
 	/// <returns></returns>
 	private bool GetLaserBeamInDefense() {
-		if (GetPlayer() == null) return false;
+		if (GetPlayer() == null || GetEnemy() == null) return false;
 		if (GetPlayerToEnemyDistance() >= _DEFENSE_RADIUS ||
 			!GetMagicActive((int)eSideType.EnemySide, (int)eMagicType.Defense)) return false;
 		return true;
@@ -492,6 +492,57 @@ public class PlayerMagic : MagicBase {
 	/// </summary>
 	/// <param name="magicObject"></param>
 	public override void BigBulletMagic(MagicObject magicObject) {
+		if (magicObject == null) return;
+		if (_bulletCoolTime < 0) {
+			// 未使用化不可能
+			magicObject.canUnuse = false;
+			Vector3 activePos;
+			if (magicActiveObject == null) {
+				activePos = GetPlayerCenterPosition();
+			}
+			else {
+				activePos = magicActiveObject.transform.position;
+			}
+			Transform bullet = magicObject.GenerateMiniBullet().transform;
+			bulletList.Add(bullet.gameObject);
+			bullet.transform.position = activePos;
+			bullet.transform.rotation = GetPlayerRotation();
+			bullet.transform.localScale *= 10;
+			// MP消費
+			ToPlayerMPDamage(1);
+			// 移動
+			UniTask task = BigBulletMove(magicObject, bullet);
+			_bulletCoolTime = _bulletCoolTimeMax;
+		}
+		else {
+			_bulletCoolTime -= Time.deltaTime;
+		}
+	}
+	/// <summary>
+	/// 大型弾幕の移動
+	/// </summary>
+	/// <param name="magicObject"></param>
+	/// <param name="miniBullet"></param>
+	/// <returns></returns>
+	private async UniTask BigBulletMove(MagicObject magicObject, Transform miniBullet) {
+		float distance = 0;
+		// プレイヤーから一定距離離れるまで前に進める
+		while (distance < _bulletDistanceMax && miniBullet.gameObject.activeInHierarchy) {
+			distance = Vector3.Distance(miniBullet.position, GetPlayerCenterPosition());
+			miniBullet.rotation = camera.rotation;
+			if (GetEnemy() != null)
+				miniBullet.rotation = GetOtherDirection(miniBullet.position);
+			miniBullet.position += miniBullet.forward * _bulletSpeed * Time.deltaTime;
+			await UniTask.DelayFrame(1, PlayerLoopTiming.Update, useMagicObject.token);
+		}
+		UniTask task = EffectManager.Instance.PlayEffect(eEffectType.Elimination, miniBullet.position);
+		magicObject.RemoveMiniBullet(miniBullet.gameObject);
+		await UniTask.DelayFrame(1);
+		// 未使用化可能
+		for (int i = 0, max = bulletList.Count; i < max; i++) {
+			if (bulletList[i].activeInHierarchy) return;
+		}
+		magicObject.canUnuse = true;
 	}
 
 	/// <summary>

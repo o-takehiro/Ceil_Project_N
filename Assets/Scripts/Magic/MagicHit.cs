@@ -72,7 +72,7 @@ public class MagicHit : MagicObject {
                 parentObject.RemoveMiniBullet(gameObject);
                 break;
 			case eMagicType.GroundShock:
-				if (otherSide == eSideType.EnemySide && !GroundCheck.IsGrounded) return;
+				if (otherSide == eSideType.PlayerSide && !GroundCheck.IsGrounded) return;
 				GiveDamage(otherSide, 2);
 				break;
 			case eMagicType.BigBullet:
