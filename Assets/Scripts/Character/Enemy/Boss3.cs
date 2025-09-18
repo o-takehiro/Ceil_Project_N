@@ -27,7 +27,7 @@ public class Boss3 : EnemyCharacter {
         //現在の回転更新
         SetEnemyRotation(transform.rotation);
         //中心座標更新
-        SetEnemyCenterPosition(new Vector3(transform.position.x, transform.position.y + 2, transform.position.z));
+        SetEnemyCenterPosition(new Vector3(transform.position.x, transform.position.y + 20, transform.position.z));
         //ステートマシーンの更新
         myAI.Update();
         //座標の更新
