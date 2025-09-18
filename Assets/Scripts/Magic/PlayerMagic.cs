@@ -465,13 +465,14 @@ public class PlayerMagic : MagicBase {
 	/// <param name="magicObject"></param>
 	public override void GroundShockMagic(MagicObject magicObject) {
 		if (magicObject == null) return;
-		if (_healingOn) return;
-		_healingOn = true;
+		if (_groundShockOn) return;
+		_groundShockOn = true;
 		// 未使用化不可能
 		magicObject.canUnuse = false;
 		magicObject.transform.position = GetPlayerPosition();
+		magicObject.GenerateGroundShock();
 		// MP消費
-		ToPlayerMPDamage(30);
+		ToPlayerMPDamage(20);
 		// 待機用処理関数
 		UniTask task = GroundShockExecute(magicObject);
 	}
@@ -480,10 +481,8 @@ public class PlayerMagic : MagicBase {
 	/// </summary>
 	/// <returns></returns>
 	private async UniTask GroundShockExecute(MagicObject magicObject) {
-		// 親オブジェクトを指定してエフェクト再生
-		await EffectManager.Instance.PlayEffect(
-			eEffectType.GroundShock, GetPlayerPosition(),
-			magicObject.GetActiveMagicParent());
+		// エフェクト再生
+		await EffectManager.Instance.PlayEffect(eEffectType.GroundShock, GetPlayerPosition());
 		_groundShockOn = false;
 		// 未使用化可能
 		magicObject.canUnuse = true;

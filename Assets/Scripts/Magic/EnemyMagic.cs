@@ -12,6 +12,7 @@ using UnityEngine;
 
 using static MagicUtility;
 using static CharacterUtility;
+using System;
 
 public class EnemyMagic : MagicBase {
 	// 弾のスピード
@@ -26,11 +27,16 @@ public class EnemyMagic : MagicBase {
 	private float _delayBulletCoolTime = 0.0f;
 	// 時間差弾のクールタイムの最大
 	private float _delayBulletCoolTimeMax = 10.0f;
+	// バフの継続時間(ミリ秒)
+	private int _buffTime = 10000;
 
 	// 魔法の発動中フラグ
 	private bool _satelliteOn = false;
 	private bool _laserBeamOn = false;
 	private bool _delayBulletOn = false;
+	private bool _healingOn = false;
+	private bool _buffOn = false;
+	private bool _groundShockOn = false;
 
 	// 衛星の半径
 	private const float _SATELLITE_RADIUS = 4;
@@ -361,26 +367,96 @@ public class EnemyMagic : MagicBase {
 		_delayBulletOn = false;
 		magicObject.canUnuse = true;
 	}
-
-    public override void HealingMagic(MagicObject magicObject)
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public override void BuffMagic(MagicObject magicObject)
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public override void GroundShockMagic(MagicObject magicObject)
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public override void BigBulletMagic(MagicObject magicObject)
-    {
-        throw new System.NotImplementedException();
-    }
+	/// <summary>
+	/// 回復魔法
+	/// </summary>
+	/// <param name="magicObject"></param>
+	public override void HealingMagic(MagicObject magicObject) {
+		if (magicObject == null) return;
+		if (_healingOn) return;
+		_healingOn = true;
+		// 未使用化不可能
+		magicObject.canUnuse = false;
+		// MP消費
+		ToPlayerMPDamage(30);
+		// 待機用処理関数
+		UniTask task = HealingExecute(magicObject);
+		task = ParentObjectMove(magicObject, () => _healingOn);
+	}
+	/// <summary>
+	/// 待機用回復魔法実行処理
+	/// </summary>
+	/// <returns></returns>
+	private async UniTask HealingExecute(MagicObject magicObject) {
+		// 親オブジェクトを指定してエフェクト再生
+		await EffectManager.Instance.PlayEffect(
+			eEffectType.Healing, GetEnemyPosition(),
+			magicObject.GetActiveMagicParent());
+		_healingOn = false;
+		// 未使用化可能
+		magicObject.canUnuse = true;
+	}
+	/// <summary>
+	/// バフ魔法
+	/// </summary>
+	/// <param name="magicObject"></param>
+	public override void BuffMagic(MagicObject magicObject) {
+		if (magicObject == null) return;
+		if (_buffOn) return;
+		_buffOn = true;
+		// 未使用化不可能
+		magicObject.canUnuse = false;
+		// MP消費
+		ToPlayerMPDamage(20);
+		// 待機用処理関数
+		UniTask task = BuffExecute(magicObject);
+		task = ParentObjectMove(magicObject, () => _buffOn);
+	}
+	/// <summary>
+	/// 待機用バフ魔法実行処理
+	/// </summary>
+	/// <returns></returns>
+	private async UniTask BuffExecute(MagicObject magicObject) {
+		magicObject.GenerateBuff();
+		await UniTask.Delay(_buffTime, false, PlayerLoopTiming.Update, useMagicObject.token);
+		_buffOn = false;
+		// 未使用化可能
+		magicObject.canUnuse = true;
+	}
+	/// <summary>
+	/// 衝撃波魔法
+	/// </summary>
+	/// <param name="magicObject"></param>
+	public override void GroundShockMagic(MagicObject magicObject) {
+		if (magicObject == null) return;
+		if (_groundShockOn) return;
+		_groundShockOn = true;
+		// 未使用化不可能
+		magicObject.canUnuse = false;
+		magicObject.transform.position = GetEnemyPosition();
+		magicObject.GenerateGroundShock();
+		// MP消費
+		ToPlayerMPDamage(20);
+		// 待機用処理関数
+		UniTask task = GroundShockExecute(magicObject);
+	}
+	/// <summary>
+	/// 待機用衝撃波魔法実行処理
+	/// </summary>
+	/// <returns></returns>
+	private async UniTask GroundShockExecute(MagicObject magicObject) {
+		// エフェクト再生
+		await EffectManager.Instance.PlayEffect(eEffectType.GroundShock, GetEnemyPosition());
+		_groundShockOn = false;
+		// 未使用化可能
+		magicObject.canUnuse = true;
+	}
+	/// <summary>
+	/// 大型弾幕魔法
+	/// </summary>
+	/// <param name="magicObject"></param>
+	public override void BigBulletMagic(MagicObject magicObject) {
+	}
 
 	/// <summary>
 	/// 相手の方向
@@ -390,5 +466,15 @@ public class EnemyMagic : MagicBase {
 	private Quaternion GetOtherDirection(Vector3 currentPos) {
 		Vector3 direction = (GetPlayerCenterPosition() - currentPos).normalized;
 		return Quaternion.LookRotation(direction);
+	}
+	/// <summary>
+	/// 魔法の親の移動
+	/// </summary>
+	/// <param name="magicObject"></param>
+	private async UniTask ParentObjectMove(MagicObject magicObject, Func<bool> loopCondition) {
+		while (loopCondition()) {
+			magicObject.transform.position = GetEnemyPosition();
+			await UniTask.Yield(PlayerLoopTiming.Update, useMagicObject.token);
+		}
 	}
 }
