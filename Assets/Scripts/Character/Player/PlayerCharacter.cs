@@ -173,6 +173,7 @@ public class PlayerCharacter : CharacterBase {
     }
 
     public float GetPlayerSliderValue() {
+        _animator.SetTrigger("hit");
         return HP / maxHP;
     }
 
