@@ -46,7 +46,7 @@ GameObject:
   - component: {fileID: 1825942680467765776}
   - component: {fileID: 1582831382368726265}
   - component: {fileID: 3238658644232480916}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Stage1_Terrain
   m_TagString: Untagged
   m_Icon: {fileID: 0}
