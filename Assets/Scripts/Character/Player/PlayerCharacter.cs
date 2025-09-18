@@ -193,6 +193,7 @@ public class PlayerCharacter : CharacterBase {
         _animator.SetTrigger("Death");
         _movement._isDeath = true;
         _magic._isDeath = true;
+        _magic.ResetMagic();
 
     }
 
