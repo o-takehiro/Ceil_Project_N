@@ -31,6 +31,10 @@ public abstract class MagicBase {
 	public abstract void SatelliteOrbitalMagic(MagicObject magicObject);
 	public abstract void LaserBeamMagic(MagicObject magicObject);
 	public abstract void DelayBulletMagic(MagicObject magicObject);
+	public abstract void HealingMagic(MagicObject magicObject);
+	public abstract void BuffMagic(MagicObject magicObject);
+	public abstract void GroundShockMagic(MagicObject magicObject);
+	public abstract void BigBulletMagic(MagicObject magicObject);
 
 	/// <summary>
 	/// èÄîı

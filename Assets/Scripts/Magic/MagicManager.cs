@@ -111,6 +111,7 @@ public class MagicManager : MonoBehaviour {
 		if (Input.GetKey(KeyCode.N)) CreateMagic(eSideType.PlayerSide, eMagicType.SatelliteOrbital);
 		if (Input.GetKey(KeyCode.M)) CreateMagic(eSideType.PlayerSide, eMagicType.LaserBeam);
 		if (Input.GetKey(KeyCode.L)) CreateMagic(eSideType.PlayerSide, eMagicType.DelayBullet);
+		if (Input.GetKey(KeyCode.K)) CreateMagic(eSideType.PlayerSide, eMagicType.Healing);
 		if (Input.GetKeyUp(KeyCode.Z)) task = MagicReset(eSideType.PlayerSide, eMagicType.Defense);
 		if (Input.GetKeyUp(KeyCode.X)) task = MagicReset(eSideType.PlayerSide, eMagicType.MiniBullet);
 		if (Input.GetKeyUp(KeyCode.C)) task = MagicReset(eSideType.EnemySide, eMagicType.Defense);
@@ -118,6 +119,7 @@ public class MagicManager : MonoBehaviour {
 		if (Input.GetKeyUp(KeyCode.N)) task = MagicReset(eSideType.PlayerSide, eMagicType.SatelliteOrbital);
 		if (Input.GetKeyUp(KeyCode.M)) task = MagicReset(eSideType.PlayerSide, eMagicType.LaserBeam);
 		if (Input.GetKeyUp(KeyCode.L)) task = MagicReset(eSideType.PlayerSide, eMagicType.DelayBullet);
+		if (Input.GetKeyUp(KeyCode.K)) task = MagicReset(eSideType.PlayerSide, eMagicType.Healing);
 		if (Input.GetKeyDown(KeyCode.B)) AnalysisMagicActivate();
 
 		if (_activeMagic == null) return;
@@ -279,7 +281,19 @@ public class MagicManager : MonoBehaviour {
             case eMagicType.DelayBullet:
                 _activeMagic[side][magic] = magicSyde.DelayBulletMagic;
                 break;
-        }
+			case eMagicType.Healing:
+				_activeMagic[side][magic] = magicSyde.HealingMagic;
+				break;
+			case eMagicType.Buff:
+				_activeMagic[side][magic] = magicSyde.BuffMagic;
+				break;
+			case eMagicType.GroundShock:
+				_activeMagic[side][magic] = magicSyde.GroundShockMagic;
+				break;
+			case eMagicType.BigBullet:
+				_activeMagic[side][magic] = magicSyde.BigBulletMagic;
+				break;
+		}
 		return;
 		//}
 	}
@@ -345,17 +359,6 @@ public class MagicManager : MonoBehaviour {
 		MagicObject result = _unuseObjectList[0];
 		_unuseObjectList.RemoveAt(0);
 		return result;
-	}
-
-	/// <summary>
-	/// “Á’è‚Ì–‚–@‚ª”­“®’†‚©‚Ç‚¤‚©
-	/// </summary>
-	/// <param name="side"></param>
-	/// <param name="magic"></param>
-	/// <returns></returns>
-	public bool IsMagicActive(eSideType side, eMagicType magic) {
-		if (_activeMagicIDList[(int)side][(int)magic] < 0) return true;
-		return false;
 	}
 
 	/// <summary>

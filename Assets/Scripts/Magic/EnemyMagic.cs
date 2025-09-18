@@ -168,7 +168,7 @@ public class EnemyMagic : MagicBase {
 		bool loop = true;
 		while (loop) {
 			if (GetEnemy() == null) return;
-			if (magicObject.magicObjectList[(int)eMagicType.SatelliteOrbital].transform.childCount > _SATELLITE_MAX) {
+			if (magicObject.GetActiveMagicParent().childCount > _SATELLITE_MAX) {
 				magicObject.RemoveMiniBullet(bullet.gameObject);
 				return;
 			}
@@ -361,6 +361,26 @@ public class EnemyMagic : MagicBase {
 		_delayBulletOn = false;
 		magicObject.canUnuse = true;
 	}
+
+    public override void HealingMagic(MagicObject magicObject)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public override void BuffMagic(MagicObject magicObject)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public override void GroundShockMagic(MagicObject magicObject)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public override void BigBulletMagic(MagicObject magicObject)
+    {
+        throw new System.NotImplementedException();
+    }
 
 	/// <summary>
 	/// ‘ŠŽè‚Ì•ûŒü

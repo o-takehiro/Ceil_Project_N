@@ -25,22 +25,32 @@ public class MagicObject : MonoBehaviour {
 	// ビームオブジェクトのオリジナル
 	[SerializeField]
 	private GameObject _originBeam = null;
+    // バフオブジェクトのオリジナル
+    [SerializeField]
+    private GameObject _originBuff = null;
+    // 衝撃波オブジェクトのオリジナル
+    [SerializeField]
+    private GameObject _originGroundShock = null;
 
-	// 防御魔法のオブジェクト
-	public GameObject defenseObject = null;
+    // 防御魔法のオブジェクト
+    public GameObject defenseObject = null;
     // 小型弾幕のオブジェクト
     public List<GameObject> miniBulletObjects = null;
 	// ビーム魔法のオブジェクト
 	public GameObject beamObject = null;
+    // バフ魔法のオブジェクト
+    public GameObject buffObject = null;
+    // 衝撃波魔法のオブジェクト
+    public GameObject groundShockObject = null;
 
-	// 使用中オブジェクトの親オブジェクト
-	[SerializeField]
+    // 使用中オブジェクトの親オブジェクト
+    [SerializeField]
 	private Transform _useObjectRoot = null;
 	// 未使用オブジェクトの親オブジェクト
 	[SerializeField]
 	private Transform _unuseObjectRoot = null;
 
-	// 魔法オブジェクトの未使用親オブジェクト
+	// 魔法の実物オブジェクトの未使用親オブジェクト
 	[SerializeField]
 	private Transform _unuseMagicRoot = null;
 
@@ -65,12 +75,14 @@ public class MagicObject : MonoBehaviour {
 	/// </summary>
 	public void Initialize() {
 		// 各魔法オブジェクトの準備
-		defenseObject = Instantiate(_originDefense, _unuseObjectRoot);
+		defenseObject = Instantiate(_originDefense, _unuseMagicRoot);
 		miniBulletObjects = new List<GameObject>(_GENERATE_OBJECTS_MAX);
 		for (int i = 0; i < _GENERATE_OBJECTS_MAX; i++) {
 			miniBulletObjects.Add(Instantiate(_originMiniBullet, _unuseMagicRoot));
 		}
-		beamObject = Instantiate(_originBeam, _unuseObjectRoot);
+		beamObject = Instantiate(_originBeam, _unuseMagicRoot);
+		buffObject = Instantiate(_originBuff, _unuseMagicRoot);
+		groundShockObject = Instantiate(_originGroundShock, _unuseMagicRoot);
 
 		// オブジェクト破棄時に処理されるタスク中断用トークンを取得
 		token = this.GetCancellationTokenOnDestroy();
@@ -146,6 +158,38 @@ public class MagicObject : MonoBehaviour {
 		beamObject.GetComponent<MagicHit>().Setup(this);
 
 		return beamObject;
+	}
+
+	/// <summary>
+	/// バフ魔法の生成
+	/// </summary>
+	/// <returns></returns>
+	public GameObject GenerateBuff() {
+		// 非表示のオブジェクトを表示する
+		buffObject.transform.SetParent(magicObjectList[(int)activeMagic]);
+		buffObject.GetComponent<MagicHit>().Setup(this);
+
+		return buffObject;
+	}
+
+	/// <summary>
+	/// 衝撃波魔法の生成
+	/// </summary>
+	/// <returns></returns>
+	public GameObject GenerateGroundShock() {
+		// 非表示のオブジェクトを表示する
+		groundShockObject.transform.SetParent(magicObjectList[(int)activeMagic]);
+		groundShockObject.GetComponent<MagicHit>().Setup(this);
+
+		return groundShockObject;
+	}
+
+	/// <summary>
+	/// 発動中の魔法の親オブジェクト取得
+	/// </summary>
+	/// <returns></returns>
+	public Transform GetActiveMagicParent() {
+		return magicObjectList[(int)activeMagic];
 	}
 
 	/// <summary>
