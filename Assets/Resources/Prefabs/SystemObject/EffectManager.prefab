@@ -56,7 +56,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2823166179678626712, guid: 67abd357c0c689a458fcab58ffad7224, type: 3}
       propertyPath: _originEffectList.Array.size
-      value: 6
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 2823166179678626712, guid: 67abd357c0c689a458fcab58ffad7224, type: 3}
       propertyPath: _originEffectList.Array.data[3]
@@ -70,6 +70,10 @@ PrefabInstance:
       propertyPath: _originEffectList.Array.data[5]
       value: 
       objectReference: {fileID: 4452253264325923899, guid: 917b6ff57473b9c48ac2bed69921a30e, type: 3}
+    - target: {fileID: 2823166179678626712, guid: 67abd357c0c689a458fcab58ffad7224, type: 3}
+      propertyPath: _originEffectList.Array.data[6]
+      value: 
+      objectReference: {fileID: 5337406444799343914, guid: bf61fa5350b34364a8a202fd4bd1f542, type: 3}
     - target: {fileID: 5997758564345333373, guid: 67abd357c0c689a458fcab58ffad7224, type: 3}
       propertyPath: m_Name
       value: EffectObject

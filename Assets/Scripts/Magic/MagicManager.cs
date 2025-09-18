@@ -112,6 +112,8 @@ public class MagicManager : MonoBehaviour {
 		if (Input.GetKey(KeyCode.M)) CreateMagic(eSideType.PlayerSide, eMagicType.LaserBeam);
 		if (Input.GetKey(KeyCode.L)) CreateMagic(eSideType.PlayerSide, eMagicType.DelayBullet);
 		if (Input.GetKey(KeyCode.K)) CreateMagic(eSideType.PlayerSide, eMagicType.Healing);
+		if (Input.GetKey(KeyCode.J)) CreateMagic(eSideType.PlayerSide, eMagicType.Buff);
+		if (Input.GetKey(KeyCode.H)) CreateMagic(eSideType.PlayerSide, eMagicType.GroundShock);
 		if (Input.GetKeyUp(KeyCode.Z)) task = MagicReset(eSideType.PlayerSide, eMagicType.Defense);
 		if (Input.GetKeyUp(KeyCode.X)) task = MagicReset(eSideType.PlayerSide, eMagicType.MiniBullet);
 		if (Input.GetKeyUp(KeyCode.C)) task = MagicReset(eSideType.EnemySide, eMagicType.Defense);
@@ -120,6 +122,8 @@ public class MagicManager : MonoBehaviour {
 		if (Input.GetKeyUp(KeyCode.M)) task = MagicReset(eSideType.PlayerSide, eMagicType.LaserBeam);
 		if (Input.GetKeyUp(KeyCode.L)) task = MagicReset(eSideType.PlayerSide, eMagicType.DelayBullet);
 		if (Input.GetKeyUp(KeyCode.K)) task = MagicReset(eSideType.PlayerSide, eMagicType.Healing);
+		if (Input.GetKeyUp(KeyCode.J)) task = MagicReset(eSideType.PlayerSide, eMagicType.Buff);
+		if (Input.GetKeyUp(KeyCode.H)) task = MagicReset(eSideType.PlayerSide, eMagicType.GroundShock);
 		if (Input.GetKeyDown(KeyCode.B)) AnalysisMagicActivate();
 
 		if (_activeMagic == null) return;
