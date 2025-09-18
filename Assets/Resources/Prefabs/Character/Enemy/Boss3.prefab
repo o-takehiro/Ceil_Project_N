@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5657217108753792680}
   - component: {fileID: 7356574248302972168}
+  - component: {fileID: 7154117355586489792}
   m_Layer: 0
   m_Name: ArmDownAttack
   m_TagString: Untagged
@@ -55,6 +56,18 @@ CapsuleCollider:
   m_Height: 0.7389882
   m_Direction: 1
   m_Center: {x: -0.013451375, y: -0.0071271025, z: 0.04176691}
+--- !u!114 &7154117355586489792
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 516556410896696841}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 24c61dec8a35fe94b9b9f5a9a5e6ec93, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1565504514434407949
 GameObject:
   m_ObjectHideFlags: 0
@@ -428,6 +441,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1808824305304619432}
   - component: {fileID: 2542586327776710395}
+  - component: {fileID: 5057858649113187510}
   m_Layer: 0
   m_Name: NormalAttackCollider
   m_TagString: Untagged
@@ -473,6 +487,18 @@ CapsuleCollider:
   m_Height: 0.9731038
   m_Direction: 1
   m_Center: {x: -0.013451378, y: 0.109930865, z: 0.04176694}
+--- !u!114 &5057858649113187510
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8372960818426758325}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 24c61dec8a35fe94b9b9f5a9a5e6ec93, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &4216164277182192135
 PrefabInstance:
   m_ObjectHideFlags: 0
