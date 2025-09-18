@@ -8,7 +8,7 @@ using static CharacterUtility;
 public class Boss3 : EnemyCharacter {
     public override void Initialize() {
         base.Initialize();
-        actionMachine = new EnemyAI009_Boss2Action();
+        actionMachine = new EnemyAI011_Boss3Action();
         myAI = new CharacterAIMachine<EnemyCharacter>();
         enemyAnimator = GetComponent<Animator>();
         magicTypeList = new List<eMagicType>(MAX_ENEMY_MAGIC);
@@ -27,7 +27,7 @@ public class Boss3 : EnemyCharacter {
         //現在の回転更新
         SetEnemyRotation(transform.rotation);
         //中心座標更新
-        SetEnemyCenterPosition(new Vector3(transform.position.x, transform.position.y + 2, transform.position.z));
+        SetEnemyCenterPosition(new Vector3(transform.position.x, transform.position.y + 20, transform.position.z));
         //ステートマシーンの更新
         myAI.Update();
         //座標の更新
