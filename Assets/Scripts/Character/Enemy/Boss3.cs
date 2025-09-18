@@ -8,7 +8,7 @@ using static CharacterUtility;
 public class Boss3 : EnemyCharacter {
     public override void Initialize() {
         base.Initialize();
-        actionMachine = new EnemyAI009_Boss2Action();
+        actionMachine = new EnemyAI011_Boss3Action();
         myAI = new CharacterAIMachine<EnemyCharacter>();
         enemyAnimator = GetComponent<Animator>();
         magicTypeList = new List<eMagicType>(MAX_ENEMY_MAGIC);

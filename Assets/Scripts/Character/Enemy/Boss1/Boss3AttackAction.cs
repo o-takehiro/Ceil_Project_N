@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 using static CharacterUtility;
+using static MagicUtility;
 
 public class Boss3AttackAction : MonoBehaviour {
     [SerializeField]
@@ -10,28 +11,36 @@ public class Boss3AttackAction : MonoBehaviour {
     [SerializeField]
     private GameObject _armDownAttackCollider = null;
 
-    public void EnablePunch() {
+    public void EnableNormalAttack() {
         if (_normalAttackCollider == null) return;
 
         _normalAttackCollider.SetActive(true);
     }
 
-    public void DisablePunch() {
+    public void DisableNormalAttack() {
         if (_normalAttackCollider == null) return;
 
         _normalAttackCollider.SetActive(false);
     }
 
-    public void EnableCharge() {
+    public void EnableArmDownAttack() {
         if (_armDownAttackCollider == null) return;
 
         _armDownAttackCollider.SetActive(true);
     }
 
-    public void DisableCharge() {
+    public void DisableArmDownAttack() {
         if (_armDownAttackCollider == null) return;
 
         _armDownAttackCollider.SetActive(false);
+    }
+
+    public void EnableRoarAttack() {
+        CreateMagic(eSideType.EnemySide, eMagicType.DelayBullet);
+    }
+
+    public void DisableRoarAttack() {
+        CancelEnemyMagic(GetEnemyMagicType(eMagicType.DelayBullet));
     }
 
     // “–‚½‚è”»’è
