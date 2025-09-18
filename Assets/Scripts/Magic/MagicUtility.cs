@@ -55,10 +55,6 @@ public class MagicUtility {
         UniTask task = MagicManager.instance.MagicReset(side, magicID);
     }
 
-    public static bool IsMagicActive(eSideType side, eMagicType magic) {
-        return MagicManager.instance.IsMagicActive(side, magic);
-    }
-
     /// <summary>
     /// ‰ğÍ–‚–@‚Ì”­“®
     /// </summary>

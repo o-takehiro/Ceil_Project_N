@@ -25,16 +25,26 @@ public class MagicObject : MonoBehaviour {
 	// ビームオブジェクトのオリジナル
 	[SerializeField]
 	private GameObject _originBeam = null;
+    // バフオブジェクトのオリジナル
+    [SerializeField]
+    private GameObject _originBuff = null;
+    // 衝撃波オブジェクトのオリジナル
+    [SerializeField]
+    private GameObject _originGroundShock = null;
 
-	// 防御魔法のオブジェクト
-	public GameObject defenseObject = null;
+    // 防御魔法のオブジェクト
+    public GameObject defenseObject = null;
     // 小型弾幕のオブジェクト
     public List<GameObject> miniBulletObjects = null;
 	// ビーム魔法のオブジェクト
 	public GameObject beamObject = null;
+    // バフ魔法のオブジェクト
+    public GameObject buffObject = null;
+    // 衝撃波魔法のオブジェクト
+    public GameObject groundShockObject = null;
 
-	// 使用中オブジェクトの親オブジェクト
-	[SerializeField]
+    // 使用中オブジェクトの親オブジェクト
+    [SerializeField]
 	private Transform _useObjectRoot = null;
 	// 未使用オブジェクトの親オブジェクト
 	[SerializeField]

@@ -128,7 +128,104 @@ Transform:
   - {fileID: 7736865871158182735}
   - {fileID: 5268886067577752341}
   - {fileID: 7534402330160144389}
+  - {fileID: 6638031705355200944}
+  - {fileID: 5826303872928436960}
+  - {fileID: 7223353016926027753}
+  - {fileID: 5776861104771457780}
   m_Father: {fileID: 2740807844541493501}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &4354606844833942806
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5776861104771457780}
+  m_Layer: 0
+  m_Name: BigBullet
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5776861104771457780
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4354606844833942806}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3731706933801379159}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &5062410381056272895
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5826303872928436960}
+  m_Layer: 0
+  m_Name: Buff
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5826303872928436960
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5062410381056272895}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3731706933801379159}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &5421987129646412368
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6638031705355200944}
+  m_Layer: 0
+  m_Name: Healing
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6638031705355200944
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5421987129646412368}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3731706933801379159}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5892811116794770025
 GameObject:
@@ -271,9 +368,13 @@ MonoBehaviour:
   _originDefense: {fileID: 3852491701366735063, guid: eef85179373ea5a4590d5843b373e68f, type: 3}
   _originMiniBullet: {fileID: 7323836922818739123, guid: a23298bc5a87fbc44b7b8cee4680c942, type: 3}
   _originBeam: {fileID: 2905214133460685205, guid: 88d004cdee2a43e489f1124645010db9, type: 3}
+  _originBuff: {fileID: 672621741697536736, guid: 579d529626dcf0e46bab27c62652ef69, type: 3}
+  _originGroundShock: {fileID: 4633113091448474914, guid: 1e9734ef976f56b4081b523be582ef76, type: 3}
   defenseObject: {fileID: 0}
   miniBulletObjects: []
   beamObject: {fileID: 0}
+  buffObject: {fileID: 0}
+  groundShockObject: {fileID: 0}
   _useObjectRoot: {fileID: 2740807844541493501}
   _unuseObjectRoot: {fileID: 3731706933801379159}
   _unuseMagicRoot: {fileID: 862659866594854987}
@@ -283,6 +384,41 @@ MonoBehaviour:
   - {fileID: 7736865871158182735}
   - {fileID: 5268886067577752341}
   - {fileID: 7534402330160144389}
+  - {fileID: 6638031705355200944}
+  - {fileID: 5826303872928436960}
+  - {fileID: 7223353016926027753}
+  - {fileID: 5776861104771457780}
   activeMagic: -1
   activeSide: -1
   canUnuse: 1
+--- !u!1 &8770734809496422872
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7223353016926027753}
+  m_Layer: 0
+  m_Name: GroundShock
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7223353016926027753
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8770734809496422872}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3731706933801379159}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
