@@ -153,4 +153,12 @@ public class PlayerMagicAttack {
         _isDeath = false;
     }
 
+    /// <summary>
+    /// –‚–@‚Ì•Ð•t‚¯
+    /// </summary>
+    public void ResetMagic() {
+        _eMagicList.Clear();
+        _eMagicStorageList.Clear();
+    }
+
 }
