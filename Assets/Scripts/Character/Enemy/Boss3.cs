@@ -19,8 +19,19 @@ public class Boss3 : EnemyCharacter {
 
         myAI.Setup(this);
         myAI.ChangeState(new EnemyAI001_Wait());
+        SetupCanvasPosition(new Vector3(0, -250, 0), new Vector2(400, 40));
     }
 
+    protected void SetupCanvasPosition(Vector3 setPosition, Vector2 setDelta) {
+        SetEnemyCanvas();
+        RectTransform rectGauge = enemyHPGauge.GetComponent<RectTransform>();
+        enemyHPGauge.transform.SetParent(enemyCanvas.transform, false);
+        enemyHPGauge.transform.localPosition = setPosition;
+        enemyHPGauge.transform.localRotation = Quaternion.Euler(0, 0, 0); // 毎回180度に確定
+        rectGauge.sizeDelta = setDelta;
+        enemyCanvas.gameObject.SetActive(true);
+        enemyHPGauge.gameObject.SetActive(true);
+    }
     private void Update() {
         //現在の位置更新
         SetEnemyPosition(transform.position);
