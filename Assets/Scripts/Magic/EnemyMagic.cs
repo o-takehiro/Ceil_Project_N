@@ -148,11 +148,11 @@ public class EnemyMagic : MagicBase {
 					break;
 				case 2:
 					bullet.localPosition = new Vector3(0, 0, _SATELLITE_RADIUS);
-					bullet.eulerAngles = new Vector3(90, 0, 0);
+					bullet.eulerAngles = new Vector3(0, 90, 0);
 					break;
 				case 3:
 					bullet.localPosition = new Vector3(0, 0, -_SATELLITE_RADIUS);
-					bullet.eulerAngles = new Vector3(90, 0, 0);
+					bullet.eulerAngles = new Vector3(0, 90, 0);
 					break;
 			}
 			UniTask task = SatelliteOrbitalMove(magicObject, bullet);

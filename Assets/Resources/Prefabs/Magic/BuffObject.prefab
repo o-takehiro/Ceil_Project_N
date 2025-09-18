@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 1232014911399289560}
   - component: {fileID: 7750352075723196069}
   - component: {fileID: 218164703383082942}
+  - component: {fileID: 4495290837602559159}
   m_Layer: 0
   m_Name: BuffObject
   m_TagString: Untagged
@@ -4833,6 +4834,35 @@ ParticleSystemRenderer:
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
   m_MaskInteraction: 0
+--- !u!114 &4495290837602559159
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 672621741697536736}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ea5d459d4493574898a14e9162afb8e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _originDefense: {fileID: 0}
+  _originMiniBullet: {fileID: 0}
+  _originBeam: {fileID: 0}
+  _originBuff: {fileID: 0}
+  _originGroundShock: {fileID: 0}
+  defenseObject: {fileID: 0}
+  miniBulletObjects: []
+  beamObject: {fileID: 0}
+  buffObject: {fileID: 0}
+  groundShockObject: {fileID: 0}
+  _useObjectRoot: {fileID: 0}
+  _unuseObjectRoot: {fileID: 0}
+  _unuseMagicRoot: {fileID: 0}
+  magicObjectList: []
+  activeMagic: -1
+  activeSide: -1
+  canUnuse: 1
 --- !u!1 &844387119556963592
 GameObject:
   m_ObjectHideFlags: 0

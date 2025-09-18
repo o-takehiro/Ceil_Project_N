@@ -86,6 +86,7 @@ public enum eEffectType {
     BeamDefense,        // ビームを防いだエフェクト
     BeamShot,           // ビーム発射エフェクト
     Healing,            // 回復エフェクト
+    GroundShock,        // 衝撃波エフェクト
 
 	max,
 }
