@@ -76,7 +76,15 @@ public class MagicHit : MagicObject {
 				GiveDamage(otherSide, 2);
 				break;
 			case eMagicType.BigBullet:
-				break;
+                GiveDamage(otherSide, 20);
+                if (otherSide == eSideType.MagicSide) {
+                    task = EffectManager.Instance.PlayEffect(eEffectType.BigElimination, thisPosition);
+                }
+                else {
+                    task = EffectManager.Instance.PlayEffect(eEffectType.BigHit, thisPosition);
+                }
+                parentObject.RemoveMiniBullet(gameObject);
+                break;
 		}
 
 	}

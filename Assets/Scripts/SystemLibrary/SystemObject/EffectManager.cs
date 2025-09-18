@@ -52,7 +52,7 @@ public class EffectManager : SystemObject {
 	public async UniTask PlayEffect(eEffectType playEffect, Vector3 playPosition, Transform setParent = null) {
 		GameObject effect = null;
 		// エフェクト使用化
-		effect = _effectObject.UseEffect(playEffect, setParent);
+		effect = _effectObject.UseEffect(playEffect,playPosition, setParent);
 		// SetParent用一時的待ち
 		await UniTask.Yield();
 		effect.transform.position = playPosition;
