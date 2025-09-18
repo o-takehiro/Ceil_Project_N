@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 using static CharacterUtility;
@@ -60,7 +61,11 @@ public class MageAnimationEvents : MonoBehaviour {
     void OnTriggerEnter(Collider other) {
         if (!other.CompareTag("Enemy")) return;
         int damage = _playerAttack?.GetDamageValue() ?? 0;
+        // MP回復
         _playerAttack.AddMP();
+        // エフェクト再生
+        UniTask task = EffectManager.Instance.PlayEffect(eEffectType.PunchHit, attackCollider.transform.position + Vector3.up * 2f);
+        // 敵にダメージ
         ToEnemyDamage(damage);
     }
 
