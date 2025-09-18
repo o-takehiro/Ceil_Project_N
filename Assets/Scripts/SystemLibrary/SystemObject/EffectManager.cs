@@ -49,10 +49,12 @@ public class EffectManager : SystemObject {
 	/// <summary>
 	/// エフェクト再生
 	/// </summary>
-	public async UniTask PlayEffect(eEffectType playEffect, Vector3 playPosition) {
+	public async UniTask PlayEffect(eEffectType playEffect, Vector3 playPosition, Transform setParent = null) {
 		GameObject effect = null;
 		// エフェクト使用化
-		effect = _effectObject.UseEffect(playEffect);
+		effect = _effectObject.UseEffect(playEffect, setParent);
+		// SetParent用一時的待ち
+		await UniTask.DelayFrame(1);
 		effect.transform.position = playPosition;
 		// リストに追加する前にエフェクトリストの中身が空か判別
 		bool effectListEmpty = GetEffectLisEmpty();

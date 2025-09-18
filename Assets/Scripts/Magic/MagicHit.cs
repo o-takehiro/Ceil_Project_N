@@ -71,7 +71,11 @@ public class MagicHit : MagicObject {
                 }
                 parentObject.RemoveMiniBullet(gameObject);
                 break;
-        }
+			case eMagicType.GroundShock:
+				break;
+			case eMagicType.BigBullet:
+				break;
+		}
 
 	}
 
