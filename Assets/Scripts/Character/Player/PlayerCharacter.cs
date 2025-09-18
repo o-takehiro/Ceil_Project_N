@@ -47,10 +47,13 @@ public class PlayerCharacter : CharacterBase {
         _playerInput = GetComponent<PlayerInput>();
         _camera = Camera.main; // 必要なら差し替え可
 
+        // プレイヤーをカメラのターゲットに設定する
         if (CameraManager.Instance != null)
             CameraManager.Instance.SetTarget(this);
 
+        // マスターIDを保存
         var playerMasterID = GetCharacterMaster(masterID);
+        // プレイヤーのHPゲージを最大にする
         MenuManager.Instance.Get<PlayerHPGauge>().GetSlider().value = 1.0f;
 
         SetMaxHP(playerMasterID.HP);            // プレイヤーの最大HP設定
