@@ -48,7 +48,7 @@ public class PlayerMovement {
         if (isAttacking || _isDeath) return; // 攻撃中は移動不可
 
         // コライダーで地面接地判定
-        _isGrounded = _groundCheck.IsGrounded;
+        _isGrounded = GroundCheck.IsGrounded;
 
 
         // ジャンプ処理
