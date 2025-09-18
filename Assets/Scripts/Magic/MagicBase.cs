@@ -18,7 +18,7 @@ public abstract class MagicBase {
 	public int masterID { get; private set; } = -1;
 	// 使用する魔法オブジェクト
 	public MagicObject useMagicObject = null;
-	// 魔法を発射する位置
+	// 魔法を発射する位置オブジェクト
 	public GameObject magicActiveObject = null;
 	
 	// 魔法陣営取得
