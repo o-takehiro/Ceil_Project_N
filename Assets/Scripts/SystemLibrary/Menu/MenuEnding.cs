@@ -26,12 +26,14 @@ public class MenuEnding : MenuBase {
             _endingText.text = "Game Over";
         }
         await FadeManager.Instance.FadeIn(FadeType.White);
+        SoundManager.Instance.PlayBGM(0);
         _token = this.GetCancellationTokenOnDestroy();
         while (true) {
             if(Input.anyKey) break;
 
             await UniTask.DelayFrame(1, PlayerLoopTiming.Update, _token);
         }
+        SoundManager.Instance.StopBGM();
         await FadeManager.Instance.FadeOut(FadeType.White);
         await Close();
     }
