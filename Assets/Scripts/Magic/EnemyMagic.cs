@@ -29,9 +29,15 @@ public class EnemyMagic : MagicBase {
 	private float _delayBulletCoolTimeMax = 10.0f;
 	// バフの継続時間(ミリ秒)
 	private int _buffTime = 10000;
+    // 大型弾のスピード
+    private float _bigBulletSpeed = 15;
+    // 大型弾のクールタイム
+    private float _bigBulletCoolTime = 0.0f;
+    // 大型弾のクールタイムの最大
+    private float _bigBulletCoolTimeMax = 0.6f;
 
-	// 魔法の発動中フラグ
-	private bool _satelliteOn = false;
+    // 魔法の発動中フラグ
+    private bool _satelliteOn = false;
 	private bool _laserBeamOn = false;
 	private bool _delayBulletOn = false;
 	private bool _healingOn = false;
@@ -247,7 +253,7 @@ public class EnemyMagic : MagicBase {
 	/// </summary>
 	/// <returns></returns>
 	private bool GetLaserBeamInDefense() {
-		if (GetPlayer() == null) return false;
+		if (GetPlayer() == null || GetEnemy() == null) return false;
 		if (GetPlayerToEnemyDistance() >= _DEFENSE_RADIUS ||
 			!GetMagicActive((int)eSideType.PlayerSide, (int)eMagicType.Defense)) return false;
 		return true;
@@ -451,19 +457,71 @@ public class EnemyMagic : MagicBase {
 		// 未使用化可能
 		magicObject.canUnuse = true;
 	}
-	/// <summary>
-	/// 大型弾幕魔法
-	/// </summary>
-	/// <param name="magicObject"></param>
-	public override void BigBulletMagic(MagicObject magicObject) {
-	}
+    /// <summary>
+    /// 大型弾幕魔法
+    /// </summary>
+    /// <param name="magicObject"></param>
+    public override void BigBulletMagic(MagicObject magicObject) {
+        if (magicObject == null) return;
+        if (_bigBulletCoolTime < 0) {
+            // 未使用化不可能
+            magicObject.canUnuse = false;
+            Vector3 activePos;
+            if (magicActiveObject == null) {
+                activePos = GetPlayerCenterPosition();
+            }
+            else
+            {
+                activePos = magicActiveObject.transform.position;
+            }
+            Transform bullet = magicObject.GenerateMiniBullet().transform;
+            bulletList.Add(bullet.gameObject);
+            bullet.transform.position = activePos;
+            bullet.transform.rotation = GetPlayerRotation();
+            bullet.transform.localScale *= 4;
+            // MP消費
+            ToPlayerMPDamage(2);
+            // 移動
+            UniTask task = BigBulletMove(magicObject, bullet);
+            _bigBulletCoolTime = _bigBulletCoolTimeMax;
+        }
+        else {
+            _bigBulletCoolTime -= Time.deltaTime;
+        }
+    }
+    /// <summary>
+    /// 大型弾幕の移動
+    /// </summary>
+    /// <param name="magicObject"></param>
+    /// <param name="miniBullet"></param>
+    /// <returns></returns>
+    private async UniTask BigBulletMove(MagicObject magicObject, Transform miniBullet) {
+        float distance = 0;
+        // プレイヤーから一定距離離れるまで前に進める
+        while (distance < _bulletDistanceMax && miniBullet.gameObject.activeInHierarchy) {
+            distance = Vector3.Distance(miniBullet.position, GetPlayerCenterPosition());
+            miniBullet.rotation = camera.rotation;
+            if (GetEnemy() != null)
+                miniBullet.rotation = GetOtherDirection(miniBullet.position);
+            miniBullet.position += miniBullet.forward * _bigBulletSpeed * Time.deltaTime;
+            await UniTask.DelayFrame(1, PlayerLoopTiming.Update, useMagicObject.token);
+        }
+        UniTask task = EffectManager.Instance.PlayEffect(eEffectType.Elimination, miniBullet.position);
+        magicObject.RemoveMiniBullet(miniBullet.gameObject);
+        await UniTask.DelayFrame(1);
+        // 未使用化可能
+        for (int i = 0, max = bulletList.Count; i < max; i++) {
+            if (bulletList[i].activeInHierarchy) return;
+        }
+        magicObject.canUnuse = true;
+    }
 
-	/// <summary>
-	/// 相手の方向
-	/// </summary>
-	/// <param name="currentPos"></param>
-	/// <returns></returns>
-	private Quaternion GetOtherDirection(Vector3 currentPos) {
+    /// <summary>
+    /// 相手の方向
+    /// </summary>
+    /// <param name="currentPos"></param>
+    /// <returns></returns>
+    private Quaternion GetOtherDirection(Vector3 currentPos) {
 		Vector3 direction = (GetPlayerCenterPosition() - currentPos).normalized;
 		return Quaternion.LookRotation(direction);
 	}

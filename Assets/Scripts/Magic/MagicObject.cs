@@ -200,6 +200,7 @@ public class MagicObject : MonoBehaviour {
 		Transform removeObject = gameObject.transform;
 		removeObject.position = Vector3.zero;
 		removeObject.rotation = Quaternion.identity;
+		removeObject.localScale = Vector3.one;
 		removeObject.SetParent(_unuseMagicRoot);
 	}
 
