@@ -88,6 +88,8 @@ public enum eEffectType {
     Healing,            // 回復エフェクト
     GroundShock,        // 衝撃波エフェクト
     PunchHit,           // 近接攻撃エフェクト
+    BigElimination,     // 削除エフェクト
+    BigHit,             // ヒットエフェクト
 
     max,
 }
