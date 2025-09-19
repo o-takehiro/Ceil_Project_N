@@ -86,6 +86,8 @@ public class PlayerCharacter : CharacterBase {
             _attack.SetupAttackData();
         }
 
+        _movement.moveSetUp();
+
         // メインループを開始する
         StartPlayerLoop().Forget();
     }

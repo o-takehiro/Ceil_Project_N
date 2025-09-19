@@ -68,7 +68,7 @@ public class PartMainGame : PartBase {
 
         UniTask task = PartManager.Instance.TransitionPart(eGamePart.Ending);
         await UniTask.DelayFrame(1);
-        UnuseEnemy();
+        
 
 
         await UniTask.CompletedTask;

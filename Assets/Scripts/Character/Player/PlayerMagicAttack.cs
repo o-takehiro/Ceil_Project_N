@@ -102,6 +102,8 @@ public class PlayerMagicAttack {
     /// </summary>
     /// <returns></returns>
     public async UniTask MagicUpdate() {
+        var player = CharacterUtility.GetPlayer();
+        if (player == null) return;
         if (_isDeath) {
             return; // €‚ñ‚Å‚¢‚½‚ç‰½‚àˆ—‚µ‚È‚¢
         }

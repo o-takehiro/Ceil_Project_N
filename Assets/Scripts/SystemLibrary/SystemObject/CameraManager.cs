@@ -244,7 +244,7 @@ public class CameraManager : SystemObject {
             _movement = player.GetPlayerMovement();
 
         }
-        _movement.SetIsMoving(true);
+        _movement.SetIsMoving(false);
 
         _isFocusing = true;
         _focusCts = new CancellationTokenSource();
@@ -286,7 +286,7 @@ public class CameraManager : SystemObject {
                 _camera.transform.position = Vector3.Lerp(endPos, _cachedCameraPosition, t);
                 _camera.transform.rotation = Quaternion.Slerp(endRot, _cachedCameraRotation, t);
 
-                _movement.SetIsMoving(false);
+
 
                 await UniTask.Yield(PlayerLoopTiming.Update, _focusCts.Token);
             }
@@ -298,6 +298,7 @@ public class CameraManager : SystemObject {
             _isFocusing = false;
             _focusCts.Dispose();
             _focusCts = null;
+            _movement.SetIsMoving(true);
         }
     }
 

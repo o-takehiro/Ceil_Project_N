@@ -84,6 +84,7 @@ public class MageAnimationEvents : MonoBehaviour {
     /// </summary>
     public void UnusePlayerFlag() {
         UnusePlayer();
+        UnuseEnemy();
         isGameOver = true;
     }
 

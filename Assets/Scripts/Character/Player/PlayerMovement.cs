@@ -42,6 +42,10 @@ public class PlayerMovement {
     // ジャンプ入力を受け取る
     public void RequestJump() => _jumpRequested = true;
 
+    public void moveSetUp() {
+        _isMoving = true;
+    }
+
     /// <summary>
     /// 1フレーム分の移動処理
     /// </summary>
