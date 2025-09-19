@@ -56,7 +56,7 @@ public class EnemyMagic : MagicBase {
 	// éûä‘ç∑íeÇÃç≈ëÂêî
 	private const int _DELAY_BULLET_MAX = 6;
 	// éûä‘ç∑íeÇÃîºåa
-	private const float _DELAY_BULLET_RADIUS = 3;
+	private const float _DELAY_BULLET_RADIUS = 30;
 
 	// è¨å^íeñãÇÃÉäÉXÉg
 	private List<GameObject> bulletList = new List<GameObject>();
@@ -332,24 +332,25 @@ public class EnemyMagic : MagicBase {
 			// âqêØîzíu
 			switch (i) {
 				case 0:
-					bullet.localPosition = new Vector3(_DELAY_BULLET_RADIUS, 0, 0);
+					bullet.localPosition = new Vector3(_DELAY_BULLET_RADIUS / 2, 0, 0);
 					break;
 				case 1:
-					bullet.localPosition = new Vector3(-_DELAY_BULLET_RADIUS, 0, 0);
+					bullet.localPosition = new Vector3(-_DELAY_BULLET_RADIUS / 2, 0, 0);
 					break;
 				case 2:
-					bullet.localPosition = new Vector3(_DELAY_BULLET_RADIUS / 2, _DELAY_BULLET_RADIUS / 2, 0);
+					bullet.localPosition = new Vector3(_DELAY_BULLET_RADIUS, _DELAY_BULLET_RADIUS / 2, 0);
 					break;
 				case 3:
-					bullet.localPosition = new Vector3(-_DELAY_BULLET_RADIUS / 2, _DELAY_BULLET_RADIUS / 2, 0);
+					bullet.localPosition = new Vector3(-_DELAY_BULLET_RADIUS, _DELAY_BULLET_RADIUS / 2, 0);
 					break;
 				case 4:
-					bullet.localPosition = new Vector3(_DELAY_BULLET_RADIUS / 2, -_DELAY_BULLET_RADIUS / 2, 0);
+					bullet.localPosition = new Vector3(_DELAY_BULLET_RADIUS / 2, _DELAY_BULLET_RADIUS, 0);
 					break;
 				case 5:
-					bullet.localPosition = new Vector3(-_DELAY_BULLET_RADIUS / 2, -_DELAY_BULLET_RADIUS / 2, 0);
+					bullet.localPosition = new Vector3(-_DELAY_BULLET_RADIUS / 2, _DELAY_BULLET_RADIUS, 0);
 					break;
 			}
+			bullet.localScale *= 10;
 			_delayBulletCoolTime = _delayBulletCoolTimeMax;
 			// SEçƒê∂
 			SoundManager.Instance.PlaySE(13);
@@ -378,7 +379,7 @@ public class EnemyMagic : MagicBase {
 			delayBullet.position += delayBullet.forward * _bulletSpeed * 3 * Time.deltaTime;
 			await UniTask.Yield(PlayerLoopTiming.Update, useMagicObject.token);
 		}
-		UniTask task = EffectManager.Instance.PlayEffect(eEffectType.Elimination, delayBullet.position);
+		UniTask task = EffectManager.Instance.PlayEffect(eEffectType.BigElimination, delayBullet.position);
 		magicObject.RemoveMiniBullet(delayBullet.gameObject);
 		await UniTask.DelayFrame(1);
 		// ñ¢égópâªâ¬î\
