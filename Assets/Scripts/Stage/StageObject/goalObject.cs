@@ -24,6 +24,7 @@ public class goalObject : StageObjectBase {
     protected override async void OnUpdate() {
 
         if (!_hasPlayedFocus && StageManager.Instance.GetCurrentStageClear()) {
+            Debug.Log("Aa");
             _goalObjectRoot.SetActive(true);
             GetComponent<Collider>().enabled = true;
             _hasPlayedFocus = true;
@@ -73,5 +74,8 @@ public class goalObject : StageObjectBase {
     public override void Teardown() {
         base.Teardown();
         CharacterUtility.UnusePlayer();
+        _goalObjectRoot.SetActive(false);
+        GetComponent<Collider>().enabled = false;
+        _hasPlayedFocus = false;
     }
 }

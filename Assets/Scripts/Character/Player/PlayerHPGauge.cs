@@ -23,7 +23,10 @@ public class PlayerHPGauge : MenuBase {
         await base.Open();
         _hpSlider.value = 1.0f;
 
-        while (!CharacterUtility.GetPlayer().isDead) {
+        var player = CharacterUtility.GetPlayer();
+        if (player == null) return;
+
+        while (!player.isDead) {
             await UniTask.DelayFrame(1, 0, _token);
 
         }
