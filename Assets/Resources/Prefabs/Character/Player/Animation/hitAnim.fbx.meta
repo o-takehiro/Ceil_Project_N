@@ -64,7 +64,7 @@ ModelImporter:
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: 1
+      - time: 0.5194805
         functionName: HitActionEnd
         data: 
         objectReferenceParameter: {fileID: 11500000, guid: d326c710f26571c41bfd13ade0c1ca70, type: 3}
