@@ -1,4 +1,6 @@
 using Cysharp.Threading.Tasks;
+using System;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -42,6 +44,10 @@ public class CameraManager : SystemObject {
     private Vector3 _cachedCameraDirection; // 今は使っていないが将来のために残している
     private Vector3 _cachedCameraPosition;
     private bool _wasLockedOnLastFrame = false; // 前フレームでロックオンしていたかどうか
+
+    // カメラ演出用
+    private bool _isFocusing = false;   // 演出中フラグ
+    private CancellationTokenSource _focusCts;
 
     /// <summary>
     /// 初期化処理
@@ -106,7 +112,7 @@ public class CameraManager : SystemObject {
     /// </summary>
     private void LateUpdate() {
         if (_camera == null || _target == null) return;
-
+        if (_isFocusing) return;
         // --- ロックオン中 ---
         if (_lockOnSystem.IsLockedOn()) {
             _wasLockedOnLastFrame = true;
@@ -226,6 +232,75 @@ public class CameraManager : SystemObject {
         _lockOnSystem.Unlock();
         _wasLockedOnLastFrame = false;
     }
+
+    /// <summary>
+    /// 指定オブジェクトにカメラを寄せて注視する
+    /// </summary>
+    public async UniTask FocusOnObject(Transform focusTarget, float focusDistance = 10f, float duration = 1.5f, float holdTime = 2f) {
+        if (_isFocusing) return; // すでに演出中なら無視
+
+        _isFocusing = true;
+        _focusCts = new CancellationTokenSource();
+
+        // 現在のカメラ位置と回転をキャッシュ
+        _cachedCameraPosition = _camera.transform.position;
+        _cachedCameraRotation = _camera.transform.rotation;
+
+        try {
+            // 寄っていくターゲット位置
+            Vector3 dir = (_camera.transform.position - focusTarget.position).normalized;
+            Vector3 startPos = focusTarget.position + dir * (focusDistance * 2f) + Vector3.up * 4.5f; // 少し遠目
+            Vector3 endPos = focusTarget.position + dir * focusDistance + Vector3.up * 3.5f;
+
+            Quaternion startRot = Quaternion.LookRotation(focusTarget.position - startPos, Vector3.up);
+            Quaternion endRot = Quaternion.LookRotation(focusTarget.position - endPos, Vector3.up);
+
+            // 補間で寄っていく
+            float elapsed = 0f;
+            while (elapsed < duration) {
+                elapsed += Time.deltaTime;
+                float t = Mathf.Clamp01(elapsed / duration);
+
+                _camera.transform.position = Vector3.Lerp(startPos, endPos, t);
+                _camera.transform.rotation = Quaternion.Slerp(startRot, endRot, t);
+
+                await UniTask.Yield(PlayerLoopTiming.Update, _focusCts.Token);
+            }
+
+            // 注視維持
+            await UniTask.Delay(TimeSpan.FromSeconds(holdTime), cancellationToken: _focusCts.Token);
+
+            // 元の位置へ戻る
+            elapsed = 0f;
+            while (elapsed < duration) {
+                elapsed += Time.deltaTime;
+                float t = Mathf.Clamp01(elapsed / duration);
+
+                _camera.transform.position = Vector3.Lerp(endPos, _cachedCameraPosition, t);
+                _camera.transform.rotation = Quaternion.Slerp(endRot, _cachedCameraRotation, t);
+
+                await UniTask.Yield(PlayerLoopTiming.Update, _focusCts.Token);
+            }
+        }
+        catch (OperationCanceledException) {
+            // 中断された場合はそのまま
+        }
+        finally {
+            _isFocusing = false;
+            _focusCts.Dispose();
+            _focusCts = null;
+        }
+    }
+
+
+
+
+
+
+
+
+
+
 
     /// <summary>
     /// オブジェクト破棄時の処理

@@ -8,7 +8,7 @@ public class goalObject : StageObjectBase {
     private Collider _collider;
     // エフェクト再生用のポジション
     [SerializeField] private GameObject _goalObjectRoot;
-
+    private bool _hasPlayedFocus = false;
     public override void SetUp() {
         base.SetUp();
         if (_collider == null) {
@@ -21,10 +21,14 @@ public class goalObject : StageObjectBase {
     /// <summary>
     /// 更新処理
     /// </summary>
-    protected override void OnUpdate() {
-        if (StageManager.Instance.GetCurrentStageClear()) {
+    protected override async void OnUpdate() {
+
+        if (!_hasPlayedFocus && StageManager.Instance.GetCurrentStageClear()) {
             _goalObjectRoot.SetActive(true);
             GetComponent<Collider>().enabled = true;
+            _hasPlayedFocus = true;
+            // カメラモーション
+            await CameraManager.Instance.FocusOnObject(_goalObjectRoot.transform);
         }
 
     }
