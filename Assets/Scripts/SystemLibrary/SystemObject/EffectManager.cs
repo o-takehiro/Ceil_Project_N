@@ -52,9 +52,9 @@ public class EffectManager : SystemObject {
 	public async UniTask PlayEffect(eEffectType playEffect, Vector3 playPosition, Transform setParent = null) {
 		GameObject effect = null;
 		// エフェクト使用化
-		effect = _effectObject.UseEffect(playEffect, setParent);
+		effect = _effectObject.UseEffect(playEffect,playPosition, setParent);
 		// SetParent用一時的待ち
-		await UniTask.DelayFrame(1);
+		await UniTask.Yield();
 		effect.transform.position = playPosition;
 		// リストに追加する前にエフェクトリストの中身が空か判別
 		bool effectListEmpty = GetEffectLisEmpty();
@@ -88,6 +88,7 @@ public class EffectManager : SystemObject {
 		for (int effect = 0, effectMax = (int)eEffectType.max; effect < effectMax; effect++) {
 			for (int i = 0, max = _useEffectList[effect].Count; i < max; i++) {
 				if (_useEffectList[effect][i].GetComponent<ParticleSystem>().isPlaying) continue;
+				_useEffectList[effect][i].transform.position = Vector3.zero;
 				// エフェクト非表示
 				_useEffectList[effect].RemoveAt(i);
 				_effectObject.UnuseEffect(effect, i);

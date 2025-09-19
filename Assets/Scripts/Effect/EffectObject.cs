@@ -54,12 +54,13 @@ public class EffectObject : MonoBehaviour {
 	/// </summary>
 	/// <param name="effect"></param>
 	/// <returns></returns>
-	public GameObject UseEffect(eEffectType effect, Transform setParent) {
+	public GameObject UseEffect(eEffectType effect,Vector3 setPosition, Transform setParent) {
 		// setParentがnullなら_useObjectRootに
 		Transform effectParent = setParent ?? _useObjectRoot;
 		// 使用可能なエフェクトの取得
 		GameObject useObject = GetUsableEffectObject(effect);
 		_useEffectObjectsList[(int)effect].Add(useObject);
+		useObject.transform.position = setPosition;
 		useObject.transform.SetParent(effectParent);
 		return useObject;
 	}

@@ -80,11 +80,11 @@ public class MagicManager : MonoBehaviour {
 		int magicTypeMax = (int)eMagicType.Max;
 		_copyMagicList = new List<eMagicType>(magicTypeMax);
 
-		// 発動中の魔法リストをある程度生成
+		// 発動中の魔法リストを魔法の種類分生成
 		_activeMagicIDList = new List<List<int>>(sideTypeMax);
 		for (int i = 0; i < sideTypeMax; i++) {
-			_activeMagicIDList.Add(new List<int>(_MAGIC_MAX));
-			for (int magicCount = 0; magicCount < _MAGIC_MAX; magicCount++) {
+			_activeMagicIDList.Add(new List<int>(magicTypeMax));
+			for (int magicCount = 0; magicCount < magicTypeMax; magicCount++) {
 				// 未使用状態にしておく
 				_activeMagicIDList[i].Add(-1);
 			}
@@ -93,8 +93,8 @@ public class MagicManager : MonoBehaviour {
 		// 発動する魔法リストをある程度生成
 		_activeMagic = new List<List<Action<MagicObject>>>(sideTypeMax);
 		for (int i = 0; i < sideTypeMax; i++) {
-			_activeMagic.Add(new List<Action<MagicObject>>(_MAGIC_MAX));
-			for (int magicCount = 0; magicCount < _MAGIC_MAX; magicCount++) {
+			_activeMagic.Add(new List<Action<MagicObject>>(magicTypeMax));
+			for (int magicCount = 0; magicCount < magicTypeMax; magicCount++) {
 				// 未使用状態にしておく
 				_activeMagic[i].Add(null);
 			}
@@ -114,6 +114,7 @@ public class MagicManager : MonoBehaviour {
 		if (Input.GetKey(KeyCode.K)) CreateMagic(eSideType.PlayerSide, eMagicType.Healing);
 		if (Input.GetKey(KeyCode.J)) CreateMagic(eSideType.PlayerSide, eMagicType.Buff);
 		if (Input.GetKey(KeyCode.H)) CreateMagic(eSideType.PlayerSide, eMagicType.GroundShock);
+		if (Input.GetKey(KeyCode.G)) CreateMagic(eSideType.PlayerSide, eMagicType.BigBullet);
 		if (Input.GetKeyUp(KeyCode.Z)) task = MagicReset(eSideType.PlayerSide, eMagicType.Defense);
 		if (Input.GetKeyUp(KeyCode.X)) task = MagicReset(eSideType.PlayerSide, eMagicType.MiniBullet);
 		if (Input.GetKeyUp(KeyCode.C)) task = MagicReset(eSideType.EnemySide, eMagicType.Defense);
@@ -124,6 +125,7 @@ public class MagicManager : MonoBehaviour {
 		if (Input.GetKeyUp(KeyCode.K)) task = MagicReset(eSideType.PlayerSide, eMagicType.Healing);
 		if (Input.GetKeyUp(KeyCode.J)) task = MagicReset(eSideType.PlayerSide, eMagicType.Buff);
 		if (Input.GetKeyUp(KeyCode.H)) task = MagicReset(eSideType.PlayerSide, eMagicType.GroundShock);
+		if (Input.GetKeyUp(KeyCode.G)) task = MagicReset(eSideType.PlayerSide, eMagicType.BigBullet);
 		if (Input.GetKeyDown(KeyCode.B)) AnalysisMagicActivate();
 
 		if (_activeMagic == null) return;
