@@ -34,6 +34,7 @@ public class DeathAninationAction : StateMachineBehaviour {
     public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
         GetEnemy().GetEnemyAnimator().SetBool("isDead", false);
         UnuseEnemy();
+        StageManager.Instance.SetCurrentStageClear(true);
         animator.applyRootMotion = false;
         Collider col = animator.GetComponent<CapsuleCollider>();
         if (col != null) col.enabled = true;

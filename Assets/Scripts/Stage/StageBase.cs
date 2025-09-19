@@ -8,6 +8,8 @@ public abstract class StageBase : MonoBehaviour {
     [SerializeField]
     private eStageState _stageState;
     public eStageState StageState => _stageState;
+    public bool isStageClear { get; private set; } = false;
+
     /// <summary>
     /// 初期化処理
     /// </summary>
@@ -23,6 +25,7 @@ public abstract class StageBase : MonoBehaviour {
     /// <returns></returns>
     public virtual async UniTask SetUp() {
         gameObject.SetActive(true);
+        SetIsStageClear(false);
         await UniTask.CompletedTask;
     }
 
@@ -41,5 +44,12 @@ public abstract class StageBase : MonoBehaviour {
         await UniTask.CompletedTask;
     }
 
+    /// <summary>
+    /// ステージクリアフラグの変更
+    /// </summary>
+    /// <param name="setFlag"></param>
+    public void SetIsStageClear(bool setFlag) {
+        isStageClear = setFlag;
+    }
 
 }
