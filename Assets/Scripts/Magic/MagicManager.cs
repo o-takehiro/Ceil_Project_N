@@ -374,6 +374,8 @@ public class MagicManager : MonoBehaviour {
 		if (GetEnemy() == null) return;
 		UniTask task = EffectManager.Instance.PlayEffect(eEffectType.Analysis, GetEnemyCenterPosition());
 	 	_copyMagicList = GetMagicStorageSlot();
+		// SEÄ¶
+		SoundManager.Instance.PlaySE(5);
 		int enemy = (int)eSideType.EnemySide;
 		// ”­“®’†‚Ì–‚–@‚ğ’T‚·
 		for (int magic = 0, magicMax = _activeMagicIDList[enemy].Count; magic < magicMax; magic++) {

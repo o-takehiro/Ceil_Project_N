@@ -120,6 +120,8 @@ public class PlayerMagic : MagicBase {
 			bullet.transform.rotation = GetPlayerRotation();
 			// MP消費
 			ToPlayerMPDamage(1);
+			// SE再生
+			SoundManager.Instance.PlaySE(11);
 			// 移動
 			UniTask task = MiniBulletMove(magicObject, bullet);
 			_bulletCoolTime = _bulletCoolTimeMax;
@@ -146,6 +148,7 @@ public class PlayerMagic : MagicBase {
 			await UniTask.DelayFrame(1, PlayerLoopTiming.Update, useMagicObject.token);
 		}
 		UniTask task = EffectManager.Instance.PlayEffect(eEffectType.Elimination, miniBullet.position);
+		SoundManager.Instance.PlaySE(9);
 		magicObject.RemoveMiniBullet(miniBullet.gameObject);
 		await UniTask.DelayFrame(1);
 		// 未使用化可能
@@ -188,6 +191,8 @@ public class PlayerMagic : MagicBase {
 		}
 		// MP消費
 		ToPlayerMPDamage(5);
+		// SE再生
+		SoundManager.Instance.PlaySE(16);
 	}
 	/// <summary>
 	/// 衛星軌道魔法の移動
@@ -256,6 +261,8 @@ public class PlayerMagic : MagicBase {
 		beam.localScale = Vector3.one;
 		// MP消費
 		ToPlayerMPDamage(10);
+		// SE再生
+		SoundManager.Instance.PlaySE(6);
 		// ビームが相手の防御魔法に当たるなら長さを調節
 		if (GetLaserBeamDefecseHit()) {
 			LaserBeamDefenseRange(beam);
@@ -310,7 +317,8 @@ public class PlayerMagic : MagicBase {
 		laserBeam.localScale = beamScale;
 		// 当たっている位置にエフェクト生成
 		UniTask task = EffectManager.Instance.PlayEffect(eEffectType.BeamDefense, otherDefenseForwardPos);
-
+		// SE再生
+		SoundManager.Instance.PlaySE(7);
 	}
 	/// <summary>
 	/// ビーム(横)魔法の動き
@@ -376,6 +384,8 @@ public class PlayerMagic : MagicBase {
 		}
 		// MP消費
 		ToPlayerMPDamage(5);
+		// SE再生
+		SoundManager.Instance.PlaySE(13);
 	}
 	/// <summary>
 	/// 時間差魔法の移動
@@ -421,6 +431,8 @@ public class PlayerMagic : MagicBase {
 		magicObject.canUnuse = false;
 		// MP消費
 		ToPlayerMPDamage(30);
+		// SE再生
+		SoundManager.Instance.PlaySE(15);
 		// 待機用処理関数
 		UniTask task = HealingExecute(magicObject);
 		task = ParentObjectMove(magicObject, () => _healingOn);
@@ -450,6 +462,8 @@ public class PlayerMagic : MagicBase {
 		magicObject.canUnuse = false;
 		// MP消費
 		ToPlayerMPDamage(20);
+		// SE再生
+		SoundManager.Instance.PlaySE(8);
 		// 待機用処理関数
 		UniTask task = BuffExecute(magicObject);
 		task = ParentObjectMove(magicObject, () => _buffOn);
@@ -479,6 +493,8 @@ public class PlayerMagic : MagicBase {
 		magicObject.GenerateGroundShock();
 		// MP消費
 		ToPlayerMPDamage(20);
+		// SE再生
+		SoundManager.Instance.PlaySE(14);
 		// 待機用処理関数
 		UniTask task = GroundShockExecute(magicObject);
 	}
@@ -516,6 +532,8 @@ public class PlayerMagic : MagicBase {
 			bullet.transform.localScale *= 4;
 			// MP消費
 			ToPlayerMPDamage(2);
+			// SE再生
+			SoundManager.Instance.PlaySE(11);
 			// 移動
 			UniTask task = BigBulletMove(magicObject, bullet);
             _bigBulletCoolTime = _bigBulletCoolTimeMax;
