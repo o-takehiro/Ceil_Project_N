@@ -84,6 +84,7 @@ public class MageAnimationEvents : MonoBehaviour {
     /// </summary>
     public void UnusePlayerFlag() {
         UnusePlayer();
+        UnuseEnemy();
         isGameOver = true;
     }
 
@@ -101,6 +102,7 @@ public class MageAnimationEvents : MonoBehaviour {
     public void HitActionEnd() {
         if (_playerInput != null)
             _playerInput.CanReceiveInput = true;
+        _playerMovement.SetIdleAnimation();
     }
 
 

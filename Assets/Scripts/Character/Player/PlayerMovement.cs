@@ -112,4 +112,8 @@ public class PlayerMovement {
         _rigidbody.velocity = Vector3.zero;
     }
 
+    public void SetIdleAnimation() {
+        _animator.SetBool("Idle", true);
+    }
+
 }

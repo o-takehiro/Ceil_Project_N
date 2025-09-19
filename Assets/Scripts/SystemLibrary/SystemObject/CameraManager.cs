@@ -236,7 +236,7 @@ public class CameraManager : SystemObject {
     /// <summary>
     /// 指定オブジェクトにカメラを寄せて注視する
     /// </summary>
-    public async UniTask FocusOnObject(Transform focusTarget, float focusDistance = 5f, float duration = 1.5f, float holdTime = 2f) {
+    public async UniTask FocusOnObject(Transform focusTarget, float focusDistance = 10f, float duration = 1.5f, float holdTime = 2f) {
         if (_isFocusing) return; // すでに演出中なら無視
 
         _isFocusing = true;

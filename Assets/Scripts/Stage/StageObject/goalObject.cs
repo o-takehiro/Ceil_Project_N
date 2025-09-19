@@ -26,7 +26,8 @@ public class goalObject : StageObjectBase {
         if (!_hasPlayedFocus && StageManager.Instance.GetCurrentStageClear()) {
             _goalObjectRoot.SetActive(true);
             GetComponent<Collider>().enabled = true;
-            _hasPlayedFocus = true; // 一度だけ実行されるようにする
+            _hasPlayedFocus = true;
+            // カメラモーション
             await CameraManager.Instance.FocusOnObject(_goalObjectRoot.transform);
         }
 
