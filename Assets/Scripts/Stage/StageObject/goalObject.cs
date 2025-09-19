@@ -44,7 +44,7 @@ public class goalObject : StageObjectBase {
                 // Stage3 Å® É^ÉCÉgÉã
                 await FadeManager.Instance.FadeOut();
                 CharacterUtility.UnusePlayer();
-                await PartManager.Instance.TransitionPart(eGamePart.Title);
+                await PartManager.Instance.TransitionPart(eGamePart.Ending);
                 break;
 
             case eStageState.Stage2:

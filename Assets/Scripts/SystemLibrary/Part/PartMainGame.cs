@@ -64,10 +64,11 @@ public class PartMainGame : PartBase {
 
         while (!MageAnimationEvents.isGameOver) {
             await UniTask.DelayFrame(1);
-            
         }
 
-        UniTask task = PartManager.Instance.TransitionPart(eGamePart.Title);
+        UniTask task = PartManager.Instance.TransitionPart(eGamePart.Ending);
+        await UniTask.DelayFrame(1);
+        UnuseEnemy();
 
 
         await UniTask.CompletedTask;
