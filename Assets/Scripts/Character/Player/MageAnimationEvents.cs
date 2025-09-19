@@ -83,8 +83,8 @@ public class MageAnimationEvents : MonoBehaviour {
     /// 死亡アニメーションを最後まで流す
     /// </summary>
     public void UnusePlayerFlag() {
-        UnusePlayer();
         UnuseEnemy();
+        UnusePlayer();
         isGameOver = true;
     }
 
