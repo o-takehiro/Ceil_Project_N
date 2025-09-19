@@ -46,7 +46,7 @@ MonoBehaviour:
     - ID: 4
       HP: 1500
       MP: -1
-      Attack: 50
+      Attack: 20
       Defense: 30
       MinActionTime: 1
       MaxActionTime: 2
