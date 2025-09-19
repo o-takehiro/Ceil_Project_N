@@ -9,7 +9,7 @@ using UnityEngine.InputSystem;
 /// </summary>
 public class CameraManager : SystemObject {
     public static CameraManager Instance { get; private set; } = null;
-
+    private PlayerMovement _movement;   // 移動制御クラス
     // 敵を記録してロックオン管理する仕組み
     private LockOnSystem _lockOnSystem = new LockOnSystem();
 
@@ -239,6 +239,13 @@ public class CameraManager : SystemObject {
     public async UniTask FocusOnObject(Transform focusTarget, float focusDistance = 10f, float duration = 1.5f, float holdTime = 2f) {
         if (_isFocusing) return; // すでに演出中なら無視
 
+        var player = CharacterUtility.GetPlayer();
+        if (player != null) {
+            _movement = player.GetPlayerMovement();
+
+        }
+        _movement.SetIsMoving(true);
+
         _isFocusing = true;
         _focusCts = new CancellationTokenSource();
 
@@ -279,6 +286,8 @@ public class CameraManager : SystemObject {
                 _camera.transform.position = Vector3.Lerp(endPos, _cachedCameraPosition, t);
                 _camera.transform.rotation = Quaternion.Slerp(endRot, _cachedCameraRotation, t);
 
+                _movement.SetIsMoving(false);
+
                 await UniTask.Yield(PlayerLoopTiming.Update, _focusCts.Token);
             }
         }
@@ -291,14 +300,6 @@ public class CameraManager : SystemObject {
             _focusCts = null;
         }
     }
-
-
-
-
-
-
-
-
 
 
 

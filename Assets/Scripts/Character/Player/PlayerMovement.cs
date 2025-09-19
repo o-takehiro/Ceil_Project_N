@@ -26,6 +26,7 @@ public class PlayerMovement {
     private float _turnVelocity;             // 回転補間用の速度
     public bool _isGrounded;                 // 現在の接地状態
     public bool _isDeath = false;            // 死亡判定
+    public bool _isMoving = false;           // 移動不可判定
 
     public PlayerMovement(Rigidbody rigidbody, Transform transform, Camera camera, Animator animator, GroundCheck groundCheck) {
         _rigidbody = rigidbody;
@@ -45,7 +46,7 @@ public class PlayerMovement {
     /// 1フレーム分の移動処理
     /// </summary>
     public void MoveUpdate(float deltaTime, bool isAttacking) {
-        if (isAttacking || _isDeath) return; // 攻撃中は移動不可
+        if (isAttacking || _isDeath || !_isMoving) return; // 攻撃中は移動不可
 
         // コライダーで地面接地判定
         _isGrounded = GroundCheck.IsGrounded;
@@ -114,6 +115,10 @@ public class PlayerMovement {
 
     public void SetIdleAnimation() {
         _animator.SetBool("Idle", true);
+    }
+
+    public void SetIsMoving(bool aa) {
+        _isMoving = aa;
     }
 
 }
