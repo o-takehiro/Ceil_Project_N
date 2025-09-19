@@ -6,12 +6,15 @@ using UnityEngine;
 public class goalObject : StageObjectBase {
     // 自身のCollider
     private Collider _collider;
+    // エフェクト再生用のポジション
+    [SerializeField] private GameObject _goalObjectRoot;
 
     public override void SetUp() {
         base.SetUp();
         if (_collider == null) {
             _collider = GetComponent<Collider>();
         }
+        _goalObjectRoot.SetActive(false);
         _collider.enabled = false;
     }
 
@@ -19,8 +22,8 @@ public class goalObject : StageObjectBase {
     /// 更新処理
     /// </summary>
     protected override void OnUpdate() {
-        var enemy = CharacterUtility.GetEnemy();
-        if (enemy != null && enemy.isDead) {
+        if (StageManager.Instance.GetCurrentStageClear()) {
+            _goalObjectRoot.SetActive(true);
             GetComponent<Collider>().enabled = true;
         }
 

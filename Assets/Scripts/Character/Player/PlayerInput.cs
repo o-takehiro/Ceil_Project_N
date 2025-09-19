@@ -22,7 +22,7 @@ public sealed class PlayerInput : MonoBehaviour {
     /// </summary>
     /// <param name="ctx"></param>
     public void OnMove(InputAction.CallbackContext ctx) {
-        if (_character == null || !CanReceiveInput) return;
+        if (_character == null) return;
         _character.SetMoveInput(ctx.ReadValue<Vector2>());
     }
 
@@ -31,7 +31,7 @@ public sealed class PlayerInput : MonoBehaviour {
     /// </summary>
     /// <param name="ctx"></param>
     public void OnJump(InputAction.CallbackContext ctx) {
-        if (_character == null || !CanReceiveInput) return;
+        if (_character == null) return;
         if (ctx.performed) _character.RequestJump();
     }
 
