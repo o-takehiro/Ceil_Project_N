@@ -37,6 +37,7 @@ public class EnemyMagic : MagicBase {
 	private float _bigBulletCoolTimeMax = 0.6f;
 
 	// 魔法の発動中フラグ
+	private bool _defenseOn = false;
 	private bool _satelliteOn = false;
 	private bool _laserBeamOn = false;
 	private bool _delayBulletOn = false;
@@ -91,8 +92,10 @@ public class EnemyMagic : MagicBase {
 		Transform defense = magicObject.GenerateDefense().transform;
 		defense.position = GetEnemyPosition();
 		defense.rotation = GetEnemyRotation();
-
-		//MagicManager.instance.activeEnemyMagicID = eMagicType.Defense;
+		if (_defenseOn) return;
+		_defenseOn = true;
+		// SE再生
+		SoundManager.Instance.PlaySE(12);
 	}
 	/// <summary>
 	/// 小型弾幕魔法
@@ -170,10 +173,10 @@ public class EnemyMagic : MagicBase {
 					bullet.eulerAngles = new Vector3(0, 90, 0);
 					break;
 			}
-			// SE再生
-			SoundManager.Instance.PlaySE(16);
 			UniTask task = SatelliteOrbitalMove(magicObject, bullet);
 		}
+		// SE再生
+		SoundManager.Instance.PlaySE(16);
 	}
 	/// <summary>
 	/// 衛星軌道魔法の移動
@@ -225,6 +228,8 @@ public class EnemyMagic : MagicBase {
 		// ビームが相手の防御魔法内で生成されるならその前に終了
 		if (GetLaserBeamInDefense()) {
 			task = EffectManager.Instance.PlayEffect(eEffectType.BeamDefense, GetEnemyCenterPosition());
+			// SE再生
+			SoundManager.Instance.PlaySE(7);
 			_laserBeamOn = false;
 			// 未使用化可能
 			magicObject.canUnuse = true;

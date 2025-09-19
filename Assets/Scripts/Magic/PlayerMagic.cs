@@ -41,8 +41,9 @@ public class PlayerMagic : MagicBase {
     // 大型弾のクールタイムの最大
     private float _bigBulletCoolTimeMax = 0.6f;
 
-    // 魔法の発動中フラグ
-    private bool _satelliteOn = false;
+	// 魔法の発動中フラグ
+	private bool _defenseOn = false;
+	private bool _satelliteOn = false;
 	private bool _laserBeamOn = false;
 	private bool _delayBulletOn = false;
 	private bool _healingOn = false;
@@ -98,6 +99,10 @@ public class PlayerMagic : MagicBase {
 		defense.rotation = GetPlayerRotation();
 		// MP消費
 		ToPlayerMPDamage(0.3f);
+		if (_defenseOn) return;
+		_defenseOn = true;
+		// SE再生
+		SoundManager.Instance.PlaySE(12);
 	}
 	/// <summary>
 	/// 小型弾幕魔法
@@ -250,6 +255,8 @@ public class PlayerMagic : MagicBase {
 		// ビームが相手の防御魔法内で生成されるならその前に終了
 		if (GetLaserBeamInDefense()) {
 			task = EffectManager.Instance.PlayEffect(eEffectType.BeamDefense, activePos);
+			// SE再生
+			SoundManager.Instance.PlaySE(7);
 			_laserBeamOn = false;
 			// 未使用化可能
 			magicObject.canUnuse = true;

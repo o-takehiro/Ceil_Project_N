@@ -382,6 +382,8 @@ public class MagicManager : MonoBehaviour {
 			// 魔法発動中かつ、コピー済みでなければセット
 			if (!GetMagicActive(enemy, magic) || GetMagicCopied(magic)) continue;
 			SetMagicStorageSlot((eMagicType)magic);
+			// SE再生
+			SoundManager.Instance.PlaySE(17);
 			return;
 		}
 	}
