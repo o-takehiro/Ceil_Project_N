@@ -81,6 +81,7 @@ public class EnemyCharacter : CharacterBase {
         enemyHPGauge.transform.SetParent(enemyCanvas.transform, false);
         enemyHPGauge.transform.localPosition = Vector3.zero;
         enemyHPGauge.transform.localRotation = Quaternion.Euler(0, 180f, 0); // –ˆ‰ñ180“x‚ÉŠm’è
+        enemyHPGauge.GetComponent<RectTransform>().sizeDelta = new Vector2(2, 0.5f);
         enemyCanvas.transform.localScale = setSize;
         enemyCanvas.gameObject.SetActive(true);
         enemyHPGauge.gameObject.SetActive(true);
