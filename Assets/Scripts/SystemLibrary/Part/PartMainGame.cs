@@ -55,7 +55,7 @@ public class PartMainGame : PartBase {
     public override async UniTask Execute() {
         await FadeManager.Instance.FadeIn();
 
-        //SoundManager.Instance.PlayBGM(1);
+        SoundManager.Instance.PlayBGM(1);
 
         await UniTask.WhenAll(
               MenuManager.Instance.Get<PlayerHPGauge>().Open(),

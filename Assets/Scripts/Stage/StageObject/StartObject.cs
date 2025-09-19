@@ -25,7 +25,7 @@ public class StartObject : StageObjectBase {
     /// プレイヤーを自身の位置に移動
     /// </summary>
     private void CreatePlayer() {
-        CharacterUtility.UsePlayer(0);
+        UsePlayer(0);
         CharacterManager.instance.SetUsePlayerPosition(PlayerStartPos.transform.position);
     }
 
@@ -33,6 +33,7 @@ public class StartObject : StageObjectBase {
     /// 敵を自身の位置に移動
     /// </summary>
     private void CreateEnemy() {
+        if (GetEnemy() != null) return;
         // 現在のステージを取得
         eStageState stage = StageManager.Instance.GetCurrentStageState();
 
