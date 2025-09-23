@@ -374,12 +374,16 @@ public class MagicManager : MonoBehaviour {
 		if (GetEnemy() == null) return;
 		UniTask task = EffectManager.Instance.PlayEffect(eEffectType.Analysis, GetEnemyCenterPosition());
 	 	_copyMagicList = GetMagicStorageSlot();
+		// SE再生
+		SoundManager.Instance.PlaySE(5);
 		int enemy = (int)eSideType.EnemySide;
 		// 発動中の魔法を探す
 		for (int magic = 0, magicMax = _activeMagicIDList[enemy].Count; magic < magicMax; magic++) {
 			// 魔法発動中かつ、コピー済みでなければセット
 			if (!GetMagicActive(enemy, magic) || GetMagicCopied(magic)) continue;
 			SetMagicStorageSlot((eMagicType)magic);
+			// SE再生
+			SoundManager.Instance.PlaySE(17);
 			return;
 		}
 	}

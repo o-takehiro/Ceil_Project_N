@@ -39,9 +39,11 @@ public class MagicHit : MagicObject {
 				GiveDamage(otherSide, 10);
 				if (otherSide == eSideType.MagicSide) {
 					task = EffectManager.Instance.PlayEffect(eEffectType.Elimination, thisPosition);
+					SoundManager.Instance.PlaySE(9);
 				}
 				else {
 					task = EffectManager.Instance.PlayEffect(eEffectType.Hit, thisPosition);
+					SoundManager.Instance.PlaySE(10);
 				}
 				parentObject.RemoveMiniBullet(gameObject);
 				break;
@@ -50,10 +52,12 @@ public class MagicHit : MagicObject {
 				if (otherSide == eSideType.MagicSide) {
 					// 消滅エフェクト
 					task = EffectManager.Instance.PlayEffect(eEffectType.Elimination, thisPosition);
+					SoundManager.Instance.PlaySE(9);
 				}
 				else {
 					// ヒットエフェクト
 					task = EffectManager.Instance.PlayEffect(eEffectType.Hit, thisPosition);
+					SoundManager.Instance.PlaySE(10);
 				}
 				parentObject.RemoveMiniBullet(gameObject);
 				break;
@@ -64,11 +68,17 @@ public class MagicHit : MagicObject {
             case eMagicType.DelayBullet:
                 GiveDamage(otherSide, 10);
                 if (otherSide == eSideType.MagicSide) {
-                    task = EffectManager.Instance.PlayEffect(eEffectType.Elimination, thisPosition);
-                }
+					if (otherSide == eSideType.PlayerSide)
+						task = EffectManager.Instance.PlayEffect(eEffectType.BigElimination, thisPosition);
+					task = EffectManager.Instance.PlayEffect(eEffectType.Elimination, thisPosition);
+					SoundManager.Instance.PlaySE(9);
+				}
                 else {
-                    task = EffectManager.Instance.PlayEffect(eEffectType.Hit, thisPosition);
-                }
+					if (otherSide == eSideType.PlayerSide)
+						task = EffectManager.Instance.PlayEffect(eEffectType.BigHit, thisPosition);
+					task = EffectManager.Instance.PlayEffect(eEffectType.Hit, thisPosition);
+					SoundManager.Instance.PlaySE(10);
+				}
                 parentObject.RemoveMiniBullet(gameObject);
                 break;
 			case eMagicType.GroundShock:
@@ -78,11 +88,13 @@ public class MagicHit : MagicObject {
 			case eMagicType.BigBullet:
                 GiveDamage(otherSide, 20);
                 if (otherSide == eSideType.MagicSide) {
-                    task = EffectManager.Instance.PlayEffect(eEffectType.BigElimination, thisPosition);
-                }
+					task = EffectManager.Instance.PlayEffect(eEffectType.BigElimination, thisPosition);
+					SoundManager.Instance.PlaySE(9);
+				}
                 else {
-                    task = EffectManager.Instance.PlayEffect(eEffectType.BigHit, thisPosition);
-                }
+					task = EffectManager.Instance.PlayEffect(eEffectType.BigHit, thisPosition);
+					SoundManager.Instance.PlaySE(10);
+				}
                 parentObject.RemoveMiniBullet(gameObject);
                 break;
 		}

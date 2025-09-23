@@ -12,7 +12,7 @@ public class EnemyAI009_Boss2Action : CharacterAIBase<EnemyCharacter> {
 
     public override void Setup() {
         base.Setup();
-        GetEnemy().CancelEnemyMagic(GetEnemy().GetEnemyMagicType(eMagicType.LaserBeam));
+        GetEnemy().CancelAllEnemyMagic();
     }
 
     public override void Execute() {
@@ -24,6 +24,8 @@ public class EnemyAI009_Boss2Action : CharacterAIBase<EnemyCharacter> {
             GetEnemy().myAI.ChangeState(new EnemyAI010_LookAtPlayer());
             
         } else {
+            AddEnemyMagicType(eMagicType.Defense);
+            CreateMagic(eSideType.EnemySide, GetEnemyMagicType(eMagicType.Defense));
             GetEnemy().myAI.ChangeState(new EnemyAI002_CloseMove());
         }
         

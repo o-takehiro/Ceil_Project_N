@@ -86,6 +86,8 @@ public class PlayerCharacter : CharacterBase {
             _attack.SetupAttackData();
         }
 
+        _movement.moveSetUp();
+
         // メインループを開始する
         StartPlayerLoop().Forget();
     }
@@ -149,7 +151,7 @@ public class PlayerCharacter : CharacterBase {
             _movement?.MoveUpdate(fd, _attack?.IsAttacking ?? false);
             // 攻撃の更新処理
             _attack?.AttackUpdate(fd);
-
+            _magic?.MagicUpdate();
             // 自身のtransform.positoinをキャッシュ
             var pPos = transform.position;
             // 座標の更新
@@ -173,6 +175,7 @@ public class PlayerCharacter : CharacterBase {
     }
 
     public float GetPlayerSliderValue() {
+        _animator.SetTrigger("hit");
         return HP / maxHP;
     }
 

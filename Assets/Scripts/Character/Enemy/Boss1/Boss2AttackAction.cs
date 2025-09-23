@@ -15,11 +15,11 @@ public class Boss2AttackAction : MonoBehaviour {
         GetEnemy().myAI.ChangeState(new EnemyAI001_Wait());
     }
 
-    public void EnableCharge() {
-
+    public void EnableDefense() {
+        CreateMagic(eSideType.EnemySide, GetEnemyMagicType(eMagicType.Defense));
     }
 
-    public void DisableCharge() {
-
+    public void DisableDefense() {
+        CancelEnemyMagic(GetEnemyMagicType(eMagicType.Defense));
     }
 }

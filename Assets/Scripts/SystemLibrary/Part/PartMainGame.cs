@@ -55,7 +55,7 @@ public class PartMainGame : PartBase {
     public override async UniTask Execute() {
         await FadeManager.Instance.FadeIn();
 
-        //SoundManager.Instance.PlayBGM(1);
+        SoundManager.Instance.PlayBGM(1);
 
         await UniTask.WhenAll(
               MenuManager.Instance.Get<PlayerHPGauge>().Open(),
@@ -66,9 +66,9 @@ public class PartMainGame : PartBase {
             await UniTask.DelayFrame(1);
         }
 
-        UniTask task = PartManager.Instance.TransitionPart(eGamePart.Title);
+        UniTask task = PartManager.Instance.TransitionPart(eGamePart.Ending);
         await UniTask.DelayFrame(1);
-        UnuseEnemy();
+        
 
 
         await UniTask.CompletedTask;

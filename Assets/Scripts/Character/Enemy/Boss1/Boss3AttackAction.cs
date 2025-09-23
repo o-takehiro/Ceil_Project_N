@@ -27,6 +27,7 @@ public class Boss3AttackAction : MonoBehaviour {
         if (_armDownAttackCollider == null) return;
 
         _armDownAttackCollider.SetActive(true);
+
     }
 
     public void DisableArmDownAttack() {

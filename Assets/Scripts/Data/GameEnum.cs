@@ -90,6 +90,7 @@ public enum eEffectType {
     PunchHit,           // 近接攻撃エフェクト
     BigElimination,     // 削除エフェクト
     BigHit,             // ヒットエフェクト
+    Potal,              // ポータルエフェクト
 
     max,
 }

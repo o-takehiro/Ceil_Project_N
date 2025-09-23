@@ -16,7 +16,8 @@ public class Boss3 : EnemyCharacter {
 
     public override void Setup(int masterID) {
         base.Setup(masterID);
-
+        //中心座標更新
+        SetEnemyCenterPosition(new Vector3(transform.position.x, transform.position.y + 20, transform.position.z));
         myAI.Setup(this);
         myAI.ChangeState(new EnemyAI001_Wait());
         SetupCanvasPosition(new Vector3(0, -250, 0), new Vector2(400, 40));

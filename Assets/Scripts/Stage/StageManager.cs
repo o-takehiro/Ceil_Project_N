@@ -59,4 +59,18 @@ public class StageManager : MonoBehaviour {
         if (_currentStage == null) return eStageState.Invalid;
         return _currentStage.StageState;
     }
+    /// <summary>
+    /// 現在のステージクリアフラグの取得
+    /// </summary>
+    /// <returns></returns>
+    public bool GetCurrentStageClear() {
+        return _currentStage.isStageClear;
+    }
+    /// <summary>
+    /// 現在のステージクリアフラグの変更
+    /// </summary>
+    /// <param name="setFlag"></param>
+    public void SetCurrentStageClear(bool setFlag) {
+        _currentStage.SetIsStageClear(setFlag);
+    }
 }

@@ -6,22 +6,29 @@ using UnityEngine;
 public class goalObject : StageObjectBase {
     // 自身のCollider
     private Collider _collider;
-
+    // エフェクト再生用のポジション
+    [SerializeField] private GameObject _goalObjectRoot;
+    private bool _hasPlayedFocus = false;
     public override void SetUp() {
         base.SetUp();
         if (_collider == null) {
             _collider = GetComponent<Collider>();
         }
+        _goalObjectRoot.SetActive(false);
         _collider.enabled = false;
     }
 
     /// <summary>
     /// 更新処理
     /// </summary>
-    protected override void OnUpdate() {
-        var enemy = CharacterUtility.GetEnemy();
-        if (enemy != null && enemy.isDead) {
+    protected override async void OnUpdate() {
+
+        if (!_hasPlayedFocus && StageManager.Instance.GetCurrentStageClear()) {
+            _goalObjectRoot.SetActive(true);
             GetComponent<Collider>().enabled = true;
+            _hasPlayedFocus = true;
+            // カメラモーション
+            await CameraManager.Instance.FocusOnObject(_goalObjectRoot.transform);
         }
 
     }
@@ -36,7 +43,8 @@ public class goalObject : StageObjectBase {
             case eStageState.Stage3:
                 // Stage3 → タイトル
                 await FadeManager.Instance.FadeOut();
-                await PartManager.Instance.TransitionPart(eGamePart.Title);
+                CharacterUtility.UnusePlayer();
+                await PartManager.Instance.TransitionPart(eGamePart.Ending);
                 break;
 
             case eStageState.Stage2:

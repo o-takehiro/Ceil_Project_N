@@ -18,13 +18,16 @@ public class PlayerMagicAttack {
     /// </summary>
     /// <param name="animator"></param>
     public PlayerMagicAttack() {
-        _eMagicList = new List<eMagicType>(4);  // 保存数4
-        _eMagicStorageList = new List<eMagicType>((int)eMagicType.Max); // 最大保存
+        InitializeLists();
         _isDeath = false;
-        // 初期は使用不可
+    }
+
+    private void InitializeLists() {
+        _eMagicList = new List<eMagicType>(4);
         for (int i = 0; i < 4; i++) {
             _eMagicList.Add(eMagicType.Invalid);
         }
+        _eMagicStorageList = new List<eMagicType>();
     }
 
     /// <summary>
@@ -48,12 +51,18 @@ public class PlayerMagicAttack {
         if (magicType == eMagicType.Invalid) {
             return;
         }
-        if (!_isDeath && currentMP > 0.0f) {
+        if (currentMP <= 0.0f) {
+            RequestCancelMagic(slotIndex);
+            return;
+        }
+
+        if (!_isDeath) {
             GameObject spawnPoint = _magicSpawnPos[slotIndex];
             if (spawnPoint == null) return;
             // 魔法発射
             CreateMagic(eSideType.PlayerSide, magicType, spawnPoint);
             spawnPoint.SetActive(true);
+
         }
     }
 
@@ -93,8 +102,17 @@ public class PlayerMagicAttack {
     /// </summary>
     /// <returns></returns>
     public async UniTask MagicUpdate() {
-
-
+        var player = CharacterUtility.GetPlayer();
+        if (player == null) return;
+        if (_isDeath) {
+            return; // 死んでいたら何も処理しない
+        }
+        for (int i = 0; i < _eMagicList.Count; i++) {
+            float currentMP = CharacterUtility.GetPlayerCurrentMP();
+            if (currentMP <= 0.0f) {
+                RequestCancelMagic(i);
+            }
+        }
 
         await UniTask.CompletedTask;
     }
@@ -157,8 +175,7 @@ public class PlayerMagicAttack {
     /// 魔法の片付け
     /// </summary>
     public void ResetMagic() {
-        _eMagicList.Clear();
-        _eMagicStorageList.Clear();
+        InitializeLists();
     }
 
 }

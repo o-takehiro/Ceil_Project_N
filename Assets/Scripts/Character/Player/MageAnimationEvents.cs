@@ -8,6 +8,7 @@ public class MageAnimationEvents : MonoBehaviour {
     private PlayerAttack _playerAttack;                 // PlayerAttackクラス
     private PlayerMovement _playerMovement;             // PlayerMovementクラス
     public static bool isGameOver = false;
+    private PlayerInput _playerInput;
     /// <summary>
     /// 初期化処理
     /// </summary>
@@ -15,10 +16,11 @@ public class MageAnimationEvents : MonoBehaviour {
         if (attackCollider != null) attackCollider.enabled = false;
         // プレイヤーを取得
         var player = CharacterUtility.GetPlayer();
-        // PlayerAttackクラスを取得
-        if (player != null) _playerAttack = player.GetAttackController();
-        // PlayerMovementクラスを取得
-        if (player != null) _playerMovement = player.GetPlayerMovement();
+        if (player != null) {
+            _playerAttack = player.GetAttackController();
+            _playerMovement = player.GetPlayerMovement();
+            _playerInput = player.GetComponent<PlayerInput>(); // ← 追加
+        }
         isGameOver = false;
     }
 
@@ -77,8 +79,31 @@ public class MageAnimationEvents : MonoBehaviour {
         _playerMovement._canJump = true;
     }
 
+    /// <summary>
+    /// 死亡アニメーションを最後まで流す
+    /// </summary>
     public void UnusePlayerFlag() {
         UnusePlayer();
+        UnuseEnemy();
         isGameOver = true;
     }
+
+    /// <summary>
+    /// ヒットアニメーション再生中は何の入力も受け付けない
+    /// </summary>
+    public void HitActionStart() {
+        if (_playerInput != null)
+            _playerInput.CanReceiveInput = false;
+    }
+
+    /// <summary>
+    /// ヒットアニメーション終了時に入力を戻す
+    /// </summary>
+    public void HitActionEnd() {
+        if (_playerInput != null)
+            _playerInput.CanReceiveInput = true;
+        _playerMovement.SetIdleAnimation();
+    }
+
+
 }
