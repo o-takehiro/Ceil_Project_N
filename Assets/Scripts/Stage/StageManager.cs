@@ -12,7 +12,8 @@ public class StageManager : MonoBehaviour {
     private StageBase[] _stageList = null;
     // 現在のステージ
     private StageBase _currentStage = null;
-
+    // ステージクリア通知イベント
+    public event System.Action OnStageClear;
     public async UniTask Initialize() {
         Instance = this;
         int stageMax = (int)eStageState.Max;
@@ -72,5 +73,10 @@ public class StageManager : MonoBehaviour {
     /// <param name="setFlag"></param>
     public void SetCurrentStageClear(bool setFlag) {
         _currentStage.SetIsStageClear(setFlag);
+
+
+        if (setFlag) {
+            OnStageClear?.Invoke(); // ここでイベント発火
+        }
     }
 }

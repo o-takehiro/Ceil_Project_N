@@ -21,15 +21,25 @@ public class PlayerHPGauge : MenuBase {
         _token = this.GetCancellationTokenOnDestroy();
 
         await base.Open();
+
         _hpSlider.value = 1.0f;
 
-        var player = CharacterUtility.GetPlayer();
-        if (player == null) return;
+        var tcs = new UniTaskCompletionSource();
 
-        while (!player.isDead) {
-            await UniTask.DelayFrame(1, 0, _token);
+        // ステージクリア監視
+        StageManager.Instance.OnStageClear += () => tcs.TrySetResult();
 
+        // ゲームオーバー監視（isGameOverがtrueになるのを待つ）
+        async UniTaskVoid WatchGameOver(CancellationToken token) {
+            while (!MageAnimationEvents.isGameOver) {
+                await UniTask.Yield(PlayerLoopTiming.Update, token);
+            }
+            tcs.TrySetResult();
         }
+        WatchGameOver(_token).Forget();
+
+        // どちらかで完了
+        await tcs.Task.AttachExternalCancellation(_token);
 
         await Close();
     }

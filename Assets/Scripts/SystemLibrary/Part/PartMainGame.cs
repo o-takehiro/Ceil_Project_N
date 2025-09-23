@@ -16,7 +16,7 @@ public class PartMainGame : PartBase {
     private MagicManager _magicManager = null;
     [SerializeField]
     private StageManager _stageManager = null;
-
+    [SerializeField] private goalObject _goalObject;
     /// <summary>
     /// 初期化処理
     /// </summary>
@@ -44,6 +44,8 @@ public class PartMainGame : PartBase {
     public override async UniTask SetUp() {
         await base.SetUp();
         MageAnimationEvents.isGameOver = false;
+        _goalObject = GameObject.FindObjectOfType<goalObject>();
+
         await UniTask.CompletedTask;
     }
 
@@ -53,25 +55,17 @@ public class PartMainGame : PartBase {
     /// <returns></returns>
     /// <exception cref="System.NotImplementedException"></exception>
     public override async UniTask Execute() {
-        await FadeManager.Instance.FadeIn();
 
+        await FadeManager.Instance.FadeIn();
         SoundManager.Instance.PlayBGM(1);
 
         await UniTask.WhenAll(
-              MenuManager.Instance.Get<PlayerHPGauge>().Open(),
-              MenuManager.Instance.Get<PlayerMPGauge>().Open()
+            MenuManager.Instance.Get<PlayerHPGauge>().Open(),
+            MenuManager.Instance.Get<PlayerMPGauge>().Open()
         );
 
-        while (!MageAnimationEvents.isGameOver) {
-            await UniTask.DelayFrame(1);
-        }
-
-        UniTask task = PartManager.Instance.TransitionPart(eGamePart.Ending);
-        await UniTask.DelayFrame(1);
-        
-
-
-        await UniTask.CompletedTask;
+        await WaitForGameEnd();              // フラグ監視ループ
+        await HandleGameEndOrTransition();   // 遷移処理
 
     }
 
@@ -89,6 +83,60 @@ public class PartMainGame : PartBase {
 
         await UniTask.CompletedTask;
 
+    }
+
+
+
+    /// <summary>
+    /// ゴール到達or死亡を見る
+    /// </summary>
+    private async UniTask WaitForGameEnd() {
+        while (!_goalObject.IsPlayerReachedGoal && !MageAnimationEvents.isGameOver) {
+            await UniTask.DelayFrame(30);
+        }
+    }
+
+    /// <summary>
+    /// 遷移処理
+    /// </summary>
+    private async UniTask HandleGameEndOrTransition() {
+        if (MageAnimationEvents.isGameOver) {
+            await PartManager.Instance.TransitionPart(eGamePart.Ending);
+            return;
+        }
+
+        // ゴールした場合
+        eStageState stage = StageManager.Instance.GetCurrentStageState();
+        Debug.Log($"[PartMainGame] 現在のステージ: {stage}");
+        await HandleStageTransition(stage);
+    }
+
+    /// <summary>
+    /// ステージごとの遷移処理
+    /// </summary>
+    private async UniTask HandleStageTransition(eStageState stage) {
+        switch (stage) {
+            case eStageState.Tutorial:
+                await FadeManager.Instance.FadeOut();
+                await StageManager.Instance.TransitionStage(eStageState.Stage1);
+                await PartManager.Instance.TransitionPart(eGamePart.MainGame);
+                break;
+            case eStageState.Stage1:
+                await FadeManager.Instance.FadeOut();
+                await StageManager.Instance.TransitionStage(eStageState.Stage2);
+                await PartManager.Instance.TransitionPart(eGamePart.MainGame);
+                break;
+            case eStageState.Stage2:
+                await FadeManager.Instance.FadeOut();
+                await StageManager.Instance.TransitionStage(eStageState.Stage3);
+                await PartManager.Instance.TransitionPart(eGamePart.MainGame);
+                break;
+            case eStageState.Stage3:
+                await FadeManager.Instance.FadeOut();
+                CharacterUtility.UnusePlayer();
+                await PartManager.Instance.TransitionPart(eGamePart.Ending);
+                break;
+        }
     }
 
 }
