@@ -100,6 +100,7 @@ public class PartMainGame : PartBase {
     /// 遷移処理
     /// </summary>
     private async UniTask HandleGameEndOrTransition() {
+        // 死んだ場合
         if (MageAnimationEvents.isGameOver) {
             await PartManager.Instance.TransitionPart(eGamePart.Ending);
             return;
@@ -107,7 +108,6 @@ public class PartMainGame : PartBase {
 
         // ゴールした場合
         eStageState stage = StageManager.Instance.GetCurrentStageState();
-        Debug.Log($"[PartMainGame] 現在のステージ: {stage}");
         await HandleStageTransition(stage);
     }
 
