@@ -8,4 +8,5 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/TeamProject_N.unity
     guid: e899a6a719c4d0140b299e80928e4bff
-  m_configObjects: {}
+  m_configObjects:
+    com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 1a063ba9970743947b5304deac703e90, type: 3}
