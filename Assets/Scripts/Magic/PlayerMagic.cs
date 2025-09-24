@@ -94,6 +94,7 @@ public class PlayerMagic : MagicBase {
 	/// </summary>
 	public override void DefenseMagic(MagicObject magicObject) {
 		if (magicObject == null) return;
+		magicObject.canUnuse = true;
 		Transform defense = magicObject.GenerateDefense().transform;
 		defense.position = GetPlayerPosition();
 		defense.rotation = GetPlayerRotation();
@@ -163,7 +164,8 @@ public class PlayerMagic : MagicBase {
 			if (bulletList[i].activeInHierarchy) return;
 		}
 		magicObject.canUnuse = true;
-	}
+        Debug.Log("PlayerMagic canUnuse" + magicObject.canUnuse);
+    }
 	/// <summary>
 	/// âqêØãOìπñÇñ@
 	/// </summary>
