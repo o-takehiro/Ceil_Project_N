@@ -95,7 +95,7 @@ public class MagicObject : MonoBehaviour {
 	/// <param name="side"></param>
 	/// <param name="magic"></param>
 	public void Setup(int setID, eSideType side, eMagicType magic) {
-		canUnuse = true;
+		canUnuse = false;
 		ID = setID;
 		activeSide = side;
 		activeMagic = magic;
