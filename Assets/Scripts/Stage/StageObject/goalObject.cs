@@ -1,6 +1,7 @@
 using Cysharp.Threading.Tasks;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Properties;
 using UnityEngine;
 
 public class goalObject : StageObjectBase {
@@ -9,6 +10,8 @@ public class goalObject : StageObjectBase {
     // エフェクト再生用のポジション
     [SerializeField] private GameObject _goalObjectRoot;
     private bool _hasPlayedFocus = false;
+    public bool IsPlayerReachedGoal { get; private set; }
+
     public override void SetUp() {
         base.SetUp();
         if (_collider == null) {
@@ -16,6 +19,7 @@ public class goalObject : StageObjectBase {
         }
         _goalObjectRoot.SetActive(false);
         _collider.enabled = false;
+        IsPlayerReachedGoal = false;
     }
 
     /// <summary>
@@ -33,45 +37,17 @@ public class goalObject : StageObjectBase {
 
     }
 
-    private async void OnTriggerEnter(Collider other) {
+    private void OnTriggerEnter(Collider other) {
         if (!other.CompareTag("Player")) return;
-
-        // 現在のステージを取得
-        eStageState stage = StageManager.Instance.GetCurrentStageState();
-        // ステージ遷移
-        switch (stage) {
-            case eStageState.Stage3:
-                // Stage3 → タイトル
-                await FadeManager.Instance.FadeOut();
-                CharacterUtility.UnusePlayer();
-                await PartManager.Instance.TransitionPart(eGamePart.Ending);
-                break;
-
-            case eStageState.Stage2:
-                // Stage2 → Stage3
-                await FadeManager.Instance.FadeOut();
-                await StageManager.Instance.TransitionStage(eStageState.Stage3);
-                await PartManager.Instance.TransitionPart(eGamePart.MainGame);
-                break;
-
-            case eStageState.Stage1:
-                // Stage1 → Stage2
-                await FadeManager.Instance.FadeOut();
-                await StageManager.Instance.TransitionStage(eStageState.Stage2);
-                await PartManager.Instance.TransitionPart(eGamePart.MainGame);
-                break;
-
-            case eStageState.Tutorial:
-                // Tutorial → Stage1
-                await FadeManager.Instance.FadeOut();
-                await StageManager.Instance.TransitionStage(eStageState.Stage1);
-                await PartManager.Instance.TransitionPart(eGamePart.MainGame);
-                break;
-        }
+        IsPlayerReachedGoal = true;
     }
 
     public override void Teardown() {
         base.Teardown();
         CharacterUtility.UnusePlayer();
+        _goalObjectRoot.SetActive(false);
+        GetComponent<Collider>().enabled = false;
+        _hasPlayedFocus = false;
+        IsPlayerReachedGoal = false; // リセット
     }
 }

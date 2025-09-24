@@ -16,6 +16,7 @@ public class PartEnding : PartBase {
     /// </summary>
     /// <returns></returns>
     public override async UniTask Execute() {
+        Debug.Log("エンディング");
         await MenuManager.Instance.Get<MenuEnding>().Open();
         UniTask task = PartManager.Instance.TransitionPart(eGamePart.Title);
 

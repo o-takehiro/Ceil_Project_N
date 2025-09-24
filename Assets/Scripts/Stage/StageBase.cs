@@ -41,6 +41,8 @@ public abstract class StageBase : MonoBehaviour {
     /// <returns></returns>
     public virtual async UniTask Teardown() {
         gameObject.SetActive(false);
+        SetIsStageClear(false);
+
         await UniTask.CompletedTask;
     }
 
