@@ -61,6 +61,9 @@ public class PlayerMagicAttack {
             if (spawnPoint == null) return;
             // 魔法発射
             CreateMagic(eSideType.PlayerSide, magicType, spawnPoint);
+            // エフェクト再生
+            UniTask task = EffectManager.Instance.PlayEffect(eEffectType.Book, spawnPoint.transform.position);
+            // 本出現
             spawnPoint.SetActive(true);
 
         }

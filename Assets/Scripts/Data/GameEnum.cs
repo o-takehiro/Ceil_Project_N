@@ -91,6 +91,7 @@ public enum eEffectType {
     BigElimination,     // 削除エフェクト
     BigHit,             // ヒットエフェクト
     Potal,              // ポータルエフェクト
+    Book,               // 本出現エフェクト
 
     max,
 }
