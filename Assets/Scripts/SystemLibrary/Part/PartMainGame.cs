@@ -33,6 +33,7 @@ public class PartMainGame : PartBase {
         await MenuManager.Instance.Get<EnemyHPGauge>("Prefabs/Menu/CanvasEnemyUI").Initialize();
         await MenuManager.Instance.Get<PlayerHPGauge>("Prefabs/Menu/CanvasPlayerUI").Initialize();
         await MenuManager.Instance.Get<PlayerMPGauge>("Prefabs/Menu/CanvasPlayerUI_MP").Initialize();
+        await MenuManager.Instance.Get<SetMagicUI>("Prefabs/Menu/CanvasMagicUI").Initialize();
         await UniTask.CompletedTask;
     }
 
@@ -61,7 +62,8 @@ public class PartMainGame : PartBase {
 
         await UniTask.WhenAll(
             MenuManager.Instance.Get<PlayerHPGauge>().Open(),
-            MenuManager.Instance.Get<PlayerMPGauge>().Open()
+            MenuManager.Instance.Get<PlayerMPGauge>().Open(),
+            MenuManager.Instance.Get<SetMagicUI>().Open()
         );
 
         await WaitForGameEnd();              // フラグ監視ループ
@@ -77,8 +79,7 @@ public class PartMainGame : PartBase {
         await base.Teardown();
         await MenuManager.Instance.Get<PlayerHPGauge>().Close();
         await MenuManager.Instance.Get<PlayerMPGauge>().Close();
-        //SoundManager.Instance.PlayBGM(0);
-        //UnusePlayer();
+        await MenuManager.Instance.Get<SetMagicUI>().Close();
         ExecuteAllMagic(magic => magic.UnuseSelf());
 
         await UniTask.CompletedTask;

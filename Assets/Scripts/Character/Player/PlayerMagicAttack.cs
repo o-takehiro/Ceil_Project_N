@@ -161,6 +161,8 @@ public class PlayerMagicAttack {
         for (int i = 0; i < _eMagicList.Count; i++) {
             if (_eMagicList[i] == eMagicType.Invalid) {
                 _eMagicList[i] = magicType;
+                // テキストに魔法の文字列をセット
+                SetMagicUI.Instance.UpdateMagicUI();
                 Debug.Log($"{magicType} をスロット {i} にセットした");
                 return;
             }
