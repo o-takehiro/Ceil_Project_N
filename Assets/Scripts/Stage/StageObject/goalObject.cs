@@ -31,8 +31,10 @@ public class goalObject : StageObjectBase {
             _goalObjectRoot.SetActive(true);
             GetComponent<Collider>().enabled = true;
             _hasPlayedFocus = true;
+            //CharacterUtility.PausePlayer();
             // ƒJƒƒ‰ƒ‚[ƒVƒ‡ƒ“
             await CameraManager.Instance.FocusOnObject(_goalObjectRoot.transform);
+            //CharacterUtility.ResumePlayer();
         }
 
     }
