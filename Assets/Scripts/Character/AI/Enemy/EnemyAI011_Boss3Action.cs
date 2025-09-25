@@ -11,7 +11,7 @@ public class EnemyAI011_Boss3Action : CharacterAIBase<EnemyCharacter> {
         base.Execute();
         float distance = GetPlayerToEnemyDistance();
 
-        if(distance > 50 || GetMagicActive((int)eSideType.PlayerSide, (int)eMagicType.MiniBullet)) {
+        if(distance > 40 || GetMagicActive((int)eSideType.PlayerSide, (int)eMagicType.MiniBullet)) {
             AddEnemyMagicType(eMagicType.DelayBullet);
             GetEnemy().GetEnemyAnimator().SetTrigger("isRoarAttack");
             GetEnemy().myAI.ChangeState(new EnemyAI010_LookAtPlayer());
