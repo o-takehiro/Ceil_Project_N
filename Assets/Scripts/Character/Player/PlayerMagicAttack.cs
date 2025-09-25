@@ -46,7 +46,7 @@ public class PlayerMagicAttack {
     /// –‚–@”­Ë
     /// </summary>
     public void RequestAttack(int slotIndex) {
-        // š “ü‚ê‘Ö‚¦‘Ò‚¿ó‘Ô‚È‚ç ¨ ’ÊíUŒ‚‚Å‚Í‚È‚­“ü‚ê‘Ö‚¦‚É‚·‚é
+        // “ü‚ê‘Ö‚¦
         if (_pendingMagic != eMagicType.Invalid) {
             ReplacePendingMagic(slotIndex);
             return;
