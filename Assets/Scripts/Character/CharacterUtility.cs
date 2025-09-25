@@ -280,4 +280,18 @@ public class CharacterUtility {
     public static float GetPlayerCurrentMP() {
         return GetPlayer().GetPlayerCurrentMP();
     }
+
+    /// <summary>
+    /// プレイヤーの行動停止
+    /// </summary>
+    public static void PausePlayer() {
+        GetPlayer().PausePlayer();
+    }
+
+    /// <summary>
+    /// プレイヤーの行動最高
+    /// </summary>
+    public static void ResumePlayer() {
+        GetPlayer().ResumePlayer();
+    }
 }
