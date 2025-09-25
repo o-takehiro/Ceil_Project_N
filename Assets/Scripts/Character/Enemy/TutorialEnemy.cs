@@ -32,7 +32,7 @@ public class TutorialEnemy : EnemyCharacter {
         SetupCanvasPosition(Vector3.one);
         //ステートマシーンの初期化
         myAI.Setup(this);
-        myAI.ChangeState(new EnemyAI001_Wait());
+        myAI.ChangeState(new EnemyAI010_LookAtPlayer());
     }
     private void Update() {
         //現在の位置更新
@@ -57,5 +57,9 @@ public class TutorialEnemy : EnemyCharacter {
             return;
 
         enemyAnimator.SetTrigger("isDamage");
+    }
+
+    public void StartEnemyState() {
+        myAI.ChangeState(new EnemyAI001_Wait());
     }
 }
