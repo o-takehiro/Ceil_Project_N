@@ -5,9 +5,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 /// <summary>
-/// プレイヤーの入力を受け取り、PlayerCharacter に伝えるクラス
-/// - 新InputSystem のコールバックに対応
-/// - 移動、ジャンプ、攻撃、ロックオンなどを仲介する
+/// 入力管理クラス
 /// </summary>
 public sealed class PlayerInput : MonoBehaviour {
     [SerializeField] private Camera _targetCamera;   // 入力に使うカメラ
