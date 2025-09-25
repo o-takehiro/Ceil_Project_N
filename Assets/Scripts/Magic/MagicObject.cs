@@ -12,6 +12,8 @@ using System.Threading;
 using UnityEditor;
 using UnityEngine;
 
+using static MagicUtility;
+
 public class MagicObject : MonoBehaviour {
 	// ƒ†ƒj[ƒN‚ÌID
 	public int ID { get; private set; } = -1;

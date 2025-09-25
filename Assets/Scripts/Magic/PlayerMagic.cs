@@ -50,6 +50,9 @@ public class PlayerMagic : MagicBase {
 	private bool _buffOn = false;
 	private bool _groundShockOn = false;
 
+	// 弾を一つは必ず生成指せるためのフラグ	
+	private bool _bulletGenerate = false;
+
 	// 衛星の半径
 	private const float _SATELLITE_RADIUS = 2;
 	// 衛星弾の最大数
@@ -110,31 +113,42 @@ public class PlayerMagic : MagicBase {
 	/// </summary>
 	public override void MiniBulletMagic(MagicObject magicObject) {
 		if (magicObject == null) return;
-		if (_bulletCoolTime < 0) {
-			// 未使用化不可能
-			magicObject.canUnuse = false;
-			Vector3 activePos;
-			if (magicActiveObject == null) {
-				activePos = GetPlayerCenterPosition();
+		// 未使用化不可能
+		magicObject.canUnuse = false;
+		UniTask task = MiniBulletExecute(magicObject);
+	}
+	/// <summary>
+	/// 待機用小型弾幕魔法実行処理
+	/// </summary>
+	/// <returns></returns>
+	private async UniTask MiniBulletExecute(MagicObject magicObject) {
+		do {
+			if (_bulletCoolTime < 0) {
+				_bulletGenerate = true;
+				Vector3 activePos;
+				if (magicActiveObject == null) {
+					activePos = GetPlayerCenterPosition();
+				}
+				else {
+					activePos = magicActiveObject.transform.position;
+				}
+				Transform bullet = magicObject.GenerateMiniBullet().transform;
+				bulletList.Add(bullet.gameObject);
+				bullet.transform.position = activePos;
+				bullet.transform.rotation = GetPlayerRotation();
+				// MP消費
+				ToPlayerMPDamage(1);
+				// SE再生
+				SoundManager.Instance.PlaySE(11);
+				// 移動
+				UniTask task = MiniBulletMove(magicObject, bullet);
+				_bulletCoolTime = _bulletCoolTimeMax;
 			}
 			else {
-				activePos = magicActiveObject.transform.position;
+				_bulletCoolTime -= Time.deltaTime;
 			}
-			Transform bullet = magicObject.GenerateMiniBullet().transform;
-			bulletList.Add(bullet.gameObject);
-			bullet.transform.position = activePos;
-			bullet.transform.rotation = GetPlayerRotation();
-			// MP消費
-			ToPlayerMPDamage(1);
-			// SE再生
-			SoundManager.Instance.PlaySE(11);
-			// 移動
-			UniTask task = MiniBulletMove(magicObject, bullet);
-			_bulletCoolTime = _bulletCoolTimeMax;
-		}
-		else {
-			_bulletCoolTime -= Time.deltaTime;
-		}
+			await UniTask.Yield(PlayerLoopTiming.Update, useMagicObject.token);
+		} while (!_bulletGenerate);
 	}
 	/// <summary>
 	/// 小型弾幕の移動
@@ -164,8 +178,9 @@ public class PlayerMagic : MagicBase {
 			if (bulletList[i].activeInHierarchy) return;
 		}
 		magicObject.canUnuse = true;
-        Debug.Log("PlayerMagic canUnuse" + magicObject.canUnuse);
-    }
+		_bulletGenerate = false;
+		//Debug.Log("PlayerMagic canUnuse" + magicObject.canUnuse);
+	}
 	/// <summary>
 	/// 衛星軌道魔法
 	/// </summary>

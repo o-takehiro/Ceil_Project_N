@@ -344,13 +344,13 @@ public class MagicManager : MonoBehaviour {
 		//Debug.Log("0");
         // –¢Žg—p‰»‰Â”\‚Ü‚Å‘Ò‚Â
         MagicObject magicObject = GetMagicObject(removeMagic.ID);
-		while (!magicObject.canUnuse || magicGenerate) {
-            //Debug.Log("MagicManager canUnuse" + magicObject.canUnuse);
-            await UniTask.Yield();
-        }
+		while (!magicObject.canUnuse) {
+			Debug.Log(activeMagic + "canUnuse" + magicObject.canUnuse);
+			await UniTask.Yield();
+		}
 		//Debug.Log("1");
 		await UnuseMagicData(removeMagic);
-        _activeMagicIDList[side][magicID] = -1;
+		_activeMagicIDList[side][magicID] = -1;
 		//Debug.Log("_activeMagicIDList[side][magicID] = activeMagic;");
 		_isResetMagic[side][magicID] = false;
     }
