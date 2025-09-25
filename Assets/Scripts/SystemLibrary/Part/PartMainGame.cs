@@ -65,16 +65,15 @@ public class PartMainGame : PartBase {
         SoundManager.Instance.PlayBGM(1);
         if (_isTutorial) {
             _isTutorial = false;
-            PausePlayer();
             await MenuManager.Instance.Get<MenuTutorialGuide>().Open();
-            GetEnemy().StartEnemyState();
-            ResumePlayer();
         }
+        GetEnemy().StartEnemyState();
+        ResumePlayer();
         await UniTask.WhenAll(
-            MenuManager.Instance.Get<PlayerHPGauge>().Open(),
-            MenuManager.Instance.Get<PlayerMPGauge>().Open(),
-            MenuManager.Instance.Get<SetMagicUI>().Open()
-        );
+                MenuManager.Instance.Get<PlayerHPGauge>().Open(),
+                MenuManager.Instance.Get<PlayerMPGauge>().Open(),
+                MenuManager.Instance.Get<SetMagicUI>().Open()
+            );
 
         await WaitForGameEnd();              // フラグ監視ループ
         await HandleGameEndOrTransition();   // 遷移処理

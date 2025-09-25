@@ -89,6 +89,7 @@ public class PlayerCharacter : CharacterBase {
         }
 
         _movement.moveSetUp();
+        PausePlayer();
         // メインループを開始する
         StartPlayerLoop().Forget();
     }
