@@ -215,6 +215,13 @@ public class PlayerCharacter : CharacterBase {
 
     }
 
+    /// <summary>
+    /// クリアしたときに呼ぶ魔法リセット関数
+    /// </summary>
+    public void ClearMagicReset() {
+        _magic.ResetMagic();
+    }
+
 
     /// <summary>
     /// プレイヤーの片付け
@@ -240,6 +247,40 @@ public class PlayerCharacter : CharacterBase {
     }
 
 
+    public void PausePlayer() {
+        // 入力を止める
+        if (_playerInput != null) {
+            _playerInput.CanReceiveInput = false;
+        }
 
+        // Rigidbody の動きを止める
+        if (_rigidbody != null) {
+            _rigidbody.velocity = Vector3.zero;
+            _rigidbody.angularVelocity = Vector3.zero;
+            _rigidbody.isKinematic = true; // 物理シミュレーションも止める
+        }
+
+        // アニメーションを止める（必要なら）
+        if (_animator != null) {
+            _animator.speed = 0f;
+        }
+    }
+
+    public void ResumePlayer() {
+        // 入力を再開
+        if (_playerInput != null) {
+            _playerInput.CanReceiveInput = true;
+        }
+
+        // Rigidbody を再び有効化
+        if (_rigidbody != null) {
+            _rigidbody.isKinematic = false;
+        }
+
+        // アニメーションを再開
+        if (_animator != null) {
+            _animator.speed = 1f;
+        }
+    }
 
 }
