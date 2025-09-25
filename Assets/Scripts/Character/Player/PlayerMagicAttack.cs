@@ -61,6 +61,9 @@ public class PlayerMagicAttack {
             if (spawnPoint == null) return;
             // 魔法発射
             CreateMagic(eSideType.PlayerSide, magicType, spawnPoint);
+            // エフェクト再生
+            UniTask task = EffectManager.Instance.PlayEffect(eEffectType.Book, spawnPoint.transform.position);
+            // 本出現
             spawnPoint.SetActive(true);
 
         }
@@ -158,6 +161,8 @@ public class PlayerMagicAttack {
         for (int i = 0; i < _eMagicList.Count; i++) {
             if (_eMagicList[i] == eMagicType.Invalid) {
                 _eMagicList[i] = magicType;
+                // テキストに魔法の文字列をセット
+                SetMagicUI.Instance.UpdateMagicUI();
                 Debug.Log($"{magicType} をスロット {i} にセットした");
                 return;
             }
