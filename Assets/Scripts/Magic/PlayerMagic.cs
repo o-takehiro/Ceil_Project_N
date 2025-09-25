@@ -34,12 +34,12 @@ public class PlayerMagic : MagicBase {
 	private float _delayBulletCoolTimeMax = 10.0f;
 	// バフの継続時間(ミリ秒)
 	private int _buffTime = 10000;
-    // 大型弾のスピード
-    private float _bigBulletSpeed = 15;
-    // 大型弾のクールタイム
-    private float _bigBulletCoolTime = 0.0f;
-    // 大型弾のクールタイムの最大
-    private float _bigBulletCoolTimeMax = 0.6f;
+	// 大型弾のスピード
+	private float _bigBulletSpeed = 15;
+	// 大型弾のクールタイム
+	private float _bigBulletCoolTime = 0.0f;
+	// 大型弾のクールタイムの最大
+	private float _bigBulletCoolTimeMax = 0.6f;
 
 	// 魔法の発動中フラグ
 	private bool _defenseOn = false;
@@ -94,6 +94,7 @@ public class PlayerMagic : MagicBase {
 	/// </summary>
 	public override void DefenseMagic(MagicObject magicObject) {
 		if (magicObject == null) return;
+		magicObject.canUnuse = true;
 		Transform defense = magicObject.GenerateDefense().transform;
 		defense.position = GetPlayerPosition();
 		defense.rotation = GetPlayerRotation();
@@ -143,10 +144,12 @@ public class PlayerMagic : MagicBase {
 	/// <returns></returns>
 	private async UniTask MiniBulletMove(MagicObject magicObject, Transform miniBullet) {
 		float distance = 0;
+		Vector3 cameraRotation = camera.eulerAngles;
+		cameraRotation.x = 0;
+		miniBullet.eulerAngles = cameraRotation;
 		// プレイヤーから一定距離離れるまで前に進める
 		while (distance < _bulletDistanceMax && miniBullet.gameObject.activeInHierarchy) {
 			distance = Vector3.Distance(miniBullet.position, GetPlayerCenterPosition());
-			miniBullet.rotation = camera.rotation;
 			if (GetEnemy() != null)
 				miniBullet.rotation = GetOtherDirection(miniBullet.position);
 			miniBullet.position += miniBullet.forward * _bulletSpeed * Time.deltaTime;
@@ -161,7 +164,8 @@ public class PlayerMagic : MagicBase {
 			if (bulletList[i].activeInHierarchy) return;
 		}
 		magicObject.canUnuse = true;
-	}
+        Debug.Log("PlayerMagic canUnuse" + magicObject.canUnuse);
+    }
 	/// <summary>
 	/// 衛星軌道魔法
 	/// </summary>
@@ -264,7 +268,9 @@ public class PlayerMagic : MagicBase {
 		}
 		Transform beam = magicObject.GenerateBeam().transform;
 		beam.position = activePos;
-		beam.rotation = camera.rotation;
+		Vector3 cameraRotation = camera.eulerAngles;
+		cameraRotation.x = 0;
+		beam.eulerAngles = cameraRotation;
 		beam.localScale = Vector3.one;
 		// MP消費
 		ToPlayerMPDamage(10);
@@ -403,7 +409,9 @@ public class PlayerMagic : MagicBase {
 	private async UniTask DelayBulletMove(MagicObject magicObject, Transform delayBullet) {
 		while (_delayBulletCoolTime >= 0) {
 			magicObject.transform.position = GetPlayerCenterPosition();
-			magicObject.transform.rotation = camera.rotation;
+			Vector3 cameraRotation = camera.eulerAngles;
+			cameraRotation.x = 0;
+			magicObject.transform.eulerAngles = cameraRotation;
 			_delayBulletCoolTime -= Time.deltaTime;
 			await UniTask.Yield(PlayerLoopTiming.Update, useMagicObject.token);
 		}
@@ -543,10 +551,10 @@ public class PlayerMagic : MagicBase {
 			SoundManager.Instance.PlaySE(11);
 			// 移動
 			UniTask task = BigBulletMove(magicObject, bullet);
-            _bigBulletCoolTime = _bigBulletCoolTimeMax;
+			_bigBulletCoolTime = _bigBulletCoolTimeMax;
 		}
 		else {
-            _bigBulletCoolTime -= Time.deltaTime;
+			_bigBulletCoolTime -= Time.deltaTime;
 		}
 	}
 	/// <summary>
@@ -557,10 +565,12 @@ public class PlayerMagic : MagicBase {
 	/// <returns></returns>
 	private async UniTask BigBulletMove(MagicObject magicObject, Transform miniBullet) {
 		float distance = 0;
+		Vector3 cameraRotation = camera.eulerAngles;
+		cameraRotation.x = 0;
+		miniBullet.eulerAngles = cameraRotation;
 		// プレイヤーから一定距離離れるまで前に進める
 		while (distance < _bulletDistanceMax && miniBullet.gameObject.activeInHierarchy) {
 			distance = Vector3.Distance(miniBullet.position, GetPlayerCenterPosition());
-			miniBullet.rotation = camera.rotation;
 			if (GetEnemy() != null)
 				miniBullet.rotation = GetOtherDirection(miniBullet.position);
 			miniBullet.position += miniBullet.forward * _bigBulletSpeed * Time.deltaTime;
