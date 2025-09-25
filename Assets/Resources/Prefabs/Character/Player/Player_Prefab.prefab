@@ -402,6 +402,26 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: b6ad7ac1-842c-4e9e-a757-77054c138774
     m_ActionName: Player/Magic_A[/XInputControllerWindows/buttonEast]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 6322934370783552657}
+        m_TargetAssemblyTypeName: PlayerInput, Assembly-CSharp
+        m_MethodName: OnMagicOpen
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: ce7fab1f-1ab4-402b-9fd5-2194e7e1535b
+    m_ActionName: Player/MagicUI_X[/XInputControllerWindows/buttonNorth]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 9454fc7e-0157-4f47-b24f-063b35d56fd2
+    m_ActionName: UI/New action
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player

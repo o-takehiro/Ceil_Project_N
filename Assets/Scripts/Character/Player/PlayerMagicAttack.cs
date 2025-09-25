@@ -10,7 +10,7 @@ using static MagicUtility;
 public class PlayerMagicAttack {
     private static List<eMagicType> _eMagicList;                  // 魔法を保存するリスト
     private static List<eMagicType> _eMagicStorageList;           // 取得したすべての魔法を保存するリスト
-    private GameObject[] _magicSpawnPos = new GameObject[4];  　    // 魔法を発射する場所
+    private GameObject[] _magicSpawnPos = new GameObject[4];  　  // 魔法を発射する場所
     public bool _isDeath = false;
 
     /// <summary>
@@ -61,6 +61,9 @@ public class PlayerMagicAttack {
             if (spawnPoint == null) return;
             // 魔法発射
             CreateMagic(eSideType.PlayerSide, magicType, spawnPoint);
+            // エフェクト再生
+            UniTask task = EffectManager.Instance.PlayEffect(eEffectType.Book, spawnPoint.transform.position);
+            // 本出現
             spawnPoint.SetActive(true);
 
         }
@@ -158,13 +161,29 @@ public class PlayerMagicAttack {
         for (int i = 0; i < _eMagicList.Count; i++) {
             if (_eMagicList[i] == eMagicType.Invalid) {
                 _eMagicList[i] = magicType;
+                // テキストに魔法の文字列をセット
+                SetMagicUI.Instance.UpdateMagicUI();
                 Debug.Log($"{magicType} をスロット {i} にセットした");
                 return;
             }
         }
     }
 
+    /// <summary>
+    /// 魔法リストUIの表示
+    /// </summary>
+    public void OpenMagicUI() {
+        // 魔法リストの表示
+        SetMagicUI.Instance.OpenUI();
+    }
 
+    /// <summary>
+    /// 魔法リストUIの非表示
+    /// </summary>
+    public void CloseMagicUI() {
+        // 魔法リストの非表示
+        SetMagicUI.Instance.CloseUI();
+    }
 
     // 片付け処理
     public void ResetState() {

@@ -122,6 +122,16 @@ public class PlayerCharacter : CharacterBase {
 
     public void RequestAnalysis() => _magic.RequestAnalysis();
 
+    /// <summary>
+    /// 魔法リストUIの表示
+    /// </summary>
+    public void RequestOpenMagicUI() => _magic.OpenMagicUI();
+
+    /// <summary>
+    /// 魔法リストUIの非表示
+    /// </summary>
+    public void RequestCloceMagicUI() => _magic.CloseMagicUI();
+
     // カメラのロックオン受付
     public void RequestLookOn() {
         if (_isLockedOn) {

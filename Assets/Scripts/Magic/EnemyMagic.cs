@@ -89,7 +89,8 @@ public class EnemyMagic : MagicBase {
 	/// </summary>
 	public override void DefenseMagic(MagicObject magicObject) {
 		if (magicObject == null) return;
-		Transform defense = magicObject.GenerateDefense().transform;
+        magicObject.canUnuse = true;
+        Transform defense = magicObject.GenerateDefense().transform;
 		defense.position = GetEnemyPosition();
 		defense.rotation = GetEnemyRotation();
 		if (_defenseOn) return;
