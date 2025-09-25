@@ -84,4 +84,21 @@ public class SetMagicUI : MenuBase {
         }
     }
 
+    /// <summary>
+    /// 魔法リストUIの表示
+    /// </summary>
+    public void OpenUI() {
+        magicImage.gameObject.SetActive(true);
+    }
+
+    /// <summary>
+    /// 魔法リストUIの非表示
+    /// 魔法リストUIの非表示
+    /// 魔法リストUIの非表示
+    /// </summary>
+    public void CloseUI() {
+        magicImage.gameObject.SetActive(false);
+    }
+
+
 }

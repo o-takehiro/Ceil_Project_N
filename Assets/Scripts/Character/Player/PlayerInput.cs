@@ -151,9 +151,11 @@ public sealed class PlayerInput : MonoBehaviour {
     public void OnMagicOpen(InputAction.CallbackContext ctx) {
         if (ctx.performed) {
             // 魔法リスト表示
+            _character.RequestOpenMagicUI();
         }
         else if (ctx.canceled) {
             // 魔法リスト非表示
+            _character.RequestCloceMagicUI();
         }
     }
 

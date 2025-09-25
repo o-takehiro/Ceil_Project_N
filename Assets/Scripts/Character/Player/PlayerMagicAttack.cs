@@ -174,6 +174,7 @@ public class PlayerMagicAttack {
     /// </summary>
     public void OpenMagicUI() {
         // 魔法リストの表示
+        SetMagicUI.Instance.OpenUI();
     }
 
     /// <summary>
@@ -181,7 +182,7 @@ public class PlayerMagicAttack {
     /// </summary>
     public void CloseMagicUI() {
         // 魔法リストの非表示
-
+        SetMagicUI.Instance.CloseUI();
     }
 
     // 片付け処理
