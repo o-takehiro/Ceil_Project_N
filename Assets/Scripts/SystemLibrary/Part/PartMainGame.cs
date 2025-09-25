@@ -135,7 +135,8 @@ public class PartMainGame : PartBase {
                 break;
             case eStageState.Stage3:
                 await FadeManager.Instance.FadeOut();
-                CharacterUtility.UnusePlayer();
+                UnusePlayer();
+                MenuManager.Instance.Get<MenuEnding>().SetGameClear(true);
                 await PartManager.Instance.TransitionPart(eGamePart.Ending);
                 break;
         }
