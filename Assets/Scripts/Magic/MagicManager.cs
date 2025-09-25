@@ -271,9 +271,9 @@ public class MagicManager : MonoBehaviour {
 		// オブジェクトを生成する
 		MagicObject magicObject = GetMagicObject(_activeMagicIDList[side][magicID]);
 		if (magicObject == null) {
-			Debug.Log("CreateMagicObject");
+			//Debug.Log("CreateMagicObject");
 			UseMagicObject(_activeMagicIDList[side][magicID], magicType);
-			Debug.Log("CreateComplete");
+			//Debug.Log("CreateComplete");
 		}
 		// オブジェクト内のオブジェクト生成
 		//magicObject.GenerateMiniBullet();
@@ -320,7 +320,7 @@ public class MagicManager : MonoBehaviour {
 				_activeMagic[side][magic] = magicSyde.BigBulletMagic;
 				break;
 		}
-        Debug.Log("Action" + magicType);
+        //Debug.Log("Action" + magicType);
         magicGenerate = false;
 		return;
 		//}
@@ -339,19 +339,19 @@ public class MagicManager : MonoBehaviour {
 		if (_isResetMagic[side][magicID]) return;
 		// 魔法のリセット
 		_activeMagic[side][magicID] = null;
-        Debug.Log("_activeMagicReset");
+        //Debug.Log("_activeMagicReset");
         _isResetMagic[side][magicID] = true;
 		//Debug.Log("0");
         // 未使用化可能まで待つ
         MagicObject magicObject = GetMagicObject(removeMagic.ID);
 		while (!magicObject.canUnuse || magicGenerate) {
-            Debug.Log("MagicManager canUnuse" + magicObject.canUnuse);
+            //Debug.Log("MagicManager canUnuse" + magicObject.canUnuse);
             await UniTask.Yield();
         }
 		//Debug.Log("1");
 		await UnuseMagicData(removeMagic);
         _activeMagicIDList[side][magicID] = -1;
-		Debug.Log("_activeMagicIDList[side][magicID] = activeMagic;");
+		//Debug.Log("_activeMagicIDList[side][magicID] = activeMagic;");
 		_isResetMagic[side][magicID] = false;
     }
 
