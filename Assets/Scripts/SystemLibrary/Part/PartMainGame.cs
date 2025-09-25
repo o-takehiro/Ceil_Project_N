@@ -33,6 +33,7 @@ public class PartMainGame : PartBase {
         await MenuManager.Instance.Get<EnemyHPGauge>("Prefabs/Menu/CanvasEnemyUI").Initialize();
         await MenuManager.Instance.Get<PlayerHPGauge>("Prefabs/Menu/CanvasPlayerUI").Initialize();
         await MenuManager.Instance.Get<PlayerMPGauge>("Prefabs/Menu/CanvasPlayerUI_MP").Initialize();
+        await MenuManager.Instance.Get<MenuTutorialGuide>("Prefabs/Menu/CanvasTutorialImage").Initialize();
         await UniTask.CompletedTask;
     }
 
