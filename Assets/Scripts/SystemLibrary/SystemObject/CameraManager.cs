@@ -49,6 +49,9 @@ public class CameraManager : SystemObject {
     private bool _isFocusing = false;   // 演出中フラグ
     private CancellationTokenSource _focusCts;
 
+    // カメラ停止用フラグ
+    private bool _isPauseCamera = false;
+
     /// <summary>
     /// 初期化処理
     /// </summary>
@@ -175,6 +178,7 @@ public class CameraManager : SystemObject {
                 : gamepadSensitivity;   // パッド
 
             // カメラの回転を更新
+            if (_isPauseCamera) return;
             Vector2 delta = _lookInput * sensitivity * rotationSpeed;
             _currentYaw += delta.x;
             _currentPitch = Mathf.Clamp(_currentPitch - delta.y, -pitchLimit, pitchLimit);
@@ -305,7 +309,19 @@ public class CameraManager : SystemObject {
         }
     }
 
+    /// <summary>
+    /// カメラの停止
+    /// </summary>
+    public void PauseCamera() {
+        _isPauseCamera = true;
+    }
 
+    /// <summary>
+    /// カメラの更新
+    /// </summary>
+    public void ResumeCamera() {
+        _isPauseCamera = false;
+    }
 
     /// <summary>
     /// オブジェクト破棄時の処理

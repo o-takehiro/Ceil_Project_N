@@ -261,6 +261,9 @@ public class PlayerCharacter : CharacterBase {
     public void PausePlayer() {
         _isPaused = true;
 
+        // ƒJƒƒ‰’â~
+        //CameraManager.Instance.PauseCamera();
+
         // “ü—Í’â~
         if (_playerInput != null)
             _playerInput.CanReceiveInput = false;
