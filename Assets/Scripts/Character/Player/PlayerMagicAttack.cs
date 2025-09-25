@@ -10,7 +10,7 @@ using static MagicUtility;
 public class PlayerMagicAttack {
     private static List<eMagicType> _eMagicList;                  // 魔法を保存するリスト
     private static List<eMagicType> _eMagicStorageList;           // 取得したすべての魔法を保存するリスト
-    private GameObject[] _magicSpawnPos = new GameObject[4];  　    // 魔法を発射する場所
+    private GameObject[] _magicSpawnPos = new GameObject[4];  　  // 魔法を発射する場所
     public bool _isDeath = false;
 
     /// <summary>
@@ -169,7 +169,20 @@ public class PlayerMagicAttack {
         }
     }
 
+    /// <summary>
+    /// 魔法リストUIの表示
+    /// </summary>
+    public void OpenMagicUI() {
+        // 魔法リストの表示
+    }
 
+    /// <summary>
+    /// 魔法リストUIの非表示
+    /// </summary>
+    public void CloseMagicUI() {
+        // 魔法リストの非表示
+
+    }
 
     // 片付け処理
     public void ResetState() {

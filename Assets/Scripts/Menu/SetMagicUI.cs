@@ -1,9 +1,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using Microsoft.Unity.VisualStudio.Editor;
 using UnityEngine;
-using UnityEngine.UI;
 using TMPro;
 /// <summary>
 /// Žæ“¾‚µ‚½–‚–@‚ð•\Ž¦‚·‚éUI

@@ -103,6 +103,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "MagicUI_X",
+                    "type": "Button",
+                    "id": "ce7fab1f-1ab4-402b-9fd5-2194e7e1535b",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -565,6 +574,28 @@
                     "processors": "",
                     "groups": ";Gamepad",
                     "action": "Magic_A",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "51fbcaae-4105-4a99-a468-42b31ccc3896",
+                    "path": "<NPad>/buttonNorth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Gamepad",
+                    "action": "MagicUI_X",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "36d05a3b-a4bc-4d2b-894a-3a5d3b19804d",
+                    "path": "<XInputController>/buttonNorth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Gamepad",
+                    "action": "MagicUI_X",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
