@@ -166,4 +166,8 @@ public class EnemyCharacter : CharacterBase {
             magicTypeList.Remove(magicTypeList[i]);
         }
     }
+
+    public void StartEnemyState() {
+        myAI.ChangeState(new EnemyAI001_Wait());
+    }
 }

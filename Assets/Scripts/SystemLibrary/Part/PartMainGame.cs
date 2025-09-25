@@ -17,6 +17,8 @@ public class PartMainGame : PartBase {
     [SerializeField]
     private StageManager _stageManager = null;
     [SerializeField] private goalObject _goalObject;
+    private bool _isTutorial = false;
+
     /// <summary>
     /// ‰Šú‰»ˆ—
     /// </summary>
@@ -35,6 +37,7 @@ public class PartMainGame : PartBase {
         await MenuManager.Instance.Get<PlayerMPGauge>("Prefabs/Menu/CanvasPlayerUI_MP").Initialize();
         await MenuManager.Instance.Get<SetMagicUI>("Prefabs/Menu/CanvasMagicUI").Initialize();
         await MenuManager.Instance.Get<MenuTutorialGuide>("Prefabs/Menu/CanvasTutorialImage").Initialize();
+        _isTutorial = true;
         await UniTask.CompletedTask;
     }
 
@@ -60,7 +63,13 @@ public class PartMainGame : PartBase {
 
         await FadeManager.Instance.FadeIn();
         SoundManager.Instance.PlayBGM(1);
-
+        if (_isTutorial) {
+            _isTutorial = false;
+            PausePlayer();
+            await MenuManager.Instance.Get<MenuTutorialGuide>().Open();
+            GetEnemy().StartEnemyState();
+            ResumePlayer();
+        }
         await UniTask.WhenAll(
             MenuManager.Instance.Get<PlayerHPGauge>().Open(),
             MenuManager.Instance.Get<PlayerMPGauge>().Open(),
