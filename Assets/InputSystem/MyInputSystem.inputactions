@@ -696,9 +696,18 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "New action",
+                    "name": "NextPage",
                     "type": "Button",
                     "id": "9454fc7e-0157-4f47-b24f-063b35d56fd2",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "PrevPage",
+                    "type": "Button",
+                    "id": "518f6b85-0e08-4c50-9f7b-0ee876978894",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -983,33 +992,11 @@
                 },
                 {
                     "name": "",
-                    "id": "f3ccbfb0-02dc-4fe8-b8ae-85f01b901cae",
-                    "path": "<NPad>/buttonEast",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Submit",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "82627dcc-3b13-4ba9-841d-e4b746d6553e",
                     "path": "*/{Cancel}",
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard&Mouse;Gamepad;Touch;Joystick;XR",
-                    "action": "Cancel",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "6cac0849-996c-4058-8689-92cb97585d85",
-                    "path": "",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
                     "action": "Cancel",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -1149,11 +1136,44 @@
                 {
                     "name": "",
                     "id": "3adf7bd3-9c35-4f6b-b92c-fd803c0c6482",
-                    "path": "",
+                    "path": "<XInputController>/buttonSouth",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "New action",
+                    "action": "NextPage",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "146cd598-8c0c-4642-a370-8e292dd98543",
+                    "path": "<NPad>/buttonEast",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "NextPage",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "cf7ced21-ebb2-456e-9f61-602ec760ae8d",
+                    "path": "<XInputController>/buttonEast",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "PrevPage",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "5264cb7e-0c43-4dd8-804b-7e158e6a4c80",
+                    "path": "<NPad>/buttonSouth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "PrevPage",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
