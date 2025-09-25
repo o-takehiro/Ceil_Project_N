@@ -157,6 +157,8 @@ public class PlayerMagicAttack {
 
         // ‹ó‚«‚ª‚È‚¯‚ê‚Î“ü‚ê‘Ö‚¦‘Ò‚¿‚É‚·‚é
         _pendingMagic = magicType;
+        // “ü‚ê‘Ö‚¦‘Ò‚¿UI•\¦
+        SetMagicUI.Instance.OpenChangeMagicUI();
 
     }
 
@@ -202,6 +204,8 @@ public class PlayerMagicAttack {
         if (_pendingMagic == eMagicType.Invalid) return;
         ReplaceMagic(slotIndex, _pendingMagic);
         _pendingMagic = eMagicType.Invalid; // ‘Ò‚¿‰ğœ
+        SetMagicUI.Instance.CloseChangeMagicUI();
+
     }
 
     /// <summary>

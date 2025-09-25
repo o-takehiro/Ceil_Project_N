@@ -224,7 +224,6 @@ public class PlayerCharacter : CharacterBase {
         _movement?.ResetState();
         _attack?.ResetState();
         _magic?.ResetState();
-        _magic.ResetMagic();
 
         _isLoopRunning = false;
 
