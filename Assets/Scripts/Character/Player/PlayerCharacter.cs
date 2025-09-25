@@ -21,6 +21,7 @@ public class PlayerCharacter : CharacterBase {
     private Animator _animator;         // アニメーション制御
     private bool _isLockedOn = false;
     private bool _isLoopRunning = false;
+    private bool _isPaused = false;     // 移動不可
     public override bool isPlayer() => true;
     public PlayerAttack GetAttackController() => _attack;
     public PlayerMovement GetPlayerMovement() => _movement;
@@ -33,6 +34,7 @@ public class PlayerCharacter : CharacterBase {
     /// 初期化処理
     /// </summary>
     public override void Initialize() {
+
     }
 
     /// <summary>
@@ -87,7 +89,7 @@ public class PlayerCharacter : CharacterBase {
         }
 
         _movement.moveSetUp();
-
+        PausePlayer();
         // メインループを開始する
         StartPlayerLoop().Forget();
     }
@@ -158,12 +160,19 @@ public class PlayerCharacter : CharacterBase {
         while (!token.IsCancellationRequested) {
             // FixdDeltaTimeをキャッシュ
             float fd = Time.fixedDeltaTime;
-
-            // 移動の更新処理
-            _movement?.MoveUpdate(fd, _attack?.IsAttacking ?? false);
-            // 攻撃の更新処理
-            _attack?.AttackUpdate(fd);
-            _magic?.MagicUpdate();
+            if (!_isPaused) {
+                // 通常処理
+                _movement?.MoveUpdate(fd, _attack?.IsAttacking ?? false);
+                _attack?.AttackUpdate(fd);
+                _magic?.MagicUpdate();
+            }
+            else {
+                // ポーズ中は強制停止
+                if (_rigidbody != null) {
+                    _rigidbody.velocity = Vector3.zero;
+                    _rigidbody.angularVelocity = Vector3.zero;
+                }
+            }
             // 自身のtransform.positoinをキャッシュ
             var pPos = transform.position;
             // 座標の更新
@@ -246,41 +255,40 @@ public class PlayerCharacter : CharacterBase {
 
     }
 
-
+    /// <summary>
+    /// プレイヤーの行動停止
+    /// </summary>
     public void PausePlayer() {
-        // 入力を止める
-        if (_playerInput != null) {
+        _isPaused = true;
+
+        // 入力停止
+        if (_playerInput != null)
             _playerInput.CanReceiveInput = false;
-        }
 
-        // Rigidbody の動きを止める
-        if (_rigidbody != null) {
-            _rigidbody.velocity = Vector3.zero;
-            _rigidbody.angularVelocity = Vector3.zero;
-            _rigidbody.isKinematic = true; // 物理シミュレーションも止める
-        }
-
-        // アニメーションを止める（必要なら）
-        if (_animator != null) {
+        // アニメーション停止
+        if (_animator != null)
             _animator.speed = 0f;
-        }
+
+        // // RigitBody停止
+        // if (_rigidbody != null) {
+        //     _rigidbody.velocity = Vector3.zero;
+        //     _rigidbody.angularVelocity = Vector3.zero;
+        // }
     }
 
+    /// <summary>
+    /// プレイヤーの行動再開
+    /// </summary>
     public void ResumePlayer() {
-        // 入力を再開
-        if (_playerInput != null) {
+        _isPaused = false;
+
+        // 入力再開
+        if (_playerInput != null)
             _playerInput.CanReceiveInput = true;
-        }
 
-        // Rigidbody を再び有効化
-        if (_rigidbody != null) {
-            _rigidbody.isKinematic = false;
-        }
-
-        // アニメーションを再開
-        if (_animator != null) {
+        // アニメーション再開
+        if (_animator != null)
             _animator.speed = 1f;
-        }
     }
 
 }
