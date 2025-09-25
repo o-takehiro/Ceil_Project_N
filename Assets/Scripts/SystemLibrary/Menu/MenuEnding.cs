@@ -4,27 +4,35 @@ using System.Collections.Generic;
 using System.Threading;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class MenuEnding : MenuBase {
     [SerializeField]
-    private TextMeshProUGUI _endingText = null;
+    private Image _endingImage = null;
+    [SerializeField]
+    private Image _bgImage = null;
+    [SerializeField]
+    private Sprite[] _endingSprite = null;
     private bool _isGameClear = false;
 
     private CancellationToken _token;
 
     public override async UniTask Initialize() {
         await base.Initialize();
-        _endingText.text = null;
         _isGameClear = false;
     }
 
     public override async UniTask Open() {
         await base.Open();
+        int resultIndex;
         if (_isGameClear) {
-            _endingText.text = "Game Clear";
+            resultIndex = 1;
+            _bgImage.color = Color.white;
         } else {
-            _endingText.text = "Game Over";
+            resultIndex = 0;
+            _bgImage.color = Color.black;
         }
+        _endingImage.sprite = _endingSprite[resultIndex];
         await FadeManager.Instance.FadeIn(FadeType.White);
         SoundManager.Instance.PlayBGM(0);
         _token = this.GetCancellationTokenOnDestroy();
@@ -40,7 +48,6 @@ public class MenuEnding : MenuBase {
 
     public override async UniTask Close() {
         await base.Close();
-        _endingText.text = null;
         _isGameClear = false;
     }
 
