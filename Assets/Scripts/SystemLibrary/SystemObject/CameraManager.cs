@@ -246,12 +246,8 @@ public class CameraManager : SystemObject {
         ) {
         if (_isFocusing) return; // すでに演出中なら無視
 
-        var player = CharacterUtility.GetPlayer();
-        if (player != null) {
-            _movement = player.GetPlayerMovement();
-
-        }
-        _movement.SetIsMoving(false);
+        // プレイヤー停止
+        CharacterUtility.PausePlayer();
 
         _isFocusing = true;
         _focusCts = new CancellationTokenSource();
@@ -305,7 +301,8 @@ public class CameraManager : SystemObject {
             _isFocusing = false;
             _focusCts.Dispose();
             _focusCts = null;
-            _movement.SetIsMoving(true);
+            // プレイヤー行動再開
+            CharacterUtility.ResumePlayer();
         }
     }
 
