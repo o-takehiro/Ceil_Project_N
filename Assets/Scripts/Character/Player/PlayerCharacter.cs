@@ -24,7 +24,7 @@ public class PlayerCharacter : CharacterBase {
     public override bool isPlayer() => true;
     public PlayerAttack GetAttackController() => _attack;
     public PlayerMovement GetPlayerMovement() => _movement;
-
+    public PlayerMagicAttack GetMagicController() => _magic;
     // 魔法の発射場所
     [SerializeField] private GameObject[] magicSpawnPoints = new GameObject[4];
 
@@ -131,6 +131,8 @@ public class PlayerCharacter : CharacterBase {
     /// 魔法リストUIの非表示
     /// </summary>
     public void RequestCloceMagicUI() => _magic.CloseMagicUI();
+
+
 
     // カメラのロックオン受付
     public void RequestLookOn() {
