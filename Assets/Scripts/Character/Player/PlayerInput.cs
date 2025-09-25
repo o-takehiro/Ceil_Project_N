@@ -53,20 +53,12 @@ public sealed class PlayerInput : MonoBehaviour {
 
     // 魔法スロット １
     public void OnCastSlot1(InputAction.CallbackContext ctx) {
-        if (!CanReceiveInput) return;
-
-        // 入れ替え可能状態なら
-        if (MagicReplaceUI.Instance != null && MagicReplaceUI.Instance.gameObject.activeSelf) {
-            if (ctx.performed) {
-                MagicReplaceUI.Instance.OnReplaceSlot(0);
-            }
-            return; // 魔法発射処理はしない
-        }
-
-        // 通常の魔法処理
         float currentMP = CharacterUtility.GetPlayerCurrentMP();
 
+        if (!CanReceiveInput) return;
+
         if (ctx.performed) {
+            // MPが0より大きいときだけ発動
             if (currentMP > 0.0f) {
                 _character.RequestCastMagic(0);
             }
@@ -75,21 +67,12 @@ public sealed class PlayerInput : MonoBehaviour {
             }
         }
         else if (ctx.canceled) {
+            // ボタンを離したとき
             _character.RequestCastMagicEnd(0);
         }
     }
     // 魔法スロット　２
     public void OnCastSlot2(InputAction.CallbackContext ctx) {
-        if (!CanReceiveInput) return;
-
-        // 入れ替え可能状態なら
-        if (MagicReplaceUI.Instance != null && MagicReplaceUI.Instance.gameObject.activeSelf) {
-            if (ctx.performed) {
-                MagicReplaceUI.Instance.OnReplaceSlot(1);
-            }
-            return; // 魔法発射処理はしない
-        }
-
         float currentMP = CharacterUtility.GetPlayerCurrentMP();
 
         if (!CanReceiveInput) return;
@@ -110,15 +93,6 @@ public sealed class PlayerInput : MonoBehaviour {
     }
     // 魔法スロット　３
     public void OnCastSlot3(InputAction.CallbackContext ctx) {
-        if (!CanReceiveInput) return;
-
-        // 入れ替え可能状態なら
-        if (MagicReplaceUI.Instance != null && MagicReplaceUI.Instance.gameObject.activeSelf) {
-            if (ctx.performed) {
-                MagicReplaceUI.Instance.OnReplaceSlot(2);
-            }
-            return; // 魔法発射処理はしない
-        }
         float currentMP = CharacterUtility.GetPlayerCurrentMP();
 
         if (!CanReceiveInput) return;
@@ -139,15 +113,6 @@ public sealed class PlayerInput : MonoBehaviour {
     }
     // 魔法スロット　４
     public void OnCastSlot4(InputAction.CallbackContext ctx) {
-        if (!CanReceiveInput) return;
-
-        // 入れ替え可能状態なら
-        if (MagicReplaceUI.Instance != null && MagicReplaceUI.Instance.gameObject.activeSelf) {
-            if (ctx.performed) {
-                MagicReplaceUI.Instance.OnReplaceSlot(3);
-            }
-            return; // 魔法発射処理はしない
-        }
         float currentMP = CharacterUtility.GetPlayerCurrentMP();
 
         if (!CanReceiveInput) return;

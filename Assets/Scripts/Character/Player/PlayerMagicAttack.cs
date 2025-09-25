@@ -141,18 +141,7 @@ public class PlayerMagicAttack {
     public static void SetMagicStorageSlot(eMagicType magicType) {
         _eMagicStorageList.Add(magicType);
 
-        // 空きがあれば自動でセット
-        for (int i = 0; i < _eMagicList.Count; i++) {
-            if (_eMagicList[i] == eMagicType.Invalid) {
-                _eMagicList[i] = magicType;
-                SetMagicUI.Instance.UpdateMagicUI();
-                Debug.Log($"{magicType} をスロット {i} にセットした");
-                return;
-            }
-        }
-
-        // 全部埋まっていたらUIを開く
-        MagicReplaceUI.Instance.ShowReplaceChoice(magicType);
+        TrySetMagicToSlotFromStorage(magicType);
     }
 
     /// <summary>
@@ -193,10 +182,6 @@ public class PlayerMagicAttack {
         SetMagicUI.Instance.UpdateMagicUI();
 
     }
-
-
-
-
 
     /// <summary>
     /// 魔法リストUIの表示
