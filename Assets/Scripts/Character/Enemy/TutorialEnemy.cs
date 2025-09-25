@@ -58,8 +58,4 @@ public class TutorialEnemy : EnemyCharacter {
 
         enemyAnimator.SetTrigger("isDamage");
     }
-
-    public void StartEnemyState() {
-        myAI.ChangeState(new EnemyAI001_Wait());
-    }
 }

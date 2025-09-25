@@ -76,7 +76,7 @@ public class MenuTutorialGuide : MenuBase {
     }
 
     public void PrevPage() {
-        if(_pageNum < 0) return;
+        if(_pageNum <= 0) return;
         _pageNum--;
         _guideImage.sprite = _guideSpriteList[_pageNum];
         _pageNumText.text = (_pageNum + 1) + " / " + _MAX_PAGE_NUM.ToString();
