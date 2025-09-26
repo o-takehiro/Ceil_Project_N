@@ -294,4 +294,12 @@ public class CharacterUtility {
     public static void ResumePlayer() {
         GetPlayer().ResumePlayer();
     }
+
+    /// <summary>
+    /// クリア時に魔法をリセット
+    /// </summary>
+    public static void PlayerMagicReset() {
+        GetPlayer().ClearMagicReset();
+    }
+
 }

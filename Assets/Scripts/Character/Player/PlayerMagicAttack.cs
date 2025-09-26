@@ -56,9 +56,11 @@ public class PlayerMagicAttack {
     /// 魔法発射
     /// </summary>
     public void RequestAttack(int slotIndex) {
-        // 魔法の入れ替え
+        if (slotIndex < 0 || slotIndex >= _eMagicList.Count) return;
+
+        // 入れ替え中なら攻撃せずに入れ替えを優先
         if (_pendingMagic != eMagicType.Invalid) {
-            ReplacePendingMagic(slotIndex);
+            ConfirmReplaceMagic(slotIndex);
             return;
         }
 
@@ -85,6 +87,25 @@ public class PlayerMagicAttack {
             spawnPoint.SetActive(true);
         }
     }
+
+    /// <summary>
+    /// 取得した魔法と現在の魔法を入れ替える
+    /// </summary>
+    public void ConfirmReplaceMagic(int slotIndex) {
+        if (_pendingMagic == eMagicType.Invalid) return;
+        if (slotIndex < 0 || slotIndex >= _eMagicList.Count) return;
+
+        // 発動中ならキャンセルしてから入れ替える
+        var currentMagic = _eMagicList[slotIndex];
+        if (currentMagic != eMagicType.Invalid) {
+            RequestCancelMagic(slotIndex);
+        }
+
+        ReplaceMagic(slotIndex, _pendingMagic);
+        _pendingMagic = eMagicType.Invalid;
+        SetMagicUI.Instance.CloseChangeMagicUI();
+    }
+
 
     /// <summary>
     /// 魔法発射解除
@@ -150,8 +171,9 @@ public class PlayerMagicAttack {
     /// </summary>
     /// <returns></returns>
     public async UniTask MagicUpdate() {
+        var player = CharacterUtility.GetPlayer();
+        if (player == null) return;
         if (_isDeath) return;
-
         for (int i = 0; i < _eMagicList.Count; i++) {
             float currentMP = CharacterUtility.GetPlayerCurrentMP();
             if (currentMP <= 0.0f) {

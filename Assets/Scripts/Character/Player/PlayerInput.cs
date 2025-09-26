@@ -59,6 +59,7 @@ public sealed class PlayerInput : MonoBehaviour {
         if (ctx.performed) {
             _character.RequestSetCastingFlag(0, true);
             _character.RequestStartCasting(0);
+            _character.RequestReplaceMagic(0);
         }
         else if (ctx.canceled) {
             _character.RequestSetCastingFlag(0, false);
@@ -73,6 +74,7 @@ public sealed class PlayerInput : MonoBehaviour {
         if (ctx.performed) {
             _character.RequestSetCastingFlag(1, true);
             _character.RequestStartCasting(1);
+            _character.RequestReplaceMagic(1);
         }
         else if (ctx.canceled) {
             _character.RequestSetCastingFlag(1, false);
@@ -87,6 +89,7 @@ public sealed class PlayerInput : MonoBehaviour {
         if (ctx.performed) {
             _character.RequestSetCastingFlag(2, true);
             _character.RequestStartCasting(2);
+            _character.RequestReplaceMagic(2);
         }
         else if (ctx.canceled) {
             _character.RequestSetCastingFlag(2, false);
@@ -101,6 +104,7 @@ public sealed class PlayerInput : MonoBehaviour {
         if (ctx.performed) {
             _character.RequestSetCastingFlag(3, true);
             _character.RequestStartCasting(3);
+            _character.RequestReplaceMagic(3);
         }
         else if (ctx.canceled) {
             _character.RequestSetCastingFlag(3, false);
