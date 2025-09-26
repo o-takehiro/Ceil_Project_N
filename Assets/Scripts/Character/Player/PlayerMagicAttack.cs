@@ -46,12 +46,13 @@ public class PlayerMagicAttack {
     /// 魔法発射
     /// </summary>
     public void RequestAttack(int slotIndex) {
-        // 入れ替え
+        // 魔法入れ替え
         if (_pendingMagic != eMagicType.Invalid) {
             ReplacePendingMagic(slotIndex);
             return;
         }
 
+        // 現在のMPを取得
         float currentMP = CharacterUtility.GetPlayerCurrentMP();
         if (slotIndex < 0 || slotIndex >= _eMagicList.Count) return;
         var magicType = _eMagicList[slotIndex];
@@ -171,21 +172,21 @@ public class PlayerMagicAttack {
 
     }
 
-    /// <summary>
-    /// ストレージの中から、MagicListに保存する
-    /// </summary>
-    /// <param name="magicType"></param>
-    private static void TrySetMagicToSlotFromStorage(eMagicType magicType) {
-        for (int i = 0; i < _eMagicList.Count; i++) {
-            if (_eMagicList[i] == eMagicType.Invalid) {
-                _eMagicList[i] = magicType;
-                // テキストに魔法の文字列をセット
-                SetMagicUI.Instance.UpdateMagicUI();
-                Debug.Log($"{magicType} をスロット {i} にセットした");
-                return;
-            }
-        }
-    }
+    // /// <summary>
+    // /// ストレージの中から、MagicListに保存する
+    // /// </summary>
+    // /// <param name="magicType"></param>
+    // private static void TrySetMagicToSlotFromStorage(eMagicType magicType) {
+    //     for (int i = 0; i < _eMagicList.Count; i++) {
+    //         if (_eMagicList[i] == eMagicType.Invalid) {
+    //             _eMagicList[i] = magicType;
+    //             // テキストに魔法の文字列をセット
+    //             SetMagicUI.Instance.UpdateMagicUI();
+    //             Debug.Log($"{magicType} をスロット {i} にセットした");
+    //             return;
+    //         }
+    //     }
+    // }
 
     /// <summary>
     /// 指定したスロットを新しい魔法に入れ替える

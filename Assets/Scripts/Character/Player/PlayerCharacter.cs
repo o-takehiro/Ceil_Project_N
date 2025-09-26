@@ -272,11 +272,7 @@ public class PlayerCharacter : CharacterBase {
         if (_animator != null)
             _animator.speed = 0f;
 
-        // // RigitBodyí‚é~
-        // if (_rigidbody != null) {
-        //     _rigidbody.velocity = Vector3.zero;
-        //     _rigidbody.angularVelocity = Vector3.zero;
-        // }
+
     }
 
     /// <summary>

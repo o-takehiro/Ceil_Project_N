@@ -8,13 +8,13 @@ using UnityEngine.InputSystem;
 /// 入力管理クラス
 /// </summary>
 public sealed class PlayerInput : MonoBehaviour {
-    [SerializeField] private Camera _targetCamera;   // 入力に使うカメラ
+    [SerializeField] private Camera _targetCamera;      // 入力に使うカメラ
 
-    private Rigidbody _rigidbody;       // Rigidbody
-    private Animator _animator;         // Animator
-    private PlayerCharacter _character; // プレイヤーキャラクター本体
+    private Rigidbody _rigidbody;                       // Rigidbody
+    private Animator _animator;                         // Animator
+    private PlayerCharacter _character;                 // プレイヤーキャラクター本体
     public bool CanReceiveInput { get; set; } = true;   // 入力可能か
-    private bool[] _isCasting = new bool[4]; // 各スロットの押下状態
+    private bool[] _isCasting = new bool[4];            // 各スロットの押下状態
     /// <summary>
     /// 移動入力の取得
     /// </summary>
@@ -53,6 +53,7 @@ public sealed class PlayerInput : MonoBehaviour {
 
     // 魔法スロット １
     public void OnCastSlot1(InputAction.CallbackContext ctx) {
+        // 現在のMP量を取得
         float currentMP = CharacterUtility.GetPlayerCurrentMP();
 
         if (!CanReceiveInput) return;
@@ -132,7 +133,10 @@ public sealed class PlayerInput : MonoBehaviour {
         }
     }
 
-    // 解析魔法
+    /// <summary>
+    /// 解析魔法の入力受付
+    /// </summary>
+    /// <param name="ctx"></param>
     public void OnAnalysis(InputAction.CallbackContext ctx) {
         if (ctx.performed || !CanReceiveInput) {
             _character.RequestAnalysis();
@@ -143,8 +147,8 @@ public sealed class PlayerInput : MonoBehaviour {
     }
 
     /// <summary>
-    /// 魔法所持リストの表示切り替え
-    /// </summary>
+    /// 魔法所持リストの表示切り替えの受付
+    /// </summary>  
     /// <param name="ctx"></param>
     public void OnMagicOpen(InputAction.CallbackContext ctx) {
         if (ctx.performed) {
