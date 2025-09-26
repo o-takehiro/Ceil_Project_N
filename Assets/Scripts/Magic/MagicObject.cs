@@ -234,10 +234,10 @@ public class MagicObject : MonoBehaviour {
 	/// •Ð•t‚¯
 	/// </summary>
 	public void Teardown() {
-		RemoveMagicAll();
 		ID = -1;
 		gameObject.transform.position = Vector3.zero;
 		gameObject.transform.rotation = Quaternion.identity;
+		RemoveMagicAll();
 		UnuseMagic();
 	}
 }
