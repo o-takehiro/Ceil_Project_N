@@ -1254,6 +1254,17 @@ public partial class @CameraInputActions: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
+                    ""id"": ""a8d16066-a875-4093-9f9b-ef02d8b94942"",
+                    ""path"": ""<NPad>/rightShoulder"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""NextPage"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
                     ""id"": ""cf7ced21-ebb2-456e-9f61-602ec760ae8d"",
                     ""path"": ""<XInputController>/buttonEast"",
                     ""interactions"": """",
@@ -1281,6 +1292,17 @@ public partial class @CameraInputActions: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": "";Gamepad"",
+                    ""action"": ""PrevPage"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""63b53cd1-19c8-4eb7-b6fb-a3e97b295dfd"",
+                    ""path"": ""<NPad>/leftShoulder"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
                     ""action"": ""PrevPage"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
