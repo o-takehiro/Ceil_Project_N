@@ -66,6 +66,9 @@ public class MagicObject : MonoBehaviour {
 	// 未使用化可能かどうか
 	public bool canUnuse = true;
 
+	// 生成完了かどうか
+	public bool generateFinish = false;
+
 	// 魔法用のオブジェクトの生成数
 	public const int _GENERATE_OBJECTS_MAX = 16;
 
@@ -98,6 +101,7 @@ public class MagicObject : MonoBehaviour {
 	/// <param name="magic"></param>
 	public void Setup(int setID, eSideType side, eMagicType magic) {
 		canUnuse = true;
+		generateFinish = false;
 		ID = setID;
 		activeSide = side;
 		activeMagic = magic;

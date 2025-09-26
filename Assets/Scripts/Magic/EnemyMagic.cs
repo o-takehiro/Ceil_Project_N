@@ -89,7 +89,9 @@ public class EnemyMagic : MagicBase {
 	/// </summary>
 	public override void DefenseMagic(MagicObject magicObject) {
 		if (magicObject == null) return;
-        magicObject.canUnuse = true;
+		// 生成完了
+		magicObject.generateFinish = true;
+		magicObject.canUnuse = true;
         Transform defense = magicObject.GenerateDefense().transform;
 		defense.position = GetEnemyPosition();
 		defense.rotation = GetEnemyRotation();
@@ -103,6 +105,8 @@ public class EnemyMagic : MagicBase {
 	/// </summary>
 	public override void MiniBulletMagic(MagicObject magicObject) {
 		if (magicObject == null) return;
+		// 生成完了
+		magicObject.generateFinish = true;
 		if (_bulletCoolTime < 0) {
 			// 未使用化不可能
 			magicObject.canUnuse = false;
@@ -152,9 +156,11 @@ public class EnemyMagic : MagicBase {
 		if (magicObject == null) return;
 		if (_satelliteOn) return;
 		_satelliteOn = true;
+		// 生成完了
+		magicObject.generateFinish = true;
+		// 未使用化不可能
+		magicObject.canUnuse = false;
 		for (int i = 0; i < _SATELLITE_MAX; i++) {
-			// 未使用化不可能
-			magicObject.canUnuse = false;
 			Transform bullet = magicObject.GenerateMiniBullet().transform;
 			satelliteList.Add(bullet.gameObject);
 			// 衛星配置
@@ -224,6 +230,8 @@ public class EnemyMagic : MagicBase {
 		if (_laserBeamOn) return;
 		UniTask task;
 		_laserBeamOn = true;
+		// 生成完了
+		magicObject.generateFinish = true;
 		// 未使用化不可能
 		magicObject.canUnuse = false;
 		// ビームが相手の防御魔法内で生成されるならその前に終了
@@ -325,9 +333,11 @@ public class EnemyMagic : MagicBase {
 		if (magicObject == null) return;
 		if (_delayBulletOn) return;
 		_delayBulletOn = true;
+		// 生成完了
+		magicObject.generateFinish = true;
+		// 未使用化不可能
+		magicObject.canUnuse = false;
 		for (int i = 0; i < _DELAY_BULLET_MAX; i++) {
-			// 未使用化不可能
-			magicObject.canUnuse = false;
 			Transform bullet = magicObject.GenerateMiniBullet().transform;
 			delayBulletList.Add(bullet.gameObject);
 			// 衛星配置
@@ -398,6 +408,8 @@ public class EnemyMagic : MagicBase {
 		if (magicObject == null) return;
 		if (_healingOn) return;
 		_healingOn = true;
+		// 生成完了
+		magicObject.generateFinish = true;
 		// 未使用化不可能
 		magicObject.canUnuse = false;
 		// SE再生
@@ -427,6 +439,8 @@ public class EnemyMagic : MagicBase {
 		if (magicObject == null) return;
 		if (_buffOn) return;
 		_buffOn = true;
+		// 生成完了
+		magicObject.generateFinish = true;
 		// 未使用化不可能
 		magicObject.canUnuse = false;
 		// SE再生
@@ -454,6 +468,8 @@ public class EnemyMagic : MagicBase {
 		if (magicObject == null) return;
 		if (_groundShockOn) return;
 		_groundShockOn = true;
+		// 生成完了
+		magicObject.generateFinish = true;
 		// 未使用化不可能
 		magicObject.canUnuse = false;
 		magicObject.transform.position = GetEnemyPosition();
@@ -480,9 +496,11 @@ public class EnemyMagic : MagicBase {
 	/// <param name="magicObject"></param>
 	public override void BigBulletMagic(MagicObject magicObject) {
 		if (magicObject == null) return;
+		// 生成完了
+		magicObject.generateFinish = true;
+		// 未使用化不可能
+		magicObject.canUnuse = false;
 		if (_bigBulletCoolTime < 0) {
-			// 未使用化不可能
-			magicObject.canUnuse = false;
 			Vector3 activePos;
 			if (magicActiveObject == null) {
 				activePos = GetPlayerCenterPosition();

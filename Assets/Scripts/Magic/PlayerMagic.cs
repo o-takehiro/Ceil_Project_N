@@ -50,7 +50,7 @@ public class PlayerMagic : MagicBase {
 	private bool _buffOn = false;
 	private bool _groundShockOn = false;
 
-	// 弾を一つは必ず生成指せるためのフラグ	
+	// 弾を一つは必ず生成させるためのフラグ	
 	private bool _bulletGenerate = false;
 
 	// 衛星の半径
@@ -97,6 +97,8 @@ public class PlayerMagic : MagicBase {
 	/// </summary>
 	public override void DefenseMagic(MagicObject magicObject) {
 		if (magicObject == null) return;
+		// 生成完了
+		magicObject.generateFinish = true;
 		magicObject.canUnuse = true;
 		Transform defense = magicObject.GenerateDefense().transform;
 		defense.position = GetPlayerPosition();
@@ -113,6 +115,8 @@ public class PlayerMagic : MagicBase {
 	/// </summary>
 	public override void MiniBulletMagic(MagicObject magicObject) {
 		if (magicObject == null) return;
+		// 生成完了
+		magicObject.generateFinish = true;
 		// 未使用化不可能
 		magicObject.canUnuse = false;
 		UniTask task = MiniBulletExecute(magicObject);
@@ -189,9 +193,11 @@ public class PlayerMagic : MagicBase {
 		if (magicObject == null) return;
 		if (_satelliteOn) return;
 		_satelliteOn = true;
+		// 生成完了
+		magicObject.generateFinish = true;
+		// 未使用化不可能
+		magicObject.canUnuse = false;
 		for (int i = 0; i < _SATELLITE_MAX; i++) {
-			// 未使用化不可能
-			magicObject.canUnuse = false;
 			Transform bullet = magicObject.GenerateMiniBullet().transform;
 			satelliteList.Add(bullet.gameObject);
 			// 衛星配置
@@ -264,6 +270,8 @@ public class PlayerMagic : MagicBase {
 		if (magicObject == null) return;
 		if (_laserBeamOn) return;
 		_laserBeamOn = true;
+		// 生成完了
+		magicObject.generateFinish = true;
 		// 未使用化不可能
 		magicObject.canUnuse = false;
 		Vector3 activePos;
@@ -384,9 +392,11 @@ public class PlayerMagic : MagicBase {
 		if (magicObject == null) return;
 		if (_delayBulletOn) return;
 		_delayBulletOn = true;
+		// 生成完了
+		magicObject.generateFinish = true;
+		// 未使用化不可能
+		magicObject.canUnuse = false;
 		for (int i = 0; i < _DELAY_BULLET_MAX; i++) {
-			// 未使用化不可能
-			magicObject.canUnuse = false;
 			Transform bullet = magicObject.GenerateMiniBullet().transform;
 			delayBulletList.Add(bullet.gameObject);
 			// 衛星配置
@@ -460,6 +470,8 @@ public class PlayerMagic : MagicBase {
 		if (magicObject == null) return;
 		if (_healingOn) return;
 		_healingOn = true;
+		// 生成完了
+		magicObject.generateFinish = true;
 		// 未使用化不可能
 		magicObject.canUnuse = false;
 		// MP消費
@@ -491,6 +503,8 @@ public class PlayerMagic : MagicBase {
 		if (magicObject == null) return;
 		if (_buffOn) return;
 		_buffOn = true;
+		// 生成完了
+		magicObject.generateFinish = true;
 		// 未使用化不可能
 		magicObject.canUnuse = false;
 		// MP消費
@@ -520,7 +534,11 @@ public class PlayerMagic : MagicBase {
 		if (magicObject == null) return;
 		if (_groundShockOn) return;
 		_groundShockOn = true;
-		
+		// 生成完了
+		magicObject.generateFinish = true;
+		// 未使用化不可能
+		magicObject.canUnuse = false;
+
 		// 待機用処理関数
 		UniTask task = GroundShockExecute(magicObject);
 	}
@@ -530,8 +548,6 @@ public class PlayerMagic : MagicBase {
 	/// <returns></returns>
 	private async UniTask GroundShockExecute(MagicObject magicObject) {
 		//Debug.Log("GroundShockOn");
-		// 未使用化不可能
-		magicObject.canUnuse = false;
 		magicObject.GenerateGroundShock();
 		magicObject.transform.position = GetPlayerPosition();
 		// MP消費
@@ -551,9 +567,11 @@ public class PlayerMagic : MagicBase {
 	/// <param name="magicObject"></param>
 	public override void BigBulletMagic(MagicObject magicObject) {
 		if (magicObject == null) return;
+		// 生成完了
+		magicObject.generateFinish = true;
+		// 未使用化不可能
+		magicObject.canUnuse = false;
 		if (_bigBulletCoolTime < 0) {
-			// 未使用化不可能
-			magicObject.canUnuse = false;
 			Vector3 activePos;
 			if (magicActiveObject == null) {
 				activePos = GetPlayerCenterPosition();

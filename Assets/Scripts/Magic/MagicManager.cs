@@ -284,7 +284,7 @@ public class MagicManager : MonoBehaviour {
 		// オブジェクト内のオブジェクト生成
 		//magicObject.GenerateMiniBullet();
 		// 魔法実行
-		MagicActivate(magicSide, sideType, magicType);
+		UniTask task = MagicActivate(magicSide, sideType, magicType);
 
 		return;
 
@@ -294,7 +294,7 @@ public class MagicManager : MonoBehaviour {
 	/// 指定された魔法の関数を実行する
 	/// </summary>
 	/// <param name="magic"></param>
-	private void MagicActivate(MagicBase magicSyde, eSideType sideType, eMagicType magicType) {
+	private async UniTask MagicActivate(MagicBase magicSyde, eSideType sideType, eMagicType magicType) {
 		int side = (int)sideType, magic = (int)magicType;
 		//for (int magic = 0, magicMax = _activeMagic[side].Count; magic < magicMax; magic++) {
 		//	if (_activeMagic[side][magic] != null) continue;
@@ -328,6 +328,10 @@ public class MagicManager : MonoBehaviour {
 				break;
 		}
         //Debug.Log("Action" + magicType);
+		// 魔法が生成完了するまで待つ
+		while (!magicSyde.useMagicObject.generateFinish) {
+			await UniTask.Yield();
+		}
         magicGenerate = false;
 		return;
 		//}
@@ -344,6 +348,10 @@ public class MagicManager : MonoBehaviour {
 		if (removeMagic == null) return;
 		if (removeMagic.ID < 0) return;
 		if (_isResetMagic[side][magicID]) return;
+		// 魔法が完全に生成されるまで待つ
+		while (magicGenerate) {
+			await UniTask.Yield();
+		}
 		// 魔法のリセット
 		_activeMagic[side][magicID] = null;
         //Debug.Log("_activeMagicReset");
