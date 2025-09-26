@@ -211,7 +211,6 @@ public class CharacterUtility {
         if (GetEnemy() != null) {
             GetPlayer().RemoveMP(setValue);
             SetPlayerMPSliderValue(GetPlayer().GetPlayerMPSliderValue());
-
         }
 
     }
