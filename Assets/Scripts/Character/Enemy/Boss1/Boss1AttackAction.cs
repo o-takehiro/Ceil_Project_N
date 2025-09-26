@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 using static CharacterUtility;
+using static MagicUtility;
 
 public class Boss1AttackAction : MonoBehaviour {
     [SerializeField]
@@ -34,6 +35,14 @@ public class Boss1AttackAction : MonoBehaviour {
         _chargeAttackCollider.SetActive(false);
     }
 
+    public void EnableStompAttack() {
+        CreateMagic(eSideType.EnemySide, GetEnemyMagicType(eMagicType.GroundShock));
+    }
+
+    public void DisableStompAttack() {
+        CancelEnemyMagic(GetEnemyMagicType(eMagicType.GroundShock));
+        GetEnemy().myAI.ChangeState(new EnemyAI001_Wait());
+    }
     // “–‚½‚è”»’è
     private void OnTriggerEnter(Collider collision) {
         if (!_normalAttackCollider.activeSelf) return; // –³ŒøŽž‚Í‰½‚à‚µ‚È‚¢

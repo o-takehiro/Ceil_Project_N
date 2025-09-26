@@ -83,7 +83,7 @@ public class MagicHit : MagicObject {
                 break;
 			case eMagicType.GroundShock:
 				if (otherSide == eSideType.PlayerSide && !GroundCheck.IsGrounded) return;
-				GiveDamage(otherSide, 2);
+				GiveDamage(otherSide, 1);
 				break;
 			case eMagicType.BigBullet:
                 GiveDamage(otherSide, 20);
