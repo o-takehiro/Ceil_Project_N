@@ -41,7 +41,7 @@ public class CameraManager : SystemObject {
 
     // 前回のカメラ状態を記録しておくための変数
     private Quaternion _cachedCameraRotation;
-    private Vector3 _cachedCameraDirection; // 今は使っていないが将来のために残している
+    private Vector3 _cachedCameraDirection;
     private Vector3 _cachedCameraPosition;
     private bool _wasLockedOnLastFrame = false; // 前フレームでロックオンしていたかどうか
 
