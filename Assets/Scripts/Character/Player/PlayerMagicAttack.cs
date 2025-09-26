@@ -217,7 +217,6 @@ public class PlayerMagicAttack {
             if (_eMagicList[i] == eMagicType.Invalid) {
                 _eMagicList[i] = magicType;
                 SetMagicUI.Instance.UpdateMagicUI();
-                Debug.Log($"{magicType} をスロット {i} にセットした");
                 return;
             }
         }
@@ -245,7 +244,6 @@ public class PlayerMagicAttack {
         if (slotIndex < 0 || slotIndex >= _eMagicList.Count) return;
         _eMagicList[slotIndex] = newMagic;
         SetMagicUI.Instance.UpdateMagicUI();
-        Debug.Log("入れ替えたよ");
     }
 
     /// <summary>
@@ -273,6 +271,11 @@ public class PlayerMagicAttack {
     public void CloseMagicUI() {
         // 魔法リストの非表示
         SetMagicUI.Instance.CloseUI();
+    }
+
+    // 現在プレイヤーが使用している魔法のリストを取得
+    public static List<eMagicType> GetEquippedMagicList() {
+        return _eMagicList;
     }
 
     // 片付け処理

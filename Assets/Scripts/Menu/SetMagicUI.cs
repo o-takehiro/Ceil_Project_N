@@ -61,9 +61,9 @@ public class SetMagicUI : MenuBase {
     /// 魔法リストをUIに反映
     /// </summary>
     public void UpdateMagicUI() {
-        List<eMagicType> magicList = PlayerMagicAttack.GetMagicStorageSlot();
+        List<eMagicType> magicList = PlayerMagicAttack.GetEquippedMagicList();
 
-        // UI用の配列にまとめる
+        // UI用配列にまとめる
         TextMeshProUGUI[] slotTexts = { r1Text, r2Text, l1Text, l2Text };
 
         for (int i = 0; i < slotTexts.Length; i++) {
@@ -71,7 +71,7 @@ public class SetMagicUI : MenuBase {
                 slotTexts[i].text = magicList[i].ToString();
             }
             else {
-                slotTexts[i].text = "None";
+                slotTexts[i].text = "";
             }
         }
     }
@@ -82,7 +82,7 @@ public class SetMagicUI : MenuBase {
     public void ResetMagicUI() {
         TextMeshProUGUI[] slotTexts = { r1Text, r2Text, l1Text, l2Text };
         foreach (var text in slotTexts) {
-            text.text = "None";
+            text.text = "";
         }
     }
 
