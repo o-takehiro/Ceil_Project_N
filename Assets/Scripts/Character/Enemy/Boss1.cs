@@ -20,7 +20,7 @@ public class Boss1 : EnemyCharacter {
     public override void Setup(int masterID) {
         base.Setup(masterID);
         //HPゲージの更新
-        SetupCanvasPosition(Vector3.one * 3);
+        SetupCanvasPosition(Vector3.one);
 
         myAI.Setup(this);
         myAI.ChangeState(new EnemyAI001_Wait());
