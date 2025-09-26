@@ -162,6 +162,7 @@ public class PlayerMagicAttack {
     /// </summary>
     public void RequestAnalysis() {
         // SetMagicStorageSlot‚É–‚–@‚ð•Û‘¶‚µ‚Ä‚¢‚­
+        if (_isDeath) return;
         AnalysisMagicActivate();
     }
 
