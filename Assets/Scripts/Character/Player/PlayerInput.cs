@@ -14,7 +14,7 @@ public sealed class PlayerInput : MonoBehaviour {
     private Animator _animator;         // Animator
     private PlayerCharacter _character; // プレイヤーキャラクター本体
     public bool CanReceiveInput { get; set; } = true;   // 入力可能か
-
+    private bool[] _isCasting = new bool[4]; // 各スロットの押下状態
     /// <summary>
     /// 移動入力の取得
     /// </summary>

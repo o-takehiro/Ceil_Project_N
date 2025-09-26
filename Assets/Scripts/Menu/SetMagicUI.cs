@@ -16,11 +16,13 @@ public class SetMagicUI : MenuBase {
     [SerializeField] private TextMeshProUGUI l2Text;    // L2ボタンテキスト
 
     [SerializeField] private UnityEngine.UI.Image magicImage;
-    [SerializeField]
+    [SerializeField] private GameObject _changeMagicUI = null;
+
     public CancellationToken _token;
 
     public override async UniTask Initialize() {
         Instance = this;
+        _changeMagicUI.SetActive(false);
         await UniTask.CompletedTask;
     }
 
@@ -98,6 +100,22 @@ public class SetMagicUI : MenuBase {
     /// </summary>
     public void CloseUI() {
         magicImage.gameObject.SetActive(false);
+    }
+
+    /// <summary>
+    /// 魔法入れ替え時のUI表示
+    /// </summary>
+    public void OpenChangeMagicUI() {
+        _changeMagicUI.SetActive(true);
+        OpenUI();
+    }
+
+    /// <summary>
+    /// 魔法入れ替え時のUI表示
+    /// </summary>
+    public void CloseChangeMagicUI() {
+        _changeMagicUI.SetActive(false);
+        CloseUI();
     }
 
 

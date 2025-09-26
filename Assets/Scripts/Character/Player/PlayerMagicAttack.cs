@@ -12,6 +12,7 @@ public class PlayerMagicAttack {
     private static List<eMagicType> _eMagicStorageList;           // 取得したすべての魔法を保存するリスト
     private GameObject[] _magicSpawnPos = new GameObject[4];  　  // 魔法を発射する場所
     public bool _isDeath = false;
+    private static eMagicType _pendingMagic = eMagicType.Invalid; // 入れ替え用魔法
 
     /// <summary>
     /// コンストラクタ
@@ -45,12 +46,16 @@ public class PlayerMagicAttack {
     /// 魔法発射
     /// </summary>
     public void RequestAttack(int slotIndex) {
+        // 入れ替え
+        if (_pendingMagic != eMagicType.Invalid) {
+            ReplacePendingMagic(slotIndex);
+            return;
+        }
+
         float currentMP = CharacterUtility.GetPlayerCurrentMP();
         if (slotIndex < 0 || slotIndex >= _eMagicList.Count) return;
         var magicType = _eMagicList[slotIndex];
-        if (magicType == eMagicType.Invalid) {
-            return;
-        }
+        if (magicType == eMagicType.Invalid) return;
         if (currentMP <= 0.0f) {
             RequestCancelMagic(slotIndex);
             return;
@@ -65,7 +70,6 @@ public class PlayerMagicAttack {
             UniTask task = EffectManager.Instance.PlayEffect(eEffectType.Book, spawnPoint.transform.position);
             // 本出現
             spawnPoint.SetActive(true);
-
         }
     }
 
@@ -141,7 +145,21 @@ public class PlayerMagicAttack {
     public static void SetMagicStorageSlot(eMagicType magicType) {
         _eMagicStorageList.Add(magicType);
 
-        TrySetMagicToSlotFromStorage(magicType);
+        // 空きがあるか試す
+        for (int i = 0; i < _eMagicList.Count; i++) {
+            if (_eMagicList[i] == eMagicType.Invalid) {
+                _eMagicList[i] = magicType;
+                SetMagicUI.Instance.UpdateMagicUI();
+                Debug.Log($"{magicType} をスロット {i} にセットした");
+                return;
+            }
+        }
+
+        // 空きがなければ入れ替え待ちにする
+        _pendingMagic = magicType;
+        // 入れ替え待ちUI表示
+        SetMagicUI.Instance.OpenChangeMagicUI();
+
     }
 
     /// <summary>
@@ -167,6 +185,27 @@ public class PlayerMagicAttack {
                 return;
             }
         }
+    }
+
+    /// <summary>
+    /// 指定したスロットを新しい魔法に入れ替える
+    /// </summary>
+    public void ReplaceMagic(int slotIndex, eMagicType newMagic) {
+        if (slotIndex < 0 || slotIndex >= _eMagicList.Count) return;
+        _eMagicList[slotIndex] = newMagic;
+        SetMagicUI.Instance.UpdateMagicUI();
+        Debug.Log("入れ替えたよ");
+    }
+
+    /// <summary>
+    /// 入れ替え待ち魔法を指定スロットにセットする
+    /// </summary>
+    private void ReplacePendingMagic(int slotIndex) {
+        if (_pendingMagic == eMagicType.Invalid) return;
+        ReplaceMagic(slotIndex, _pendingMagic);
+        _pendingMagic = eMagicType.Invalid; // 待ち解除
+        SetMagicUI.Instance.CloseChangeMagicUI();
+
     }
 
     /// <summary>

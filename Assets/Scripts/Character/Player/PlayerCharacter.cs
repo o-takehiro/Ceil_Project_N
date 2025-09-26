@@ -21,10 +21,11 @@ public class PlayerCharacter : CharacterBase {
     private Animator _animator;         // アニメーション制御
     private bool _isLockedOn = false;
     private bool _isLoopRunning = false;
+    private bool _isPaused = false;     // 移動不可
     public override bool isPlayer() => true;
     public PlayerAttack GetAttackController() => _attack;
     public PlayerMovement GetPlayerMovement() => _movement;
-
+    public PlayerMagicAttack GetMagicController() => _magic;
     // 魔法の発射場所
     [SerializeField] private GameObject[] magicSpawnPoints = new GameObject[4];
 
@@ -33,6 +34,7 @@ public class PlayerCharacter : CharacterBase {
     /// 初期化処理
     /// </summary>
     public override void Initialize() {
+
     }
 
     /// <summary>
@@ -87,7 +89,7 @@ public class PlayerCharacter : CharacterBase {
         }
 
         _movement.moveSetUp();
-
+        PausePlayer();
         // メインループを開始する
         StartPlayerLoop().Forget();
     }
@@ -132,6 +134,8 @@ public class PlayerCharacter : CharacterBase {
     /// </summary>
     public void RequestCloceMagicUI() => _magic.CloseMagicUI();
 
+
+
     // カメラのロックオン受付
     public void RequestLookOn() {
         if (_isLockedOn) {
@@ -156,12 +160,19 @@ public class PlayerCharacter : CharacterBase {
         while (!token.IsCancellationRequested) {
             // FixdDeltaTimeをキャッシュ
             float fd = Time.fixedDeltaTime;
-
-            // 移動の更新処理
-            _movement?.MoveUpdate(fd, _attack?.IsAttacking ?? false);
-            // 攻撃の更新処理
-            _attack?.AttackUpdate(fd);
-            _magic?.MagicUpdate();
+            if (!_isPaused) {
+                // 通常処理
+                _movement?.MoveUpdate(fd, _attack?.IsAttacking ?? false);
+                _attack?.AttackUpdate(fd);
+                _magic?.MagicUpdate();
+            }
+            else {
+                // ポーズ中は強制停止
+                if (_rigidbody != null) {
+                    _rigidbody.velocity = Vector3.zero;
+                    _rigidbody.angularVelocity = Vector3.zero;
+                }
+            }
             // 自身のtransform.positoinをキャッシュ
             var pPos = transform.position;
             // 座標の更新
@@ -213,6 +224,13 @@ public class PlayerCharacter : CharacterBase {
 
     }
 
+    /// <summary>
+    /// クリアしたときに呼ぶ魔法リセット関数
+    /// </summary>
+    public void ClearMagicReset() {
+        _magic.ResetMagic();
+    }
+
 
     /// <summary>
     /// プレイヤーの片付け
@@ -237,7 +255,43 @@ public class PlayerCharacter : CharacterBase {
 
     }
 
+    /// <summary>
+    /// プレイヤーの行動停止
+    /// </summary>
+    public void PausePlayer() {
+        _isPaused = true;
 
+        // カメラ停止
+        //CameraManager.Instance.PauseCamera();
 
+        // 入力停止
+        if (_playerInput != null)
+            _playerInput.CanReceiveInput = false;
+
+        // アニメーション停止
+        if (_animator != null)
+            _animator.speed = 0f;
+
+        // // RigitBody停止
+        // if (_rigidbody != null) {
+        //     _rigidbody.velocity = Vector3.zero;
+        //     _rigidbody.angularVelocity = Vector3.zero;
+        // }
+    }
+
+    /// <summary>
+    /// プレイヤーの行動再開
+    /// </summary>
+    public void ResumePlayer() {
+        _isPaused = false;
+
+        // 入力再開
+        if (_playerInput != null)
+            _playerInput.CanReceiveInput = true;
+
+        // アニメーション再開
+        if (_animator != null)
+            _animator.speed = 1f;
+    }
 
 }

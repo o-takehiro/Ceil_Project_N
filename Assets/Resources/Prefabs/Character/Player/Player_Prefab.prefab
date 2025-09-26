@@ -422,6 +422,10 @@ MonoBehaviour:
       m_Calls: []
     m_ActionId: 9454fc7e-0157-4f47-b24f-063b35d56fd2
     m_ActionName: UI/New action
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 518f6b85-0e08-4c50-9f7b-0ee876978894
+    m_ActionName: UI/PrevPage[/XInputControllerWindows/buttonEast]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player

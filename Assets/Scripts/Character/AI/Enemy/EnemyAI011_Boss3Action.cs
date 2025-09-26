@@ -9,7 +9,9 @@ using static MagicUtility;
 public class EnemyAI011_Boss3Action : CharacterAIBase<EnemyCharacter> {
     public override void Execute() {
         base.Execute();
-        if(GetMagicActive((int)eSideType.PlayerSide, (int)eMagicType.MiniBullet)) {
+        float distance = GetPlayerToEnemyDistance();
+
+        if(distance > 40 || GetMagicActive((int)eSideType.PlayerSide, (int)eMagicType.MiniBullet)) {
             AddEnemyMagicType(eMagicType.DelayBullet);
             GetEnemy().GetEnemyAnimator().SetTrigger("isRoarAttack");
             GetEnemy().myAI.ChangeState(new EnemyAI010_LookAtPlayer());

@@ -17,6 +17,8 @@ public class PartMainGame : PartBase {
     [SerializeField]
     private StageManager _stageManager = null;
     [SerializeField] private goalObject _goalObject;
+    private bool _isTutorial = false;
+
     /// <summary>
     /// 初期化処理
     /// </summary>
@@ -35,6 +37,7 @@ public class PartMainGame : PartBase {
         await MenuManager.Instance.Get<PlayerMPGauge>("Prefabs/Menu/CanvasPlayerUI_MP").Initialize();
         await MenuManager.Instance.Get<SetMagicUI>("Prefabs/Menu/CanvasMagicUI").Initialize();
         await MenuManager.Instance.Get<MenuTutorialGuide>("Prefabs/Menu/CanvasTutorialImage").Initialize();
+        _isTutorial = true;
         await UniTask.CompletedTask;
     }
 
@@ -60,12 +63,17 @@ public class PartMainGame : PartBase {
 
         await FadeManager.Instance.FadeIn();
         SoundManager.Instance.PlayBGM(1);
-
+        if (_isTutorial) {
+            _isTutorial = false;
+            await MenuManager.Instance.Get<MenuTutorialGuide>().Open();
+        }
+        GetEnemy().StartEnemyState();
+        ResumePlayer();
         await UniTask.WhenAll(
-            MenuManager.Instance.Get<PlayerHPGauge>().Open(),
-            MenuManager.Instance.Get<PlayerMPGauge>().Open(),
-            MenuManager.Instance.Get<SetMagicUI>().Open()
-        );
+                MenuManager.Instance.Get<PlayerHPGauge>().Open(),
+                MenuManager.Instance.Get<PlayerMPGauge>().Open(),
+                MenuManager.Instance.Get<SetMagicUI>().Open()
+            );
 
         await WaitForGameEnd();              // フラグ監視ループ
         await HandleGameEndOrTransition();   // 遷移処理
@@ -135,7 +143,8 @@ public class PartMainGame : PartBase {
                 break;
             case eStageState.Stage3:
                 await FadeManager.Instance.FadeOut();
-                CharacterUtility.UnusePlayer();
+                UnusePlayer();
+                MenuManager.Instance.Get<MenuEnding>().SetGameClear(true);
                 await PartManager.Instance.TransitionPart(eGamePart.Ending);
                 break;
         }
