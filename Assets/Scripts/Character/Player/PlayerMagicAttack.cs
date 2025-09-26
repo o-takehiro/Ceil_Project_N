@@ -16,6 +16,8 @@ public class PlayerMagicAttack {
     public bool _isDeath = false;
     private static eMagicType _pendingMagic = eMagicType.Invalid; // 入れ替え用魔法
 
+    private static readonly float _LOWER_LIMIT_MP = 0.0f;         // MPの下限値
+
     /// <summary>
     /// コンストラクタ
     /// </summary>
@@ -70,7 +72,7 @@ public class PlayerMagicAttack {
         var magicType = _eMagicList[slotIndex];
         if (magicType == eMagicType.Invalid) return;
         // MPが切れたら魔法の再生を停止
-        if (currentMP <= 0.0f) {
+        if (currentMP <= _LOWER_LIMIT_MP) {
             RequestCancelMagic(slotIndex);
             return;
         }
@@ -79,12 +81,16 @@ public class PlayerMagicAttack {
         if (!_isDeath) {
             GameObject spawnPoint = _magicSpawnPos[slotIndex];
             if (spawnPoint == null) return;
-
             // 魔法発動
             CreateMagic(eSideType.PlayerSide, magicType, spawnPoint);
 
             // 本の出現
             spawnPoint.SetActive(true);
+
+            if (currentMP <= _LOWER_LIMIT_MP) {
+                RequestCancelMagic(slotIndex);
+                return;
+            }
         }
     }
 
@@ -143,7 +149,7 @@ public class PlayerMagicAttack {
         if (magicType == eMagicType.Invalid) return;
         // 現在のMPを取得
         float currentMP = CharacterUtility.GetPlayerCurrentMP();
-        if (currentMP <= 0.0f) return;
+        if (currentMP <= _LOWER_LIMIT_MP) return;
 
         if (_effectPlaying[slotIndex]) return; // すでに再生中なら何もしない
 
@@ -177,7 +183,7 @@ public class PlayerMagicAttack {
         if (_isDeath) return;
         for (int i = 0; i < _eMagicList.Count; i++) {
             float currentMP = CharacterUtility.GetPlayerCurrentMP();
-            if (currentMP <= 0.0f) {
+            if (currentMP <= _LOWER_LIMIT_MP) {
                 RequestCancelMagic(i);
                 continue;
             }
