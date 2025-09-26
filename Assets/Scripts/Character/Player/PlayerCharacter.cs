@@ -4,6 +4,7 @@ using UnityEngine;
 
 using static CharacterUtility;
 using static CharacterMasterUtility;
+using UnityEngine.TextCore.Text;
 /// <summary>
 /// プレイヤーキャラクター全体を統括するクラス
 /// ・移動、攻撃などの処理をサブクラスに委譲する
@@ -134,6 +135,18 @@ public class PlayerCharacter : CharacterBase {
     /// </summary>
     public void RequestCloceMagicUI() => _magic.CloseMagicUI();
 
+    /// <summary>
+    /// 魔法キャスト状態を設定
+    /// </summary>
+    public void RequestSetCastingFlag(int slotIndex, bool isCasting) {
+        _magic.SetCastingFlag(slotIndex, isCasting); // PlayerMagicAttack に状態を渡す
+    }
+
+    /// <summary>
+    /// キャスト初期の時、エフェクト再生
+    /// </summary>
+    /// <param name="slotIndex"></param>
+    public void RequestStartCasting(int slotIndex) => _magic.StartCasting(slotIndex);
 
 
     // カメラのロックオン受付
