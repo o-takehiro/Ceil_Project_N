@@ -147,7 +147,7 @@ public class EnemyCharacter : CharacterBase {
     /// </summary>
     /// <param name="magicType"></param>
     public void CancelEnemyMagic(eMagicType magicType) {
-        if(IsEmpty(magicTypeList)) return;
+        if(IsEmpty(magicTypeList) || magicType == eMagicType.Invalid) return;
         for (int i = 0, max = magicTypeList.Count; i < max; i++) {
             eMagicType magic = magicTypeList[i];
             if(magic != magicType) continue;
