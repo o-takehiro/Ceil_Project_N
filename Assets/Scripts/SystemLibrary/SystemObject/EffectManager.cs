@@ -50,50 +50,21 @@ public class EffectManager : SystemObject {
 	/// エフェクト再生
 	/// </summary>
 	public async UniTask PlayEffect(eEffectType playEffect, Vector3 playPosition, Transform setParent = null) {
-		GameObject effect = null;
 		// エフェクト使用化
-		effect = _effectObject.UseEffect(playEffect,playPosition, setParent);
+		GameObject effect = _effectObject.UseEffect(playEffect,playPosition, setParent);
 		// SetParent用一時的待ち
 		await UniTask.Yield();
 		effect.transform.position = playPosition;
-		// リストに追加する前にエフェクトリストの中身が空か判別
-		bool effectListEmpty = GetEffectLisEmpty();
 		// リストに追加
 		_useEffectList[(int)playEffect].Add(effect);
-		// リストに追加する前の段階で空ではなかったらreturn
-		if (!effectListEmpty) return;
-		// リストが空になるまでエンド待ち
-		do {
-			// エフェクトの終了処理
-			EffectEnd();
+		// エンド待ち
+		while (effect.GetComponent<ParticleSystem>().isPlaying) {
 			await UniTask.DelayFrame(1, PlayerLoopTiming.Update, _token);
-		} while (!GetEffectLisEmpty());
-	}
-
-	/// <summary>
-	/// 使用中エフェクトリストの各エフェクトの中身全てが空かどうか
-	/// </summary>
-	/// <returns></returns>
-	private bool GetEffectLisEmpty() {
-		for (int i = 0, max = (int)eEffectType.max; i < max; i++) {
-			if (!IsEmpty(_useEffectList[i])) return false;
 		}
-		return true;
-	}
-
-	/// <summary>
-	/// エフェクトの終了
-	/// </summary>
-	private void EffectEnd() {
-		for (int effect = 0, effectMax = (int)eEffectType.max; effect < effectMax; effect++) {
-			for (int i = 0, max = _useEffectList[effect].Count; i < max; i++) {
-				if (_useEffectList[effect][i].GetComponent<ParticleSystem>().isPlaying) continue;
-				_useEffectList[effect][i].transform.position = Vector3.zero;
-				// エフェクト非表示
-				_useEffectList[effect].RemoveAt(i);
-				_effectObject.UnuseEffect(effect, i);
-				break;
-			}
-		}
+		// エフェクトの終了処理
+		effect.transform.position = Vector3.zero;
+		// エフェクト非表示
+		_useEffectList[(int)playEffect].RemoveAt(0);
+		_effectObject.UnuseEffect((int)playEffect, 0);
 	}
 }
