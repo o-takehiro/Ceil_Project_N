@@ -195,10 +195,10 @@ public class MagicObject : MonoBehaviour {
 	}
 
 	/// <summary>
-	/// “Á’è‚Ì¬Œ^’e–‹‚Ìíœ
+	/// “Á’è‚Ì–‚–@‚Ìíœ
 	/// </summary>
 	/// <param name="removeObject"></param>
-	public void RemoveMiniBullet(GameObject gameObject) {
+	public void RemoveMagic(GameObject gameObject) {
 		Transform removeObject = gameObject.transform;
 		removeObject.position = Vector3.zero;
 		removeObject.rotation = Quaternion.identity;
@@ -207,12 +207,26 @@ public class MagicObject : MonoBehaviour {
 	}
 
 	/// <summary>
-	/// ‘S‚Ä‚Ì¬Œ^’e–‹‚Ìíœ
+	/// ‘S‚Ä‚Ì–‚–@‚Ìíœ
 	/// </summary>
 	/// <param name="removeObject"></param>
-	public void RemoveMiniBulletAll() {
-		for (int i = 0, max = miniBulletObjects.Count; i < max; i++) {
-			miniBulletObjects[i].transform.SetParent(_unuseMagicRoot);
+	public void RemoveMagicAll() {
+		if (defenseObject != null) {
+			RemoveMagic(defenseObject);
+		}
+		if (miniBulletObjects != null) {
+			for (int i = 0, max = miniBulletObjects.Count; i < max; i++) {
+				RemoveMagic(miniBulletObjects[i]);
+			}
+		}
+		if (beamObject != null) {
+			RemoveMagic(beamObject);
+		}
+		if (buffObject != null) {
+			RemoveMagic(buffObject);
+		}
+		if (groundShockObject != null) {
+			RemoveMagic(groundShockObject);
 		}
 	}
 
@@ -220,6 +234,7 @@ public class MagicObject : MonoBehaviour {
 	/// •Ğ•t‚¯
 	/// </summary>
 	public void Teardown() {
+		RemoveMagicAll();
 		ID = -1;
 		gameObject.transform.position = Vector3.zero;
 		gameObject.transform.rotation = Quaternion.identity;

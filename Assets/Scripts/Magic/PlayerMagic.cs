@@ -171,7 +171,7 @@ public class PlayerMagic : MagicBase {
 		}
 		UniTask task = EffectManager.Instance.PlayEffect(eEffectType.Elimination, miniBullet.position);
 		SoundManager.Instance.PlaySE(9);
-		magicObject.RemoveMiniBullet(miniBullet.gameObject);
+		magicObject.RemoveMagic(miniBullet.gameObject);
 		await UniTask.DelayFrame(1);
 		// 未使用化可能
 		for (int i = 0, max = bulletList.Count; i < max; i++) {
@@ -226,9 +226,11 @@ public class PlayerMagic : MagicBase {
 	/// <returns></returns>
 	private async UniTask SatelliteOrbitalMove(MagicObject magicObject, Transform bullet) {
 		bool loop = true;
+		Debug.Log("satelliteLoopStart");
 		while (loop) {
 			if (magicObject.GetActiveMagicParent().childCount > _SATELLITE_MAX) {
-				magicObject.RemoveMiniBullet(bullet.gameObject);
+				magicObject.RemoveMagic(bullet.gameObject);
+				Debug.Log("satelliteGoodbay");
 				return;
 			}
 			magicObject.transform.position = GetPlayerCenterPosition();
@@ -238,6 +240,7 @@ public class PlayerMagic : MagicBase {
 			await UniTask.DelayFrame(1, PlayerLoopTiming.Update, useMagicObject.token);
 			loop = LoopChange();
 			if (GetPlayer() == null) loop = false;
+			Debug.Log("satelliteLooping");
 		}
 		_satelliteOn = false;
 		// 未使用化可能
@@ -440,7 +443,7 @@ public class PlayerMagic : MagicBase {
 			await UniTask.Yield(PlayerLoopTiming.Update, useMagicObject.token);
 		}
 		UniTask task = EffectManager.Instance.PlayEffect(eEffectType.Elimination, delayBullet.position);
-		magicObject.RemoveMiniBullet(delayBullet.gameObject);
+		magicObject.RemoveMagic(delayBullet.gameObject);
 		await UniTask.DelayFrame(1);
 		// 未使用化可能
 		for (int i = 0, max = bulletList.Count; i < max; i++) {
@@ -592,7 +595,7 @@ public class PlayerMagic : MagicBase {
 			await UniTask.DelayFrame(1, PlayerLoopTiming.Update, useMagicObject.token);
 		}
 		UniTask task = EffectManager.Instance.PlayEffect(eEffectType.BigElimination, miniBullet.position);
-		magicObject.RemoveMiniBullet(miniBullet.gameObject);
+		magicObject.RemoveMagic(miniBullet.gameObject);
 		await UniTask.DelayFrame(1);
 		// 未使用化可能
 		for (int i = 0, max = bulletList.Count; i < max; i++) {

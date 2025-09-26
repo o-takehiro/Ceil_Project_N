@@ -45,7 +45,7 @@ public class MagicUtility {
     /// <param name="side"></param>
     /// <param name="magicID"></param>
     public static void CreateMagic(eSideType side, eMagicType magicID, GameObject setPosition = null) {
-        MagicManager.instance.CreateMagic(side, magicID, setPosition);
+        UniTask task = MagicManager.instance.CreateMagic(side, magicID, setPosition);
     }
 
     /// <summary>
