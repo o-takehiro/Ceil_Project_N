@@ -45,7 +45,7 @@ public class MagicUtility {
     /// <param name="side"></param>
     /// <param name="magicID"></param>
     public static void CreateMagic(eSideType side, eMagicType magicID, GameObject setPosition = null) {
-        MagicManager.instance.CreateMagic(side, magicID, setPosition);
+        UniTask task = MagicManager.instance.CreateMagic(side, magicID, setPosition);
     }
 
     /// <summary>
@@ -66,8 +66,8 @@ public class MagicUtility {
     /// ñÇñ@çÌèú
     /// </summary>
     /// <param name="removeMagic"></param>
-    public static void RemoveMagic(MagicBase removeMagic) {
-        UniTask task = MagicManager.instance.UnuseMagicData(removeMagic);
+    public static async UniTask RemoveMagic(MagicBase removeMagic) {
+        await MagicManager.instance.UnuseMagicData(removeMagic);
     }
 
     /// <summary>
@@ -94,5 +94,13 @@ public class MagicUtility {
     /// <param name="action"></param>
     public static void ExecuteAllMagic(System.Action<MagicBase> action) {
         MagicManager.instance.ExecuteAllMagic(action);
+    }
+
+    /// <summary>
+    /// ñÇñ@ê∂ê¨íÜÇ©Ç«Ç§Ç©
+    /// </summary>
+    /// <returns></returns>
+    public static bool GetMagicGenerating() {
+        return MagicManager.instance.magicGenerate;
     }
 }

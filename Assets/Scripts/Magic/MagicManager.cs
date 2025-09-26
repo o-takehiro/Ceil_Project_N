@@ -16,6 +16,8 @@ using static PlayerMagicAttack;
 using static CommonModule;
 using static UnityEngine.EventSystems.EventTrigger;
 using System.Threading;
+using System.Drawing;
+using Cysharp.Threading.Tasks.Triggers;
 
 public class MagicManager : MonoBehaviour {
 	// 自身への参照
@@ -119,17 +121,17 @@ public class MagicManager : MonoBehaviour {
 	public void Update() {
 		UniTask task;
 		// デバッグ用
-		if (Input.GetKey(KeyCode.Z)) CreateMagic(eSideType.PlayerSide, eMagicType.Defense);
-		if (Input.GetKey(KeyCode.X)) CreateMagic(eSideType.PlayerSide, eMagicType.MiniBullet);
-		if (Input.GetKey(KeyCode.C)) CreateMagic(eSideType.EnemySide, eMagicType.Defense);
-		if (Input.GetKey(KeyCode.V)) CreateMagic(eSideType.EnemySide, eMagicType.MiniBullet);
-		if (Input.GetKey(KeyCode.N)) CreateMagic(eSideType.PlayerSide, eMagicType.SatelliteOrbital);
-		if (Input.GetKey(KeyCode.M)) CreateMagic(eSideType.PlayerSide, eMagicType.LaserBeam);
-		if (Input.GetKey(KeyCode.L)) CreateMagic(eSideType.PlayerSide, eMagicType.DelayBullet);
-		if (Input.GetKey(KeyCode.K)) CreateMagic(eSideType.PlayerSide, eMagicType.Healing);
-		if (Input.GetKey(KeyCode.J)) CreateMagic(eSideType.PlayerSide, eMagicType.Buff);
-		if (Input.GetKey(KeyCode.H)) CreateMagic(eSideType.PlayerSide, eMagicType.GroundShock);
-		if (Input.GetKey(KeyCode.G)) CreateMagic(eSideType.PlayerSide, eMagicType.BigBullet);
+		if (Input.GetKey(KeyCode.Z)) task = CreateMagic(eSideType.PlayerSide, eMagicType.Defense);
+		if (Input.GetKey(KeyCode.X)) task = CreateMagic(eSideType.PlayerSide, eMagicType.MiniBullet);
+		if (Input.GetKey(KeyCode.C)) task = CreateMagic(eSideType.EnemySide, eMagicType.Defense);
+		if (Input.GetKey(KeyCode.V)) task = CreateMagic(eSideType.EnemySide, eMagicType.MiniBullet);
+		if (Input.GetKey(KeyCode.N)) task = CreateMagic(eSideType.PlayerSide, eMagicType.SatelliteOrbital);
+		if (Input.GetKey(KeyCode.M)) task = CreateMagic(eSideType.PlayerSide, eMagicType.LaserBeam);
+		if (Input.GetKey(KeyCode.L)) task = CreateMagic(eSideType.PlayerSide, eMagicType.DelayBullet);
+		if (Input.GetKey(KeyCode.K)) task = CreateMagic(eSideType.PlayerSide, eMagicType.Healing);
+		if (Input.GetKey(KeyCode.J)) task = CreateMagic(eSideType.PlayerSide, eMagicType.Buff);
+		if (Input.GetKey(KeyCode.H)) task = CreateMagic(eSideType.PlayerSide, eMagicType.GroundShock);
+		if (Input.GetKey(KeyCode.G)) task = CreateMagic(eSideType.PlayerSide, eMagicType.BigBullet);
 		if (Input.GetKeyUp(KeyCode.Z)) task = MagicReset(eSideType.PlayerSide, eMagicType.Defense);
 		if (Input.GetKeyUp(KeyCode.X)) task = MagicReset(eSideType.PlayerSide, eMagicType.MiniBullet);
 		if (Input.GetKeyUp(KeyCode.C)) task = MagicReset(eSideType.EnemySide, eMagicType.Defense);
@@ -144,6 +146,7 @@ public class MagicManager : MonoBehaviour {
 		if (Input.GetKeyDown(KeyCode.B)) AnalysisMagicActivate();
 		if (Input.GetKeyDown(KeyCode.Q)) ToPlayerDamage(10000);
 		if (Input.GetKeyDown(KeyCode.E)) ToEnemyDamage(10000);
+		if (Input.GetKeyDown(KeyCode.R)) ExecuteAllMagic(magic => magic.UnuseSelf());
 
 		if (_activeMagic == null) return;
 
@@ -258,7 +261,10 @@ public class MagicManager : MonoBehaviour {
 	/// 魔法生成
 	/// </summary>
 	/// <param name="magicID"></param>
-	public void CreateMagic(eSideType sideType, eMagicType magicType, GameObject setObject = null) {
+	public async UniTask CreateMagic(eSideType sideType, eMagicType magicType, GameObject setObject = null) {
+		while (magicGenerate) {
+			await UniTask.Yield();
+		}
 		//Vector3 activePosition = setPosition ?? Vector3.zero;
 		int side = (int)sideType, magicID = (int)magicType;
 		if (side < 0 || magicID < 0) return;
@@ -279,6 +285,7 @@ public class MagicManager : MonoBehaviour {
 		//magicObject.GenerateMiniBullet();
 		// 魔法実行
 		MagicActivate(magicSide, sideType, magicType);
+
 		return;
 
 	}
@@ -344,13 +351,13 @@ public class MagicManager : MonoBehaviour {
 		//Debug.Log("0");
         // 未使用化可能まで待つ
         MagicObject magicObject = GetMagicObject(removeMagic.ID);
-		while (!magicObject.canUnuse || magicGenerate) {
-            //Debug.Log("MagicManager canUnuse" + magicObject.canUnuse);
-            await UniTask.Yield();
-        }
+		while (!magicObject.canUnuse) {
+			//Debug.Log(activeMagic + "canUnuse" + magicObject.canUnuse);
+			await UniTask.Yield();
+		}
 		//Debug.Log("1");
 		await UnuseMagicData(removeMagic);
-        _activeMagicIDList[side][magicID] = -1;
+		_activeMagicIDList[side][magicID] = -1;
 		//Debug.Log("_activeMagicIDList[side][magicID] = activeMagic;");
 		_isResetMagic[side][magicID] = false;
     }

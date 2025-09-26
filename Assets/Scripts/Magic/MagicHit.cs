@@ -45,7 +45,7 @@ public class MagicHit : MagicObject {
 					task = EffectManager.Instance.PlayEffect(eEffectType.Hit, thisPosition);
 					SoundManager.Instance.PlaySE(10);
 				}
-				parentObject.RemoveMiniBullet(gameObject);
+				parentObject.RemoveMagic(gameObject);
 				break;
 			case eMagicType.SatelliteOrbital:
 				GiveDamage(otherSide, 10);
@@ -59,7 +59,7 @@ public class MagicHit : MagicObject {
 					task = EffectManager.Instance.PlayEffect(eEffectType.Hit, thisPosition);
 					SoundManager.Instance.PlaySE(10);
 				}
-				parentObject.RemoveMiniBullet(gameObject);
+				parentObject.RemoveMagic(gameObject);
 				break;
 			case eMagicType.LaserBeam:
 				if (otherMagic == eMagicType.Defense) return;
@@ -79,7 +79,7 @@ public class MagicHit : MagicObject {
 					task = EffectManager.Instance.PlayEffect(eEffectType.Hit, thisPosition);
 					SoundManager.Instance.PlaySE(10);
 				}
-                parentObject.RemoveMiniBullet(gameObject);
+                parentObject.RemoveMagic(gameObject);
                 break;
 			case eMagicType.GroundShock:
 				if (otherSide == eSideType.PlayerSide && !GroundCheck.IsGrounded) return;
@@ -95,7 +95,7 @@ public class MagicHit : MagicObject {
 					task = EffectManager.Instance.PlayEffect(eEffectType.BigHit, thisPosition);
 					SoundManager.Instance.PlaySE(10);
 				}
-                parentObject.RemoveMiniBullet(gameObject);
+                parentObject.RemoveMagic(gameObject);
                 break;
 		}
 

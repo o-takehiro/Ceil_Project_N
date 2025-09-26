@@ -31,7 +31,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.4, y: 1.4, z: 1.4}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 4302591990848568453}
@@ -102,9 +102,13 @@ MonoBehaviour:
   _originDefense: {fileID: 0}
   _originMiniBullet: {fileID: 0}
   _originBeam: {fileID: 0}
+  _originBuff: {fileID: 0}
+  _originGroundShock: {fileID: 0}
   defenseObject: {fileID: 0}
   miniBulletObjects: []
   beamObject: {fileID: 0}
+  buffObject: {fileID: 0}
+  groundShockObject: {fileID: 0}
   _useObjectRoot: {fileID: 0}
   _unuseObjectRoot: {fileID: 0}
   _unuseMagicRoot: {fileID: 0}
@@ -158,8 +162,8 @@ SphereCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 1.65
-  m_Center: {x: 0, y: 1.2, z: 0}
+  m_Radius: 2.35
+  m_Center: {x: 0, y: 1.6, z: 0}
 --- !u!1001 &3102127315640242923
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -170,15 +174,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1205021609740332654, guid: b99922c2f59b1a542bdd06ae8bee47ae, type: 3}
       propertyPath: m_LocalScale.x
-      value: 1.2
+      value: 1.7
       objectReference: {fileID: 0}
     - target: {fileID: 1205021609740332654, guid: b99922c2f59b1a542bdd06ae8bee47ae, type: 3}
       propertyPath: m_LocalScale.y
-      value: 1.2
+      value: 1.7
       objectReference: {fileID: 0}
     - target: {fileID: 1205021609740332654, guid: b99922c2f59b1a542bdd06ae8bee47ae, type: 3}
       propertyPath: m_LocalScale.z
-      value: 1.2
+      value: 1.7
       objectReference: {fileID: 0}
     - target: {fileID: 1205021609740332654, guid: b99922c2f59b1a542bdd06ae8bee47ae, type: 3}
       propertyPath: m_LocalPosition.x

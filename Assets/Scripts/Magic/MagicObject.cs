@@ -12,6 +12,8 @@ using System.Threading;
 using UnityEditor;
 using UnityEngine;
 
+using static MagicUtility;
+
 public class MagicObject : MonoBehaviour {
 	// ユニークのID
 	public int ID { get; private set; } = -1;
@@ -193,10 +195,10 @@ public class MagicObject : MonoBehaviour {
 	}
 
 	/// <summary>
-	/// 特定の小型弾幕の削除
+	/// 特定の魔法の削除
 	/// </summary>
 	/// <param name="removeObject"></param>
-	public void RemoveMiniBullet(GameObject gameObject) {
+	public void RemoveMagic(GameObject gameObject) {
 		Transform removeObject = gameObject.transform;
 		removeObject.position = Vector3.zero;
 		removeObject.rotation = Quaternion.identity;
@@ -205,12 +207,26 @@ public class MagicObject : MonoBehaviour {
 	}
 
 	/// <summary>
-	/// 全ての小型弾幕の削除
+	/// 全ての魔法の削除
 	/// </summary>
 	/// <param name="removeObject"></param>
-	public void RemoveMiniBulletAll() {
-		for (int i = 0, max = miniBulletObjects.Count; i < max; i++) {
-			miniBulletObjects[i].transform.SetParent(_unuseMagicRoot);
+	public void RemoveMagicAll() {
+		if (defenseObject != null) {
+			RemoveMagic(defenseObject);
+		}
+		if (miniBulletObjects != null) {
+			for (int i = 0, max = miniBulletObjects.Count; i < max; i++) {
+				RemoveMagic(miniBulletObjects[i]);
+			}
+		}
+		if (beamObject != null) {
+			RemoveMagic(beamObject);
+		}
+		if (buffObject != null) {
+			RemoveMagic(buffObject);
+		}
+		if (groundShockObject != null) {
+			RemoveMagic(groundShockObject);
 		}
 	}
 
@@ -218,6 +234,7 @@ public class MagicObject : MonoBehaviour {
 	/// 片付け
 	/// </summary>
 	public void Teardown() {
+		RemoveMagicAll();
 		ID = -1;
 		gameObject.transform.position = Vector3.zero;
 		gameObject.transform.rotation = Quaternion.identity;
