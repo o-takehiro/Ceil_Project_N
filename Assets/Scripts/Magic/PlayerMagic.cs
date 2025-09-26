@@ -520,12 +520,13 @@ public class PlayerMagic : MagicBase {
 		if (magicObject == null) return;
 		if (_groundShockOn) return;
 		_groundShockOn = true;
+		//Debug.Log("GroundShockOn");
 		// 未使用化不可能
 		magicObject.canUnuse = false;
 		magicObject.transform.position = GetPlayerPosition();
 		magicObject.GenerateGroundShock();
 		// MP消費
-		ToPlayerMPDamage(20);
+		ToPlayerMPDamage(15);
 		// SE再生
 		SoundManager.Instance.PlaySE(14);
 		// 待機用処理関数
@@ -539,6 +540,7 @@ public class PlayerMagic : MagicBase {
 		// エフェクト再生
 		await EffectManager.Instance.PlayEffect(eEffectType.GroundShock, GetPlayerPosition());
 		_groundShockOn = false;
+		//Debug.Log("GroundShockOff");
 		// 未使用化可能
 		magicObject.canUnuse = true;
 	}
