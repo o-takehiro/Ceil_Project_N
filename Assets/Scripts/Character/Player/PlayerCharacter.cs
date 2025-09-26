@@ -148,6 +148,8 @@ public class PlayerCharacter : CharacterBase {
     /// <param name="slotIndex"></param>
     public void RequestStartCasting(int slotIndex) => _magic.StartCasting(slotIndex);
 
+    public void RequestReplaceMagic(int slotIndex) => _magic.ConfirmReplaceMagic(slotIndex);
+
 
     // カメラのロックオン受付
     public void RequestLookOn() {
