@@ -36,7 +36,7 @@ public class MagicHit : MagicObject {
 			case eMagicType.Defense:
 				break;
 			case eMagicType.MiniBullet:
-				GiveDamage(otherSide, 10);
+				GiveDamage(otherSide, 5);
 				if (otherSide == eSideType.MagicSide) {
 					task = EffectManager.Instance.PlayEffect(eEffectType.Elimination, thisPosition);
 					SoundManager.Instance.PlaySE(9);
