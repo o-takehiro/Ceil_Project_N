@@ -91,6 +91,8 @@ public class SetMagicUI : MenuBase {
     /// </summary>
     public void OpenUI() {
         magicImage.gameObject.SetActive(true);
+        // SEçƒê∂
+        SoundManager.Instance.PlaySE(22);
     }
 
     /// <summary>
@@ -98,6 +100,8 @@ public class SetMagicUI : MenuBase {
     /// </summary>
     public void CloseUI() {
         magicImage.gameObject.SetActive(false);
+        // SEçƒê∂
+        SoundManager.Instance.PlaySE(21);
     }
 
     /// <summary>

@@ -30,6 +30,7 @@ public sealed class PlayerInput : MonoBehaviour {
     /// <param name="ctx"></param>
     public void OnJump(InputAction.CallbackContext ctx) {
         if (_character == null) return;
+        if (!CanReceiveInput) return;
         if (ctx.performed) _character.RequestJump();
     }
 
@@ -38,7 +39,8 @@ public sealed class PlayerInput : MonoBehaviour {
     /// </summary>
     /// <param name="ctx"></param>
     public void OnAttack(InputAction.CallbackContext ctx) {
-        if (_character == null || !CanReceiveInput) return;
+        if (_character == null) return;
+        if (!CanReceiveInput) return;
         if (ctx.performed) _character.RequestAttack();
     }
 
@@ -117,7 +119,8 @@ public sealed class PlayerInput : MonoBehaviour {
     /// </summary>
     /// <param name="ctx"></param>
     public void OnAnalysis(InputAction.CallbackContext ctx) {
-        if (ctx.performed || !CanReceiveInput) {
+        if (!CanReceiveInput) return;
+        if (ctx.performed) {
             _character.RequestAnalysis();
         }
         else if (ctx.canceled) {
@@ -130,6 +133,7 @@ public sealed class PlayerInput : MonoBehaviour {
     /// </summary>  
     /// <param name="ctx"></param>
     public void OnMagicOpen(InputAction.CallbackContext ctx) {
+        if (!CanReceiveInput) return;
         if (ctx.performed) {
             // 魔法リスト表示
             _character.RequestOpenMagicUI();

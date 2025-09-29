@@ -246,7 +246,6 @@ public class PlayerCharacter : CharacterBase {
         _magic.ResetMagic();
     }
 
-
     /// <summary>
     /// プレイヤーの片付け
     /// </summary>
