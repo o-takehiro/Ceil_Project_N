@@ -306,6 +306,7 @@ public class PlayerMagicAttack {
     /// </summary>
     public void ResetMagic() {
         InitializeLists();
+        SetMagicUI.Instance.ResetMagicUI();
     }
 
     /// <summary>
