@@ -45,6 +45,7 @@ public class MenuEnding : MenuBase {
         _pressButton.Setup(setColor);
         await FadeManager.Instance.FadeIn(FadeType.White);
         SoundManager.Instance.PlayBGM(_currentBGMIndex);
+        await _pressButton.FadeIn();
         UniTask task = _pressButton.Execute();
         _token = this.GetCancellationTokenOnDestroy();
         while (true) {
