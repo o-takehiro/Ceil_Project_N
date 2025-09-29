@@ -613,7 +613,7 @@ public class PlayerMagic : MagicBase {
 		magicObject.GenerateGroundShock();
 		magicObject.transform.position = GetPlayerPosition();
 		// MP消費
-		ToPlayerMPDamage(15);
+		ToPlayerMPDamage(25);
 		// SE再生
 		SoundManager.Instance.PlaySE(14);
 		// エフェクト再生

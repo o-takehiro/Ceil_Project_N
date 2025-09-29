@@ -119,6 +119,7 @@ public class MagicManager : MonoBehaviour {
     }
 
 	public void Update() {
+		/*
 		UniTask task;
 		// デバッグ用
 		if (Input.GetKey(KeyCode.Z)) task = CreateMagic(eSideType.PlayerSide, eMagicType.Defense);
@@ -147,7 +148,7 @@ public class MagicManager : MonoBehaviour {
 		if (Input.GetKeyDown(KeyCode.Q)) ToPlayerDamage(10000);
 		if (Input.GetKeyDown(KeyCode.E)) ToEnemyDamage(10000);
 		if (Input.GetKeyDown(KeyCode.R)) ExecuteAllMagic(magic => magic.UnuseSelf());
-
+		*/
 		if (_activeMagic == null) return;
 
 		for (int sideCount = 0; sideCount < (int)eSideType.Max - 1; sideCount++) {
