@@ -12,7 +12,6 @@ public class MenuTitle : MenuBase {
         // フェード時の色を設定する。
         var fadeColor = FadeType.White;
         await FadeManager.Instance.FadeIn(fadeColor);
-        SoundManager.Instance.PlayBGM(0);
         // 何かが押されるまで待つ
         /*
          * 後にInputSystem対応予定

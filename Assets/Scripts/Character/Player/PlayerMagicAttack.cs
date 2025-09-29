@@ -269,7 +269,7 @@ public class PlayerMagicAttack {
         if (_pendingMagic == eMagicType.Invalid) return;
         ReplaceMagic(slotIndex, _pendingMagic);
         // SEÄ¶
-        SoundManager.Instance.PlaySE(18);
+        SoundManager.Instance.PlaySE(19);
         _pendingMagic = eMagicType.Invalid; // ‘Ò‚¿‰ğœ
         SetMagicUI.Instance.CloseChangeMagicUI();
 

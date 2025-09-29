@@ -36,7 +36,7 @@ public class goalObject : StageObjectBase {
             CharacterUtility.ToPlayerAddMP((int)CharacterUtility.GetPlayer().maxMP);
 
             // SEÄ¶
-            SoundManager.Instance.PlaySE(20);
+            SoundManager.Instance.PlaySE(21);
             // ƒJƒƒ‰ƒ‚[ƒVƒ‡ƒ“
             await CameraManager.Instance.FocusOnObject(_goalObjectRoot.transform);
             //CharacterUtility.ResumePlayer();
