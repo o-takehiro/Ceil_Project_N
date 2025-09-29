@@ -6,13 +6,9 @@
  */
 
 using Cysharp.Threading.Tasks;
-using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
-using UnityEditor;
 using UnityEngine;
-
-using static MagicUtility;
 
 public class MagicObject : MonoBehaviour {
 	// ÉÜÉjÅ[ÉNÇÃID
