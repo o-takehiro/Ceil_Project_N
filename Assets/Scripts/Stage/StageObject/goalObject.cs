@@ -37,6 +37,7 @@ public class goalObject : StageObjectBase {
 
             // SEÄ¶
             SoundManager.Instance.PlaySE(21);
+            UniTask task = MagicManager.instance.MagicReset(eSideType.PlayerSide, eMagicType.Defense);
             // ƒJƒƒ‰ƒ‚[ƒVƒ‡ƒ“
             await CameraManager.Instance.FocusOnObject(_goalObjectRoot.transform);
             //CharacterUtility.ResumePlayer();
