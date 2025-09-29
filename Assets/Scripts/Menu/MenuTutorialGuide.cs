@@ -66,6 +66,7 @@ public class MenuTutorialGuide : MenuBase {
         PrevPage();
     }
     public void NextPage() {
+        SoundManager.Instance.PlaySE(18);
         if(_pageNum + 1 == _MAX_PAGE_NUM) {
             CloseMenu();
             return;
@@ -76,7 +77,8 @@ public class MenuTutorialGuide : MenuBase {
     }
 
     public void PrevPage() {
-        if(_pageNum <= 0) return;
+        SoundManager.Instance.PlaySE(18);
+        if (_pageNum <= 0) return;
         _pageNum--;
         _guideImage.sprite = _guideSpriteList[_pageNum];
         _pageNumText.text = (_pageNum + 1) + " / " + _MAX_PAGE_NUM.ToString();

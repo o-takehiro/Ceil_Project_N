@@ -18,6 +18,7 @@ public class PartMainGame : PartBase {
     private StageManager _stageManager = null;
     [SerializeField] private goalObject _goalObject;
     private bool _isTutorial = false;
+    private int _currentStageBGM = -1;
 
     /// <summary>
     /// èâä˙âªèàóù
@@ -38,6 +39,7 @@ public class PartMainGame : PartBase {
         await MenuManager.Instance.Get<SetMagicUI>("Prefabs/Menu/CanvasMagicUI").Initialize();
         await MenuManager.Instance.Get<MenuTutorialGuide>("Prefabs/Menu/CanvasTutorialImage").Initialize();
         _isTutorial = true;
+        _currentStageBGM = 1;
         await UniTask.CompletedTask;
     }
 
@@ -62,7 +64,7 @@ public class PartMainGame : PartBase {
     public override async UniTask Execute() {
 
         await FadeManager.Instance.FadeIn();
-        SoundManager.Instance.PlayBGM(1);
+        SoundManager.Instance.PlayBGM(_currentStageBGM);
         if (_isTutorial) {
             _isTutorial = false;
             await MenuManager.Instance.Get<MenuTutorialGuide>().Open();
@@ -112,6 +114,7 @@ public class PartMainGame : PartBase {
     private async UniTask HandleGameEndOrTransition() {
         // éÄÇÒÇæèÍçá
         if (MageAnimationEvents.isGameOver) {
+            _currentStageBGM = 1;
             await PartManager.Instance.TransitionPart(eGamePart.Ending);
             return;
         }
@@ -127,21 +130,25 @@ public class PartMainGame : PartBase {
     private async UniTask HandleStageTransition(eStageState stage) {
         switch (stage) {
             case eStageState.Tutorial:
+                _currentStageBGM = 2;
                 await FadeManager.Instance.FadeOut();
                 await StageManager.Instance.TransitionStage(eStageState.Stage1);
                 await PartManager.Instance.TransitionPart(eGamePart.MainGame);
                 break;
             case eStageState.Stage1:
+                _currentStageBGM = 3;
                 await FadeManager.Instance.FadeOut();
                 await StageManager.Instance.TransitionStage(eStageState.Stage2);
                 await PartManager.Instance.TransitionPart(eGamePart.MainGame);
                 break;
             case eStageState.Stage2:
+                _currentStageBGM = 4;
                 await FadeManager.Instance.FadeOut();
                 await StageManager.Instance.TransitionStage(eStageState.Stage3);
                 await PartManager.Instance.TransitionPart(eGamePart.MainGame);
                 break;
             case eStageState.Stage3:
+                _currentStageBGM = 1;
                 await FadeManager.Instance.FadeOut();
                 PlayerMagicReset();
                 UnusePlayer();
