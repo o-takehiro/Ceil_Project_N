@@ -122,6 +122,7 @@ public class PartMainGame : PartBase {
         // ƒS[ƒ‹‚µ‚½ê‡
         eStageState stage = StageManager.Instance.GetCurrentStageState();
         await HandleStageTransition(stage);
+        SoundManager.Instance.StopBGM();
     }
 
     /// <summary>
