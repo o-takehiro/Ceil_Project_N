@@ -45,6 +45,9 @@ public class EnemyMagic : MagicBase {
 	private bool _buffOn = false;
 	private bool _groundShockOn = false;
 
+	// 弾リセット確認用フラグ
+	private bool _bulletResetCheck = false;
+
 	// 衛星の半径
 	private const float _SATELLITE_RADIUS = 4;
 	// 衛星弾の最大数
@@ -59,11 +62,11 @@ public class EnemyMagic : MagicBase {
 	private const float _DELAY_BULLET_RADIUS = 30;
 
 	// 小型弾幕のリスト
-	private List<GameObject> bulletList = new List<GameObject>();
+	private List<GameObject> _bulletList = new List<GameObject>();
 	// 衛星軌道のリスト
-	private List<GameObject> satelliteList = new List<GameObject>();
+	private List<GameObject> _satelliteList = new List<GameObject>();
 	// 時間差弾のリスト
-	private List<GameObject> delayBulletList = new List<GameObject>();
+	private List<GameObject> _delayBulletList = new List<GameObject>();
 
 	// カメラ
 	Transform camera = Camera.main.transform;
@@ -89,7 +92,9 @@ public class EnemyMagic : MagicBase {
 	/// </summary>
 	public override void DefenseMagic(MagicObject magicObject) {
 		if (magicObject == null) return;
-        magicObject.canUnuse = true;
+		// 生成完了
+		magicObject.generateFinish = true;
+		magicObject.canUnuse = true;
         Transform defense = magicObject.GenerateDefense().transform;
 		defense.position = GetEnemyPosition();
 		defense.rotation = GetEnemyRotation();
@@ -103,11 +108,13 @@ public class EnemyMagic : MagicBase {
 	/// </summary>
 	public override void MiniBulletMagic(MagicObject magicObject) {
 		if (magicObject == null) return;
+		// 生成完了
+		magicObject.generateFinish = true;
 		if (_bulletCoolTime < 0) {
 			// 未使用化不可能
 			magicObject.canUnuse = false;
 			Transform bullet = magicObject.GenerateMiniBullet().transform;
-			bulletList.Add(bullet.gameObject);
+			_bulletList.Add(bullet.gameObject);
 			bullet.transform.position = GetEnemyCenterPosition();
 			bullet.transform.rotation = GetEnemyRotation();
 			// SE再生
@@ -138,10 +145,17 @@ public class EnemyMagic : MagicBase {
 		SoundManager.Instance.PlaySE(9);
 		magicObject.RemoveMagic(miniBullet.gameObject);
 		await UniTask.DelayFrame(1);
-		// 未使用化可能
-		for (int i = 0, max = bulletList.Count; i < max; i++) {
-			if (bulletList[i].activeInHierarchy) return;
+		// リセットチェックがされていなければチェック
+		if (_bulletResetCheck) return;
+		_bulletResetCheck = true;
+		// すべてが非表示になるまで待機
+		while (!UnuseCheck(_bulletList)) {
+			await UniTask.Yield(PlayerLoopTiming.Update, useMagicObject.token);
 		}
+		// チェック終了
+		_bulletResetCheck = false;
+		// リストをクリア
+		_bulletList.Clear();
 		magicObject.canUnuse = true;
 	}
 	/// <summary>
@@ -152,11 +166,13 @@ public class EnemyMagic : MagicBase {
 		if (magicObject == null) return;
 		if (_satelliteOn) return;
 		_satelliteOn = true;
+		// 生成完了
+		magicObject.generateFinish = true;
+		// 未使用化不可能
+		magicObject.canUnuse = false;
 		for (int i = 0; i < _SATELLITE_MAX; i++) {
-			// 未使用化不可能
-			magicObject.canUnuse = false;
 			Transform bullet = magicObject.GenerateMiniBullet().transform;
-			satelliteList.Add(bullet.gameObject);
+			_satelliteList.Add(bullet.gameObject);
 			// 衛星配置
 			switch (i) {
 				case 0:
@@ -198,22 +214,14 @@ public class EnemyMagic : MagicBase {
 			satelliteRotation.y += _bulletSpeed * Time.deltaTime;
 			magicObject.transform.eulerAngles = satelliteRotation;
 			await UniTask.DelayFrame(1, PlayerLoopTiming.Update, useMagicObject.token);
-			loop = LoopChange();
+			loop = !UnuseCheck(_satelliteList);
 			if (GetEnemy() == null) loop = false;
 		}
 		_satelliteOn = false;
+		// リストをクリア
+		_satelliteList.Clear();
 		// 未使用化可能
 		magicObject.canUnuse = true;
-	}
-	/// <summary>
-	/// 衛星軌道魔法のループ抜け処理
-	/// </summary>
-	/// <returns></returns>
-	private bool LoopChange() {
-		for (int i = 0, max = satelliteList.Count; i < max; i++) {
-			if (satelliteList[i].activeInHierarchy) return true;
-		}
-		return false;
 	}
 	/// <summary>
 	/// ビーム(横)魔法
@@ -224,6 +232,8 @@ public class EnemyMagic : MagicBase {
 		if (_laserBeamOn) return;
 		UniTask task;
 		_laserBeamOn = true;
+		// 生成完了
+		magicObject.generateFinish = true;
 		// 未使用化不可能
 		magicObject.canUnuse = false;
 		// ビームが相手の防御魔法内で生成されるならその前に終了
@@ -325,11 +335,13 @@ public class EnemyMagic : MagicBase {
 		if (magicObject == null) return;
 		if (_delayBulletOn) return;
 		_delayBulletOn = true;
+		// 生成完了
+		magicObject.generateFinish = true;
+		// 未使用化不可能
+		magicObject.canUnuse = false;
 		for (int i = 0; i < _DELAY_BULLET_MAX; i++) {
-			// 未使用化不可能
-			magicObject.canUnuse = false;
 			Transform bullet = magicObject.GenerateMiniBullet().transform;
-			delayBulletList.Add(bullet.gameObject);
+			_delayBulletList.Add(bullet.gameObject);
 			// 衛星配置
 			switch (i) {
 				case 0:
@@ -384,10 +396,12 @@ public class EnemyMagic : MagicBase {
 		magicObject.RemoveMagic(delayBullet.gameObject);
 		await UniTask.DelayFrame(1);
 		// 未使用化可能
-		for (int i = 0, max = bulletList.Count; i < max; i++) {
-			if (bulletList[i].activeInHierarchy) return;
+		for (int i = 0, max = _bulletList.Count; i < max; i++) {
+			if (_bulletList[i].activeInHierarchy) return;
 		}
 		_delayBulletOn = false;
+		// リストをクリア
+		_delayBulletList.Clear();
 		magicObject.canUnuse = true;
 	}
 	/// <summary>
@@ -398,6 +412,8 @@ public class EnemyMagic : MagicBase {
 		if (magicObject == null) return;
 		if (_healingOn) return;
 		_healingOn = true;
+		// 生成完了
+		magicObject.generateFinish = true;
 		// 未使用化不可能
 		magicObject.canUnuse = false;
 		// SE再生
@@ -427,6 +443,8 @@ public class EnemyMagic : MagicBase {
 		if (magicObject == null) return;
 		if (_buffOn) return;
 		_buffOn = true;
+		// 生成完了
+		magicObject.generateFinish = true;
 		// 未使用化不可能
 		magicObject.canUnuse = false;
 		// SE再生
@@ -454,6 +472,8 @@ public class EnemyMagic : MagicBase {
 		if (magicObject == null) return;
 		if (_groundShockOn) return;
 		_groundShockOn = true;
+		// 生成完了
+		magicObject.generateFinish = true;
 		// 未使用化不可能
 		magicObject.canUnuse = false;
 		magicObject.transform.position = GetEnemyPosition();
@@ -480,9 +500,11 @@ public class EnemyMagic : MagicBase {
 	/// <param name="magicObject"></param>
 	public override void BigBulletMagic(MagicObject magicObject) {
 		if (magicObject == null) return;
+		// 生成完了
+		magicObject.generateFinish = true;
+		// 未使用化不可能
+		magicObject.canUnuse = false;
 		if (_bigBulletCoolTime < 0) {
-			// 未使用化不可能
-			magicObject.canUnuse = false;
 			Vector3 activePos;
 			if (magicActiveObject == null) {
 				activePos = GetPlayerCenterPosition();
@@ -491,7 +513,7 @@ public class EnemyMagic : MagicBase {
 				activePos = magicActiveObject.transform.position;
 			}
 			Transform bullet = magicObject.GenerateMiniBullet().transform;
-			bulletList.Add(bullet.gameObject);
+			_bulletList.Add(bullet.gameObject);
 			bullet.transform.position = activePos;
 			bullet.transform.rotation = GetPlayerRotation();
 			bullet.transform.localScale *= 4;
@@ -526,8 +548,8 @@ public class EnemyMagic : MagicBase {
 		magicObject.RemoveMagic(miniBullet.gameObject);
 		await UniTask.DelayFrame(1);
 		// 未使用化可能
-		for (int i = 0, max = bulletList.Count; i < max; i++) {
-			if (bulletList[i].activeInHierarchy) return;
+		for (int i = 0, max = _bulletList.Count; i < max; i++) {
+			if (_bulletList[i].activeInHierarchy) return;
 		}
 		magicObject.canUnuse = true;
 	}
@@ -550,5 +572,16 @@ public class EnemyMagic : MagicBase {
 			magicObject.transform.position = GetEnemyPosition();
 			await UniTask.Yield(PlayerLoopTiming.Update, useMagicObject.token);
 		}
+	}
+	/// <summary>
+	/// リスト内のオブジェクトすべてが非表示状態かどうか
+	/// </summary>
+	/// <returns></returns>
+	private bool UnuseCheck(List<GameObject> objectList) {
+		for (int i = 0, max = objectList.Count; i < max; i++) {
+			// 一つでも表示状態の物があればfalse
+			if (objectList[i].activeInHierarchy) return false;
+		}
+		return true;
 	}
 }
