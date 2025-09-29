@@ -119,7 +119,7 @@ public class PlayerMagic : MagicBase {
 	/// </summary>
 	public override void MiniBulletMagic(MagicObject magicObject) {
 		if (magicObject == null) return;
-		Debug.Log("BulletStart");
+		//Debug.Log("BulletStart");
 		// 生成完了
 		magicObject.generateFinish = true;
 		// 未使用化不可能
@@ -132,35 +132,35 @@ public class PlayerMagic : MagicBase {
 	/// </summary>
 	/// <returns></returns>
 	private async UniTask MiniBulletExecute(MagicObject magicObject) {
-		Debug.Log("MiniBulletExecute");
+		//Debug.Log("MiniBulletExecute");
 		do {
 			if (_bulletCoolTime < 0) {
-				Debug.Log("bulletGenerate");
+				//Debug.Log("bulletGenerate");
 				_bulletGenerate = true;
 				// 弾が出る位置
 				Vector3 activePos;
 				if (magicActiveObject == null) {
-					Debug.Log("GetPlayerPositionStart");
+					//Debug.Log("GetPlayerPositionStart");
 					activePos = GetPlayerCenterPosition();
-					Debug.Log("GetPlayerPositionEnd");
+					//Debug.Log("GetPlayerPositionEnd");
 				}
 				else {
 					activePos = magicActiveObject.transform.position;
 				}
 				// 弾生成
-				Debug.Log("GenerateBulletStart");
+				//Debug.Log("GenerateBulletStart");
 				Transform bullet = magicObject.GenerateMiniBullet().transform;
-				Debug.Log("GenerateBulletEnd");
+				//Debug.Log("GenerateBulletEnd");
 				_bulletList.Add(bullet.gameObject);
 				bullet.transform.position = activePos;
 				bullet.transform.rotation = GetPlayerRotation();
-				Debug.Log("GetPlayerRotation");
+				//Debug.Log("GetPlayerRotation");
 				// MP消費
 				ToPlayerMPDamage(1);
-				Debug.Log("MPDamage");
+				//Debug.Log("MPDamage");
 				// SE再生
 				SoundManager.Instance.PlaySE(11);
-				Debug.Log("PlaySE1");
+				//Debug.Log("PlaySE1");
 				// 移動
 				UniTask task = MiniBulletMove(magicObject, bullet);
 				_bulletCoolTime = _bulletCoolTimeMax;
@@ -187,7 +187,7 @@ public class PlayerMagic : MagicBase {
 		while (distance < _bulletDistanceMax && miniBullet.gameObject.activeInHierarchy) {
 			// 弾とプレイヤーの距離
 			distance = Vector3.Distance(miniBullet.position, GetPlayerCenterPosition());
-			Debug.Log("distance");
+			//Debug.Log("distance");
 			// 敵がいるなら常に敵のほうに向く
 			if (GetEnemy() != null)
 				miniBullet.rotation = GetOtherDirection(miniBullet.position);
@@ -197,13 +197,13 @@ public class PlayerMagic : MagicBase {
 		}
 		// エフェクト再生
 		UniTask task = EffectManager.Instance.PlayEffect(eEffectType.Elimination, miniBullet.position);
-		Debug.Log("PlayEffect");
+		//Debug.Log("PlayEffect");
 		// SE再生
 		SoundManager.Instance.PlaySE(9);
-		Debug.Log("PlaySE2");
+		//Debug.Log("PlaySE2");
 		// 魔法削除
 		magicObject.RemoveMagic(miniBullet.gameObject);
-		Debug.Log("RemoveMagic");
+		//Debug.Log("RemoveMagic");
 		// バグ回避用一時待機
 		await UniTask.DelayFrame(1);
 		// リセットチェックがされていなければチェック
@@ -219,7 +219,7 @@ public class PlayerMagic : MagicBase {
 		_bulletList.Clear();
 		// 未使用化可能
 		magicObject.canUnuse = true;
-		Debug.Log("Bullet canUnuse");
+		//Debug.Log("Bullet canUnuse");
 		_bulletGenerate = false;
 		//Debug.Log("PlayerMagic canUnuse" + magicObject.canUnuse);
 	}

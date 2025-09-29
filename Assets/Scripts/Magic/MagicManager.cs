@@ -269,7 +269,7 @@ public class MagicManager : MonoBehaviour {
 		int side = (int)sideType, magicID = (int)magicType;
 		if (side < 0 || magicID < 0) return;
 		if (_activeMagicIDList[side][magicID] >= 0) return;
-		Debug.Log("_activeMagicIDList[side][magicID]" + _activeMagicIDList[side][magicID] + sideType + magicType);
+		//Debug.Log("_activeMagicIDList[side][magicID]" + _activeMagicIDList[side][magicID] + sideType + magicType);
 		magicGenerate = true;
 		// データを使用状態にする
 		_activeMagicIDList[side][magicID] = UseMagicData(side);
@@ -278,9 +278,9 @@ public class MagicManager : MonoBehaviour {
 		// オブジェクトを生成する
 		MagicObject magicObject = GetMagicObject(_activeMagicIDList[side][magicID]);
 		if (magicObject == null) {
-			Debug.Log("CreateMagicObject");
+			//Debug.Log("CreateMagicObject");
 			UseMagicObject(_activeMagicIDList[side][magicID], magicType);
-			Debug.Log("CreateComplete");
+			//Debug.Log("CreateComplete");
 		}
 		// オブジェクト内のオブジェクト生成
 		//magicObject.GenerateMiniBullet();
@@ -367,7 +367,7 @@ public class MagicManager : MonoBehaviour {
 		//Debug.Log("1");
 		await UnuseMagicData(removeMagic);
 		_activeMagicIDList[side][magicID] = -1;
-		Debug.Log("_activeMagicIDList[side][magicID] = activeMagic;");
+		//Debug.Log("_activeMagicIDList[side][magicID] = activeMagic;");
 		_isResetMagic[side][magicID] = false;
     }
 
