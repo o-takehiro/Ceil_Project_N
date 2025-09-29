@@ -19,7 +19,6 @@ public class PressButtonAlpha : MonoBehaviour {
 
     public async UniTask Execute() {
         _token = this.GetCancellationTokenOnDestroy();
-        await FadeIn();
         while (true) {
             if (_switchFade) {
                 await FadeOut();

@@ -18,6 +18,7 @@ public class MenuTitle : MenuBase {
         setColor.a = 0;
         _pressButton.Setup(setColor);
         await FadeManager.Instance.FadeIn(fadeColor);
+        await _pressButton.FadeIn();
         UniTask task = _pressButton.Execute();
         // ‰½‚©‚ª‰Ÿ‚³‚ê‚é‚Ü‚Å‘Ò‚Â
         /*
