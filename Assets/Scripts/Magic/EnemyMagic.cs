@@ -366,9 +366,9 @@ public class EnemyMagic : MagicBase {
 			bullet.localScale *= 10;
 			_delayBulletCoolTime = _delayBulletCoolTimeMax;
 			// SEÄ¶
-			SoundManager.Instance.PlaySE(13);
 			UniTask task = DelayBulletMove(magicObject, bullet);
 		}
+		SoundManager.Instance.PlaySE(13);
 	}
 	/// <summary>
 	/// ŠÔ·–‚–@‚ÌˆÚ“®
