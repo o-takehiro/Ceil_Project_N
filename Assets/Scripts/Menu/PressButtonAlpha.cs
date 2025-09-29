@@ -10,16 +10,18 @@ public class PressButtonAlpha : MonoBehaviour {
     private Image _fadeImage = null;
 
     private bool _switchFade = false;
+    private bool _isClose = false;
 
     private const float _DEFAULT_FADE_DURATION = 1.0f;
     private CancellationToken _token;
     public void Setup(Color setColor) {
         _fadeImage.color = setColor;
+        _isClose = false;
     }
 
     public async UniTask Execute() {
         _token = this.GetCancellationTokenOnDestroy();
-        while (true) {
+        while (!_isClose) {
             if (_switchFade) {
                 await FadeOut();
             } else {
@@ -27,6 +29,10 @@ public class PressButtonAlpha : MonoBehaviour {
             }
             await UniTask.DelayFrame(1, PlayerLoopTiming.Update, _token);
         }
+    }
+
+    public void CloseMenu() {
+        _isClose = true;
     }
     /// <summary>
     /// フェードアウト

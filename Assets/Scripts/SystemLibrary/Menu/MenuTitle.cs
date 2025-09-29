@@ -31,6 +31,7 @@ public class MenuTitle : MenuBase {
         }
         await FadeManager.Instance.FadeOut(fadeColor);
         SoundManager.Instance.StopBGM();
+        _pressButton.CloseMenu();
         await Close();
     }
 }

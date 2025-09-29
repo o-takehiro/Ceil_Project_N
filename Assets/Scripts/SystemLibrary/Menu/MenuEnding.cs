@@ -55,6 +55,7 @@ public class MenuEnding : MenuBase {
         }
         SoundManager.Instance.StopBGM();
         await FadeManager.Instance.FadeOut(FadeType.White);
+        _pressButton.CloseMenu();
         await Close();
     }
 
