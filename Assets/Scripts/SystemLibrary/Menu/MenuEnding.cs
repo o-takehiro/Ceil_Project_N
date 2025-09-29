@@ -14,7 +14,7 @@ public class MenuEnding : MenuBase {
     [SerializeField]
     private Sprite[] _endingSprite = null;
     private bool _isGameClear = false;
-
+    private int _currentBGMIndex = -1;
     private CancellationToken _token;
 
     public override async UniTask Initialize() {
@@ -27,14 +27,16 @@ public class MenuEnding : MenuBase {
         int resultIndex;
         if (_isGameClear) {
             resultIndex = 1;
+            _currentBGMIndex = 6;
             _bgImage.color = Color.white;
         } else {
             resultIndex = 0;
+            _currentBGMIndex = 5;
             _bgImage.color = Color.black;
         }
         _endingImage.sprite = _endingSprite[resultIndex];
         await FadeManager.Instance.FadeIn(FadeType.White);
-        SoundManager.Instance.PlayBGM(0);
+        SoundManager.Instance.PlayBGM(_currentBGMIndex);
         _token = this.GetCancellationTokenOnDestroy();
         while (true) {
             if(Input.anyKey) break;
