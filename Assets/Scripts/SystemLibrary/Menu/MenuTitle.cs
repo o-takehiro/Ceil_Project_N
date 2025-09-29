@@ -7,11 +7,18 @@ using UnityEngine;
 /// タイトルメニュー
 /// </summary>
 public class MenuTitle : MenuBase {
+    [SerializeField]
+    private PressButtonAlpha _pressButton = null;
+
     public override async UniTask Open() {
         await base.Open();
         // フェード時の色を設定する。
         var fadeColor = FadeType.White;
+        Color setColor = Color.white;
+        setColor.a = 0;
+        _pressButton.Setup(setColor);
         await FadeManager.Instance.FadeIn(fadeColor);
+        UniTask task = _pressButton.Execute();
         // 何かが押されるまで待つ
         /*
          * 後にInputSystem対応予定
