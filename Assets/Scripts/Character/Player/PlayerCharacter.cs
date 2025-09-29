@@ -278,6 +278,11 @@ public class PlayerCharacter : CharacterBase {
         // ƒJƒƒ‰’â~
         //CameraManager.Instance.PauseCamera();
 
+        // ”­“®’†‚Ì–‚–@‚ğ’â~
+        if (_magic != null) {
+
+        }
+
         // “ü—Í’â~
         if (_playerInput != null)
             _playerInput.CanReceiveInput = false;

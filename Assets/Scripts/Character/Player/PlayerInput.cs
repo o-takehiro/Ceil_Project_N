@@ -55,6 +55,11 @@ public sealed class PlayerInput : MonoBehaviour {
 
     // 魔法スロット １
     public void OnCastSlot1(InputAction.CallbackContext ctx) {
+        if (ctx.canceled) {
+            _character.RequestSetCastingFlag(0, false);
+            _character.RequestCastMagicEnd(0);
+        }
+
         if (!CanReceiveInput) return;
 
         // 長押し
@@ -63,13 +68,15 @@ public sealed class PlayerInput : MonoBehaviour {
             _character.RequestStartCasting(0);
             _character.RequestReplaceMagic(0);
         }
-        else if (ctx.canceled) {
-            _character.RequestSetCastingFlag(0, false);
-            _character.RequestCastMagicEnd(0);
-        }
+
     }
     // 魔法スロット　２
     public void OnCastSlot2(InputAction.CallbackContext ctx) {
+        if (ctx.canceled) {
+            _character.RequestSetCastingFlag(1, false);
+            _character.RequestCastMagicEnd(1);
+        }
+
         if (!CanReceiveInput) return;
 
         // 長押し
@@ -78,13 +85,15 @@ public sealed class PlayerInput : MonoBehaviour {
             _character.RequestStartCasting(1);
             _character.RequestReplaceMagic(1);
         }
-        else if (ctx.canceled) {
-            _character.RequestSetCastingFlag(1, false);
-            _character.RequestCastMagicEnd(1);
-        }
+
     }
     // 魔法スロット　３
     public void OnCastSlot3(InputAction.CallbackContext ctx) {
+        if (ctx.canceled) {
+            _character.RequestSetCastingFlag(2, false);
+            _character.RequestCastMagicEnd(2);
+        }
+
         if (!CanReceiveInput) return;
 
         // 長押し
@@ -93,13 +102,15 @@ public sealed class PlayerInput : MonoBehaviour {
             _character.RequestStartCasting(2);
             _character.RequestReplaceMagic(2);
         }
-        else if (ctx.canceled) {
-            _character.RequestSetCastingFlag(2, false);
-            _character.RequestCastMagicEnd(2);
-        }
+
     }
     // 魔法スロット　４
     public void OnCastSlot4(InputAction.CallbackContext ctx) {
+        if (ctx.canceled) {
+            _character.RequestSetCastingFlag(3, false);
+            _character.RequestCastMagicEnd(3);
+        }
+
         if (!CanReceiveInput) return;
 
         // 長押し
@@ -107,10 +118,6 @@ public sealed class PlayerInput : MonoBehaviour {
             _character.RequestSetCastingFlag(3, true);
             _character.RequestStartCasting(3);
             _character.RequestReplaceMagic(3);
-        }
-        else if (ctx.canceled) {
-            _character.RequestSetCastingFlag(3, false);
-            _character.RequestCastMagicEnd(3);
         }
     }
 
