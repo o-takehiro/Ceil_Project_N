@@ -17,6 +17,7 @@ public class PlayerMagicAttack {
     private static eMagicType _pendingMagic = eMagicType.Invalid; // 入れ替え用魔法
 
     private static readonly float _LOWER_LIMIT_MP = 0.0f;         // MPの下限値
+    public static bool isPendingMagic = false;                           // 入れ替え待ちかどうか
 
     /// <summary>
     /// コンストラクタ
@@ -101,15 +102,20 @@ public class PlayerMagicAttack {
         if (_pendingMagic == eMagicType.Invalid) return;
         if (slotIndex < 0 || slotIndex >= _eMagicList.Count) return;
 
+
         // 発動中ならキャンセルしてから入れ替える
         var currentMagic = _eMagicList[slotIndex];
         if (currentMagic != eMagicType.Invalid) {
             RequestCancelMagic(slotIndex);
         }
 
+        // 入れ替える
         ReplaceMagic(slotIndex, _pendingMagic);
         _pendingMagic = eMagicType.Invalid;
+        // UIを閉じる
         SetMagicUI.Instance.CloseChangeMagicUI();
+        isPendingMagic = false;
+        MagicReset(eSideType.PlayerSide, eMagicType.Defense);
     }
 
 
@@ -229,8 +235,12 @@ public class PlayerMagicAttack {
 
         // 空きがなければ入れ替え待ちにする
         _pendingMagic = magicType;
+        // 入れ替え待ちフラグをON
+        isPendingMagic = true;
         // 入れ替え待ちUI表示
         SetMagicUI.Instance.OpenChangeMagicUI();
+        // 防御魔法を常に展開
+        CreateMagic(eSideType.PlayerSide, eMagicType.Defense);
 
     }
 
@@ -258,6 +268,8 @@ public class PlayerMagicAttack {
     private void ReplacePendingMagic(int slotIndex) {
         if (_pendingMagic == eMagicType.Invalid) return;
         ReplaceMagic(slotIndex, _pendingMagic);
+        // SE再生
+        SoundManager.Instance.PlaySE(19);
         _pendingMagic = eMagicType.Invalid; // 待ち解除
         SetMagicUI.Instance.CloseChangeMagicUI();
 
@@ -294,6 +306,14 @@ public class PlayerMagicAttack {
     /// </summary>
     public void ResetMagic() {
         InitializeLists();
+    }
+
+    /// <summary>
+    /// 入れ替え待ちかどうかの取得
+    /// </summary>
+    /// <returns></returns>
+    public static bool GetPendingMagic() {
+        return isPendingMagic;
     }
 
 }

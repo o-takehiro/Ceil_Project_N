@@ -30,6 +30,7 @@ public sealed class PlayerInput : MonoBehaviour {
     /// <param name="ctx"></param>
     public void OnJump(InputAction.CallbackContext ctx) {
         if (_character == null) return;
+        if (!CanReceiveInput) return;
         if (ctx.performed) _character.RequestJump();
     }
 
@@ -38,7 +39,8 @@ public sealed class PlayerInput : MonoBehaviour {
     /// </summary>
     /// <param name="ctx"></param>
     public void OnAttack(InputAction.CallbackContext ctx) {
-        if (_character == null || !CanReceiveInput) return;
+        if (_character == null) return;
+        if (!CanReceiveInput) return;
         if (ctx.performed) _character.RequestAttack();
     }
 
@@ -53,6 +55,11 @@ public sealed class PlayerInput : MonoBehaviour {
 
     // 魔法スロット １
     public void OnCastSlot1(InputAction.CallbackContext ctx) {
+        if (ctx.canceled) {
+            _character.RequestSetCastingFlag(0, false);
+            _character.RequestCastMagicEnd(0);
+        }
+
         if (!CanReceiveInput) return;
 
         // 長押し
@@ -61,13 +68,15 @@ public sealed class PlayerInput : MonoBehaviour {
             _character.RequestStartCasting(0);
             _character.RequestReplaceMagic(0);
         }
-        else if (ctx.canceled) {
-            _character.RequestSetCastingFlag(0, false);
-            _character.RequestCastMagicEnd(0);
-        }
+
     }
     // 魔法スロット　２
     public void OnCastSlot2(InputAction.CallbackContext ctx) {
+        if (ctx.canceled) {
+            _character.RequestSetCastingFlag(1, false);
+            _character.RequestCastMagicEnd(1);
+        }
+
         if (!CanReceiveInput) return;
 
         // 長押し
@@ -76,13 +85,15 @@ public sealed class PlayerInput : MonoBehaviour {
             _character.RequestStartCasting(1);
             _character.RequestReplaceMagic(1);
         }
-        else if (ctx.canceled) {
-            _character.RequestSetCastingFlag(1, false);
-            _character.RequestCastMagicEnd(1);
-        }
+
     }
     // 魔法スロット　３
     public void OnCastSlot3(InputAction.CallbackContext ctx) {
+        if (ctx.canceled) {
+            _character.RequestSetCastingFlag(2, false);
+            _character.RequestCastMagicEnd(2);
+        }
+
         if (!CanReceiveInput) return;
 
         // 長押し
@@ -91,13 +102,15 @@ public sealed class PlayerInput : MonoBehaviour {
             _character.RequestStartCasting(2);
             _character.RequestReplaceMagic(2);
         }
-        else if (ctx.canceled) {
-            _character.RequestSetCastingFlag(2, false);
-            _character.RequestCastMagicEnd(2);
-        }
+
     }
     // 魔法スロット　４
     public void OnCastSlot4(InputAction.CallbackContext ctx) {
+        if (ctx.canceled) {
+            _character.RequestSetCastingFlag(3, false);
+            _character.RequestCastMagicEnd(3);
+        }
+
         if (!CanReceiveInput) return;
 
         // 長押し
@@ -106,10 +119,6 @@ public sealed class PlayerInput : MonoBehaviour {
             _character.RequestStartCasting(3);
             _character.RequestReplaceMagic(3);
         }
-        else if (ctx.canceled) {
-            _character.RequestSetCastingFlag(3, false);
-            _character.RequestCastMagicEnd(3);
-        }
     }
 
     /// <summary>
@@ -117,7 +126,8 @@ public sealed class PlayerInput : MonoBehaviour {
     /// </summary>
     /// <param name="ctx"></param>
     public void OnAnalysis(InputAction.CallbackContext ctx) {
-        if (ctx.performed || !CanReceiveInput) {
+        if (!CanReceiveInput) return;
+        if (ctx.performed) {
             _character.RequestAnalysis();
         }
         else if (ctx.canceled) {
@@ -130,6 +140,7 @@ public sealed class PlayerInput : MonoBehaviour {
     /// </summary>  
     /// <param name="ctx"></param>
     public void OnMagicOpen(InputAction.CallbackContext ctx) {
+        if (!CanReceiveInput) return;
         if (ctx.performed) {
             // 魔法リスト表示
             _character.RequestOpenMagicUI();

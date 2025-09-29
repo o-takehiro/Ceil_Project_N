@@ -14,4 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bgmArray:
   - {fileID: 8300000, guid: a61acecc9dd606e44bc6001f08f43cf5, type: 3}
-  - {fileID: 8300000, guid: 93aa7fa3194e1bf4b9db9fefca5ed7d4, type: 3}
+  - {fileID: 8300000, guid: ac7c3b98ef649614fbebbc6096d2e54f, type: 3}
+  - {fileID: 8300000, guid: bbaa9778c69e0e3429202c338ac5cb27, type: 3}
+  - {fileID: 8300000, guid: a0e978918eac2a544b8fdd4cea9d5ea7, type: 3}
+  - {fileID: 8300000, guid: dd9c3dedc8a8c2e46b29675be547ac0b, type: 3}
+  - {fileID: 8300000, guid: c37ff5f984c7141409627438a11727ae, type: 3}
+  - {fileID: 8300000, guid: 6eadfd8ca1747f344a34628eb399e938, type: 3}

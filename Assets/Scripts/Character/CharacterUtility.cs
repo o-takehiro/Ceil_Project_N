@@ -208,10 +208,11 @@ public class CharacterUtility {
     /// </summary>
     /// <param name="setValue"></param>
     public static void ToPlayerMPDamage(float setValue) {
-        if (GetEnemy() != null) {
-            GetPlayer().RemoveMP(setValue);
-            SetPlayerMPSliderValue(GetPlayer().GetPlayerMPSliderValue());
-        }
+        if (GetEnemy() == null) return;
+        if (PlayerMagicAttack.isPendingMagic) return;
+        GetPlayer().RemoveMP(setValue);
+        SetPlayerMPSliderValue(GetPlayer().GetPlayerMPSliderValue());
+
 
     }
 

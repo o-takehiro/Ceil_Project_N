@@ -246,7 +246,6 @@ public class PlayerCharacter : CharacterBase {
         _magic.ResetMagic();
     }
 
-
     /// <summary>
     /// プレイヤーの片付け
     /// </summary>
@@ -278,6 +277,11 @@ public class PlayerCharacter : CharacterBase {
 
         // カメラ停止
         //CameraManager.Instance.PauseCamera();
+
+        // 発動中の魔法を停止
+        if (_magic != null) {
+
+        }
 
         // 入力停止
         if (_playerInput != null)

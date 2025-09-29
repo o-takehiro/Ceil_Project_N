@@ -35,6 +35,8 @@ public class goalObject : StageObjectBase {
             // プレイヤーのMPを回復
             CharacterUtility.ToPlayerAddMP((int)CharacterUtility.GetPlayer().maxMP);
 
+            // SE再生
+            SoundManager.Instance.PlaySE(21);
             // カメラモーション
             await CameraManager.Instance.FocusOnObject(_goalObjectRoot.transform);
             //CharacterUtility.ResumePlayer();
