@@ -23,12 +23,14 @@ public class MagicHit : MagicObject {
 	/// </summary>
 	/// <param name="other"></param>
 	private void OnTriggerStay(Collider other) {
+		// 相手の陣営
 		eSideType otherSide = GetOtherSide(other);
         if (otherSide == eSideType.Invalid) return;
+		// 相手の使った魔法
 		eMagicType otherMagic = GetOtherMagic(other, otherSide);
+		// 魔法が当たった時の魔法を使った相手
+		eSideType otherMagicActiveSide = GetMagicHit(otherSide, other).activeSide;
 		Vector3 thisPosition = gameObject.transform.position;
-		Vector3 otherPosition = other.transform.position;
-		MagicHit otherMagicData = GetMagicHit(otherSide, other);
 
         UniTask task;
 		// 魔法ごとの当たり判定
@@ -36,6 +38,7 @@ public class MagicHit : MagicObject {
 			case eMagicType.Defense:
 				break;
 			case eMagicType.MiniBullet:
+				// ダメージを与える
 				GiveDamage(otherSide, 5);
 				if (otherSide == eSideType.MagicSide) {
 					task = EffectManager.Instance.PlayEffect(eEffectType.Elimination, thisPosition);
@@ -45,30 +48,34 @@ public class MagicHit : MagicObject {
 					task = EffectManager.Instance.PlayEffect(eEffectType.Hit, thisPosition);
 					SoundManager.Instance.PlaySE(10);
 				}
+				// 魔法消滅
 				parentObject.RemoveMagic(gameObject);
 				break;
 			case eMagicType.SatelliteOrbital:
+				// ダメージを与える
 				GiveDamage(otherSide, 10);
 				if (otherSide == eSideType.MagicSide) {
-					// 消滅エフェクト
 					task = EffectManager.Instance.PlayEffect(eEffectType.Elimination, thisPosition);
 					SoundManager.Instance.PlaySE(9);
 				}
 				else {
-					// ヒットエフェクト
 					task = EffectManager.Instance.PlayEffect(eEffectType.Hit, thisPosition);
 					SoundManager.Instance.PlaySE(10);
 				}
+				// 魔法消滅
 				parentObject.RemoveMagic(gameObject);
 				break;
 			case eMagicType.LaserBeam:
 				if (otherMagic == eMagicType.Defense) return;
+				// ダメージを与える
 				GiveDamage(otherSide, 1);
 				break;
             case eMagicType.DelayBullet:
+                // ダメージを与える
                 GiveDamage(otherSide, 10);
+				// 当たった相手によってエフェクトを変える
                 if (otherSide == eSideType.MagicSide) {
-					if (otherSide == eSideType.PlayerSide)
+					if (otherMagicActiveSide == eSideType.PlayerSide)
 						task = EffectManager.Instance.PlayEffect(eEffectType.BigElimination, thisPosition);
 					task = EffectManager.Instance.PlayEffect(eEffectType.Elimination, thisPosition);
 					SoundManager.Instance.PlaySE(9);
@@ -79,18 +86,23 @@ public class MagicHit : MagicObject {
 					task = EffectManager.Instance.PlayEffect(eEffectType.Hit, thisPosition);
 					SoundManager.Instance.PlaySE(10);
 				}
+				// 魔法消滅
                 parentObject.RemoveMagic(gameObject);
                 break;
 			case eMagicType.GroundShock:
 				if (otherSide == eSideType.PlayerSide) {
+					// プレイヤーがジャンプ中なら当たらない
 					if (!GroundCheck.IsGrounded) return;
+					// ダメージを与える
 					GiveDamage(otherSide, 1);
 				}
 				else if (otherSide == eSideType.EnemySide) {
+					// ダメージを与える
 					GiveDamage(otherSide, 2);
 				}
 				break;
 			case eMagicType.BigBullet:
+				// ダメージを与える
                 GiveDamage(otherSide, 20);
                 if (otherSide == eSideType.MagicSide) {
 					task = EffectManager.Instance.PlayEffect(eEffectType.BigElimination, thisPosition);
@@ -100,6 +112,7 @@ public class MagicHit : MagicObject {
 					task = EffectManager.Instance.PlayEffect(eEffectType.BigHit, thisPosition);
 					SoundManager.Instance.PlaySE(10);
 				}
+				// 魔法消滅
                 parentObject.RemoveMagic(gameObject);
                 break;
 		}
@@ -113,16 +126,14 @@ public class MagicHit : MagicObject {
 	/// <returns></returns>
 	private eSideType GetOtherSide(Collider other) {
         eSideType otherSide = eSideType.Invalid;
-        if (other.gameObject.tag == "Player")
-        {
+		// 当たった相手のタグによってタイプ分け
+        if (other.gameObject.tag == "Player") {
             otherSide = eSideType.PlayerSide;
         }
-        else if (other.gameObject.tag == "Enemy")
-        {
+        else if (other.gameObject.tag == "Enemy") {
             otherSide = eSideType.EnemySide;
         }
-        else if (other.gameObject.tag == "Magic")
-        {
+        else if (other.gameObject.tag == "Magic") {
             otherSide = eSideType.MagicSide;
         }
         // 同陣営どうしは当たり判定をとらない 
