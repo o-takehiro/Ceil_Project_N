@@ -29,10 +29,9 @@ public class MagicHit : MagicObject {
 		// 相手の使った魔法
 		eMagicType otherMagic = GetOtherMagic(other, otherSide);
 		// 魔法が当たった時の魔法を使った相手
-		eSideType otherMagicActiveSide = GetMagicHit(otherSide, other).activeSide;
 		Vector3 thisPosition = gameObject.transform.position;
 
-        UniTask task;
+		UniTask task;
 		// 魔法ごとの当たり判定
 		switch (activeMagic) {
 			case eMagicType.Defense:
@@ -75,7 +74,7 @@ public class MagicHit : MagicObject {
                 GiveDamage(otherSide, 10);
 				// 当たった相手によってエフェクトを変える
                 if (otherSide == eSideType.MagicSide) {
-					if (otherMagicActiveSide == eSideType.PlayerSide)
+					if (otherSide == eSideType.PlayerSide)
 						task = EffectManager.Instance.PlayEffect(eEffectType.BigElimination, thisPosition);
 					task = EffectManager.Instance.PlayEffect(eEffectType.Elimination, thisPosition);
 					SoundManager.Instance.PlaySE(9);
