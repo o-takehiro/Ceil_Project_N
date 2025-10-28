@@ -293,7 +293,7 @@ public class EnemyMagic : MagicBase {
 		// SE再生
 		SoundManager.Instance.PlaySE(6);
 		// ビームが相手の防御魔法に当たるなら長さを調節
-		if (GetLaserBeamDefecseHit()) {
+		if (GetLaserBeamDefenseHit()) {
 			LaserBeamDefenseRange(beam);
 		}
 		// プレイヤーがいるならプレイヤーの方を向く
@@ -308,7 +308,7 @@ public class EnemyMagic : MagicBase {
 	/// ビームが防御魔法に当たるかどうか
 	/// </summary>
 	/// <returns></returns>
-	private bool GetLaserBeamDefecseHit() {
+	private bool GetLaserBeamDefenseHit() {
 		if (GetPlayer() == null) return false;
 		if (GetPlayerToEnemyDistance() - _DEFENSE_RADIUS >= _BEAM_RANGE_MAX ||
 			!GetMagicActive((int)eSideType.PlayerSide, (int)eMagicType.Defense)) return false;

@@ -1,3 +1,10 @@
+/*
+ * @file    MagicHit.cs
+ * @brief   –‚–@‚Ì“–‚½‚è”»’è
+ * @author  Riku
+ * @date    2025/9/2
+ */
+
 using Cysharp.Threading.Tasks;
 using System.Collections;
 using System.Collections.Generic;
