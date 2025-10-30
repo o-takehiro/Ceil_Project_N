@@ -262,7 +262,7 @@ public class EnemyMagic : MagicBase {
 		magicObject.canUnuse = true;
 	}
 	/// <summary>
-	/// ビーム(横)魔法
+	/// ビーム魔法
 	/// </summary>
 	/// <param name="magicObject"></param>
 	public override void LaserBeamMagic(MagicObject magicObject) {
@@ -325,7 +325,7 @@ public class EnemyMagic : MagicBase {
 		return true;
 	}
 	/// <summary>
-	/// ビーム(横)の長さ調整
+	/// ビームの長さ調整
 	/// </summary>
 	/// <param name="laserBeam"></param>
 	private void LaserBeamDefenseRange(Transform laserBeam) {
@@ -346,7 +346,7 @@ public class EnemyMagic : MagicBase {
 		SoundManager.Instance.PlaySE(7);
 	}
 	/// <summary>
-	/// ビーム(横)魔法の動き
+	/// ビーム魔法の動き
 	/// </summary>
 	/// <param name="magicObject"></param>
 	/// <param name="beam"></param>
