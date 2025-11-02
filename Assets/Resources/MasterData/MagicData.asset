@@ -16,38 +16,54 @@ MonoBehaviour:
   - name: MagicData
     list:
     - ID: 1
+      Comment: "\u9632\u5FA1\u9B54\u6CD5"
       MP: 0.3
-      PlayerDamage: 0
-      EnemyDamage: 0
+      Damage: 0
     - ID: 2
+      Comment: "\u5C0F\u578B\u5F3E\u5E55\u9B54\u6CD5"
       MP: 1
-      PlayerDamage: 5
-      EnemyDamage: 5
+      Damage: 5
     - ID: 3
+      Comment: "\u885B\u661F\u8ECC\u9053\u9B54\u6CD5"
       MP: 5
-      PlayerDamage: 10
-      EnemyDamage: 10
+      Damage: 10
     - ID: 4
+      Comment: "\u30D3\u30FC\u30E0\u9B54\u6CD5"
       MP: 10
-      PlayerDamage: 1
-      EnemyDamage: 1
+      Damage: 1
     - ID: 5
+      Comment: "\u6642\u9593\u5DEE\u5F3E\u9B54\u6CD5"
       MP: 5
-      PlayerDamage: 10
-      EnemyDamage: 10
+      Damage: 10
     - ID: 6
+      Comment: "\u56DE\u5FA9\u9B54\u6CD5"
       MP: 30
-      PlayerDamage: 0
-      EnemyDamage: 0
+      Damage: 0
     - ID: 7
+      Comment: "\u30D0\u30D5\u9B54\u6CD5"
       MP: 20
-      PlayerDamage: 0
-      EnemyDamage: 0
+      Damage: 0
     - ID: 8
+      Comment: "\u885D\u6483\u6CE2\u9B54\u6CD5"
       MP: 25
-      PlayerDamage: 1
-      EnemyDamage: 2
+      Damage: 1
     - ID: 9
+      Comment: "\u5927\u578B\u5F3E\u5E55\u9B54\u6CD5"
       MP: 2
-      PlayerDamage: 20
-      EnemyDamage: 20
+      Damage: 20
+    - ID: 0
+      Comment: 
+      MP: 0
+      Damage: 0
+    - ID: 0
+      Comment: 
+      MP: 0
+      Damage: 0
+    - ID: 0
+      Comment: 
+      MP: 0
+      Damage: 0
+    - ID: 0
+      Comment: 
+      MP: 0
+      Damage: 0

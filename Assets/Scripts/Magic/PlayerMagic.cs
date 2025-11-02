@@ -112,7 +112,7 @@ public class PlayerMagic : MagicBase {
 		if (_defenseOn) return;
 		_defenseOn = true;
 		// SE再生
-		SoundManager.Instance.PlaySE(12);
+		SoundManager.Instance.PlaySE((int)eSEType.DefenseActive);
 	}
 	/// <summary>
 	/// 小型弾幕魔法
@@ -150,7 +150,7 @@ public class PlayerMagic : MagicBase {
 				// MP消費
 				ToPlayerMPDamage(1);
 				// SE再生
-				SoundManager.Instance.PlaySE(11);
+				SoundManager.Instance.PlaySE((int)eSEType.BulletShot);
 				// 移動
 				UniTask task = MiniBulletMove(magicObject, bullet);
 				_bulletCoolTime = _bulletCoolTimeMax;
@@ -187,7 +187,7 @@ public class PlayerMagic : MagicBase {
 		// エフェクト再生
 		UniTask task = EffectManager.Instance.PlayEffect(eEffectType.Elimination, miniBullet.position);
 		// SE再生
-		SoundManager.Instance.PlaySE(9);
+		SoundManager.Instance.PlaySE((int)eSEType.BulletElimination);
 		// 魔法削除
 		magicObject.RemoveMagic(miniBullet.gameObject);
 		// バグ回避用一時待機
@@ -248,7 +248,7 @@ public class PlayerMagic : MagicBase {
 		// MP消費
 		ToPlayerMPDamage(5);
 		// SE再生
-		SoundManager.Instance.PlaySE(16);
+		SoundManager.Instance.PlaySE((int)eSEType.SatelliteActive);
 	}
 	/// <summary>
 	/// 衛星軌道魔法の移動
@@ -307,7 +307,7 @@ public class PlayerMagic : MagicBase {
 		if (GetLaserBeamInDefense()) {
 			task = EffectManager.Instance.PlayEffect(eEffectType.BeamDefense, activePos);
 			// SE再生
-			SoundManager.Instance.PlaySE(7);
+			SoundManager.Instance.PlaySE((int)eSEType.BeamDefense);
 			_laserBeamOn = false;
 			// 未使用化可能
 			magicObject.canUnuse = true;
@@ -324,7 +324,7 @@ public class PlayerMagic : MagicBase {
 		// MP消費
 		ToPlayerMPDamage(10);
 		// SE再生
-		SoundManager.Instance.PlaySE(6);
+		SoundManager.Instance.PlaySE((int)eSEType.Beam);
 		// ビームが相手の防御魔法に当たるなら長さを調節
 		if (GetLaserBeamDefecseHit()) {
 			LaserBeamDefenseRange(beam);
@@ -384,7 +384,7 @@ public class PlayerMagic : MagicBase {
 		// 当たっている位置にエフェクト生成
 		UniTask task = EffectManager.Instance.PlayEffect(eEffectType.BeamDefense, otherDefenseForwardPos);
 		// SE再生
-		SoundManager.Instance.PlaySE(7);
+		SoundManager.Instance.PlaySE((int)eSEType.BeamDefense);
 	}
 	/// <summary>
 	/// ビーム魔法の動き
@@ -458,7 +458,7 @@ public class PlayerMagic : MagicBase {
 		// MP消費
 		ToPlayerMPDamage(5);
 		// SE再生
-		SoundManager.Instance.PlaySE(13);
+		SoundManager.Instance.PlaySE((int)eSEType.DelayAction);
 	}
 	/// <summary>
 	/// 時間差魔法の移動
@@ -519,7 +519,7 @@ public class PlayerMagic : MagicBase {
 		// MP消費
 		ToPlayerMPDamage(30);
 		// SE再生
-		SoundManager.Instance.PlaySE(15);
+		SoundManager.Instance.PlaySE((int)eSEType.Healing);
 		// 待機用処理関数
 		UniTask task = HealingExecute(magicObject);
 		task = ParentObjectMove(magicObject, () => _healingOn);
@@ -552,7 +552,7 @@ public class PlayerMagic : MagicBase {
 		// MP消費
 		ToPlayerMPDamage(20);
 		// SE再生
-		SoundManager.Instance.PlaySE(8);
+		SoundManager.Instance.PlaySE((int)eSEType.Buff);
 		// 待機用処理関数
 		UniTask task = BuffExecute(magicObject);
 		task = ParentObjectMove(magicObject, () => _buffOn);
@@ -595,7 +595,7 @@ public class PlayerMagic : MagicBase {
 		// MP消費
 		ToPlayerMPDamage(25);
 		// SE再生
-		SoundManager.Instance.PlaySE(14);
+		SoundManager.Instance.PlaySE((int)eSEType.GroundShock);
 		// エフェクト再生
 		await EffectManager.Instance.PlayEffect(eEffectType.GroundShock, GetPlayerPosition());
 		_groundShockOn = false;
@@ -631,7 +631,7 @@ public class PlayerMagic : MagicBase {
 			// MP消費
 			ToPlayerMPDamage(2);
 			// SE再生
-			SoundManager.Instance.PlaySE(11);
+			SoundManager.Instance.PlaySE((int)eSEType.BulletShot);
 			// 移動
 			UniTask task = BigBulletMove(magicObject, bullet);
 			_bigBulletCoolTime = _bigBulletCoolTimeMax;

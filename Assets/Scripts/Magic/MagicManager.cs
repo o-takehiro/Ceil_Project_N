@@ -119,36 +119,6 @@ public class MagicManager : MonoBehaviour {
     }
 
 	public void Update() {
-		/*
-		UniTask task;
-		// デバッグ用
-		if (Input.GetKey(KeyCode.Z)) task = CreateMagic(eSideType.PlayerSide, eMagicType.Defense);
-		if (Input.GetKey(KeyCode.X)) task = CreateMagic(eSideType.PlayerSide, eMagicType.MiniBullet);
-		if (Input.GetKey(KeyCode.C)) task = CreateMagic(eSideType.EnemySide, eMagicType.Defense);
-		if (Input.GetKey(KeyCode.V)) task = CreateMagic(eSideType.EnemySide, eMagicType.MiniBullet);
-		if (Input.GetKey(KeyCode.N)) task = CreateMagic(eSideType.PlayerSide, eMagicType.SatelliteOrbital);
-		if (Input.GetKey(KeyCode.M)) task = CreateMagic(eSideType.PlayerSide, eMagicType.LaserBeam);
-		if (Input.GetKey(KeyCode.L)) task = CreateMagic(eSideType.PlayerSide, eMagicType.DelayBullet);
-		if (Input.GetKey(KeyCode.K)) task = CreateMagic(eSideType.PlayerSide, eMagicType.Healing);
-		if (Input.GetKey(KeyCode.J)) task = CreateMagic(eSideType.PlayerSide, eMagicType.Buff);
-		if (Input.GetKey(KeyCode.H)) task = CreateMagic(eSideType.PlayerSide, eMagicType.GroundShock);
-		if (Input.GetKey(KeyCode.G)) task = CreateMagic(eSideType.PlayerSide, eMagicType.BigBullet);
-		if (Input.GetKeyUp(KeyCode.Z)) task = MagicReset(eSideType.PlayerSide, eMagicType.Defense);
-		if (Input.GetKeyUp(KeyCode.X)) task = MagicReset(eSideType.PlayerSide, eMagicType.MiniBullet);
-		if (Input.GetKeyUp(KeyCode.C)) task = MagicReset(eSideType.EnemySide, eMagicType.Defense);
-		if (Input.GetKeyUp(KeyCode.V)) task = MagicReset(eSideType.EnemySide, eMagicType.MiniBullet);
-		if (Input.GetKeyUp(KeyCode.N)) task = MagicReset(eSideType.PlayerSide, eMagicType.SatelliteOrbital);
-		if (Input.GetKeyUp(KeyCode.M)) task = MagicReset(eSideType.PlayerSide, eMagicType.LaserBeam);
-		if (Input.GetKeyUp(KeyCode.L)) task = MagicReset(eSideType.PlayerSide, eMagicType.DelayBullet);
-		if (Input.GetKeyUp(KeyCode.K)) task = MagicReset(eSideType.PlayerSide, eMagicType.Healing);
-		if (Input.GetKeyUp(KeyCode.J)) task = MagicReset(eSideType.PlayerSide, eMagicType.Buff);
-		if (Input.GetKeyUp(KeyCode.H)) task = MagicReset(eSideType.PlayerSide, eMagicType.GroundShock);
-		if (Input.GetKeyUp(KeyCode.G)) task = MagicReset(eSideType.PlayerSide, eMagicType.BigBullet);
-		if (Input.GetKeyDown(KeyCode.B)) AnalysisMagicActivate();
-		if (Input.GetKeyDown(KeyCode.Q)) ToPlayerDamage(10000);
-		if (Input.GetKeyDown(KeyCode.E)) ToEnemyDamage(10000);
-		if (Input.GetKeyDown(KeyCode.R)) ExecuteAllMagic(magic => magic.UnuseSelf());
-		*/
 		if (_activeMagic == null) return;
 
 		// 関数とIDが入っていれば関数実行
@@ -334,7 +304,6 @@ public class MagicManager : MonoBehaviour {
 		int side = (int)sideType, magicID = (int)magicType;
 		int activeMagic = _activeMagicIDList[side][magicID];
 		MagicBase removeMagic = GetMagicData(activeMagic);
-		//activeMagic = -1;
 		if (removeMagic == null) return;
 		if (removeMagic.ID < 0) return;
 		if (_isResetMagic[side][magicID]) return;
@@ -407,7 +376,7 @@ public class MagicManager : MonoBehaviour {
 		UniTask task = EffectManager.Instance.PlayEffect(eEffectType.Analysis, GetEnemyCenterPosition());
 	 	_copyMagicList = GetMagicStorageSlot();
 		// SE再生
-		SoundManager.Instance.PlaySE(5);
+		SoundManager.Instance.PlaySE((int)eSEType.Analysis);
 		int enemy = (int)eSideType.EnemySide;
 		// 発動中の魔法を探す
 		for (int magic = 0, magicMax = _activeMagicIDList[enemy].Count; magic < magicMax; magic++) {
@@ -415,7 +384,7 @@ public class MagicManager : MonoBehaviour {
 			if (!GetMagicActive(enemy, magic) || GetMagicCopied(magic)) continue;
 			SetMagicStorageSlot((eMagicType)magic);
 			// SE再生
-			SoundManager.Instance.PlaySE(17);
+			SoundManager.Instance.PlaySE((int)eSEType.GetMagic);
 			return;
 		}
 	}

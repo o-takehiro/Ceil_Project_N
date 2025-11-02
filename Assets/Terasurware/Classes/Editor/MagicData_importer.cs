@@ -51,9 +51,9 @@ public class MagicData_importer : AssetPostprocessor {
 						Entity_MagicData.Param p = new Entity_MagicData.Param ();
 						
 					cell = row.GetCell(0); p.ID = (int)(cell == null ? 0 : cell.NumericCellValue);
+					cell = row.GetCell(1); p.Comment = (cell == null ? "" : cell.StringCellValue);
 					cell = row.GetCell(2); p.MP = (float)(cell == null ? 0 : cell.NumericCellValue);
-					cell = row.GetCell(3); p.PlayerDamage = (int)(cell == null ? 0 : cell.NumericCellValue);
-					cell = row.GetCell(4); p.EnemyDamage = (int)(cell == null ? 0 : cell.NumericCellValue);
+					cell = row.GetCell(3); p.Damage = (int)(cell == null ? 0 : cell.NumericCellValue);
 						s.list.Add (p);
 					}
 					data.sheets.Add(s);

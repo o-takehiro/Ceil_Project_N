@@ -18,9 +18,9 @@ public class Entity_MagicData : ScriptableObject
 	{
 		
 		public int ID;
+		public string Comment;
 		public float MP;
-		public int PlayerDamage;
-		public int EnemyDamage;
+		public int Damage;
 	}
 }
 

@@ -97,6 +97,35 @@ public enum eEffectType {
 }
 
 /// <summary>
+/// SEの種類
+/// </summary>
+public enum eSEType {
+    Invalid = -1,
+    PlayerAttack1,
+    PlayerAttack2,
+    PlayerAttack3,
+    BulletMagic,
+    Barrier,
+    Analysis,
+    Beam,
+    BeamDefense,
+    Buff,
+    BulletElimination,
+    BulletHit,
+    BulletShot,
+    DefenseActive,
+    DelayAction,
+    GroundShock,
+    Healing, 
+    SatelliteActive,
+    GetMagic,
+    BookOpenSound,
+    magicChangeSound,
+    BookCloseSound,
+    GateOpenSound
+}
+
+/// <summary>
 /// ステージ列挙体
 /// </summary>
 public enum eStageState {

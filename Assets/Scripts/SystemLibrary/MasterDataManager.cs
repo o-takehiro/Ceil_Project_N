@@ -8,10 +8,12 @@ public class MasterDataManager {
     private static readonly string _DATA_PATH = "MasterData/";
     //読み込んだマスターデータ シート数、行数
     public static List<List<Entity_CharacterData.Param>> characterData = null;
+    public static List<List<Entity_MagicData.Param>> magicData = null;
 
     //全てのマスターデータを読み込む
     public static void LoadAllData() {
         characterData = Load<Entity_CharacterData, Entity_CharacterData.Sheet, Entity_CharacterData.Param>("CharacterData");
+        magicData = Load<Entity_MagicData, Entity_MagicData.Sheet, Entity_MagicData.Param>("MagicData");
     }
     /// <summary>
     /// 
