@@ -17,6 +17,7 @@ using UnityEngine.UIElements;
 
 using static MagicUtility;
 using static CharacterUtility;
+using static MagicMasterUtility;
 using System;
 
 public class PlayerMagic : MagicBase {
@@ -99,6 +100,7 @@ public class PlayerMagic : MagicBase {
 	/// </summary>
 	public override void DefenseMagic(MagicObject magicObject) {
 		if (magicObject == null) return;
+		var defenseData = GetMagicMaster(eMagicType.Defense);
 		// 生成完了
 		magicObject.generateFinish = true;
         // 未使用化不可能
@@ -108,7 +110,7 @@ public class PlayerMagic : MagicBase {
 		defense.position = GetPlayerPosition();
 		defense.rotation = GetPlayerRotation();
 		// MP消費
-		ToPlayerMPDamage(0.3f);
+		ToPlayerMPDamage(defenseData.MP);
 		if (_defenseOn) return;
 		_defenseOn = true;
 		// SE再生
@@ -131,7 +133,8 @@ public class PlayerMagic : MagicBase {
 	/// </summary>
 	/// <returns></returns>
 	private async UniTask MiniBulletExecute(MagicObject magicObject) {
-		do {
+        var miniBulletData = GetMagicMaster(eMagicType.MiniBullet);
+        do {
 			if (_bulletCoolTime < 0) {
 				_bulletGenerate = true;
 				// 弾が出る位置
@@ -148,7 +151,7 @@ public class PlayerMagic : MagicBase {
 				bullet.transform.position = activePos;
 				bullet.transform.rotation = GetPlayerRotation();
 				// MP消費
-				ToPlayerMPDamage(1);
+				ToPlayerMPDamage(miniBulletData.MP);
 				// SE再生
 				SoundManager.Instance.PlaySE((int)eSEType.BulletShot);
 				// 移動
@@ -215,8 +218,9 @@ public class PlayerMagic : MagicBase {
 		if (magicObject == null) return;
 		if (_satelliteOn) return;
 		_satelliteOn = true;
-		// 生成完了
-		magicObject.generateFinish = true;
+        var satelliteOrbitalData = GetMagicMaster(eMagicType.SatelliteOrbital);
+        // 生成完了
+        magicObject.generateFinish = true;
 		// 未使用化不可能
 		magicObject.canUnuse = false;
 		// 衛星弾を4つ左右前後ろに生成
@@ -246,7 +250,7 @@ public class PlayerMagic : MagicBase {
 			UniTask task = SatelliteOrbitalMove(magicObject, bullet);
 		}
 		// MP消費
-		ToPlayerMPDamage(5);
+		ToPlayerMPDamage(satelliteOrbitalData.MP);
 		// SE再生
 		SoundManager.Instance.PlaySE((int)eSEType.SatelliteActive);
 	}
@@ -259,7 +263,7 @@ public class PlayerMagic : MagicBase {
 	private async UniTask SatelliteOrbitalMove(MagicObject magicObject, Transform bullet) {
 		bool loop = true;
 		while (loop) {
-			// 衛星が5つ以上なら削除
+			// 衛星が最大数以上なら削除
 			if (magicObject.GetActiveMagicParent().childCount > _SATELLITE_MAX) {
 				magicObject.RemoveMagic(bullet.gameObject);
 				return;
@@ -290,8 +294,9 @@ public class PlayerMagic : MagicBase {
 		if (magicObject == null) return;
 		if (_laserBeamOn) return;
 		_laserBeamOn = true;
-		// 生成完了
-		magicObject.generateFinish = true;
+        var laserBeamData = GetMagicMaster(eMagicType.LaserBeam);
+        // 生成完了
+        magicObject.generateFinish = true;
 		// 未使用化不可能
 		magicObject.canUnuse = false;
 		// ビームが出る位置
@@ -322,11 +327,11 @@ public class PlayerMagic : MagicBase {
 		beam.eulerAngles = cameraRotation;
 		beam.localScale = Vector3.one;
 		// MP消費
-		ToPlayerMPDamage(10);
+		ToPlayerMPDamage(laserBeamData.MP);
 		// SE再生
 		SoundManager.Instance.PlaySE((int)eSEType.Beam);
 		// ビームが相手の防御魔法に当たるなら長さを調節
-		if (GetLaserBeamDefecseHit()) {
+		if (GetLaserBeamDefenseHit()) {
 			LaserBeamDefenseRange(beam);
 		}
 		// 敵がいるなら敵の方を向く
@@ -341,7 +346,7 @@ public class PlayerMagic : MagicBase {
 	/// ビームが防御魔法に当たるかどうか
 	/// </summary>
 	/// <returns></returns>
-	private bool GetLaserBeamDefecseHit() {
+	private bool GetLaserBeamDefenseHit() {
 		if (GetEnemy() == null) return false;
 		if (GetPlayerToEnemyDistance() - _DEFENSE_RADIUS >= _BEAM_RANGE_MAX ||
 			!GetMagicActive((int)eSideType.EnemySide, (int)eMagicType.Defense)) return false;
@@ -422,8 +427,9 @@ public class PlayerMagic : MagicBase {
 		if (magicObject == null) return;
 		if (_delayBulletOn) return;
 		_delayBulletOn = true;
-		// 生成完了
-		magicObject.generateFinish = true;
+        var delayBulletData = GetMagicMaster(eMagicType.DelayBullet);
+        // 生成完了
+        magicObject.generateFinish = true;
 		// 未使用化不可能
 		magicObject.canUnuse = false;
 		// 時間差弾を6つ配置
@@ -456,7 +462,7 @@ public class PlayerMagic : MagicBase {
 			UniTask task = DelayBulletMove(magicObject, bullet);
 		}
 		// MP消費
-		ToPlayerMPDamage(5);
+		ToPlayerMPDamage(delayBulletData.MP);
 		// SE再生
 		SoundManager.Instance.PlaySE((int)eSEType.DelayAction);
 	}
@@ -512,12 +518,13 @@ public class PlayerMagic : MagicBase {
 		if (magicObject == null) return;
 		if (_healingOn) return;
 		_healingOn = true;
-		// 生成完了
-		magicObject.generateFinish = true;
+        var healingData = GetMagicMaster(eMagicType.Healing);
+        // 生成完了
+        magicObject.generateFinish = true;
 		// 未使用化不可能
 		magicObject.canUnuse = false;
 		// MP消費
-		ToPlayerMPDamage(30);
+		ToPlayerMPDamage(healingData.MP);
 		// SE再生
 		SoundManager.Instance.PlaySE((int)eSEType.Healing);
 		// 待機用処理関数
@@ -545,12 +552,13 @@ public class PlayerMagic : MagicBase {
 		if (magicObject == null) return;
 		if (_buffOn) return;
 		_buffOn = true;
-		// 生成完了
-		magicObject.generateFinish = true;
+        var buffData = GetMagicMaster(eMagicType.Buff);
+        // 生成完了
+        magicObject.generateFinish = true;
 		// 未使用化不可能
 		magicObject.canUnuse = false;
 		// MP消費
-		ToPlayerMPDamage(20);
+		ToPlayerMPDamage(buffData.MP);
 		// SE再生
 		SoundManager.Instance.PlaySE((int)eSEType.Buff);
 		// 待機用処理関数
@@ -589,11 +597,12 @@ public class PlayerMagic : MagicBase {
 	/// </summary>
 	/// <returns></returns>
 	private async UniTask GroundShockExecute(MagicObject magicObject) {
-		// 衝撃波生成
-		magicObject.GenerateGroundShock();
+        var groundShockData = GetMagicMaster(eMagicType.GroundShock);
+        // 衝撃波生成
+        magicObject.GenerateGroundShock();
 		magicObject.transform.position = GetPlayerPosition();
 		// MP消費
-		ToPlayerMPDamage(25);
+		ToPlayerMPDamage(groundShockData.MP);
 		// SE再生
 		SoundManager.Instance.PlaySE((int)eSEType.GroundShock);
 		// エフェクト再生
@@ -608,8 +617,9 @@ public class PlayerMagic : MagicBase {
 	/// <param name="magicObject"></param>
 	public override void BigBulletMagic(MagicObject magicObject) {
 		if (magicObject == null) return;
-		// 生成完了
-		magicObject.generateFinish = true;
+        var bigBulletData = GetMagicMaster(eMagicType.BigBullet);
+        // 生成完了
+        magicObject.generateFinish = true;
 		// 未使用化不可能
 		magicObject.canUnuse = false;
 		if (_bigBulletCoolTime < 0) {
@@ -629,7 +639,7 @@ public class PlayerMagic : MagicBase {
 			// でかくする
 			bullet.transform.localScale *= 4;
 			// MP消費
-			ToPlayerMPDamage(2);
+			ToPlayerMPDamage(bigBulletData.MP);
 			// SE再生
 			SoundManager.Instance.PlaySE((int)eSEType.BulletShot);
 			// 移動
