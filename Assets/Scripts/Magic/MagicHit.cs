@@ -1,18 +1,34 @@
+/*
+ * @file    MagicHit.cs
+ * @brief   魔法の当たり判定
+ * @author  Riku
+ * @date    2025/9/2
+ */
+
 using Cysharp.Threading.Tasks;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
+using UnityEngine.UIElements.Experimental;
 using static CharacterUtility;
+using static MagicMasterUtility;
 
 public class MagicHit : MagicObject {
 	// 親オブジェクト
 	MagicObject parentObject = null;
 
-	/// <summary>
-	/// 使用前準備
-	/// </summary>
-	public void Setup(MagicObject parent) {
+	// プレイヤーのダメージ補正
+	const int playerDamageModifier = 2;
+	// ゲームオブジェクトのタグ
+	const string playerTag = "Player";
+	const string enemyTag = "Enemy";
+	const string magicTag = "Magic";
+
+    /// <summary>
+    /// 使用前準備
+    /// </summary>
+    public void Setup(MagicObject parent) {
 		activeMagic = parent.activeMagic;
 		activeSide = parent.activeSide;
 		parentObject = parent;
@@ -23,12 +39,19 @@ public class MagicHit : MagicObject {
 	/// </summary>
 	/// <param name="other"></param>
 	private void OnTriggerStay(Collider other) {
+		// 相手の陣営
 		eSideType otherSide = GetOtherSide(other);
         if (otherSide == eSideType.Invalid) return;
+		// 相手の使った魔法
 		eMagicType otherMagic = GetOtherMagic(other, otherSide);
+		// 魔法が当たった時の魔法を使った相手
 		Vector3 thisPosition = gameObject.transform.position;
-		Vector3 otherPosition = other.transform.position;
-		MagicHit otherMagicData = GetMagicHit(otherSide, other);
+		// 各魔法のマスターデータ
+		var miniBulletData = GetMagicMaster(eMagicType.MiniBullet);
+		var satelliteOrbitalData = GetMagicMaster(eMagicType.SatelliteOrbital);
+        var laserBeamData = GetMagicMaster(eMagicType.LaserBeam);
+		var delayBulletData = GetMagicMaster(eMagicType.DelayBullet);
+		var groundShockData = GetMagicMaster(eMagicType.GroundShock);
 
         UniTask task;
 		// 魔法ごとの当たり判定
@@ -36,70 +59,81 @@ public class MagicHit : MagicObject {
 			case eMagicType.Defense:
 				break;
 			case eMagicType.MiniBullet:
-				GiveDamage(otherSide, 5);
+				// ダメージを与える
+				GiveDamage(otherSide, miniBulletData.Damage);
 				if (otherSide == eSideType.MagicSide) {
 					task = EffectManager.Instance.PlayEffect(eEffectType.Elimination, thisPosition);
-					SoundManager.Instance.PlaySE(9);
+					SoundManager.Instance.PlaySE((int)eSEType.BulletElimination);
 				}
 				else {
 					task = EffectManager.Instance.PlayEffect(eEffectType.Hit, thisPosition);
-					SoundManager.Instance.PlaySE(10);
+					SoundManager.Instance.PlaySE((int)eSEType.BulletHit);
 				}
+				// 魔法消滅
 				parentObject.RemoveMagic(gameObject);
 				break;
 			case eMagicType.SatelliteOrbital:
-				GiveDamage(otherSide, 10);
+				// ダメージを与える
+				GiveDamage(otherSide, satelliteOrbitalData.Damage);
 				if (otherSide == eSideType.MagicSide) {
-					// 消滅エフェクト
 					task = EffectManager.Instance.PlayEffect(eEffectType.Elimination, thisPosition);
-					SoundManager.Instance.PlaySE(9);
+					SoundManager.Instance.PlaySE((int)eSEType.BulletElimination);
 				}
 				else {
-					// ヒットエフェクト
 					task = EffectManager.Instance.PlayEffect(eEffectType.Hit, thisPosition);
-					SoundManager.Instance.PlaySE(10);
+					SoundManager.Instance.PlaySE((int)eSEType.BulletHit);
 				}
+				// 魔法消滅
 				parentObject.RemoveMagic(gameObject);
 				break;
 			case eMagicType.LaserBeam:
 				if (otherMagic == eMagicType.Defense) return;
-				GiveDamage(otherSide, 1);
+				// ダメージを与える
+				GiveDamage(otherSide, laserBeamData.Damage);
 				break;
             case eMagicType.DelayBullet:
-                GiveDamage(otherSide, 10);
+                // ダメージを与える
+                GiveDamage(otherSide, delayBulletData.Damage);
+				// 当たった相手によってエフェクトを変える
                 if (otherSide == eSideType.MagicSide) {
 					if (otherSide == eSideType.PlayerSide)
 						task = EffectManager.Instance.PlayEffect(eEffectType.BigElimination, thisPosition);
 					task = EffectManager.Instance.PlayEffect(eEffectType.Elimination, thisPosition);
-					SoundManager.Instance.PlaySE(9);
+					SoundManager.Instance.PlaySE((int)eSEType.BulletElimination);
 				}
                 else {
 					if (otherSide == eSideType.PlayerSide)
 						task = EffectManager.Instance.PlayEffect(eEffectType.BigHit, thisPosition);
 					task = EffectManager.Instance.PlayEffect(eEffectType.Hit, thisPosition);
-					SoundManager.Instance.PlaySE(10);
+					SoundManager.Instance.PlaySE((int)eSEType.BulletHit);
 				}
+				// 魔法消滅
                 parentObject.RemoveMagic(gameObject);
                 break;
 			case eMagicType.GroundShock:
 				if (otherSide == eSideType.PlayerSide) {
+					// プレイヤーがジャンプ中なら当たらない
 					if (!GroundCheck.IsGrounded) return;
-					GiveDamage(otherSide, 1);
+					// ダメージを与える
+					GiveDamage(otherSide, groundShockData.Damage);
 				}
 				else if (otherSide == eSideType.EnemySide) {
-					GiveDamage(otherSide, 2);
+					// ダメージを与える
+					GiveDamage(otherSide, groundShockData.Damage * playerDamageModifier);
 				}
 				break;
 			case eMagicType.BigBullet:
+				// ダメージを与える
                 GiveDamage(otherSide, 20);
                 if (otherSide == eSideType.MagicSide) {
 					task = EffectManager.Instance.PlayEffect(eEffectType.BigElimination, thisPosition);
-					SoundManager.Instance.PlaySE(9);
+					SoundManager.Instance.PlaySE((int)eSEType.BulletElimination);
 				}
                 else {
 					task = EffectManager.Instance.PlayEffect(eEffectType.BigHit, thisPosition);
-					SoundManager.Instance.PlaySE(10);
+					SoundManager.Instance.PlaySE((int)eSEType.BulletHit);
 				}
+				// 魔法消滅
                 parentObject.RemoveMagic(gameObject);
                 break;
 		}
@@ -113,19 +147,17 @@ public class MagicHit : MagicObject {
 	/// <returns></returns>
 	private eSideType GetOtherSide(Collider other) {
         eSideType otherSide = eSideType.Invalid;
-        if (other.gameObject.tag == "Player")
-        {
+		// 当たった相手のタグによってタイプ分け
+        if (other.gameObject.tag == playerTag) {
             otherSide = eSideType.PlayerSide;
         }
-        else if (other.gameObject.tag == "Enemy")
-        {
+        else if (other.gameObject.tag == enemyTag) {
             otherSide = eSideType.EnemySide;
         }
-        else if (other.gameObject.tag == "Magic")
-        {
+        else if (other.gameObject.tag == magicTag) {
             otherSide = eSideType.MagicSide;
         }
-        // 同陣営どうしは当たり判定をとらない 
+        // 同陣営どうしは当たり判定をとらない
         if (otherSide == activeSide) return eSideType.Invalid;
         // 魔法の発動者の陣営が同じなら当たり判定をとらない
 		MagicHit otherMagicData = GetMagicHit(otherSide, other);
@@ -142,7 +174,7 @@ public class MagicHit : MagicObject {
 	/// <returns></returns>
 	private MagicHit GetMagicHit(eSideType otherSide, Collider other) {
         if (otherSide != eSideType.MagicSide) return null;
-        MagicHit otherMagicData = otherMagicData = other.gameObject.GetComponent<MagicHit>();
+        MagicHit otherMagicData = other.gameObject.GetComponent<MagicHit>();
         return otherMagicData;
     }
 

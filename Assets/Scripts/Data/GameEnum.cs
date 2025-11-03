@@ -65,7 +65,7 @@ public enum eMagicType {
     Defense,            // 防御魔法
     MiniBullet,         // 小型弾幕魔法
     SatelliteOrbital,   // 衛星軌道魔法
-    LaserBeam,          // ビーム(横)魔法
+    LaserBeam,          // ビーム魔法
     DelayBullet,        // 時間差弾魔法
     Healing,            // 回復魔法
     Buff,               // バフ魔法
@@ -94,6 +94,35 @@ public enum eEffectType {
     Book,               // 本出現エフェクト
 
     max,
+}
+
+/// <summary>
+/// SEの種類
+/// </summary>
+public enum eSEType {
+    Invalid = -1,
+    PlayerAttack1,
+    PlayerAttack2,
+    PlayerAttack3,
+    BulletMagic,
+    Barrier,
+    Analysis,
+    Beam,
+    BeamDefense,
+    Buff,
+    BulletElimination,
+    BulletHit,
+    BulletShot,
+    DefenseActive,
+    DelayAction,
+    GroundShock,
+    Healing, 
+    SatelliteActive,
+    GetMagic,
+    BookOpenSound,
+    magicChangeSound,
+    BookCloseSound,
+    GateOpenSound
 }
 
 /// <summary>
