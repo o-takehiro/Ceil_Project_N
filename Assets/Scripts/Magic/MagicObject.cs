@@ -59,11 +59,13 @@ public class MagicObject : MonoBehaviour {
 	public eMagicType activeMagic = eMagicType.Invalid;
 	public eSideType activeSide = eSideType.Invalid;
 
-	// 未使用化可能かどうか
-	public bool canUnuse = true;
+    // 未使用化可能かどうか
+    [SerializeField]
+    public bool canUnuse = true;
 
-	// 生成完了かどうか
-	public bool generateFinish = false;
+    // 生成完了かどうか
+    [SerializeField]
+    public bool generateFinish = false;
 
 	// 魔法用のオブジェクトの生成数
 	public const int _GENERATE_OBJECTS_MAX = 16;

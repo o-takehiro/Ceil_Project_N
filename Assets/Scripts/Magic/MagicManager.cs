@@ -118,7 +118,7 @@ public class MagicManager : MonoBehaviour {
         }
     }
 
-	public void Update() {
+	public void LateUpdate() {
 		if (_activeMagic == null) return;
 
 		// ŠÖ”‚ÆID‚ª“ü‚Á‚Ä‚¢‚ê‚ÎŠÖ”Às

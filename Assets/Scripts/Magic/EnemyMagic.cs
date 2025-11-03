@@ -17,27 +17,19 @@ using System;
 public class EnemyMagic : MagicBase {
 	// 弾のスピード
 	private float _bulletSpeed = 40;
-	// 弾の最大飛距離
-	private float _bulletDistanceMax = 20;
 	// 弾のクールタイム
 	private float _bulletCoolTime = 0f;
-	// 弾のクールタイムの最大
-	private float _bulletCoolTimeMax = 0.5f;
 	// 時間差弾のクールタイム
 	private float _delayBulletCoolTime = 0.0f;
-	// 時間差弾のクールタイムの最大
-	private float _delayBulletCoolTimeMax = 10.0f;
 	// バフの継続時間(ミリ秒)
 	private int _buffTime = 10000;
 	// 大型弾のスピード
 	private float _bigBulletSpeed = 15;
 	// 大型弾のクールタイム
 	private float _bigBulletCoolTime = 0.0f;
-	// 大型弾のクールタイムの最大
-	private float _bigBulletCoolTimeMax = 0.6f;
 
-	// 魔法の発動中フラグ
-	private bool _defenseOn = false;
+    // 魔法の発動中フラグ
+    private bool _defenseOn = false;
 	private bool _satelliteOn = false;
 	private bool _laserBeamOn = false;
 	private bool _delayBulletOn = false;
@@ -50,18 +42,42 @@ public class EnemyMagic : MagicBase {
     // 弾リセット確認用フラグ
     private bool _bulletResetCheck = false;
 
+	// 弾の最大飛距離
+	private float _BULLET_DISTANSE_MAX = 20;
+    // 弾の最大飛距離
+    private float _DELAY_BULLET_DISTANSE_MAX = 40;
+    // 弾のクールタイムの最大
+    private float _BULLET_COOL_TIME_MAX = 0.5f;
+	// 時間差弾のクールタイムの最大
+	private float _DELAY_BULLET_COOL_TIME_MAX = 10.0f;
+	// 大型弾のクールタイムの最大
+	private float _BIG_BULLET_COOL_TIME_MAX = 0.6f;
 	// 衛星の半径
 	private const float _SATELLITE_RADIUS = 4;
 	// 衛星弾の最大数
 	private const int _SATELLITE_MAX = 4;
 	// ビームの最大飛距離
 	private const float _BEAM_RANGE_MAX = 30;
-	// 防御魔法の半径
-	private const float _DEFENSE_RADIUS = 3;
+    // ビームの最大サイズ
+    private float _BEAM_SCALE_MAX = 3;
+    // ビームの最小サイズ
+    private float _BEAM_SCALE_MIN = -1;
+    // ビームの拡大倍率
+    private float _BEAM_ENLARGEMENT_RATE = 20;
+    // ビームの縮小倍率
+    private float _BEAM_REDUCTION_RATE = 10;
+    // 防御魔法の半径
+    private const float _DEFENSE_RADIUS = 3;
 	// 時間差弾の最大数
 	private const int _DELAY_BULLET_MAX = 6;
 	// 時間差弾の半径
 	private const float _DELAY_BULLET_RADIUS = 30;
+    // ボス用のサイズ倍率
+    private const float _BOSS_DELAY_BULLET_SCALE_RATIO = 10;
+    // 大型弾用のサイズ倍率
+    private const float _BIG_BULLET_SCALE_RATIO = 4;
+    // 90度回転
+    private const int _DEGREE_RIGHT_ANGLE = 90;
 
 	// 小型弾幕のリスト
 	private List<GameObject> _bulletList = new List<GameObject>();
@@ -133,7 +149,7 @@ public class EnemyMagic : MagicBase {
                 SoundManager.Instance.PlaySE((int)eSEType.BulletShot);
                 // 移動
                 UniTask task = MiniBulletMove(magicObject, bullet);
-                _bulletCoolTime = _bulletCoolTimeMax;
+                _bulletCoolTime = _BULLET_COOL_TIME_MAX;
             }
             else {
                 _bulletCoolTime -= Time.deltaTime;
@@ -150,7 +166,7 @@ public class EnemyMagic : MagicBase {
     private async UniTask MiniBulletMove(MagicObject magicObject, Transform miniBullet) {
 		float distance = 0;
 		// 敵から一定距離離れるまで前に進める
-		while (distance < _bulletDistanceMax) {
+		while (distance < _BULLET_DISTANSE_MAX) {
 			// 弾と敵の距離
 			distance = Vector3.Distance(miniBullet.position, GetEnemyCenterPosition());
 			// 前に進む
@@ -211,12 +227,12 @@ public class EnemyMagic : MagicBase {
 				case 2:
 					bullet.localPosition = new Vector3(0, 0, _SATELLITE_RADIUS);
                     // 角度調整
-					bullet.eulerAngles = new Vector3(0, 90, 0);
+					bullet.eulerAngles = new Vector3(0, _DEGREE_RIGHT_ANGLE, 0);
 					break;
 				case 3:
 					bullet.localPosition = new Vector3(0, 0, -_SATELLITE_RADIUS);
                     // 角度調整
-					bullet.eulerAngles = new Vector3(0, 90, 0);
+					bullet.eulerAngles = new Vector3(0, _DEGREE_RIGHT_ANGLE, 0);
 					break;
 			}
             // 衛星移動
@@ -351,18 +367,18 @@ public class EnemyMagic : MagicBase {
 	private async UniTask LaserBeamMove(MagicObject magicObject, Transform beam) {
 		// ビームの太さの動き
 		Vector3 beamScale = beam.localScale;
-		beamScale.x = 1f;
+		beamScale.x = 1;
 		// 拡大
-		while (beamScale.x < 3) {
+		while (beamScale.x < _BEAM_SCALE_MAX) {
 			beamScale = beam.localScale;
-			beamScale.x += 20 * Time.deltaTime;
+			beamScale.x += _BEAM_ENLARGEMENT_RATE * Time.deltaTime;
 			beam.localScale = beamScale;
 			await UniTask.DelayFrame(1, PlayerLoopTiming.Update, useMagicObject.token);
 		}
 		// 縮小
-		while (beamScale.x > -1) {
+		while (beamScale.x > _BEAM_SCALE_MIN) {
 			beamScale = beam.localScale;
-			beamScale.x -= 10 * Time.deltaTime;
+			beamScale.x -= _BEAM_REDUCTION_RATE * Time.deltaTime;
 			beam.localScale = beamScale;
 			await UniTask.DelayFrame(1, PlayerLoopTiming.Update, useMagicObject.token);
 		}
@@ -407,8 +423,9 @@ public class EnemyMagic : MagicBase {
 					bullet.localPosition = new Vector3(-_DELAY_BULLET_RADIUS / 2, _DELAY_BULLET_RADIUS, 0);
 					break;
 			}
-			bullet.localScale *= 10;
-			_delayBulletCoolTime = _delayBulletCoolTimeMax;
+			// ボス用に拡大
+			bullet.localScale *= _BOSS_DELAY_BULLET_SCALE_RATIO;
+			_delayBulletCoolTime = _DELAY_BULLET_COOL_TIME_MAX;
 			// 時間差弾の移動
 			UniTask task = DelayBulletMove(magicObject, bullet);
 		}
@@ -432,7 +449,7 @@ public class EnemyMagic : MagicBase {
 		}
 		float distance = 0;
 		// 一定距離離れるまで前に進める
-		while (distance < _bulletDistanceMax * 2 && delayBullet.gameObject.activeInHierarchy) {
+		while (distance < _DELAY_BULLET_DISTANSE_MAX && delayBullet.gameObject.activeInHierarchy) {
 			// 弾と敵の距離
 			distance = Vector3.Distance(delayBullet.position, GetEnemyCenterPosition());
 			// プレイヤーのほうに向く
@@ -574,12 +591,12 @@ public class EnemyMagic : MagicBase {
 			bullet.transform.position = activePos;
 			bullet.transform.rotation = GetPlayerRotation();
 			// でかくする
-			bullet.transform.localScale *= 4;
+			bullet.transform.localScale *= _BIG_BULLET_SCALE_RATIO;
 			// SE再生
 			SoundManager.Instance.PlaySE((int)eSEType.BulletShot);
 			// 移動
 			UniTask task = BigBulletMove(magicObject, bullet);
-			_bigBulletCoolTime = _bigBulletCoolTimeMax;
+			_bigBulletCoolTime = _BIG_BULLET_COOL_TIME_MAX;
 		}
 		else {
 			_bigBulletCoolTime -= Time.deltaTime;
@@ -594,7 +611,7 @@ public class EnemyMagic : MagicBase {
 	private async UniTask BigBulletMove(MagicObject magicObject, Transform miniBullet) {
 		float distance = 0;
 		// プレイヤーから一定距離離れるまで前に進める
-		while (distance < _bulletDistanceMax && miniBullet.gameObject.activeInHierarchy) {
+		while (distance < _BULLET_DISTANSE_MAX && miniBullet.gameObject.activeInHierarchy) {
 			// 敵とプレイヤーの距離
 			distance = Vector3.Distance(miniBullet.position, GetPlayerCenterPosition());
 			// 
