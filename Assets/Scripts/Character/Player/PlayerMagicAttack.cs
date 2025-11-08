@@ -1,200 +1,252 @@
+/*
+ *  @file    PlayerMagicAttack.cs
+ *  @author  oorui
+ */
+
 using Cysharp.Threading.Tasks;
 using System.Collections.Generic;
 using UnityEngine;
-
-// MagicUtility省略用
 using static MagicUtility;
-/// <summary>
-/// プレイヤーの魔法を撃つ処理
+
+
 /// </summary>
 public class PlayerMagicAttack {
-    private static List<eMagicType> _eMagicList;                  // 魔法を保存するリスト
-    private static List<eMagicType> _eMagicStorageList;           // 取得したすべての魔法を保存するリスト
-    private GameObject[] _magicSpawnPos = new GameObject[4];  　  // 魔法を発射する場所
-    private bool[] _isCasting = new bool[4];                      // 魔法発射の押下入力
-    private bool[] _effectPlaying = new bool[4];                  // スロットごとのエフェクト再生中フラグ
-    public bool _isDeath = false;
-    private static eMagicType _pendingMagic = eMagicType.Invalid; // 入れ替え用魔法
 
-    private static readonly float _LOWER_LIMIT_MP = 0.0f;         // MPの下限値
-    public static bool isPendingMagic = false;                           // 入れ替え待ちかどうか
+    private const int MaxSlots = 4;                        // 魔法スロット数（マジックナンバーを定数化）
+    private const float DefaultLowerLimitMP = 0.0f;        // MP下限（0で固定）
+    private const int ReplaceMagicSEId = 19;               // 入れ替え時に鳴らすSE ID（マジックナンバー化）
 
+
+    private static List<eMagicType> _equippedMagics;       // 現在装備している魔法（スロット配列）
+    private static List<eMagicType> _acquiredMagics;       // 取得したすべての魔法を保存するリスト
+    private static eMagicType _pendingMagic = eMagicType.Invalid; // 入れ替え待ちの魔法（Invalidなら無し）
+    public static bool isPendingMagic = false;           // 入れ替え待ちフラグ
+
+
+    private GameObject[] _magicSpawnPos = new GameObject[MaxSlots]; //各スロットの発射位置（GameObject）
+    private bool[] _isCasting = new bool[MaxSlots];                //長押し状態のフラグ（スロットごと）
+    private bool[] _effectPlaying = new bool[MaxSlots];            //エフェクト再生中フラグ（スロットごと）
+    public bool _isDeath = false;                                  //死亡状態フラグ
+
+    private readonly float _LOWER_LIMIT_MP = DefaultLowerLimitMP;  //インスタンス用の下限（定数参照）
+    
     /// <summary>
     /// コンストラクタ
     /// </summary>
-    /// <param name="animator"></param>
     public PlayerMagicAttack() {
         InitializeLists();
         _isDeath = false;
     }
 
+    /// <summary>
+    /// 初期化
+    /// </summary>
     private void InitializeLists() {
-        _eMagicList = new List<eMagicType>(4);
-        for (int i = 0; i < 4; i++) {
-            _eMagicList.Add(eMagicType.Invalid);
+        // 装備リストを初期化
+        _equippedMagics = new List<eMagicType>(MaxSlots);
+        for (int i = 0; i < MaxSlots; i++) {
+            _equippedMagics.Add(eMagicType.Invalid);
         }
-        _eMagicStorageList = new List<eMagicType>();
+
+        // 取得済み魔法リストを初期化
+        _acquiredMagics = new List<eMagicType>();
+    }
+    /// <summary>
+    /// 指定スロット番号が有効か判定する。
+    /// </summary>
+    /// <param name="slotIndex">スロットインデックス</param>
+    /// <returns>有効なら true</returns>
+    private bool IsValidSlot(int slotIndex) {
+        return slotIndex >= 0 && slotIndex < MaxSlots;
     }
 
     /// <summary>
-    /// スロットに発射位置を設定
-    /// </summary>
+    /// 指定スロットの SpawnPoint が割り当てられているかをチェック
     /// <param name="slotIndex"></param>
-    /// <param name="position"></param>
-    public void SetMagicSpawnPosition(int slotIndex, GameObject position) {
-        if (slotIndex < 0 || slotIndex >= _magicSpawnPos.Length) return;
-        _magicSpawnPos[slotIndex] = position;
-        _magicSpawnPos[slotIndex].SetActive(false);
+    /// <returns></returns>
+    private bool EnsureSpawnPointExists(int slotIndex) {
+        if (!IsValidSlot(slotIndex)) return false;
+        var sp = _magicSpawnPos[slotIndex];
+        if (sp == null) {
+            return false;
+        }
+        return true;
     }
 
     /// <summary>
-    /// 入力側から、長押しの入力判定を受け取る
+    /// 指定スロットに発射位置設定する。
+    /// 受け取った GameObject は初期状態で inactive にする
     /// </summary>
+    /// <param name="slotIndex">スロット番号（0~MaxSlots-1）</param>
+    /// <param name="position">発射位置の GameObject</param>
+    public void SetMagicSpawnPosition(int slotIndex, GameObject position) {
+        if (!IsValidSlot(slotIndex)) return;
+        _magicSpawnPos[slotIndex] = position;
+        if (_magicSpawnPos[slotIndex] != null) {
+            _magicSpawnPos[slotIndex].SetActive(false);
+        }
+    }
+
+    /// <summary>
+    /// 長押し状態フラグを設定する
+    /// </summary>
+    /// <param name="slotIndex">スロット番号</param>
+    /// <param name="flag">長押し中フラグ</param>
     public void SetCastingFlag(int slotIndex, bool flag) {
-        if (slotIndex < 0 || slotIndex >= _isCasting.Length) return;
+        if (!IsValidSlot(slotIndex)) return;
         _isCasting[slotIndex] = flag;
     }
 
     /// <summary>
-    /// 魔法発射
+    /// 指定スロットの魔法をリクエストする。
     /// </summary>
     public void RequestAttack(int slotIndex) {
-        if (slotIndex < 0 || slotIndex >= _eMagicList.Count) return;
+        // 範囲チェック
+        if (!IsValidSlot(slotIndex)) return;
 
-        // 入れ替え中なら攻撃せずに入れ替えを優先
+        // 入れ替え中なら入れ替え処理を優先（既存仕様）
         if (_pendingMagic != eMagicType.Invalid) {
             ConfirmReplaceMagic(slotIndex);
             return;
         }
 
-        // 現在のMPを取得
+        // 現在の MP を取得
         float currentMP = CharacterUtility.GetPlayerCurrentMP();
-        if (slotIndex < 0 || slotIndex >= _eMagicList.Count) return;
-        var magicType = _eMagicList[slotIndex];
+
+        // 現状の装備魔法取得
+        var magicType = _equippedMagics[slotIndex];
         if (magicType == eMagicType.Invalid) return;
-        // MPが切れたら魔法の再生を停止
+
+        // MPが下限以下であれば魔法解除
         if (currentMP <= _LOWER_LIMIT_MP) {
             RequestCancelMagic(slotIndex);
             return;
         }
 
-        // 魔法発動処理
-        if (!_isDeath) {
-            GameObject spawnPoint = _magicSpawnPos[slotIndex];
-            if (spawnPoint == null) return;
-            // 魔法発動
-            CreateMagic(eSideType.PlayerSide, magicType, spawnPoint);
+        // 死亡状態なら何もしない
+        if (_isDeath) return;
 
-            // 本の出現
-            spawnPoint.SetActive(true);
+        // SpawnPointがあるか確認
+        if (!EnsureSpawnPointExists(slotIndex)) return;
 
-            if (currentMP <= _LOWER_LIMIT_MP) {
-                RequestCancelMagic(slotIndex);
-                return;
-            }
+        GameObject spawnPoint = _magicSpawnPos[slotIndex];
+
+        // 魔法発動
+        CreateMagic(eSideType.PlayerSide, magicType, spawnPoint);
+
+        // 見た目の本を表示
+        spawnPoint.SetActive(true);
+
+        // MP残量厳密チェック
+        if (currentMP <= _LOWER_LIMIT_MP) {
+            RequestCancelMagic(slotIndex);
+            return;
         }
     }
 
     /// <summary>
-    /// 取得した魔法と現在の魔法を入れ替える
+    /// 入れ替え処理
     /// </summary>
     public void ConfirmReplaceMagic(int slotIndex) {
+        if (!IsValidSlot(slotIndex)) return;
         if (_pendingMagic == eMagicType.Invalid) return;
-        if (slotIndex < 0 || slotIndex >= _eMagicList.Count) return;
-
 
         // 発動中ならキャンセルしてから入れ替える
-        var currentMagic = _eMagicList[slotIndex];
+        var currentMagic = _equippedMagics[slotIndex];
         if (currentMagic != eMagicType.Invalid) {
             RequestCancelMagic(slotIndex);
         }
 
-        // 入れ替える
+        // 入れ替え（既存仕様）
         ReplaceMagic(slotIndex, _pendingMagic);
         _pendingMagic = eMagicType.Invalid;
-        // UIを閉じる
-        SetMagicUI.Instance.CloseChangeMagicUI();
         isPendingMagic = false;
+
+        // UI 関連（既存依存を保つ）
+        SetMagicUI.Instance.CloseChangeMagicUI();
+
+        // 既存仕様どおり防御魔法（Defense）を常に展開
         MagicReset(eSideType.PlayerSide, eMagicType.Defense);
     }
 
-
     /// <summary>
-    /// 魔法発射解除
+    /// スロットの魔法発射を解除する
     /// </summary>
-    /// <param name="slotIndex"></param>
     public void RequestCancelMagic(int slotIndex) {
-        if (slotIndex < 0 || slotIndex >= _eMagicList.Count) return;
-        // スロット番目のeMagicTypeを渡す
-        var magicType = _eMagicList[slotIndex];
-        GameObject spawnPoint = _magicSpawnPos[slotIndex];
-        // 渡された魔法がInvalid出なければ
+        if (!IsValidSlot(slotIndex)) return;
+
+        var magicType = _equippedMagics[slotIndex];
         if (magicType == eMagicType.Invalid) return;
+
+        GameObject spawnPoint = _magicSpawnPos[slotIndex];
         if (spawnPoint != null) {
             spawnPoint.SetActive(false);
         }
-        // 魔法発射解除
+
+        // 魔法解除
         MagicReset(eSideType.PlayerSide, magicType);
-        spawnPoint.SetActive(false);
+
+        if (spawnPoint != null) {
+            spawnPoint.SetActive(false);
+        }
+
         // エフェクト再生フラグリセット
         _effectPlaying[slotIndex] = false;
 
+        // 死亡時の追加解除
         if (_isDeath) {
             MagicReset(eSideType.PlayerSide, magicType);
         }
     }
 
     /// <summary>
-    /// 魔法を発動した最初のみの処理
+    /// 魔法の最初の発動を始める
     /// </summary>
-    /// <param name="slotIndex"></param>
     public void StartCasting(int slotIndex) {
-        if (slotIndex < 0 || slotIndex >= _eMagicList.Count) return;
-        // 魔法がセットされていなければ処理しない
-        var magicType = _eMagicList[slotIndex];
+        if (!IsValidSlot(slotIndex)) return;
+
+        var magicType = _equippedMagics[slotIndex];
         if (magicType == eMagicType.Invalid) return;
-        // 現在のMPを取得
+
         float currentMP = CharacterUtility.GetPlayerCurrentMP();
         if (currentMP <= _LOWER_LIMIT_MP) return;
 
-        if (_effectPlaying[slotIndex]) return; // すでに再生中なら何もしない
+        if (_effectPlaying[slotIndex]) return;
 
+        if (!EnsureSpawnPointExists(slotIndex)) return;
         GameObject spawnPoint = _magicSpawnPos[slotIndex];
-        if (spawnPoint == null) return;
 
-        // エフェクト再生
-        UniTask task = EffectManager.Instance.PlayEffect(eEffectType.Book, spawnPoint.transform.position);
+        // エフェクト
+        EffectManager.Instance.PlayEffect(eEffectType.Book, spawnPoint.transform.position).Forget();
 
         _effectPlaying[slotIndex] = true;
     }
 
-
     /// <summary>
-    /// 解析魔法発動
+    /// 解析魔法リクエストする。
     /// </summary>
     public void RequestAnalysis() {
-        // SetMagicStorageSlotに魔法を保存していく
         if (_isDeath) return;
         AnalysisMagicActivate();
     }
 
     /// <summary>
-    /// 1フレーム分の発射処理
-    /// 非同期
+    /// 1フレーム分の魔法発射処理
     /// </summary>
-    /// <returns></returns>
     public async UniTask MagicUpdate() {
         var player = CharacterUtility.GetPlayer();
         if (player == null) return;
         if (_isDeath) return;
-        for (int i = 0; i < _eMagicList.Count; i++) {
+
+        for (int i = 0; i < _equippedMagics.Count; i++) {
             float currentMP = CharacterUtility.GetPlayerCurrentMP();
+
             if (currentMP <= _LOWER_LIMIT_MP) {
                 RequestCancelMagic(i);
                 continue;
             }
 
-            // 長押しされていたら
+            // 長押しされているなら発射
             if (_isCasting[i]) {
                 RequestAttack(i);
             }
@@ -203,106 +255,90 @@ public class PlayerMagicAttack {
         await UniTask.CompletedTask;
     }
 
-
     /// <summary>
-    /// 魔法をリストに保存
+    /// 取得した魔法を所持リストに保存
     /// </summary>
-    public void SetMagicToSlot(eMagicType magicType) {
-        // 空いているリストに保存
-        for (int i = 0; i < _eMagicList.Count; i++) {
-            if (_eMagicList[i] == eMagicType.Invalid) {
-                _eMagicList[i] = magicType;
-                return;
-            }
-        }
-    }
-
-    /// <summary>
-    /// 取得した魔法を最大数まで保存
-    /// </summary>
-    /// <param name="magicType"></param>
     public static void SetMagicStorageSlot(eMagicType magicType) {
-        _eMagicStorageList.Add(magicType);
+        _acquiredMagics.Add(magicType);
 
-        // 空きがあるか試す
-        for (int i = 0; i < _eMagicList.Count; i++) {
-            if (_eMagicList[i] == eMagicType.Invalid) {
-                _eMagicList[i] = magicType;
+        // 空きスロットがあれば自動装備
+        for (int i = 0; i < _equippedMagics.Count; i++) {
+            if (_equippedMagics[i] == eMagicType.Invalid) {
+                _equippedMagics[i] = magicType;
                 SetMagicUI.Instance.UpdateMagicUI();
                 return;
             }
         }
 
-        // 空きがなければ入れ替え待ちにする
+        // 空きが無ければ入れ替え待ちにする
         _pendingMagic = magicType;
-        // 入れ替え待ちフラグをON
         isPendingMagic = true;
-        // 入れ替え待ちUI表示
         SetMagicUI.Instance.OpenChangeMagicUI();
-        // 防御魔法を常に展開
+
+        // 既存仕様どおり、防御魔法を即展開
         CreateMagic(eSideType.PlayerSide, eMagicType.Defense);
-
     }
 
     /// <summary>
-    /// リストの要素すべてを取得
+    /// 取得済み魔法リストを返す
     /// </summary>
-    /// <returns></returns>
     public static List<eMagicType> GetMagicStorageSlot() {
-        return _eMagicStorageList;
-
+        return _acquiredMagics;
     }
 
     /// <summary>
-    /// 指定したスロットを新しい魔法に入れ替える
+    /// 指定スロットを新しい魔法に置き換える。
     /// </summary>
     public void ReplaceMagic(int slotIndex, eMagicType newMagic) {
-        if (slotIndex < 0 || slotIndex >= _eMagicList.Count) return;
-        _eMagicList[slotIndex] = newMagic;
+        if (!IsValidSlot(slotIndex)) return;
+        _equippedMagics[slotIndex] = newMagic;
         SetMagicUI.Instance.UpdateMagicUI();
     }
 
     /// <summary>
-    /// 入れ替え待ち魔法を指定スロットにセットする
+    /// 入れ替え待ち魔法を指定スロットにセット
     /// </summary>
     private void ReplacePendingMagic(int slotIndex) {
         if (_pendingMagic == eMagicType.Invalid) return;
         ReplaceMagic(slotIndex, _pendingMagic);
-        // SE再生
-        SoundManager.Instance.PlaySE(19);
-        _pendingMagic = eMagicType.Invalid; // 待ち解除
-        SetMagicUI.Instance.CloseChangeMagicUI();
 
+        // SE再生（既存で ID=19 を利用）
+        SoundManager.Instance.PlaySE(ReplaceMagicSEId);
+
+        _pendingMagic = eMagicType.Invalid;
+        SetMagicUI.Instance.CloseChangeMagicUI();
     }
 
     /// <summary>
-    /// 魔法リストUIの表示
+    /// 魔法一覧 UI を開く
     /// </summary>
     public void OpenMagicUI() {
-        // 魔法リストの表示
         SetMagicUI.Instance.OpenUI();
     }
 
     /// <summary>
-    /// 魔法リストUIの非表示
+    /// 魔法一覧 UI を閉じる
     /// </summary>
     public void CloseMagicUI() {
-        // 魔法リストの非表示
         SetMagicUI.Instance.CloseUI();
     }
 
-    // 現在プレイヤーが使用している魔法のリストを取得
+    /// <summary>
+    /// 現在装備している魔法一覧を取得
+    /// </summary>
     public static List<eMagicType> GetEquippedMagicList() {
-        return _eMagicList;
+        return _equippedMagics;
     }
 
-    // 片付け処理
+    /// <summary>
+    /// 内部状態を初期化して片付ける。
+    /// </summary>
     public void ResetState() {
         _isDeath = false;
     }
 
     /// <summary>
-    /// 魔法の片付け
+    /// 魔法のリセット
     /// </summary>
     public void ResetMagic() {
         InitializeLists();
@@ -310,9 +346,9 @@ public class PlayerMagicAttack {
     }
 
     /// <summary>
-    /// 入れ替え待ちかどうかの取得
+    /// 入れ替え待ちフラグの取得（static）。
     /// </summary>
-    /// <returns></returns>
+    /// <returns>入れ替え待ちなら true</returns>
     public static bool GetPendingMagic() {
         return isPendingMagic;
     }

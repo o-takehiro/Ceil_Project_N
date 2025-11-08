@@ -1,15 +1,25 @@
+/*
+ *  @fili   PlayerMPGauge
+ *  @author     oorui
+ */
+
 using Cysharp.Threading.Tasks;
-using System.Collections;
-using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// プレイヤーのMPゲージ管理
+/// </summary>
 public class PlayerMPGauge : MenuBase {
     [SerializeField]
     private Slider _mpSlider = null;
     public CancellationToken _token;
 
+    /// <summary>
+    /// スライダーの取得
+    /// </summary>
+    /// <returns></returns>
     public Slider GetSlider() {
         return _mpSlider;
     }
@@ -27,9 +37,10 @@ public class PlayerMPGauge : MenuBase {
         // ステージクリア監視
         StageManager.Instance.OnStageClear += () => tcs.TrySetResult();
 
-        // ゲームオーバー監視（isGameOverがtrueになるのを待つ）
+       // ゲームオーバーになるまで待つ
         async UniTaskVoid WatchGameOver(CancellationToken token) {
             while (!MageAnimationEvents.isGameOver) {
+                // 1フレームごとにチェック
                 await UniTask.Yield(PlayerLoopTiming.Update, token);
             }
             tcs.TrySetResult();

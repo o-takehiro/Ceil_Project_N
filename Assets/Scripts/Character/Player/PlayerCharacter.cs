@@ -108,7 +108,7 @@ public class PlayerCharacter : CharacterBase {
     /// 近接攻撃用入力受付
     /// </summary>
     public void RequestAttack() {
-        if (_movement._isGrounded) {
+        if (_movement.isGrounded) {
             _attack.RequestAttack();
         }
     }
@@ -233,7 +233,7 @@ public class PlayerCharacter : CharacterBase {
     public override void Dead() {
         // 死亡アニメーション再生
         _animator.SetTrigger("Death");
-        _movement._isDeath = true;
+        _movement.isDeath = true;
         _magic._isDeath = true;
         _magic.ResetMagic();
 

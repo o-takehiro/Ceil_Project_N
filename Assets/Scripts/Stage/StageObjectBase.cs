@@ -1,5 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
+/*
+ *  @fili   StageObjectBase
+ *  @author     oorui
+ */
 using UnityEngine;
 
 public abstract class StageObjectBase : MonoBehaviour {
@@ -9,7 +11,7 @@ public abstract class StageObjectBase : MonoBehaviour {
     public virtual void Initialize() { }
 
     /// <summary>
-    /// 
+    /// èÄîı
     /// </summary>
     public virtual void SetUp() { }
 

@@ -1,9 +1,14 @@
+/*
+ *  @fili   goalObject
+ *  @author     oorui
+ */
+
 using Cysharp.Threading.Tasks;
-using System.Collections;
-using System.Collections.Generic;
-using Unity.Properties;
 using UnityEngine;
 
+/// <summary>
+/// ステージに配置するオブジェクト、ゴール
+/// </summary>
 public class goalObject : StageObjectBase {
     // 自身のCollider
     private Collider _collider;
@@ -12,11 +17,16 @@ public class goalObject : StageObjectBase {
     private bool _hasPlayedFocus = false;
     public bool IsPlayerReachedGoal { get; private set; }
 
+    /// <summary>
+    /// 準備
+    /// </summary>
     public override void SetUp() {
         base.SetUp();
+        // コライダーを取得
         if (_collider == null) {
             _collider = GetComponent<Collider>();
         }
+        // 初期生成時は判定、表示はしない
         _goalObjectRoot.SetActive(false);
         _collider.enabled = false;
         IsPlayerReachedGoal = false;
@@ -45,11 +55,18 @@ public class goalObject : StageObjectBase {
 
     }
 
+    /// <summary>
+    /// ゴール判定
+    /// </summary>
+    /// <param name="other"></param>
     private void OnTriggerEnter(Collider other) {
         if (!other.CompareTag("Player")) return;
         IsPlayerReachedGoal = true;
     }
 
+    /// <summary>
+    /// 片付け処理
+    /// </summary>
     public override void Teardown() {
         base.Teardown();
         CharacterUtility.UnusePlayer();

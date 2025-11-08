@@ -1,6 +1,13 @@
+/*
+ *  @fili   StageBase
+ *  @author     oorui
+ */
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 
+/// <summary>
+/// ステージの基底クラス
+/// </summary>
 public abstract class StageBase : MonoBehaviour {
 
     [SerializeField]
@@ -18,7 +25,7 @@ public abstract class StageBase : MonoBehaviour {
         gameObject.SetActive(false);
         await UniTask.CompletedTask;
     }
-    
+
     /// <summary>
     /// 準備
     /// </summary>

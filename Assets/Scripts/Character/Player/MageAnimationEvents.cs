@@ -73,10 +73,10 @@ public class MageAnimationEvents : MonoBehaviour {
 
     // アニメーションイベントから呼ばれる
     public void DisableJump() {
-        _playerMovement._canJump = false;
+        _playerMovement.canJump = false;
     }
     public void EnableJump() {
-        _playerMovement._canJump = true;
+        _playerMovement.canJump = true;
     }
 
     /// <summary>
