@@ -8,28 +8,29 @@ using System.Collections.Generic;
 using UnityEngine;
 using static MagicUtility;
 
-
+/// <summary>
+/// プレイヤーの魔法攻撃
 /// </summary>
 public class PlayerMagicAttack {
 
-    private const int MaxSlots = 4;                        // 魔法スロット数（マジックナンバーを定数化）
-    private const float DefaultLowerLimitMP = 0.0f;        // MP下限（0で固定）
-    private const int ReplaceMagicSEId = 19;               // 入れ替え時に鳴らすSE ID（マジックナンバー化）
+    private const int MaxSlots = 4;                        // 魔法スロット数
+    private const float DefaultLowerLimitMP = 0.0f;        // MP下限
+    private const int ReplaceMagicSEId = 19;               // 入れ替え時に鳴らすSE ID
 
 
-    private static List<eMagicType> _equippedMagics;       // 現在装備している魔法（スロット配列）
+    private static List<eMagicType> _equippedMagics;       // 現在装備している魔法
     private static List<eMagicType> _acquiredMagics;       // 取得したすべての魔法を保存するリスト
-    private static eMagicType _pendingMagic = eMagicType.Invalid; // 入れ替え待ちの魔法（Invalidなら無し）
+    private static eMagicType _pendingMagic = eMagicType.Invalid; // 入れ替え待ちの魔法
     public static bool isPendingMagic = false;           // 入れ替え待ちフラグ
 
 
-    private GameObject[] _magicSpawnPos = new GameObject[MaxSlots]; //各スロットの発射位置（GameObject）
-    private bool[] _isCasting = new bool[MaxSlots];                //長押し状態のフラグ（スロットごと）
-    private bool[] _effectPlaying = new bool[MaxSlots];            //エフェクト再生中フラグ（スロットごと）
+    private GameObject[] _magicSpawnPos = new GameObject[MaxSlots]; //各スロットの発射位置
+    private bool[] _isCasting = new bool[MaxSlots];                //長押し状態のフラグ
+    private bool[] _effectPlaying = new bool[MaxSlots];            //エフェクト再生中フラグ
     public bool _isDeath = false;                                  //死亡状態フラグ
 
-    private readonly float _LOWER_LIMIT_MP = DefaultLowerLimitMP;  //インスタンス用の下限（定数参照）
-    
+    private readonly float _LOWER_LIMIT_MP = DefaultLowerLimitMP;  //インスタンス用の下限
+
     /// <summary>
     /// コンストラクタ
     /// </summary>
@@ -104,7 +105,7 @@ public class PlayerMagicAttack {
         // 範囲チェック
         if (!IsValidSlot(slotIndex)) return;
 
-        // 入れ替え中なら入れ替え処理を優先（既存仕様）
+        // 入れ替え中なら入れ替え処理を優先
         if (_pendingMagic != eMagicType.Invalid) {
             ConfirmReplaceMagic(slotIndex);
             return;
@@ -162,10 +163,10 @@ public class PlayerMagicAttack {
         _pendingMagic = eMagicType.Invalid;
         isPendingMagic = false;
 
-        // UI 関連（既存依存を保つ）
+        // UI 関連
         SetMagicUI.Instance.CloseChangeMagicUI();
 
-        // 既存仕様どおり防御魔法（Defense）を常に展開
+        // 防御魔法を常に展開
         MagicReset(eSideType.PlayerSide, eMagicType.Defense);
     }
 
@@ -296,20 +297,6 @@ public class PlayerMagicAttack {
     }
 
     /// <summary>
-    /// 入れ替え待ち魔法を指定スロットにセット
-    /// </summary>
-    private void ReplacePendingMagic(int slotIndex) {
-        if (_pendingMagic == eMagicType.Invalid) return;
-        ReplaceMagic(slotIndex, _pendingMagic);
-
-        // SE再生（既存で ID=19 を利用）
-        SoundManager.Instance.PlaySE(ReplaceMagicSEId);
-
-        _pendingMagic = eMagicType.Invalid;
-        SetMagicUI.Instance.CloseChangeMagicUI();
-    }
-
-    /// <summary>
     /// 魔法一覧 UI を開く
     /// </summary>
     public void OpenMagicUI() {
@@ -343,14 +330,6 @@ public class PlayerMagicAttack {
     public void ResetMagic() {
         InitializeLists();
         SetMagicUI.Instance.ResetMagicUI();
-    }
-
-    /// <summary>
-    /// 入れ替え待ちフラグの取得（static）。
-    /// </summary>
-    /// <returns>入れ替え待ちなら true</returns>
-    public static bool GetPendingMagic() {
-        return isPendingMagic;
     }
 
 }
