@@ -64,6 +64,7 @@ public class CharacterUtility {
     /// </summary>
     /// <returns></returns>
     public static Vector3 GetPlayerCenterPosition() {
+        
         return GetPlayer().GetCenterPosition();
     }
     /// <summary>
