@@ -108,7 +108,7 @@ public class PlayerCharacter : CharacterBase {
     /// ‹ßÚUŒ‚—p“ü—Íó•t
     /// </summary>
     public void RequestAttack() {
-        if (_movement.isGrounded) {
+        if (_movement.IsJumping) {
             _attack.RequestAttack();
         }
     }

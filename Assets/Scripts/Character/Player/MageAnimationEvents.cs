@@ -71,13 +71,13 @@ public class MageAnimationEvents : MonoBehaviour {
         ToEnemyDamage(damage);
     }
 
-    // アニメーションイベントから呼ばれる
-    public void DisableJump() {
-        _playerMovement.canJump = false;
-    }
-    public void EnableJump() {
-        _playerMovement.canJump = true;
-    }
+    //// アニメーションイベントから呼ばれる
+    //public void DisableJump() {
+    //    _playerMovement.CanJump = false;
+    //}
+    //public void EnableJump() {
+    //    _playerMovement.CanJump = true;
+    //}
 
     /// <summary>
     /// 死亡アニメーションを最後まで流す

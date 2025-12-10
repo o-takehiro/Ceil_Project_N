@@ -8,27 +8,31 @@ using UnityEngine;
 /// プレイヤーの移動・ジャンプ処理を担当するクラス
 /// </summary>
 public class PlayerMovement {
-    private readonly Rigidbody rigidbody;   // 物理挙動
-    private readonly Transform transform;   // Transform
-    private readonly Camera camera;         // カメラ参照
-    private readonly Animator animator;     // アニメーション制御
-    private readonly GroundCheck groundCheck;
+    private readonly Rigidbody rigidbody;       // 物理挙動
+    private readonly Transform transform;       // Transform
+    private readonly Camera camera;             // カメラ参照
+    private readonly Animator animator;         // アニメーション制御
+    private readonly GroundCheck groundCheck;   // 地面接地判定
 
     // 定数
-    private const float MOVE_SPEED = 10f;    // 移動速度
-    private const float JUMP_FORCE = 4.7f;   // ジャンプ力
+    private const float _MOVE_SPEED = 10f;      // 移動速度
+    private const float _JUMP_FORCE = 4.7f;     // ジャンプ力
+    private const float ROTATION_SMOOTH = 0.1f; // 回転補間
 
     // 入力情報
     private Vector2 inputMove;              // 移動入力
     private bool jumpRequested;             // ジャンプ要求フラグ
-    public bool canJump = true;
 
     // 状態管理
-    private bool wasGrounded;               // 前フレームの接地状態
-    private float turnVelocity;             // 回転補間用の速度
-    public bool isGrounded;                 // 現在の接地状態
-    public bool isDeath = false;            // 死亡判定
-    public bool isMoving = false;           // 移動不可判定
+    private float turnVelocity;  // 回転速度補間用
+    private bool isJumping = false;
+    public bool isDeath = false; // 死亡中は入力無効
+    public bool isMoving = true; // 移動許可状態
+
+    public bool IsGrounded => groundCheck.IsGrounded; // GroundCheckの接地判定
+    public bool IsJumping => isJumping;               // ジャンプ中かどうか
+    public bool CanJump => IsGrounded && !isJumping;  // 
+
 
     public PlayerMovement(Rigidbody rigidbody, Transform transform, Camera camera, Animator animator, GroundCheck groundCheck) {
         this.rigidbody = rigidbody;
@@ -38,12 +42,22 @@ public class PlayerMovement {
         this.groundCheck = groundCheck;
     }
 
-    // 移動入力を受け取る
-    public void SetMoveInput(Vector2 input) => inputMove = input;
-
-    // ジャンプ入力を受け取る
-    public void RequestJump() => jumpRequested = true;
-
+    /// <summary>
+    /// 移動入力を受け取る
+    /// </summary>
+    /// <param name="input"></param>
+    public void SetMoveInput(Vector2 input) {
+        inputMove = input;
+    }
+    /// <summary>
+    /// ジャンプ入力を受け取る
+    /// </summary>
+    public void RequestJump() {
+        jumpRequested = true;
+    }
+    /// <summary>
+    /// 移動可能状態にする
+    /// </summary>
     public void moveSetUp() {
         isMoving = true;
     }
@@ -52,62 +66,82 @@ public class PlayerMovement {
     /// 1フレーム分の移動処理
     /// </summary>
     public void MoveUpdate(float deltaTime, bool isAttacking) {
-        if (isAttacking || isDeath || !isMoving) return; // 攻撃中は移動不可
+        // 移動不可だった場合、処理しない
+        if (isAttacking || isDeath || !isMoving) return;
 
-        // コライダーで地面接地判定
-        isGrounded = GroundCheck.IsGrounded;
-
+        // 接地判定
+        bool grounded = groundCheck.IsGrounded;
 
         // ジャンプ処理
-        if (jumpRequested && isGrounded && canJump) {
-            rigidbody.AddForce(Vector3.up * JUMP_FORCE, ForceMode.VelocityChange);
-            animator.SetTrigger("jumpT");
-            jumpRequested = false;
-            return;
-        }
-        jumpRequested = false;
-        wasGrounded = isGrounded;
+        JumpAction(jumpRequested, groundCheck);
 
-        // 待機モーション再生
-        if (!isGrounded) {
-            animator.SetBool("Idle", true);
-        }
-
-        // カメラ基準でワールドベクトルで移動
+        // 移動方向をカメラ基準に変換する
         Vector3 inputDir = new Vector3(inputMove.x, 0f, inputMove.y).normalized;
         Vector3 moveDir = Quaternion.Euler(0f, camera.transform.eulerAngles.y, 0f) * inputDir;
 
         // 移動速度をRigidbodyに適用
-        Vector3 finalVelocity = moveDir * MOVE_SPEED;
-        finalVelocity.y = rigidbody.velocity.y;
-        rigidbody.velocity = finalVelocity;
+        Vector3 velocity = rigidbody.velocity;
+        velocity.x = moveDir.x * _MOVE_SPEED;
+        velocity.z = moveDir.z * _MOVE_SPEED;
+        rigidbody.velocity = velocity;
 
         // 入力があれば回転を移動方向に合わせる
-        if (inputDir.sqrMagnitude > 0.001f) {
+        if (inputDir.sqrMagnitude > 0.01f) {
             float targetAngle = Mathf.Atan2(moveDir.x, moveDir.z) * Mathf.Rad2Deg;
-            float angleY = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnVelocity, 0.1f);
+            float angleY = Mathf.SmoothDampAngle(
+                transform.eulerAngles.y,
+                targetAngle,
+                ref turnVelocity,
+                ROTATION_SMOOTH
+            );
             transform.rotation = Quaternion.Euler(0f, angleY, 0f);
         }
 
         // 移動関連のアニメーションを再生
-        AnimationHundoll(inputDir);
+        UpdateAnimation(inputDir, grounded);
+
+    }
+
+
+    /// <summary>
+    /// ジャンプを行う処理
+    /// </summary>
+    /// <param name="isJumped"></param>
+    /// <param name="groundCheck"></param>
+    private void JumpAction(bool isJumped, bool groundCheck) {
+        // ジャンプが可能な時
+        if (jumpRequested && IsGrounded && !isJumping) {
+            // 上方向の速度をジャンプ力に入れる
+            rigidbody.velocity = new Vector3(
+                rigidbody.velocity.x,
+                _JUMP_FORCE,
+                rigidbody.velocity.z
+            );
+
+            // ジャンプ状態に移行
+            isJumping = true;
+            jumpRequested = false;
+
+            // ジャンプアニメーション再生
+            animator.SetTrigger("jumpT");
+        }
+
+        // 地面と接地したらジャンプ判定を消す
+        if (IsGrounded) {
+            isJumping = false;
+        }
 
     }
 
     /// <summary>
-    /// 入力に応じたアニメーション更新
+    /// 入力および接地状態によるアニメーション制御
     /// </summary>
-    private void AnimationHundoll(Vector3 inputDir) {
-        if (inputDir != Vector3.zero) {
-            animator.SetBool("Run", true);
-            animator.SetBool("Run_Stop", false);
-        }
-        else {
-            if (animator.GetBool("Run")) {
-                animator.SetBool("Run", false);
-                animator.SetBool("Run_Stop", true);
-            }
-        }
+    private void UpdateAnimation(Vector3 inputDir, bool grounded) {
+        bool isRunning = inputDir != Vector3.zero;
+
+        animator.SetBool("Run", grounded && isRunning);
+        animator.SetBool("Run_Stop", grounded && !isRunning);
+        animator.SetBool("Idle", grounded && !isRunning);
     }
 
     /// <summary>
@@ -116,8 +150,6 @@ public class PlayerMovement {
     public void ResetState() {
         inputMove = Vector2.zero;
         jumpRequested = false;
-        isGrounded = false;
-        wasGrounded = false;
         isDeath = false;
         rigidbody.velocity = Vector3.zero;
     }

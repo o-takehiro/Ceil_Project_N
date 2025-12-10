@@ -118,6 +118,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 78c1c360aa666c74a9a4cdc48b618d7f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 64
+  sphereRadius: 0.25
+  checkDistance: 0.3
+  coyoteTime: 0.1
 --- !u!1 &4030843881615239274
 GameObject:
   m_ObjectHideFlags: 0
