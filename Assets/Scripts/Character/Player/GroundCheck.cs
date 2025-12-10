@@ -10,27 +10,27 @@ using UnityEngine;
 public class GroundCheck : MonoBehaviour {
     [SerializeField] private LayerMask groundLayer;         // 地面レイヤー
     [SerializeField] private float sphereRadius = 0.25f;    // 足元の半径
-    [SerializeField] private float checkDistance = 0.3f;    // 判定距離
-    [SerializeField] private float coyoteTime = 0f;         // 接地猶予時間
+    [SerializeField] private float checkDistance = 0.1f;    // 判定距離
+    [SerializeField] private float coyoteTime = 0.1f;       // 接地猶予時間
 
     private float lastGroundTime;   // 最後に地面に触れた時刻
-    private int groundContactCount; // 地面に触れた解す
+    private bool isTouchingGround;  // 地面に触れたかどうか
 
     /// <summary>
     /// 接地判定
     /// </summary>
     public bool IsGrounded =>
-        groundContactCount > 0 ||
+        isTouchingGround ||
         (Time.time - lastGroundTime) <= coyoteTime;
 
     /// <summary>
     /// 更新処理
     /// </summary>
-    private void Update() {
+    private void FixedUpdate() {
         // 接地判定
         SphereCastGround();
-    }
 
+    }
     /// <summary>
     /// 下方向にSphereCastして、判定をする
     /// </summary>
@@ -39,10 +39,7 @@ public class GroundCheck : MonoBehaviour {
 
         // SphererCast
         if (Physics.SphereCast(origin, sphereRadius, Vector3.down,
-            out RaycastHit hit, checkDistance,
-            groundLayer, QueryTriggerInteraction.Ignore)) {
-
-            // 接地中
+                    out RaycastHit hit, checkDistance, groundLayer)) {
             lastGroundTime = Time.time;
         }
     }
@@ -52,7 +49,8 @@ public class GroundCheck : MonoBehaviour {
     /// </summary>
     private void OnTriggerEnter(Collider other) {
         if (!IsGround(other)) return;
-        groundContactCount++;
+        // 接地中にする
+        isTouchingGround = true;
         lastGroundTime = Time.time;
     }
 
@@ -61,6 +59,8 @@ public class GroundCheck : MonoBehaviour {
     /// </summary>
     private void OnTriggerStay(Collider other) {
         if (IsGround(other)) {
+            // 接地中は刑ぞｋ
+            isTouchingGround = true;
             lastGroundTime = Time.time;
         }
     }
@@ -70,7 +70,8 @@ public class GroundCheck : MonoBehaviour {
     /// </summary>
     private void OnTriggerExit(Collider other) {
         if (!IsGround(other)) return;
-        groundContactCount = Mathf.Max(groundContactCount - 1, 0);
+        // 接地判定を解除する
+        isTouchingGround = false;
     }
 
     /// <summary>

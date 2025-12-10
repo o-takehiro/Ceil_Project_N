@@ -16,9 +16,10 @@ public class PlayerMovement {
     private readonly GroundCheck groundCheck;   // 地面接地判定
 
     // 定数
-    private const float _MOVE_SPEED = 10f;      // 移動速度
-    private const float _JUMP_FORCE = 4.7f;     // ジャンプ力
-    private const float ROTATION_SMOOTH = 0.1f; // 回転補間
+    private const float _MOVE_SPEED = 10f;            // 移動速度
+    private const float _JUMP_FORCE = 4.7f;           // ジャンプ力
+    private const float JUMP_BUFFER_TIME = 0.15f;     // 連続ジャンプ防止用のバッファ
+    private const float ROTATION_SMOOTH = 0.1f;       // 回転補間
     private const string _JUMP_ANIM = "jumpT";        // ジャンプアニメーションの名前
     private const string _RUN_ANIM = "Run";           // 移動アニメーションの名前
     private const string _RUNSTOP_ANIM = "Run_Stop";  // 移動停止時アニメーションの名前
@@ -30,6 +31,7 @@ public class PlayerMovement {
 
     // 状態管理
     private float turnVelocity;  // 回転速度補間用
+    private float lastJumpPressTime = -999f;
     private bool isJumping = false;
     public bool isDeath = false; // 死亡中は入力無効
     public bool isMoving = true; // 移動許可状態
@@ -58,7 +60,7 @@ public class PlayerMovement {
     /// ジャンプ入力を受け取る
     /// </summary>
     public void RequestJump() {
-        jumpRequested = true;
+        lastJumpPressTime = Time.time;
     }
     /// <summary>
     /// 移動可能状態にする
@@ -78,7 +80,7 @@ public class PlayerMovement {
         bool grounded = groundCheck.IsGrounded;
 
         // ジャンプ処理
-        JumpAction(jumpRequested, groundCheck);
+        JumpAction();
 
         // 移動方向をカメラ基準に変換する
         Vector3 inputDir = new Vector3(inputMove.x, 0f, inputMove.y).normalized;
@@ -113,28 +115,27 @@ public class PlayerMovement {
     /// </summary>
     /// <param name="isJumped"></param>
     /// <param name="groundCheck"></param>
-    private void JumpAction(bool isJumped, bool groundCheck) {
-        // ジャンプが可能な時
-        if (jumpRequested && IsGrounded && !isJumping) {
-            // 上方向の速度をジャンプ力に入れる
+    private void JumpAction() {
+        // ジャンプが可能ならジャンｐする
+        if (Time.time - lastJumpPressTime <= JUMP_BUFFER_TIME && CanJump) {
+            // ジャンプ
             rigidbody.velocity = new Vector3(
                 rigidbody.velocity.x,
                 _JUMP_FORCE,
                 rigidbody.velocity.z
             );
 
-            // ジャンプ状態に移行
-            isJumping = true;
-            jumpRequested = false;
-
-            // ジャンプアニメーション再生
+            // アニメーションを再生
             animator.SetTrigger(_JUMP_ANIM);
+
+            // ジャンプ中フラグを立てる
+            isJumping = true;
+            lastJumpPressTime = -999f;
         }
 
-        // 地面と接地したらジャンプ判定を消す
+        // 着地したらジャンプ解除
         if (IsGrounded) {
             isJumping = false;
-            
         }
 
     }
