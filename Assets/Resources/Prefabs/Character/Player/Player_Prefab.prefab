@@ -123,7 +123,7 @@ MonoBehaviour:
     m_Bits: 64
   sphereRadius: 0.25
   checkDistance: 0.3
-  coyoteTime: 0.1
+  coyoteTime: 0
 --- !u!1 &4030843881615239274
 GameObject:
   m_ObjectHideFlags: 0

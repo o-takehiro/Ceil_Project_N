@@ -11,7 +11,7 @@ public class GroundCheck : MonoBehaviour {
     [SerializeField] private LayerMask groundLayer;         // ’n–ÊƒŒƒCƒ„[
     [SerializeField] private float sphereRadius = 0.25f;    // ‘«Œ³‚Ì”¼Œa
     [SerializeField] private float checkDistance = 0.3f;    // ”»’è‹——£
-    [SerializeField] private float coyoteTime = 0.1f;       // Ú’n—P—\ŠÔ
+    [SerializeField] private float coyoteTime = 0f;         // Ú’n—P—\ŠÔ
 
     private float lastGroundTime;   // ÅŒã‚É’n–Ê‚ÉG‚ê‚½
     private int groundContactCount; // ’n–Ê‚ÉG‚ê‚½‰ğ‚·
@@ -78,5 +78,11 @@ public class GroundCheck : MonoBehaviour {
     /// </summary>
     private bool IsGround(Collider other) {
         return ((1 << other.gameObject.layer) & groundLayer) != 0;
+    }
+
+    private void OnDrawGizmosSelected() {
+        Gizmos.color = Color.green;
+        Vector3 origin = transform.position + Vector3.up * sphereRadius;
+        Gizmos.DrawWireSphere(origin + Vector3.down * checkDistance, sphereRadius);
     }
 }

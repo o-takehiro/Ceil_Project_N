@@ -3,6 +3,7 @@
  *  @author     oorui
  */
 
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 /// <summary>
 /// プレイヤーの移動・ジャンプ処理を担当するクラス
@@ -18,6 +19,10 @@ public class PlayerMovement {
     private const float _MOVE_SPEED = 10f;      // 移動速度
     private const float _JUMP_FORCE = 4.7f;     // ジャンプ力
     private const float ROTATION_SMOOTH = 0.1f; // 回転補間
+    private const string _JUMP_ANIM = "jumpT";        // ジャンプアニメーションの名前
+    private const string _RUN_ANIM = "Run";           // 移動アニメーションの名前
+    private const string _RUNSTOP_ANIM = "Run_Stop";  // 移動停止時アニメーションの名前
+    private const string _IDLE_ANIM = "Idle";         // 待機アニメーションの名前
 
     // 入力情報
     private Vector2 inputMove;              // 移動入力
@@ -123,12 +128,13 @@ public class PlayerMovement {
             jumpRequested = false;
 
             // ジャンプアニメーション再生
-            animator.SetTrigger("jumpT");
+            animator.SetTrigger(_JUMP_ANIM);
         }
 
         // 地面と接地したらジャンプ判定を消す
         if (IsGrounded) {
             isJumping = false;
+            
         }
 
     }
@@ -139,9 +145,9 @@ public class PlayerMovement {
     private void UpdateAnimation(Vector3 inputDir, bool grounded) {
         bool isRunning = inputDir != Vector3.zero;
 
-        animator.SetBool("Run", grounded && isRunning);
-        animator.SetBool("Run_Stop", grounded && !isRunning);
-        animator.SetBool("Idle", grounded && !isRunning);
+        animator.SetBool(_RUN_ANIM, grounded && isRunning);
+        animator.SetBool(_RUNSTOP_ANIM, grounded && !isRunning);
+        animator.SetBool(_IDLE_ANIM, grounded && !isRunning);
     }
 
     /// <summary>
@@ -158,7 +164,7 @@ public class PlayerMovement {
     /// AnimationEventで呼ぶため用のIdleアニメーション
     /// </summary>
     public void SetIdleAnimation() {
-        animator.SetBool("Idle", true);
+        animator.SetBool(_IDLE_ANIM, true);
     }
 
 }

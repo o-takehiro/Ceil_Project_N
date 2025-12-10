@@ -103,12 +103,14 @@ public class PlayerCharacter : CharacterBase {
     /// <summary>
     /// ジャンプ用入力受付
     /// </summary>
-    public void RequestJump() => _movement.RequestJump();
+    public void RequestJump() {
+        _movement.RequestJump();
+    }
     /// <summary>
     /// 近接攻撃用入力受付
     /// </summary>
     public void RequestAttack() {
-        if (_movement.IsJumping) {
+        if (!_movement.IsJumping) {
             _attack.RequestAttack();
         }
     }
