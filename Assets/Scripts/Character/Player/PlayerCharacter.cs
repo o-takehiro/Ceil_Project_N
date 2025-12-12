@@ -1,10 +1,10 @@
 using Cysharp.Threading.Tasks;
 using System.Threading;
 using UnityEngine;
-
-using static CharacterUtility;
-using static CharacterMasterUtility;
 using UnityEngine.TextCore.Text;
+using UnityEngine.Windows;
+using static CharacterMasterUtility;
+using static CharacterUtility;
 /// <summary>
 /// プレイヤーキャラクター全体を統括するクラス
 /// ・移動、攻撃などの処理をサブクラスに委譲する
@@ -20,13 +20,16 @@ public class PlayerCharacter : CharacterBase {
     private Camera _camera;             // カメラ参照
     private PlayerInput _playerInput;   // 入力制御
     private Animator _animator;         // アニメーション制御
+
     private bool _isLockedOn = false;
     private bool _isLoopRunning = false;
     private bool _isPaused = false;     // 移動不可
+
     public override bool isPlayer() => true;
     public PlayerAttack GetAttackController() => _attack;
     public PlayerMovement GetPlayerMovement() => _movement;
     public PlayerMagicAttack GetMagicController() => _magic;
+
     // 魔法の発射場所
     [SerializeField] private GameObject[] magicSpawnPoints = new GameObject[4];
 
@@ -35,6 +38,26 @@ public class PlayerCharacter : CharacterBase {
     /// 初期化処理
     /// </summary>
     public override void Initialize() {
+        base.Initialize();
+
+        // コンポーネントの取得
+        _rigidbody = GetComponent<Rigidbody>();           // Rigidbody
+        _animator = GetComponentInChildren<Animator>();   // アニメーション
+        _playerInput = GetComponent<PlayerInput>();       // 入力
+        _camera = Camera.main;                            // カメラ
+
+        // 移動制御を生成し、必要な依存を渡す
+        if (_movement != null) return;
+        _movement = new PlayerMovement(_rigidbody, transform, _camera, _animator, GetComponentInChildren<GroundCheck>());
+
+        // 攻撃制御クラス
+        if (_attack != null) return;
+        _attack = new PlayerAttack(_rigidbody, _animator, 0);
+
+        // 魔法制御クラス
+        if (_magic != null) return;
+        _magic = new PlayerMagicAttack();
+
 
     }
 
@@ -44,55 +67,43 @@ public class PlayerCharacter : CharacterBase {
     public override void Setup(int masterID) {
         base.Setup(masterID);
 
-        // 依存コンポーネントは自前で取得
-        _rigidbody = GetComponent<Rigidbody>();
-        _animator = GetComponentInChildren<Animator>();
-        _playerInput = GetComponent<PlayerInput>();
-        _camera = Camera.main; // 必要なら差し替え可
+        base.Setup(masterID);
 
-        // プレイヤーをカメラのターゲットに設定する
-        if (CameraManager.Instance != null)
-            CameraManager.Instance.SetTarget(this);
 
-        // マスターIDを保存
-        var playerMasterID = GetCharacterMaster(masterID);
-        // プレイヤーのHPゲージを最大にする
-        MenuManager.Instance.Get<PlayerHPGauge>().GetSlider().value = 1.0f;
+        var master = CharacterMasterUtility.GetCharacterMaster(masterID);
+        UnityEngine.Assertions.Assert.IsNotNull(master, "CharacterMaster が取得できません");
 
-        SetMaxHP(playerMasterID.HP);            // プレイヤーの最大HP設定
-        SetHP(playerMasterID.HP);               // プレイヤーのHP設定
-        SetMaxMP(playerMasterID.MP);            // プレイヤーの最大MPせてち
-        SetMP(playerMasterID.MP);               // プレイヤーのMP接地絵
-        SetRawAttack(playerMasterID.Attack);    // プレイーの基礎攻撃力設定
-        SetRawDefense(playerMasterID.Defense);  // プレイヤーの基礎防御力設定
 
-        // 座標と回転の更新
-        SetPlayerPosition(transform.position);
-        SetPlayerRotation(transform.rotation);
-        SetPlayerCenterPosition(transform.position + Vector3.up * 1.5f);
-        SetPlayerPrevPosition();
+        SetMaxHP(master.HP);           // 最大HP
+        SetHP(master.HP);              // 現在HP
+        SetMaxMP(master.MP);           // 最大MP
+        SetMP(master.MP);              // 現在MP
+        SetRawAttack(master.Attack);   // 攻撃力
+        SetRawDefense(master.Defense); // 防御力
 
-        // 接地判定を取得
-        var groundCheck = GetComponentInChildren<GroundCheck>();
+        // 攻撃制御にも反映
+        _attack.SetupAttackData();
 
-        if (_movement == null) _movement = new PlayerMovement(_rigidbody, transform, _camera, _animator, groundCheck);
-        if (_magic == null) _magic = new PlayerMagicAttack();
+        // 座標更新
+        currentPos = transform.position;
+        prevPos = transform.position;
+        centerPos = transform.position + Vector3.up * 1.5f;
+        currentRot = transform.rotation;
 
-        // スロットごとの発射位置を登録
+        // 魔法発射位置の登録
         for (int i = 0; i < magicSpawnPoints.Length; i++) {
-            _magic.SetMagicSpawnPosition(i, magicSpawnPoints[i]);
-
+            if (magicSpawnPoints[i] != null) {
+                _magic.SetMagicSpawnPosition(i, magicSpawnPoints[i].gameObject);
+            }
         }
 
-        if (_attack == null) {
-            _attack = new PlayerAttack(_rigidbody, _animator, GetRawAttack());
-            _attack.SetupAttackData();
-        }
 
         _movement.moveSetUp();
-        // 準備中はプレイヤーの行動を止める
+
+
         PausePlayer();
-        // メインループを開始する
+
+
         StartPlayerLoop().Forget();
     }
 
