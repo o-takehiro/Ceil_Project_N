@@ -27,14 +27,13 @@ public class PlayerMovement {
 
     // 入力情報
     private Vector2 inputMove;              // 移動入力
-    private bool jumpRequested;             // ジャンプ要求フラグ
 
     // 状態管理
-    private float turnVelocity;  // 回転速度補間用
-    private float lastJumpPressTime = -999f;
-    private bool isJumping = false;
-    public bool isDeath = false; // 死亡中は入力無効
-    public bool isMoving = true; // 移動許可状態
+    private float turnVelocity;                 // 回転速度補間用
+    private float lastJumpPressTime = -999f;    // ジャンプを未入力扱いにするために-999にする
+    private bool isJumping = false;             // ジャンプしたたどうか
+    public bool isDeath = false;                // 死亡中は入力無効
+    public bool isMoving = true;                // 移動許可状態
 
     public bool IsGrounded => groundCheck.IsGrounded; // GroundCheckの接地判定
     public bool IsJumping => isJumping;               // ジャンプ中かどうか
@@ -156,7 +155,6 @@ public class PlayerMovement {
     /// </summary>
     public void ResetState() {
         inputMove = Vector2.zero;
-        jumpRequested = false;
         isDeath = false;
         rigidbody.velocity = Vector3.zero;
     }

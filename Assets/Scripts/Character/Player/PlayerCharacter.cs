@@ -90,6 +90,7 @@ public class PlayerCharacter : CharacterBase {
         }
 
         _movement.moveSetUp();
+        // 準備中はプレイヤーの行動を止める
         PausePlayer();
         // メインループを開始する
         StartPlayerLoop().Forget();
@@ -170,7 +171,7 @@ public class PlayerCharacter : CharacterBase {
         }
     }
     /// <summary>
-    /// 非同期のUpdate
+    /// 更新処理
     /// </summary>
     public async UniTask PlayerMainLoop(CancellationToken token) {
         token = this.GetCancellationTokenOnDestroy();
@@ -205,6 +206,10 @@ public class PlayerCharacter : CharacterBase {
         }
     }
 
+    /// <summary>
+    /// プレイヤーのメインループ
+    /// </summary>
+    /// <returns></returns>
     private async UniTaskVoid StartPlayerLoop() {
         if (_isLoopRunning) return;
         _isLoopRunning = true;
@@ -212,11 +217,19 @@ public class PlayerCharacter : CharacterBase {
         _isLoopRunning = false;
     }
 
+    /// <summary>
+    /// HP減少
+    /// </summary>
+    /// <returns></returns>
     public float GetPlayerSliderValue() {
         _animator.SetTrigger("hit");
         return HP / maxHP;
     }
 
+    /// <summary>
+    /// MP減少
+    /// </summary>
+    /// <returns></returns>
     public float GetPlayerMPSliderValue() {
         return MP / maxMP;
     }
@@ -276,9 +289,6 @@ public class PlayerCharacter : CharacterBase {
     /// </summary>
     public void PausePlayer() {
         _isPaused = true;
-
-        // カメラ停止
-        //CameraManager.Instance.PauseCamera();
 
         // 発動中の魔法を停止
         if (_magic != null) {

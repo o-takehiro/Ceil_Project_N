@@ -263,19 +263,6 @@ public class PlayerMagicAttack {
     }
 
     /// <summary>
-    /// 入れ替え待ち魔法を指定スロットにセットする
-    /// </summary>
-    private void ReplacePendingMagic(int slotIndex) {
-        if (_pendingMagic == eMagicType.Invalid) return;
-        ReplaceMagic(slotIndex, _pendingMagic);
-        // SE再生
-        SoundManager.Instance.PlaySE(19);
-        _pendingMagic = eMagicType.Invalid; // 待ち解除
-        SetMagicUI.Instance.CloseChangeMagicUI();
-
-    }
-
-    /// <summary>
     /// 魔法リストUIの表示
     /// </summary>
     public void OpenMagicUI() {
@@ -306,15 +293,7 @@ public class PlayerMagicAttack {
     /// </summary>
     public void ResetMagic() {
         InitializeLists();
+        MagicReset(eSideType.PlayerSide, eMagicType.Max);
         SetMagicUI.Instance.ResetMagicUI();
     }
-
-    /// <summary>
-    /// 入れ替え待ちかどうかの取得
-    /// </summary>
-    /// <returns></returns>
-    public static bool GetPendingMagic() {
-        return isPendingMagic;
-    }
-
 }

@@ -64,7 +64,7 @@ ModelImporter:
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: 0.30068335
+      - time: 0.29768035
         functionName: OnCollider
         data: 
         objectReferenceParameter: {fileID: 11500000, guid: d326c710f26571c41bfd13ade0c1ca70, type: 3}
