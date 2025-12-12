@@ -293,7 +293,25 @@ public class PlayerMagicAttack {
     /// </summary>
     public void ResetMagic() {
         InitializeLists();
-        MagicReset(eSideType.PlayerSide, eMagicType.Max);
+        CancelAllPlayerMagic();
         SetMagicUI.Instance.ResetMagicUI();
+    }
+
+    public void CancelAllPlayerMagic() {
+        var magicList = GetEquippedMagicList();
+
+        // 後ろからインデックスで安全に削除する
+        for (int i = magicList.Count - 1; i >= 0; i--) {
+
+            // 無効な魔法は飛ばす
+            if (magicList[i] == eMagicType.Invalid)
+                continue;
+
+            // 魔法のリセット処理を行う
+            MagicReset(eSideType.PlayerSide, magicList[i]);  // 何をしているかがわかるコメント
+
+            // インデックス指定で削除する
+            magicList.RemoveAt(i);                           // 安全に要素を削除する
+        }
     }
 }

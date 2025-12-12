@@ -1,41 +1,44 @@
+/*
+ *  @file   PlayerCharacter
+ *  @author oorui
+ */
+
 using Cysharp.Threading.Tasks;
 using System.Threading;
 using UnityEngine;
 
 using static CharacterUtility;
 using static CharacterMasterUtility;
-using UnityEngine.TextCore.Text;
+
 /// <summary>
-/// プレイヤーキャラクター全体を統括するクラス
-/// ・移動、攻撃などの処理をサブクラスに委譲する
-/// ・入力やカメラ制御との橋渡しを行う
+/// プレイヤークラス
 /// </summary>
 public class PlayerCharacter : CharacterBase {
 
-    private PlayerMovement _movement;   // 移動制御クラス
-    private PlayerAttack _attack;       // 攻撃制御クラス
-    private PlayerMagicAttack _magic;   // 魔法制御クラス
+    private PlayerMovement _movement;       // 移動制御
+    private PlayerAttack _attack;           // 攻撃制御
+    private PlayerMagicAttack _magic;       // 魔法制御
 
-    private Rigidbody _rigidbody;       // 物理挙動
-    private Camera _camera;             // カメラ参照
-    private PlayerInput _playerInput;   // 入力制御
-    private Animator _animator;         // アニメーション制御
-    private bool _isLockedOn = false;
-    private bool _isLoopRunning = false;
-    private bool _isPaused = false;     // 移動不可
-    public override bool isPlayer() => true;
-    public PlayerAttack GetAttackController() => _attack;
-    public PlayerMovement GetPlayerMovement() => _movement;
-    public PlayerMagicAttack GetMagicController() => _magic;
-    // 魔法の発射場所
+    private Rigidbody _rigidbody;           // Rigidbody
+    private Camera _camera;                 // カメラ
+    private PlayerInput _playerInput;       // 入力
+    private Animator _animator;             // アニメーション
+
+    private bool _isLockedOn = false;       // ロックオン使用可否
+    private bool _isLoopRunning = false;    // メインループ可否
+    private bool _isPaused = false;         // メインループ
+
+    // 魔法の発射位置
     [SerializeField] private GameObject[] magicSpawnPoints = new GameObject[4];
+
+    public override bool isPlayer() => true;
 
 
     /// <summary>
-    /// 初期化処理
+    /// 初期化
     /// </summary>
     public override void Initialize() {
-
+        base.Initialize();
     }
 
     /// <summary>
@@ -44,181 +47,176 @@ public class PlayerCharacter : CharacterBase {
     public override void Setup(int masterID) {
         base.Setup(masterID);
 
-        // 依存コンポーネントは自前で取得
+        // コンポーネントの取得
         _rigidbody = GetComponent<Rigidbody>();
         _animator = GetComponentInChildren<Animator>();
         _playerInput = GetComponent<PlayerInput>();
-        _camera = Camera.main; // 必要なら差し替え可
+        _camera = Camera.main;
 
-        // プレイヤーをカメラのターゲットに設定する
+        // カメラのターゲットをプレイヤーに設定
         if (CameraManager.Instance != null)
             CameraManager.Instance.SetTarget(this);
 
-        // マスターIDを保存
-        var playerMasterID = GetCharacterMaster(masterID);
-        // プレイヤーのHPゲージを最大にする
+        // プレイヤーのマスターIDの設定
+        var masterData = GetCharacterMaster(masterID);
+
+        // プレイヤーのステータスの設定
         MenuManager.Instance.Get<PlayerHPGauge>().GetSlider().value = 1.0f;
 
-        SetMaxHP(playerMasterID.HP);            // プレイヤーの最大HP設定
-        SetHP(playerMasterID.HP);               // プレイヤーのHP設定
-        SetMaxMP(playerMasterID.MP);            // プレイヤーの最大MPせてち
-        SetMP(playerMasterID.MP);               // プレイヤーのMP接地絵
-        SetRawAttack(playerMasterID.Attack);    // プレイーの基礎攻撃力設定
-        SetRawDefense(playerMasterID.Defense);  // プレイヤーの基礎防御力設定
+        SetMaxHP(masterData.HP);
+        SetHP(masterData.HP);
+        SetMaxMP(masterData.MP);
+        SetMP(masterData.MP);
+        SetRawAttack(masterData.Attack);
+        SetRawDefense(masterData.Defense);
 
-        // 座標と回転の更新
-        SetPlayerPosition(transform.position);
-        SetPlayerRotation(transform.rotation);
-        SetPlayerCenterPosition(transform.position + Vector3.up * 1.5f);
-        SetPlayerPrevPosition();
+        // 座標、回転の初期化
+        UpdatePlayerTransformCache();
 
-        // 接地判定を取得
+        // 地面接地判定の取得
         var groundCheck = GetComponentInChildren<GroundCheck>();
 
-        if (_movement == null) _movement = new PlayerMovement(_rigidbody, transform, _camera, _animator, groundCheck);
-        if (_magic == null) _magic = new PlayerMagicAttack();
-
-        // スロットごとの発射位置を登録
-        for (int i = 0; i < magicSpawnPoints.Length; i++) {
-            _magic.SetMagicSpawnPosition(i, magicSpawnPoints[i]);
-
-        }
-
+        // それぞれのコンポーネントを生成
+        // 移動
+        if (_movement == null)
+            _movement = new PlayerMovement(_rigidbody, transform, _camera, _animator, groundCheck);
+        // 魔法
+        if (_magic == null)
+            _magic = new PlayerMagicAttack();
+        // 近接攻撃
         if (_attack == null) {
             _attack = new PlayerAttack(_rigidbody, _animator, GetRawAttack());
             _attack.SetupAttackData();
         }
 
+        // 魔法の発射位置を設定
+        for (int i = 0; i < magicSpawnPoints.Length; i++) {
+            _magic.SetMagicSpawnPosition(i, magicSpawnPoints[i]);
+        }
+
+        // 移動可能にする
         _movement.moveSetUp();
-        // 準備中はプレイヤーの行動を止める
+
+        // SetUp中はプレイヤーの行動を止める
         PausePlayer();
-        // メインループを開始する
+
+        // メインループ開始
         StartPlayerLoop().Forget();
     }
 
-    /// <summary>
-    /// 移動用入力受付
-    /// </summary>
-    /// <param name="input"></param>
+
     public void SetMoveInput(Vector2 input) => _movement.SetMoveInput(input);
-    /// <summary>
-    /// ジャンプ用入力受付
-    /// </summary>
-    public void RequestJump() {
-        _movement.RequestJump();
-    }
-    /// <summary>
-    /// 近接攻撃用入力受付
-    /// </summary>
+
+    public void RequestJump() => _movement.RequestJump();
+
     public void RequestAttack() {
-        if (!_movement.IsJumping) {
+        if (!_movement.IsJumping)
             _attack.RequestAttack();
-        }
     }
-    /// <summary>
-    /// 魔法入力の受付x4
-    /// </summary>
-    /// <param name="slotIndex"></param>
+
     public void RequestCastMagic(int slotIndex) => _magic.RequestAttack(slotIndex);
-    /// <summary>
-    /// 魔法のキャンセル入力の受付x4
-    /// </summary>
-    /// <param name="slotIndex"></param>
+
     public void RequestCastMagicEnd(int slotIndex) => _magic.RequestCancelMagic(slotIndex);
 
-    public void RequestAnalysis() => _magic.RequestAnalysis();
+    public void RequestSetCastingFlag(int index, bool isCasting) => _magic.SetCastingFlag(index, isCasting);
 
-    /// <summary>
-    /// 魔法リストUIの表示
-    /// </summary>
-    public void RequestOpenMagicUI() => _magic.OpenMagicUI();
-
-    /// <summary>
-    /// 魔法リストUIの非表示
-    /// </summary>
-    public void RequestCloceMagicUI() => _magic.CloseMagicUI();
-
-    /// <summary>
-    /// 魔法キャスト状態を設定
-    /// </summary>
-    public void RequestSetCastingFlag(int slotIndex, bool isCasting) {
-        _magic.SetCastingFlag(slotIndex, isCasting); // PlayerMagicAttack に状態を渡す
-    }
-
-    /// <summary>
-    /// キャスト初期の時、エフェクト再生
-    /// </summary>
-    /// <param name="slotIndex"></param>
     public void RequestStartCasting(int slotIndex) => _magic.StartCasting(slotIndex);
 
     public void RequestReplaceMagic(int slotIndex) => _magic.ConfirmReplaceMagic(slotIndex);
 
+    public void RequestAnalysis() => _magic.RequestAnalysis();
 
-    // カメラのロックオン受付
+    public void RequestOpenMagicUI() => _magic.OpenMagicUI();
+
+    public void RequestCloceMagicUI() => _magic.CloseMagicUI();
+
+    /// <summary>
+    /// ロックオン切り替え
+    /// </summary>
     public void RequestLookOn() {
         if (_isLockedOn) {
-            // ロックオン解除
             CameraManager.Instance.UnlockTarget();
             _isLockedOn = false;
+            return;
         }
-        else {
-            // 敵が取得できる場合のみロックオン
-            var enemy = CharacterUtility.GetEnemy();
-            if (enemy != null) {
-                CameraManager.Instance.LockOnTarget(enemy);
-                _isLockedOn = true;
-            }
-        }
-    }
-    /// <summary>
-    /// 更新処理
-    /// </summary>
-    public async UniTask PlayerMainLoop(CancellationToken token) {
-        token = this.GetCancellationTokenOnDestroy();
-        while (!token.IsCancellationRequested) {
-            // FixdDeltaTimeをキャッシュ
-            float fd = Time.fixedDeltaTime;
-            if (!_isPaused) {
-                // 通常処理
-                _movement?.MoveUpdate(fd, _attack?.IsAttacking ?? false);
-                _attack?.AttackUpdate(fd);
-                _magic?.MagicUpdate();
-            }
-            else {
-                // ポーズ中は強制停止
-                if (_rigidbody != null) {
-                    _rigidbody.velocity = Vector3.zero;
-                    _rigidbody.angularVelocity = Vector3.zero;
-                }
-            }
-            // 自身のtransform.positoinをキャッシュ
-            var pPos = transform.position;
-            // 座標の更新
-            SetPlayerPosition(pPos);
-            SetPlayerPrevPosition();
-            // 中心座標の更新
-            SetPlayerCenterPosition(new Vector3(pPos.x, pPos.y + 2, pPos.z));
-            // 回転の更新
-            SetPlayerRotation(transform.rotation);
-
-            // 次フレームまで待機
-            await UniTask.Yield(PlayerLoopTiming.FixedUpdate, token);
+        // 敵の取得
+        var enemy = CharacterUtility.GetEnemy();
+        if (enemy != null) {
+            // 敵の方を見る
+            CameraManager.Instance.LockOnTarget(enemy);
+            _isLockedOn = true;
         }
     }
 
     /// <summary>
-    /// プレイヤーのメインループ
+    /// プレイヤーのループを開始
     /// </summary>
     /// <returns></returns>
     private async UniTaskVoid StartPlayerLoop() {
         if (_isLoopRunning) return;
         _isLoopRunning = true;
+
+        // トークんを渡してメインループじっこう　
         await PlayerMainLoop(this.GetCancellationTokenOnDestroy());
+
         _isLoopRunning = false;
     }
 
     /// <summary>
-    /// HP減少
+    /// メインループ
+    /// </summary>
+    public async UniTask PlayerMainLoop(CancellationToken token) {
+        // トークンを取得
+        token = this.GetCancellationTokenOnDestroy();
+
+        // 無限ループ
+        while (!token.IsCancellationRequested) {
+            // 時間を取得
+            float fd = Time.fixedDeltaTime;
+
+            if (!_isPaused) {
+                // それぞれの更新処理
+                _movement?.MoveUpdate(fd, _attack?.IsAttacking ?? false);   // 移動
+                _attack?.AttackUpdate(fd);                                  // 攻撃
+                _magic?.MagicUpdate();                                      // 魔法
+            }
+            else {
+                // 移動停止
+                ResetRigidbodyVelocity();
+            }
+
+            // 座標、回転の更新
+            UpdatePlayerTransformCache();
+
+            // 次のフレームまで待機
+            await UniTask.Yield(PlayerLoopTiming.FixedUpdate, token);
+        }
+    }
+
+    /// <summary>
+    /// Rigidbody の速度をなくす
+    /// </summary>
+    private void ResetRigidbodyVelocity() {
+        if (_rigidbody == null) return;
+
+        _rigidbody.velocity = Vector3.zero;
+        _rigidbody.angularVelocity = Vector3.zero;
+    }
+
+    /// <summary>
+    /// 座標などの更新
+    /// </summary>
+    private void UpdatePlayerTransformCache() {
+        Vector3 pos = transform.position;
+
+        SetPlayerPosition(pos);
+        SetPlayerPrevPosition();
+        SetPlayerCenterPosition(pos + Vector3.up * 2f);
+        SetPlayerRotation(transform.rotation);
+    }
+
+    /// <summary>
+    /// 被弾処理
     /// </summary>
     /// <returns></returns>
     public float GetPlayerSliderValue() {
@@ -235,90 +233,88 @@ public class PlayerCharacter : CharacterBase {
     }
 
     /// <summary>
-    /// 現在のMP量を返す
+    /// プレイヤーのMP取得
     /// </summary>
     /// <returns></returns>
-    public float GetPlayerCurrentMP() {
-        return MP;
-    }
+    public float GetPlayerCurrentMP() { return MP; }
 
     /// <summary>
-    /// キャラクター死亡処理
+    /// 死亡処理
     /// </summary>
     public override void Dead() {
-        // 死亡アニメーション再生
         _animator.SetTrigger("Death");
+
         _movement.isDeath = true;
         _magic._isDeath = true;
-        _magic.ResetMagic();
 
+        _magic.ResetMagic();
     }
 
     /// <summary>
-    /// クリアしたときに呼ぶ魔法リセット関数
+    /// 魔法の片付け
     /// </summary>
-    public void ClearMagicReset() {
-        _magic.ResetMagic();
-    }
+    public void ClearMagicReset() { _magic.ResetMagic(); }
 
     /// <summary>
-    /// プレイヤーの片付け
+    /// 片付け処理
     /// </summary>
     public override void Teardown() {
         base.Teardown();
+
+        // 各コンポーネントの状態を初期化
         _movement?.ResetState();
         _attack?.ResetState();
         _magic?.ResetState();
 
         _isLoopRunning = false;
 
-        // Rigidbody の速度をリセット
-        if (_rigidbody != null) _rigidbody.velocity = Vector3.zero;
-        if (_rigidbody != null) _rigidbody.angularVelocity = Vector3.zero;
+        ResetRigidbodyVelocity();
 
-        if (CameraManager.Instance != null)
-            CameraManager.Instance.UnlockTarget(); // ロック解除
-
-        // カメラのTearDownを呼ぶ
-        CameraManager.Instance.TearDown();
-
+        if (CameraManager.Instance != null) {
+            CameraManager.Instance.UnlockTarget();
+            CameraManager.Instance.TearDown();
+        }
     }
 
     /// <summary>
-    /// プレイヤーの行動停止
+    /// プレイヤーの動きを停止
     /// </summary>
     public void PausePlayer() {
         _isPaused = true;
 
-        // 発動中の魔法を停止
-        if (_magic != null) {
-
-        }
-
-        // 入力停止
         if (_playerInput != null)
             _playerInput.CanReceiveInput = false;
 
-        // アニメーション停止
         if (_animator != null)
             _animator.speed = 0f;
-
-
     }
 
     /// <summary>
-    /// プレイヤーの行動再開
+    /// プレイヤーの動きを再開
     /// </summary>
     public void ResumePlayer() {
         _isPaused = false;
 
-        // 入力再開
         if (_playerInput != null)
             _playerInput.CanReceiveInput = true;
 
-        // アニメーション再開
         if (_animator != null)
             _animator.speed = 1f;
     }
 
+    /// <summary>
+    /// プレイヤーの攻撃クラスの取得
+    /// </summary>
+    /// <returns></returns>
+    public PlayerAttack GetAttackController() { return _attack; }
+    /// <summary>
+    /// プレイヤーの移動クラス取得
+    /// </summary>
+    /// <returns></returns>
+    public PlayerMovement GetPlayerMovement() { return _movement; }
+    /// <summary>
+    /// プレイヤーの魔法クラス取得
+    /// </summary>
+    /// <returns></returns>
+    public PlayerMagicAttack GetMagicController() { return _magic; }
 }

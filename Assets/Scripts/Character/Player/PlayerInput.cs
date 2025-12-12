@@ -1,6 +1,4 @@
 using Cysharp.Threading.Tasks;
-using System;
-using System.Transactions;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -8,168 +6,133 @@ using UnityEngine.InputSystem;
 /// 入力管理クラス
 /// </summary>
 public sealed class PlayerInput : MonoBehaviour {
-    [SerializeField] private Camera _targetCamera;      // 入力に使うカメラ
+    [SerializeField] private Camera _targetCamera;      // 入力時に参照するカメラ
 
-    private Rigidbody _rigidbody;                       // Rigidbody
-    private Animator _animator;                         // Animator
+    private Rigidbody _rigidbody;                       // 移動処理に使用する Rigidbody
+    private Animator _animator;                         // プレイヤーの Animator
     private PlayerCharacter _character;                 // プレイヤーキャラクター本体
-    public bool CanReceiveInput { get; set; } = true;   // 入力可能か
+
+    public bool CanReceiveInput { get; set; } = true;   // 入力受付の可否
+
 
     /// <summary>
-    /// 移動入力の取得
+    /// 番号毎のボタンに対応した魔法
     /// </summary>
-    /// <param name="ctx"></param>
+    private void HandleMagicSlot(InputAction.CallbackContext ctx, int slotIndex) {
+        // ボタンが離された瞬間
+        if (ctx.canceled) {
+            _character.RequestSetCastingFlag(slotIndex, false);
+            _character.RequestCastMagicEnd(slotIndex);
+            return;
+        }
+
+        // 入力不可状態なら何もしない
+        if (!CanReceiveInput) return;
+
+        // 長押し処理
+        if (ctx.performed) {
+            _character.RequestSetCastingFlag(slotIndex, true);
+            _character.RequestStartCasting(slotIndex);
+            _character.RequestReplaceMagic(slotIndex);
+        }
+    }
+
+    /// <summary>
+    /// 移動入力を受け取る
+    /// </summary>
     public void OnMove(InputAction.CallbackContext ctx) {
         if (_character == null) return;
         _character.SetMoveInput(ctx.ReadValue<Vector2>());
     }
 
     /// <summary>
-    /// ジャンプ入力の取得
+    /// ジャンプ入力を受け取る
     /// </summary>
-    /// <param name="ctx"></param>
     public void OnJump(InputAction.CallbackContext ctx) {
-        if (_character == null) return;
-        if (!CanReceiveInput) return;
-        if (ctx.performed) _character.RequestJump();
+        if (!CanReceiveInput || _character == null) return;
+
+        if (ctx.performed) {
+            _character.RequestJump();
+        }
     }
 
     /// <summary>
-    /// 攻撃入力の取得
+    /// 攻撃入力を受け取る
     /// </summary>
-    /// <param name="ctx"></param>
     public void OnAttack(InputAction.CallbackContext ctx) {
-        if (_character == null) return;
-        if (!CanReceiveInput) return;
-        if (ctx.performed) _character.RequestAttack();
+        if (!CanReceiveInput || _character == null) return;
+
+        if (ctx.performed) {
+            _character.RequestAttack();
+        }
     }
 
     /// <summary>
-    /// ロックオン入力の取得
+    /// ロックオン切り替え入力
     /// </summary>
-    /// <param name="ctx"></param>
     public void OnLookOn(InputAction.CallbackContext ctx) {
-        if (_character == null || !CanReceiveInput) return;
-        if (ctx.performed) _character.RequestLookOn();
-    }
+        if (!CanReceiveInput || _character == null) return;
 
-    // 魔法スロット １
-    public void OnCastSlot1(InputAction.CallbackContext ctx) {
-        if (ctx.canceled) {
-            _character.RequestSetCastingFlag(0, false);
-            _character.RequestCastMagicEnd(0);
-        }
-
-        if (!CanReceiveInput) return;
-
-        // 長押し
         if (ctx.performed) {
-            _character.RequestSetCastingFlag(0, true);
-            _character.RequestStartCasting(0);
-            _character.RequestReplaceMagic(0);
-        }
-
-    }
-    // 魔法スロット　２
-    public void OnCastSlot2(InputAction.CallbackContext ctx) {
-        if (ctx.canceled) {
-            _character.RequestSetCastingFlag(1, false);
-            _character.RequestCastMagicEnd(1);
-        }
-
-        if (!CanReceiveInput) return;
-
-        // 長押し
-        if (ctx.performed) {
-            _character.RequestSetCastingFlag(1, true);
-            _character.RequestStartCasting(1);
-            _character.RequestReplaceMagic(1);
-        }
-
-    }
-    // 魔法スロット　３
-    public void OnCastSlot3(InputAction.CallbackContext ctx) {
-        if (ctx.canceled) {
-            _character.RequestSetCastingFlag(2, false);
-            _character.RequestCastMagicEnd(2);
-        }
-
-        if (!CanReceiveInput) return;
-
-        // 長押し
-        if (ctx.performed) {
-            _character.RequestSetCastingFlag(2, true);
-            _character.RequestStartCasting(2);
-            _character.RequestReplaceMagic(2);
-        }
-
-    }
-    // 魔法スロット　４
-    public void OnCastSlot4(InputAction.CallbackContext ctx) {
-        if (ctx.canceled) {
-            _character.RequestSetCastingFlag(3, false);
-            _character.RequestCastMagicEnd(3);
-        }
-
-        if (!CanReceiveInput) return;
-
-        // 長押し
-        if (ctx.performed) {
-            _character.RequestSetCastingFlag(3, true);
-            _character.RequestStartCasting(3);
-            _character.RequestReplaceMagic(3);
+            _character.RequestLookOn();
         }
     }
 
     /// <summary>
-    /// 解析魔法の入力受付
+    /// 4つの魔法のボタン入力
     /// </summary>
     /// <param name="ctx"></param>
+    public void OnCastSlot1(InputAction.CallbackContext ctx) => HandleMagicSlot(ctx, 0);
+    public void OnCastSlot2(InputAction.CallbackContext ctx) => HandleMagicSlot(ctx, 1);
+    public void OnCastSlot3(InputAction.CallbackContext ctx) => HandleMagicSlot(ctx, 2);
+    public void OnCastSlot4(InputAction.CallbackContext ctx) => HandleMagicSlot(ctx, 3);
+
+    /// <summary>
+    /// 解析魔法入力
+    /// </summary>
     public void OnAnalysis(InputAction.CallbackContext ctx) {
-        if (!CanReceiveInput) return;
+        if (!CanReceiveInput || _character == null) return;
+
         if (ctx.performed) {
+            // 解析魔法使用
             _character.RequestAnalysis();
         }
-        else if (ctx.canceled) {
-
-        }
     }
 
     /// <summary>
-    /// 魔法所持リストの表示切り替えの受付
-    /// </summary>  
-    /// <param name="ctx"></param>
+    /// 魔法リスト UI の表示
+    /// </summary>
     public void OnMagicOpen(InputAction.CallbackContext ctx) {
-        if (!CanReceiveInput) return;
+        if (!CanReceiveInput || _character == null) return;
+
+
         if (ctx.performed) {
-            // 魔法リスト表示
+            // 魔法リストUIを開く
             _character.RequestOpenMagicUI();
         }
         else if (ctx.canceled) {
-            // 魔法リスト非表示
+            // 魔法リストUIを閉じる
             _character.RequestCloceMagicUI();
         }
     }
 
-
     /// <summary>
-    /// 準備処理
+    ///  初期化
     /// </summary>
     private void Start() {
-        // Rigidbody を取得（移動用に必要）
+        // Rigidbody
         _rigidbody = GetComponent<Rigidbody>();
+
+        // カメラ
         if (_targetCamera == null) _targetCamera = Camera.main;
 
-        // Animatorの取得
+        // アニメーター取得
         _animator = GetComponentInChildren<Animator>();
-        if (_animator == null) return;
 
-        // PlayerCharacter を取得 or 追加
+        // PlayerCharacter を取得
         _character = GetComponent<PlayerCharacter>();
         if (_character == null) {
             _character = gameObject.AddComponent<PlayerCharacter>();
         }
-
     }
-
 }
