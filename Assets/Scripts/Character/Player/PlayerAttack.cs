@@ -157,4 +157,12 @@ public class PlayerAttack {
         _currentAttack = AttackStep.Invalid;
         _attackTimer = 0f;
     }
+
+    /// <summary>
+    /// UŒ‚‚ğƒLƒƒƒ“ƒZƒ‹‚·‚é
+    /// </summary>
+    public void CancelAttack() {
+        _attackRequested = false;
+        _isAttacking = false;
+    }
 }
