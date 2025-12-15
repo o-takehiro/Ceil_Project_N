@@ -137,3 +137,14 @@ public enum eStageState {
 
     Max
 }
+/// <summary>
+/// “G‚ÌƒAƒNƒVƒ‡ƒ“‚Ìí—Ş
+/// </summary>
+public enum EnemyActionType {
+    None,
+    MagicAttack,
+    MagicDefense,
+    CloseMove,
+    LeaveMove,
+    Wait
+}

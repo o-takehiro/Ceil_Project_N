@@ -12,7 +12,6 @@ using Unity.VisualScripting;
 using UnityEngine;
 
 using static CharacterUtility;
-using static CharacterMasterUtility;
 using static GameConst;
 
 public class TutorialEnemy : EnemyCharacter {
