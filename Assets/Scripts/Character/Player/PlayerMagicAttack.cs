@@ -18,7 +18,8 @@ public class PlayerMagicAttack {
 
     private static readonly float _LOWER_LIMIT_MP = 0.0f;         // MPの下限値
     public static bool isPendingMagic = false;                           // 入れ替え待ちかどうか
-
+                                                                         // 各スロットの魔法がすでに発動中かどうかを管理する
+    private bool[] _isMagicActive = new bool[4];
     /// <summary>
     /// コンストラクタ
     /// </summary>
@@ -59,40 +60,23 @@ public class PlayerMagicAttack {
     /// 魔法発射
     /// </summary>
     public void RequestAttack(int slotIndex) {
-        if (slotIndex < 0 || slotIndex >= _eMagicList.Count) return;
+        // すでに魔法が発動中なら、再生成しない
+        if (_isMagicActive[slotIndex]) return;
 
-        // 入れ替え中なら攻撃せずに入れ替えを優先
-        if (_pendingMagic != eMagicType.Invalid) {
-            ConfirmReplaceMagic(slotIndex);
-            return;
-        }
-
-        // 現在のMPを取得
-        float currentMP = CharacterUtility.GetPlayerCurrentMP();
-        if (slotIndex < 0 || slotIndex >= _eMagicList.Count) return;
         var magicType = _eMagicList[slotIndex];
         if (magicType == eMagicType.Invalid) return;
-        // MPが切れたら魔法の再生を停止
-        if (currentMP <= _LOWER_LIMIT_MP) {
-            RequestCancelMagic(slotIndex);
-            return;
-        }
 
-        // 魔法発動処理
-        if (!_isDeath) {
-            GameObject spawnPoint = _magicSpawnPos[slotIndex];
-            if (spawnPoint == null) return;
-            // 魔法発動
-            CreateMagic(eSideType.PlayerSide, magicType, spawnPoint);
+        GameObject spawnPoint = _magicSpawnPos[slotIndex];
+        if (spawnPoint == null) return;
 
-            // 本の出現
-            spawnPoint.SetActive(true);
+        // 魔法を生成する
+        CreateMagic(eSideType.PlayerSide, magicType, spawnPoint);
 
-            if (currentMP <= _LOWER_LIMIT_MP) {
-                RequestCancelMagic(slotIndex);
-                return;
-            }
-        }
+        // 本を表示する
+        spawnPoint.SetActive(true);
+
+        // 魔法を発動済みにする
+        _isMagicActive[slotIndex] = true;
     }
 
     /// <summary>
@@ -125,23 +109,26 @@ public class PlayerMagicAttack {
     /// <param name="slotIndex"></param>
     public void RequestCancelMagic(int slotIndex) {
         if (slotIndex < 0 || slotIndex >= _eMagicList.Count) return;
-        // スロット番目のeMagicTypeを渡す
-        var magicType = _eMagicList[slotIndex];
-        GameObject spawnPoint = _magicSpawnPos[slotIndex];
-        // 渡された魔法がInvalid出なければ
-        if (magicType == eMagicType.Invalid) return;
-        if (spawnPoint != null) {
-            spawnPoint.SetActive(false);
-        }
-        // 魔法発射解除
-        MagicReset(eSideType.PlayerSide, magicType);
-        spawnPoint.SetActive(false);
-        // エフェクト再生フラグリセット
-        _effectPlaying[slotIndex] = false;
 
-        if (_isDeath) {
-            MagicReset(eSideType.PlayerSide, magicType);
+        // 発動していない魔法は解除しない
+        if (!_isMagicActive[slotIndex]) return;
+
+        var magicType = _eMagicList[slotIndex];
+        if (magicType == eMagicType.Invalid) return;
+
+        // 魔法の効果を停止・リセットする
+        MagicReset(eSideType.PlayerSide, magicType);
+
+        // 発射位置オブジェクトを非表示にする
+        if (_magicSpawnPos[slotIndex] != null) {
+            _magicSpawnPos[slotIndex].SetActive(false);
         }
+
+        // 発動中フラグを解除する
+        _isMagicActive[slotIndex] = false;
+
+        // エフェクト再生中フラグもリセットする
+        _effectPlaying[slotIndex] = false;
     }
 
     /// <summary>
@@ -308,10 +295,10 @@ public class PlayerMagicAttack {
                 continue;
 
             // 魔法のリセット処理を行う
-            MagicReset(eSideType.PlayerSide, magicList[i]);  // 何をしているかがわかるコメント
+            MagicReset(eSideType.PlayerSide, magicList[i]);
 
             // インデックス指定で削除する
-            magicList.RemoveAt(i);                           // 安全に要素を削除する
+            magicList.RemoveAt(i);
         }
     }
 }

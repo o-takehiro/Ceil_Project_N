@@ -19,22 +19,11 @@ public sealed class PlayerInput : MonoBehaviour {
     /// 番号毎のボタンに対応した魔法
     /// </summary>
     private void HandleMagicSlot(InputAction.CallbackContext ctx, int slotIndex) {
-        // ボタンが離された瞬間
-        if (ctx.canceled) {
-            _character.RequestSetCastingFlag(slotIndex, false);
-            _character.RequestCastMagicEnd(slotIndex);
-            return;
-        }
-
-        // 入力不可状態なら何もしない
-        if (!CanReceiveInput) return;
-
-        // 長押し処理
-        if (ctx.performed) {
-            _character.RequestSetCastingFlag(slotIndex, true);
-            _character.RequestStartCasting(slotIndex);
-            _character.RequestReplaceMagic(slotIndex);
-        }
+        _character.HandleMagicInput(
+            slotIndex,
+            ctx.performed,
+            ctx.canceled
+            );
     }
 
     /// <summary>

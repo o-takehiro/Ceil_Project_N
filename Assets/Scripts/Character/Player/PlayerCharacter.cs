@@ -104,30 +104,64 @@ public class PlayerCharacter : CharacterBase {
         StartPlayerLoop().Forget();
     }
 
-
+    /// <summary>
+    /// 移動入力を受け取る
+    /// </summary>
+    /// <param name="input"></param>
     public void SetMoveInput(Vector2 input) => _movement.SetMoveInput(input);
 
+    /// <summary>
+    /// ジャンプ入力を受け取る
+    /// </summary>
     public void RequestJump() => _movement.RequestJump();
 
+    /// <summary>
+    /// 攻撃入力を受け取る
+    /// </summary>
     public void RequestAttack() {
+        // ジャンプ中は攻撃できない
         if (!_movement.IsJumping)
             _attack.RequestAttack();
     }
 
-    public void RequestCastMagic(int slotIndex) => _magic.RequestAttack(slotIndex);
+    /// <summary>
+    /// 魔法スロット入力をまとめて処理する
+    /// </summary>
+    /// <param name="slotIndex">魔法スロット番号</param>
+    /// <param name="pressed">押された瞬間か</param>
+    /// <param name="released">離された瞬間か</param>
+    public void HandleMagicInput(int slotIndex, bool pressed, bool released) {
 
-    public void RequestCastMagicEnd(int slotIndex) => _magic.RequestCancelMagic(slotIndex);
+        // ポーズ中・死亡中などは魔法入力を受け付けない
+        if (_isPaused || _magic == null) return;
 
-    public void RequestSetCastingFlag(int index, bool isCasting) => _magic.SetCastingFlag(index, isCasting);
+        // ボタンが離された瞬間の処理
+        if (released) {
+            _magic.SetCastingFlag(slotIndex, false);   // 長押し状態を解除する
+            _magic.RequestCancelMagic(slotIndex);     // 魔法発射を終了する
+            return;
+        }
 
-    public void RequestStartCasting(int slotIndex) => _magic.StartCasting(slotIndex);
+        // ボタンが押された瞬間の処理
+        if (pressed) {
+            _magic.SetCastingFlag(slotIndex, true);   // 長押し状態を開始する
+            _magic.StartCasting(slotIndex);           // 初回のみの演出・初期処理
+            _magic.ConfirmReplaceMagic(slotIndex);    // 入れ替え待ちならここで確定
+        }
+    }
 
-    public void RequestReplaceMagic(int slotIndex) => _magic.ConfirmReplaceMagic(slotIndex);
-
+    /// <summary>
+    /// かいせきまほうを呼ぶ
+    /// </summary>
     public void RequestAnalysis() => _magic.RequestAnalysis();
 
+    /// <summary>
+    /// 魔法のUI表示
+    /// </summary>
     public void RequestOpenMagicUI() => _magic.OpenMagicUI();
-
+    /// <summary>
+    /// 魔法のUI非表示
+    /// </summary>
     public void RequestCloceMagicUI() => _magic.CloseMagicUI();
 
     /// <summary>
