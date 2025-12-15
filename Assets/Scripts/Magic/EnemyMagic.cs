@@ -127,8 +127,6 @@ public class EnemyMagic : MagicBase {
         if (magicObject == null) return;
         // 生成完了
         magicObject.generateFinish = true;
-        // 未使用化不可能
-        magicObject.canUnuse = false;
         // 小型弾生成待機用実行関数
         UniTask task = MiniBulletExecute(magicObject);
     }
@@ -139,7 +137,9 @@ public class EnemyMagic : MagicBase {
     private async UniTask MiniBulletExecute(MagicObject magicObject) {
         do {
             if (_bulletCoolTime < 0) {
-                _bulletGenerate = true;
+				_bulletGenerate = true;
+				// 未使用化不可能
+				magicObject.canUnuse = false;
                 // 弾生成
                 Transform bullet = magicObject.GenerateMiniBullet().transform;
                 _bulletList.Add(bullet.gameObject);
