@@ -12,7 +12,7 @@ public class CharacterAIMachine<T> where T : class {
     //状態の持ち主
     public T ownerClass = null;
     //現在のステート
-    public static CharacterAIBase<T> currentState { get; private set; } = null;
+    public CharacterAIBase<T> currentState { get; private set; } = null;
 
     public void Setup(T setOwnerClass) {
         ownerClass = setOwnerClass;

@@ -1,11 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-using static MagicUtility;
-using static CharacterUtility;
+using static EnemyCommonModule;
 
-public class TutorialBoss_MagicDefense : IEnemyAction {
+public class EnemyAction_Wait : IEnemyAction {
     /// <summary>
     /// 準備前処理
     /// </summary>
@@ -18,7 +15,8 @@ public class TutorialBoss_MagicDefense : IEnemyAction {
     /// </summary>
     /// <param name="enemy"></param>
     public void Execute(EnemyCharacter enemy) {
-        CreateMagic(eSideType.EnemySide, GetEnemyMagicType(eMagicType.Defense));
+        // プレイヤー方向へ向く
+        LookAtPlayer();
     }
     /// <summary>
     /// 片付け処理

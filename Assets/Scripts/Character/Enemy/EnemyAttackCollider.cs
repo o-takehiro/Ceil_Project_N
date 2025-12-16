@@ -4,24 +4,11 @@ using UnityEngine;
 
 using static CharacterUtility;
 
-public class EnemyAttackCollider : MonoBehaviour
-{
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
+public class EnemyAttackCollider : MonoBehaviour {
     private void OnTriggerEnter(Collider collision) {
-        if(collision.gameObject.tag == "Player") {
+        if (collision.gameObject.tag == "Player") {
             ToPlayerDamage(GetEnemy().GetRawAttack());
-            if(GetEnemy().GetEnemyAttackValue() == 0) {
+            if (GetEnemy().GetEnemyAttackValue() == 0) {
                 GetEnemy().SetActiveCollider(GetEnemy().GetEnemyAttackValue(), false);
             }
         }

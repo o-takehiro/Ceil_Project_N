@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-public class Entity_CharacterData : ScriptableObject
+public class Entity_EnemyFactorData : ScriptableObject
 {	
 	public List<Sheet> sheets = new List<Sheet> ();
 
@@ -17,12 +17,9 @@ public class Entity_CharacterData : ScriptableObject
 	public class Param
 	{
 		
-		public int ID;
-		public int HP;
-		public int MP;
-		public int Attack;
-		public int Defense;
-		public int[] ActionID;
+		public int EnemyID;
+		public int ClosePlayerDistance;
+		public int FarPlayerDistance;
 	}
 }
 

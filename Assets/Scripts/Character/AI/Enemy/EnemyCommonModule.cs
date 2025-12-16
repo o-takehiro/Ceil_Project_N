@@ -1,58 +1,91 @@
-using Cysharp.Threading.Tasks.Triggers;
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 using static CharacterUtility;
 
 public class EnemyCommonModule {
-    public static void LookAtPlayer(float setTime = 0.1f) {
-        if(GetPlayer() == null || GetEnemy() == null) return;
-        //プレイヤーの方向を向き続ける
-        Quaternion enemyRotation = GetEnemyRotation();
-        //方向を決める
-        Vector3 direction = GetPlayerPosition() - GetEnemyPosition();
-        //水平方向のみの回転のため、yには0を代入
-        direction.y = 0;
-        if(direction == Vector3.zero) return; 
+    /// <summary>
+    /// プレイヤー方向へ向く
+    /// </summary>
+    /// <param name="setTime"></param>
+    public static void LookAtPlayer(float setTime = 0.1f, EnemyCharacter enemy = null) {
+        if(!enemy || !GetPlayer()) return;
 
-        //回転させる
-        Quaternion lookRotation = Quaternion.LookRotation(direction, Vector3.up);
-        enemyRotation = Quaternion.Slerp(enemyRotation, lookRotation, setTime);
-        //自身の回転に代入する
-        SetEnemyRotation(enemyRotation);
-    }
+        Vector3 enemyPos = enemy.transform.position;
+        Vector3 playerPos = GetPlayerPosition();
 
-    public static void LookAtDirection(Vector3 setDirection) {
-        //方向を決める
-        Vector3 direction = setDirection;
-        if (direction == Vector3.zero) return;
+        // 目標方向
+        Vector3 toPlayer = playerPos - enemyPos;
+        toPlayer.y = 0f;
 
-        //特定の方向を向き続ける
-        Quaternion enemyRotation = GetEnemy().transform.rotation;
-        //水平方向のみの回転のため、yには0を代入
-        direction.y = 0;
-        //回転させる
-        Quaternion lookRotation = Quaternion.LookRotation(direction, Vector3.up);
-        enemyRotation = Quaternion.Slerp(enemyRotation, lookRotation, 0.1f);
-        //自身の回転に代入する
-        SetEnemyRotation(enemyRotation);
+        if (toPlayer == Vector3.zero) return;
+
+        // 正規化
+        toPlayer.Normalize();
+
+        // 現在の正面ベクトルを求める
+        Vector3 currentForward = enemy.transform.forward;
+        currentForward.y = 0f;
+        currentForward.Normalize();
+
+        // 差分角度を求める
+        float angle = Vector3.SignedAngle(currentForward, toPlayer, Vector3.up);
+        float rotateAngle = angle * setTime;
+
+        // Y軸回転
+        Quaternion currentRot = enemy.transform.rotation;
+        Quaternion deltaRot = Quaternion.Euler(0f, rotateAngle, 0f);
+
+        SetEnemyRotation(currentRot * deltaRot);
     }
     /// <summary>
-    /// カメラから見た敵が横向きになるようにする
+    /// 指定された方向ベクトルへ向く
     /// </summary>
-    public static void EnemySideRotation() {
-        // 今の回転を取得
-        Quaternion currentRot = GetEnemy().transform.rotation;
+    /// <param name="setDirection"></param>
+    public static void LookAtDirection(Vector3 setDirection, EnemyCharacter enemy = null) {
+        if(!enemy) return;
+        Vector3 direction = setDirection;
+        direction.y = 0f;
 
-        // Y軸周りに右へ90°回す（ローカル基準）
-        Quaternion offset = Quaternion.Euler(0f, 90f, 0f);
+        if (direction == Vector3.zero) return;
 
-        // ローカル回転に対して適用
-        Quaternion newRot = currentRot * offset;
+        direction.Normalize();
 
-        // 適用
-        SetEnemyRotation(newRot);
+        // 正面ベクトルを求める
+        Vector3 forward = enemy.transform.forward;
+        forward.y = 0f;
+        forward.Normalize();
+        // 差分角度を求める
+        float angle = Vector3.SignedAngle(forward, direction, Vector3.up);
+        float rotateAngle = angle * 0.1f;
+
+        // Y軸回転
+        Quaternion currentRot = enemy.transform.rotation;
+        Quaternion deltaRot = Quaternion.Euler(0f, rotateAngle, 0f);
+
+        SetEnemyRotation(currentRot * deltaRot);
+    }
+    /// <summary>
+    /// プレイヤーから見た敵が横向きになるようにする
+    /// </summary>
+    public static void EnemySideRotation(float setTime = 0.1f, EnemyCharacter enemy = null) {
+        if (!enemy) return;
+        // 正面ベクトルを求める
+        Vector3 currentForward = enemy.transform.forward;
+        currentForward.y = 0f;
+        currentForward.Normalize();
+        // 右ベクトルを求める
+        Vector3 targetForward = enemy.transform.right;
+        targetForward.y = 0f;
+        targetForward.Normalize();
+
+        // 差分角度を求める
+        float angle = Vector3.SignedAngle(currentForward,targetForward, Vector3.up);
+        float rotateAngle = angle * setTime;
+
+        // Y軸回転
+        Quaternion currentRot = enemy.transform.rotation;
+        Quaternion deltaRot = Quaternion.Euler(0f, rotateAngle, 0f);
+
+        SetEnemyRotation(currentRot * deltaRot);
     }
 }

@@ -2,10 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-using static MagicUtility;
-using static CharacterUtility;
-
-public class TutorialBoss_MagicDefense : IEnemyAction {
+public class Boss1_GroundShock : IEnemyAction {
     /// <summary>
     /// €”õ‘Oˆ—
     /// </summary>
@@ -18,7 +15,7 @@ public class TutorialBoss_MagicDefense : IEnemyAction {
     /// </summary>
     /// <param name="enemy"></param>
     public void Execute(EnemyCharacter enemy) {
-        CreateMagic(eSideType.EnemySide, GetEnemyMagicType(eMagicType.Defense));
+
     }
     /// <summary>
     /// •Ğ•t‚¯ˆ—

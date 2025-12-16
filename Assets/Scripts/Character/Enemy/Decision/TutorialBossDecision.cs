@@ -3,16 +3,25 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class TutorialBossDecision : IEnemyDecision {
-    private const int DEFENSE_DISTANCE = 15;
-    private const int CLOSE_DISTANCE = 25;
+    /// <summary>
+    /// 行動判断処理
+    /// </summary>
+    /// <param name="context"></param>
+    /// <returns></returns>
+    public eEnemyActionType Decide(EnemyFactors context) {
+        // 距離による行動変化フラグを設定
+        bool isPlayerClose = context.distanceToPlayer < context.closePlayerDistance;
+        bool isPlayerFar = context.distanceToPlayer > context.farPlayerDistance;
 
-    public EnemyActionType Decide(EnemyContext context) {
-        if (context.DistanceToPlayer < DEFENSE_DISTANCE)
-            return EnemyActionType.MagicDefense;
+        if (isPlayerClose && !isPlayerFar)
+             return eEnemyActionType.MagicDefense;
 
-        if (context.DistanceToPlayer > CLOSE_DISTANCE)
-            return EnemyActionType.CloseMove;
+        else if (isPlayerFar && !isPlayerClose)
+            return eEnemyActionType.CloseMove;
 
-        return EnemyActionType.MagicAttack;
+        else if (!isPlayerClose && !isPlayerFar)
+            return eEnemyActionType.MagicAttack;
+
+        return eEnemyActionType.Wait;
     }
 }

@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-public class Entity_CharacterData : ScriptableObject
+public class Entity_EnemyActionData : ScriptableObject
 {	
 	public List<Sheet> sheets = new List<Sheet> ();
 
@@ -18,11 +18,7 @@ public class Entity_CharacterData : ScriptableObject
 	{
 		
 		public int ID;
-		public int HP;
-		public int MP;
-		public int Attack;
-		public int Defense;
-		public int[] ActionID;
+		public string Name;
 	}
 }
 

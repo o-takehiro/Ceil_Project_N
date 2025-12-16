@@ -140,11 +140,12 @@ public enum eStageState {
 /// <summary>
 /// “G‚ÌƒAƒNƒVƒ‡ƒ“‚ÌŽí—Þ
 /// </summary>
-public enum EnemyActionType {
-    None,
-    MagicAttack,
-    MagicDefense,
+public enum eEnemyActionType {
+    Invalid = -1,
+    Wait,
     CloseMove,
     LeaveMove,
-    Wait
+    NormalAttack,
+    MagicAttack,
+    MagicDefense,    
 }

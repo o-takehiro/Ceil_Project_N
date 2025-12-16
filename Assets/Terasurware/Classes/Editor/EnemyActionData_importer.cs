@@ -7,10 +7,10 @@ using NPOI.HSSF.UserModel;
 using NPOI.XSSF.UserModel;
 using NPOI.SS.UserModel;
 
-public class CharacterData_importer : AssetPostprocessor {
-	private static readonly string filePath = "Assets/Resources/MasterData/CharacterData.xlsx";
-	private static readonly string exportPath = "Assets/Resources/MasterData/CharacterData.asset";
-	private static readonly string[] sheetNames = { "CharacterData", };
+public class EnemyActionData_importer : AssetPostprocessor {
+	private static readonly string filePath = "Assets/Resources/MasterData/EnemyActionData.xlsx";
+	private static readonly string exportPath = "Assets/Resources/MasterData/EnemyActionData.asset";
+	private static readonly string[] sheetNames = { "EnemyActionData", };
 	
 	static void OnPostprocessAllAssets (string[] importedAssets, string[] deletedAssets, string[] movedAssets, string[] movedFromAssetPaths)
 	{
@@ -18,9 +18,9 @@ public class CharacterData_importer : AssetPostprocessor {
 			if (!filePath.Equals (asset))
 				continue;
 				
-			Entity_CharacterData data = (Entity_CharacterData)AssetDatabase.LoadAssetAtPath (exportPath, typeof(Entity_CharacterData));
+			Entity_EnemyActionData data = (Entity_EnemyActionData)AssetDatabase.LoadAssetAtPath (exportPath, typeof(Entity_EnemyActionData));
 			if (data == null) {
-				data = ScriptableObject.CreateInstance<Entity_CharacterData> ();
+				data = ScriptableObject.CreateInstance<Entity_EnemyActionData> ();
 				AssetDatabase.CreateAsset ((ScriptableObject)data, exportPath);
 				data.hideFlags = HideFlags.NotEditable;
 			}
@@ -41,25 +41,17 @@ public class CharacterData_importer : AssetPostprocessor {
 						continue;
 					}
 
-					Entity_CharacterData.Sheet s = new Entity_CharacterData.Sheet ();
+					Entity_EnemyActionData.Sheet s = new Entity_EnemyActionData.Sheet ();
 					s.name = sheetName;
 				
 					for (int i=1; i<= sheet.LastRowNum; i++) {
 						IRow row = sheet.GetRow (i);
 						ICell cell = null;
 						
-						Entity_CharacterData.Param p = new Entity_CharacterData.Param ();
+						Entity_EnemyActionData.Param p = new Entity_EnemyActionData.Param ();
 						
 					cell = row.GetCell(0); p.ID = (int)(cell == null ? 0 : cell.NumericCellValue);
-					cell = row.GetCell(2); p.HP = (int)(cell == null ? 0 : cell.NumericCellValue);
-					cell = row.GetCell(3); p.MP = (int)(cell == null ? 0 : cell.NumericCellValue);
-					cell = row.GetCell(4); p.Attack = (int)(cell == null ? 0 : cell.NumericCellValue);
-					cell = row.GetCell(5); p.Defense = (int)(cell == null ? 0 : cell.NumericCellValue);
-					p.ActionID = new int[4];
-					cell = row.GetCell(6); p.ActionID[0] = (int)(cell == null ? 0 : cell.NumericCellValue);
-					cell = row.GetCell(7); p.ActionID[1] = (int)(cell == null ? 0 : cell.NumericCellValue);
-					cell = row.GetCell(8); p.ActionID[2] = (int)(cell == null ? 0 : cell.NumericCellValue);
-					cell = row.GetCell(9); p.ActionID[3] = (int)(cell == null ? 0 : cell.NumericCellValue);
+					cell = row.GetCell(1); p.Name = (cell == null ? "" : cell.StringCellValue);
 						s.list.Add (p);
 					}
 					data.sheets.Add(s);

@@ -29,18 +29,19 @@ public class EnemyCharacter : CharacterBase {
 
     private int _enemyAttackValue = -1;
 
+    protected IEnemyDecision decision = null;
+
+    protected List<int> actionList = null;
+
+    protected float moveSpeed = -1;
+
     public override void Initialize() {
         base.Initialize();
     }
     public override void Setup(int masterID) {
         base.Setup(masterID);
         var masterData = GetCharacterMaster(masterID);
-        SetMaxHP(masterData.HP);
-        SetHP(masterData.HP);
-        SetRawAttack(masterData.Attack);
-        SetRawDefense(masterData.Defense);
-        SetMinActionTime(masterData.MinActionTime);
-        SetMaxActionTime(masterData.MaxActionTime);
+        SetupData(masterData);
         //現在の位置更新
         SetEnemyPosition(Vector3.zero);
         //一フレーム前の位置更新
@@ -49,6 +50,13 @@ public class EnemyCharacter : CharacterBase {
         SetEnemyCenterPosition(new Vector3(transform.position.x, transform.position.y + 2, transform.position.z));
         //現在の回転更新
         SetEnemyRotation(Quaternion.identity);
+    }
+    public void SetupData(Entity_CharacterData.Param setData) {
+        SetMaxHP(setData.HP);
+        SetHP(setData.HP);
+        SetRawAttack(setData.Attack);
+        SetRawDefense(setData.Defense);
+        SetActionID(setData.ActionID);
     }
     public override void Teardown() {
         base.Teardown();
@@ -61,6 +69,9 @@ public class EnemyCharacter : CharacterBase {
     public override bool isPlayer() {
         return false;
     }
+    /// <summary>
+    /// 死亡処理
+    /// </summary>
     public override void Dead() {
         enemyHPGauge.gameObject.SetActive(false);
         myAI.ChangeState(new EnemyAI008_Empty());
@@ -68,6 +79,16 @@ public class EnemyCharacter : CharacterBase {
         CancelAllEnemyMagic();
         SetAllActiveCollider(false);
     }
+    /// <summary>
+    /// 移動速度の取得
+    /// </summary>
+    /// <returns></returns>
+    public float GetMoveSpeed() { return moveSpeed; }
+    /// <summary>
+    /// 移動速度の設定
+    /// </summary>
+    /// <param name="setSpeed"></param>
+    public void SetMoveSpeed(float setSpeed) { moveSpeed = setSpeed; }
 
     protected void SetEnemyCanvas() {
         if (enemyHPGauge != null) return;
@@ -169,5 +190,20 @@ public class EnemyCharacter : CharacterBase {
 
     public void StartEnemyState() {
         myAI.ChangeState(new EnemyAI001_Wait());
+    }
+    /// <summary>
+    /// 行動IDデータの設定
+    /// </summary>
+    /// <param name="masterActionList"></param>
+    public void SetActionID(int[] masterActionList) {
+        int masterActionCount = masterActionList.Length;
+        actionList = new List<int>(masterActionCount);
+        // データから-1を除いたアクションIDを設定する
+        for (int i = 0; i < masterActionCount; i++) {
+            if (masterActionList[i] < 0) continue;
+
+            actionList.Add(masterActionList[i]);
+        }
+
     }
 }
