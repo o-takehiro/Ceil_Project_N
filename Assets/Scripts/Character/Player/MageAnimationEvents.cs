@@ -3,6 +3,9 @@ using UnityEngine;
 
 using static CharacterUtility;
 
+/// <summary>
+/// アニメーションイベントで呼ぶ関数
+/// </summary>
 public class MageAnimationEvents : MonoBehaviour {
     [SerializeField] private Collider attackCollider;   // コライダー
     private PlayerAttack _playerAttack;                 // PlayerAttackクラス
@@ -70,14 +73,6 @@ public class MageAnimationEvents : MonoBehaviour {
         // 敵にダメージ
         ToEnemyDamage(damage);
     }
-
-    //// アニメーションイベントから呼ばれる
-    //public void DisableJump() {
-    //    _playerMovement.CanJump = false;
-    //}
-    //public void EnableJump() {
-    //    _playerMovement.CanJump = true;
-    //}
 
     /// <summary>
     /// 死亡アニメーションを最後まで流す

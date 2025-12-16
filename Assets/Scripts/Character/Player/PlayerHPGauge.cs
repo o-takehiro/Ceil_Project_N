@@ -1,3 +1,8 @@
+/*
+ *  @file   PlayerHPGaouge
+ *  @author oorui
+ */
+
 using Cysharp.Threading.Tasks;
 using System.Collections;
 using System.Collections.Generic;
@@ -12,9 +17,12 @@ public class PlayerHPGauge : MenuBase {
 
     public CancellationToken _token;
 
-    public Slider GetSlider() {
-        return _hpSlider;
-    }
+    /// <summary>
+    /// HPのスライーを取得
+    /// </summary>
+    /// <returns></returns>
+    public Slider GetSlider() => _hpSlider;
+
 
 
     public override async UniTask Open() {
@@ -29,7 +37,7 @@ public class PlayerHPGauge : MenuBase {
         // ステージクリア監視
         StageManager.Instance.OnStageClear += () => tcs.TrySetResult();
 
-        // ゲームオーバー監視（isGameOverがtrueになるのを待つ）
+        // ゲームオーバー監視
         async UniTaskVoid WatchGameOver(CancellationToken token) {
             while (!MageAnimationEvents.isGameOver) {
                 await UniTask.Yield(PlayerLoopTiming.Update, token);

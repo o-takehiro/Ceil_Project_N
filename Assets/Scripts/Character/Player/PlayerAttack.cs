@@ -143,6 +143,9 @@ public class PlayerAttack {
         _canReceiveInput = value;
     }
 
+    /// <summary>
+    /// UŒ‚–ˆ‚ÉMP‚ğ‰ñ•œ‚·‚é
+    /// </summary>
     public void AddMP() {
         if (_attackDataMap.TryGetValue(_currentAttack, out var attackData)) {
             CharacterUtility.ToPlayerAddMP(attackData.HealMP);
