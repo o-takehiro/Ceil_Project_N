@@ -65,7 +65,7 @@ public class EnemyCommonModule {
         SetEnemyRotation(currentRot * deltaRot);
     }
     /// <summary>
-    /// プレイヤーから見た敵が横向きになるようにする
+    /// 敵自身の正面に対して横を向く
     /// </summary>
     public static void EnemySideRotation(float setTime = 0.1f, EnemyCharacter enemy = null) {
         if (!enemy) return;
