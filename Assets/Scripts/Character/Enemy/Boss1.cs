@@ -4,7 +4,6 @@ using UnityEngine;
 using Cysharp.Threading.Tasks;
 
 using static CharacterUtility;
-using static CharacterMasterUtility;
 using static GameConst;
 
 public class Boss1 : EnemyCharacter {
@@ -12,8 +11,6 @@ public class Boss1 : EnemyCharacter {
 
     public override void Initialize() {
         base.Initialize();
-        actionMachine = new EnemyAI005_Boss1Action();
-        myAI = new CharacterAIMachine<EnemyCharacter>();
         enemyAnimator = GetComponent<Animator>();
         magicTypeList = new List<eMagicType>(MAX_ENEMY_MAGIC);
     }
@@ -21,9 +18,6 @@ public class Boss1 : EnemyCharacter {
         base.Setup(masterID);
         //HPゲージの更新
         SetupCanvasPosition(Vector3.one);
-
-        myAI.Setup(this);
-        myAI.ChangeState(new EnemyAI001_Wait());
     }
     private void Update() {
         //現在の位置更新
@@ -32,15 +26,30 @@ public class Boss1 : EnemyCharacter {
         SetRotation(transform.rotation);
         //中心座標更新
         SetEnemyCenterPosition(new Vector3(transform.position.x, transform.position.y + 2, transform.position.z));
-        //AIマシーンの更新
-        myAI.Update();
+        // 敵行動判断リスト
+        UpdateDecisions();
+        // 行動実行
+        if (currentAction != null) {
+            // 行動実行処理
+            currentAction.Execute(this);
+            // 終了していたら、クールタイム発動
+            if (currentAction.IsFinished())
+                factors.isCoolTime = true;
+        }
+        // 行動中でなければ行動判断をする
+        if (!IsAction()) {
+            // 行動判断
+            eEnemyActionType action = decision.Decide(factors);
+            // 行動の変更
+            if (action != actionType)
+                ChangeAction(action);
+        }
         //オブジェクトの座標更新
         transform.position = currentPos;
         //オブジェクトの回転更新
         transform.rotation = currentRot;
         //1フレーム前の座標更新
         SetEnemyPrevPosition();
-
     }
     public override void Teardown() {
         base.Teardown();

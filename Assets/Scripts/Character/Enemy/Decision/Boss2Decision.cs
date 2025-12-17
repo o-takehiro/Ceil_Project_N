@@ -8,8 +8,17 @@ public class Boss2Decision : IEnemyDecision {
     /// </summary>
     /// <param name="factors"></param>
     /// <returns></returns>
-    public eEnemyActionType Decide(EnemyFactors factors) {
+    public eEnemyActionType Decide(DecisionFactors factors) {
+        if (factors.isCoolTime)
+            return eEnemyActionType.Wait;
 
-        return eEnemyActionType.Invalid;
+        else if (factors.isPlayerClose)
+            return eEnemyActionType.LeaveMove;
+
+        else if (factors.isPlayerFar)
+            return eEnemyActionType.CloseMove;
+
+        else
+            return eEnemyActionType.BeamAttack;
     }
 }

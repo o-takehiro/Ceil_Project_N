@@ -97,6 +97,13 @@ public abstract class CharacterBase : MonoBehaviour {
         currentRot = setRotation;
     }
     /// <summary>
+    /// ID‚Ìİ’è
+    /// </summary>
+    /// <param name="setID"></param>
+    public void SetID(int setID) {
+        ID = setID;
+    }
+    /// <summary>
     /// ‘f‚ÌUŒ‚—Íæ“¾
     /// </summary>
     /// <returns></returns>

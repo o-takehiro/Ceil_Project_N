@@ -48,7 +48,6 @@ public class Boss1AttackAction : MonoBehaviour {
         if (!_normalAttackCollider.activeSelf) return; // 無効時は何もしない
 
         if (collision.gameObject.CompareTag("Player")) {
-            Debug.Log("パンチヒット！");
             ToPlayerDamage(GetEnemy().GetRawAttack());
         }
     }

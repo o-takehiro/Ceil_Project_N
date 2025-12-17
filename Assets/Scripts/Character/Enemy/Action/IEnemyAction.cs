@@ -17,4 +17,9 @@ public interface IEnemyAction {
     /// </summary>
     /// <param name="enemy"></param>
     public void Teardown(EnemyCharacter enemy);
+    /// <summary>
+    /// I—¹”»’è
+    /// </summary>
+    /// <returns></returns>
+    public bool IsFinished();
 }

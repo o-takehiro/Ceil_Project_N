@@ -8,20 +8,17 @@ public class TutorialBossDecision : IEnemyDecision {
     /// </summary>
     /// <param name="context"></param>
     /// <returns></returns>
-    public eEnemyActionType Decide(EnemyFactors context) {
-        // ãóó£Ç…ÇÊÇÈçsìÆïœâªÉtÉâÉOÇê›íË
-        bool isPlayerClose = context.distanceToPlayer < context.closePlayerDistance;
-        bool isPlayerFar = context.distanceToPlayer > context.farPlayerDistance;
+    public eEnemyActionType Decide(DecisionFactors factors) {
+        if (factors.isCoolTime)
+            return eEnemyActionType.Wait;
 
-        if (isPlayerClose && !isPlayerFar)
-             return eEnemyActionType.MagicDefense;
+        else if (factors.isPlayerClose)
+            return eEnemyActionType.MagicDefense;
 
-        else if (isPlayerFar && !isPlayerClose)
+        else if (factors.isPlayerFar)
             return eEnemyActionType.CloseMove;
 
-        else if (!isPlayerClose && !isPlayerFar)
-            return eEnemyActionType.MagicAttack;
-
-        return eEnemyActionType.Wait;
+        else
+            return eEnemyActionType.MiniBullet;
     }
 }

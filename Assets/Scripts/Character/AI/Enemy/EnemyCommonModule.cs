@@ -7,7 +7,7 @@ public class EnemyCommonModule {
     /// ƒvƒŒƒCƒ„[•ûŒü‚ÖŒü‚­
     /// </summary>
     /// <param name="setTime"></param>
-    public static void LookAtPlayer(float setTime = 0.1f, EnemyCharacter enemy = null) {
+    public static void LookAtPlayer(EnemyCharacter enemy = null, float setTime = 0.1f) {
         if(!enemy || !GetPlayer()) return;
 
         Vector3 enemyPos = enemy.transform.position;

@@ -51,7 +51,7 @@ public class PartMainGame : PartBase {
     public override async UniTask SetUp() {
         await base.SetUp();
         MageAnimationEvents.isGameOver = false;
-        _goalObject = GameObject.FindObjectOfType<goalObject>();
+        _goalObject = FindObjectOfType<goalObject>();
 
         await UniTask.CompletedTask;
     }
@@ -69,7 +69,7 @@ public class PartMainGame : PartBase {
             _isTutorial = false;
             await MenuManager.Instance.Get<MenuTutorialGuide>().Open();
         }
-        GetEnemy().StartEnemyState();
+        GetEnemy().StartEnemyAction();
         ResumePlayer();
         await UniTask.WhenAll(
                 MenuManager.Instance.Get<PlayerHPGauge>().Open(),

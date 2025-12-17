@@ -14,16 +14,9 @@ public class DeathAninationAction : StateMachineBehaviour {
     /// <param name="layerIndex"></param>
     public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
         animator.applyRootMotion = true;
-        // 3D用：Collider を無効化
+        // Collider を無効化
         Collider col = animator.GetComponent<CapsuleCollider>();
-         if (col != null)
-             col.enabled = false;
-
-        // Rigidbody があるなら物理挙動も止める
-        Rigidbody rb = animator.GetComponent<Rigidbody>();
-        if (rb != null) {
-            //rb.isKinematic = true;
-        }
+         if (col != null) col.enabled = false;
     }
     /// <summary>
     /// 死亡アニメーション終了時に非表示にする
@@ -38,6 +31,5 @@ public class DeathAninationAction : StateMachineBehaviour {
         animator.applyRootMotion = false;
         Collider col = animator.GetComponent<CapsuleCollider>();
         if (col != null) col.enabled = true;
-        //UniTask task = PartManager.Instance.TransitionPart(eGamePart.Ending);
     }
 }

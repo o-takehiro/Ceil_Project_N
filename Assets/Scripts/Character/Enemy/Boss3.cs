@@ -40,8 +40,22 @@ public class Boss3 : EnemyCharacter {
         SetEnemyRotation(transform.rotation);
         //中心座標更新
         SetEnemyCenterPosition(new Vector3(transform.position.x, transform.position.y + 20, transform.position.z));
-        //ステートマシーンの更新
-        myAI.Update();
+        // 行動実行
+        if (currentAction != null) {
+            // 行動実行処理
+            currentAction.Execute(this);
+            // 終了していたら、クールタイム発動
+            if (currentAction.IsFinished())
+                factors.isCoolTime = true;
+        }
+        // 行動中でなければ行動判断をする
+        if (!IsAction()) {
+            // 行動判断
+            eEnemyActionType action = decision.Decide(factors);
+            // 行動の変更
+            if (action != actionType)
+                ChangeAction(action);
+        }
         //座標の更新
         transform.position = GetEnemyPosition();
         transform.rotation = GetEnemyRotation();

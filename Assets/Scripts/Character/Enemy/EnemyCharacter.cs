@@ -29,17 +29,42 @@ public class EnemyCharacter : CharacterBase {
 
     private int _enemyAttackValue = -1;
 
+    // 行動判断データ
+    protected DecisionData decisionData;
+    // 行動判断材料
+    protected DecisionFactors factors;
+    // 行動判断インターフェース
     protected IEnemyDecision decision = null;
-
+    protected eEnemyActionType actionType = eEnemyActionType.Invalid;
+    // 行動リスト
     protected List<int> actionList = null;
-
+    // 現在の行動クラス
+    protected IEnemyAction currentAction = null;
+    // 一つ前の行動クラス
+    protected IEnemyAction prevAction = null;
+    // 移動速度
     protected float moveSpeed = -1;
+    // クールタイム
+    protected float coolTime = -1.0f;
 
+    /// <summary>
+    /// 初期化処理
+    /// </summary>
     public override void Initialize() {
         base.Initialize();
+        decisionData = new DecisionData();
+        actionList = new List<int>();
+        factors = new DecisionFactors();
     }
+    /// <summary>
+    /// 準備前処理
+    /// </summary>
+    /// <param name="masterID"></param>
     public override void Setup(int masterID) {
         base.Setup(masterID);
+        // 判断材料データの設定
+        decisionData.SetupData(masterID);
+        // キャラクターのデータ設定
         var masterData = GetCharacterMaster(masterID);
         SetupData(masterData);
         //現在の位置更新
@@ -52,10 +77,12 @@ public class EnemyCharacter : CharacterBase {
         SetEnemyRotation(Quaternion.identity);
     }
     public void SetupData(Entity_CharacterData.Param setData) {
+        SetID(setData.ID);
         SetMaxHP(setData.HP);
         SetHP(setData.HP);
         SetRawAttack(setData.Attack);
         SetRawDefense(setData.Defense);
+        SetMoveSpeed(setData.MoveSpeed);
         SetActionID(setData.ActionID);
     }
     public override void Teardown() {
@@ -73,22 +100,48 @@ public class EnemyCharacter : CharacterBase {
     /// 死亡処理
     /// </summary>
     public override void Dead() {
-        enemyHPGauge.gameObject.SetActive(false);
         myAI.ChangeState(new EnemyAI008_Empty());
         enemyAnimator.SetBool("isDead", true);
         CancelAllEnemyMagic();
         SetAllActiveCollider(false);
+        enemyHPGauge.gameObject.SetActive(false);
     }
     /// <summary>
     /// 移動速度の取得
     /// </summary>
     /// <returns></returns>
-    public float GetMoveSpeed() { return moveSpeed; }
+    public float GetMoveSpeed() {
+        return moveSpeed;
+    }
     /// <summary>
     /// 移動速度の設定
     /// </summary>
     /// <param name="setSpeed"></param>
-    public void SetMoveSpeed(float setSpeed) { moveSpeed = setSpeed; }
+    public void SetMoveSpeed(float setSpeed) {
+        moveSpeed = setSpeed;
+    }
+    /// <summary>
+    /// クールタイムフラグの設定
+    /// </summary>
+    /// <param name="setFlag"></param>
+    public void SetIsCoolTime(bool setFlag) {
+        factors.isCoolTime = setFlag;
+    }
+    /// <summary>
+    /// 判断材料の更新
+    /// </summary>
+    public void UpdateDecisions() {
+        float distance = GetPlayerToEnemyDistance();
+        factors.isPlayerClose = decisionData.closePlayerDistance < distance;
+        factors.isPlayerFar = decisionData.farPlayerDisance > distance;
+        List<int> activeMagicList = decisionData.playerActiveMagic;
+        if(IsEmpty(activeMagicList)) return;
+        for (int i = 0, max = activeMagicList.Count; i < max; i++) {
+            if(!GetMagicActive((int)eSideType.PlayerSide, (int)eMagicType.MiniBullet)) continue;
+
+            factors.isPlayerActiveMagic[i] = true;
+        }
+    }
 
     protected void SetEnemyCanvas() {
         if (enemyHPGauge != null) return;
@@ -187,9 +240,11 @@ public class EnemyCharacter : CharacterBase {
             magicTypeList.Remove(magicTypeList[i]);
         }
     }
-
-    public void StartEnemyState() {
-        myAI.ChangeState(new EnemyAI001_Wait());
+    /// <summary>
+    /// 行動開始
+    /// </summary>
+    public void StartEnemyAction() {
+        ChangeAction(eEnemyActionType.Wait);
     }
     /// <summary>
     /// 行動IDデータの設定
@@ -204,6 +259,63 @@ public class EnemyCharacter : CharacterBase {
 
             actionList.Add(masterActionList[i]);
         }
+    }
+    /// <summary>
+    /// クールタイムの取得
+    /// </summary>
+    /// <returns></returns>
+    public float GetCoolTime() {
+        return coolTime;
+    }
+    /// <summary>
+    /// クールタイムの設定
+    /// </summary>
+    public void SetCoolTime() {
+        coolTime = Random.Range(decisionData.minCoolTime, decisionData.maxCoolTime);
+    }
+    /// <summary>
+    /// 行動の変更
+    /// </summary>
+    /// <param name="setAction"></param>
+    public void ChangeAction(eEnemyActionType setAction) {
+        if(!FindActionID((int)setAction)) return;
+        // 現在の行動の片付け処理
+        if (currentAction != null) {
+            currentAction.Teardown(this);
+            prevAction = currentAction;
+        }
+        // 行動の生成
+        currentAction = EnemyActionFactory.Create(setAction);
+        if(currentAction == null) return;
+        // 更新処理
+        currentAction.Setup(this);
+        actionType = setAction;
+    }
+    /// <summary>
+    /// 該当するアクションIDが存在するか探す
+    /// </summary>
+    /// <param name="actionID"></param>
+    /// <returns></returns>
+    public bool FindActionID(int actionID) {
+        for (int i = 0, max = actionList.Count; i < max; i++) {
+            if(actionList[i] != actionID) continue;
 
+            return true;
+        }
+        return false;
+    }
+    /// <summary>
+    /// 行動実施中か判定
+    /// </summary>
+    /// <returns></returns>
+    public bool IsAction() {
+        return currentAction != null && !currentAction.IsFinished();
+    }
+    /// <summary>
+    /// アニメーション終了処理の呼び出し
+    /// </summary>
+    public void EndAnimation() {
+        // 変換を試みて、行けたら実行
+        if (currentAction is IEnemyEndAnimation end) end.EndAnimation();
     }
 }

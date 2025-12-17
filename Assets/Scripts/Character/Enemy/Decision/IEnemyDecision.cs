@@ -7,5 +7,5 @@ public interface IEnemyDecision {
     /// </summary>
     /// <param name="context"></param>
     /// <returns></returns>
-    public eEnemyActionType Decide(EnemyFactors foctors);
+    public eEnemyActionType Decide(DecisionFactors foctors);
 }

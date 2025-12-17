@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-public class Entity_CharacterData : ScriptableObject
+public class Entity_EnemyDecisionData : ScriptableObject
 {	
 	public List<Sheet> sheets = new List<Sheet> ();
 
@@ -17,13 +17,12 @@ public class Entity_CharacterData : ScriptableObject
 	public class Param
 	{
 		
-		public int ID;
-		public int HP;
-		public int MP;
-		public int Attack;
-		public int Defense;
-		public float MoveSpeed;
-		public int[] ActionID;
+		public int EnemyID;
+		public float ClosePlayerDistance;
+		public float FarPlayerDistance;
+		public float MinCoolTime;
+		public float MaxCoolTime;
+		public int[] PlayerActiveMagic;
 	}
 }
 

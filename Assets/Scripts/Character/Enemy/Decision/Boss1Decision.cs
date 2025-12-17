@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Boss1Decision : IEnemyDecision {
@@ -7,9 +8,17 @@ public class Boss1Decision : IEnemyDecision {
     /// çsìÆîªífèàóù
     /// </summary>
     /// <param name="context"></param>
-    public eEnemyActionType Decide(EnemyFactors context) {
+    public eEnemyActionType Decide(DecisionFactors factors) {
+        if (factors.isCoolTime)
+            return eEnemyActionType.Wait;
 
+        else if (factors.isPlayerClose)
+            return eEnemyActionType.NormalAttack;
 
-        return eEnemyActionType.Invalid;
+        else if (factors.isPlayerFar)
+            return eEnemyActionType.ChargeAttack;
+
+        else
+            return eEnemyActionType.GroundShock;
     }
 }

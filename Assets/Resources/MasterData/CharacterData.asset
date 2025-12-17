@@ -20,28 +20,33 @@ MonoBehaviour:
       MP: 50
       Attack: 10
       Defense: 5
+      MoveSpeed: -1
       ActionID: ffffffffffffffffffffffffffffffff
     - ID: 1
       HP: 300
       MP: -1
       Attack: 5
       Defense: 2
+      MoveSpeed: 10
       ActionID: 00000000010000000b0000000c000000
     - ID: 2
       HP: 500
       MP: -1
       Attack: 30
       Defense: 10
+      MoveSpeed: 20
       ActionID: 000000000a0000000d0000000e000000
     - ID: 3
       HP: 800
       MP: -1
       Attack: 20
       Defense: 5
+      MoveSpeed: 25
       ActionID: 0000000001000000020000000f000000
     - ID: 4
       HP: 1500
       MP: -1
       Attack: 20
       Defense: 30
+      MoveSpeed: -1
       ActionID: 000000000a0000001000000011000000

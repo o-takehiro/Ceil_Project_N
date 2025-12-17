@@ -12,6 +12,7 @@ public class TutorialEnemy : EnemyCharacter {
     public override void Initialize() {
         base.Initialize();
         decision = new TutorialBossDecision();
+        enemyAnimator = GetComponent<Animator>();
     }
     public override void Setup(int masterID) {
         base.Setup(masterID);
@@ -25,8 +26,22 @@ public class TutorialEnemy : EnemyCharacter {
         SetRotation(transform.rotation);
         //中心座標更新
         SetEnemyCenterPosition(new Vector3(transform.position.x, transform.position.y + 2, transform.position.z));
-        //AIマシーンの更新
-        myAI.Update();
+        // 敵行動判断リスト
+        UpdateDecisions();
+        // 行動実行
+        if (currentAction != null) {
+            // 行動実行処理
+            currentAction.Execute(this);
+            // 終了していたら、クールタイム発動
+            if(currentAction.IsFinished() && actionType != eEnemyActionType.Wait) factors.isCoolTime = true;
+        }
+        // 行動中でなければ行動判断をする
+        if (!IsAction()) {
+            // 行動判断
+            eEnemyActionType action = decision.Decide(factors);
+            // 行動の変更
+            if (action != actionType) ChangeAction(action);
+        }
         //オブジェクトの座標更新
         transform.position = currentPos;
         //オブジェクトの回転更新
