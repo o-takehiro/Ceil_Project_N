@@ -12,6 +12,9 @@ public class Boss2Decision : IEnemyDecision {
         if (factors.isCoolTime)
             return eEnemyActionType.Wait;
 
+        else if (!factors.isPlayerClose && !factors.isPlayerFar)
+            return eEnemyActionType.BeamAttack;
+
         else if (factors.isPlayerClose)
             return eEnemyActionType.LeaveMove;
 
@@ -19,6 +22,6 @@ public class Boss2Decision : IEnemyDecision {
             return eEnemyActionType.CloseMove;
 
         else
-            return eEnemyActionType.BeamAttack;
+            return eEnemyActionType.Wait;
     }
 }

@@ -13,21 +13,26 @@ public class EnemyAction_Wait : IEnemyAction {
     /// </summary>
     /// <param name="enemy"></param>
     public void Setup(EnemyCharacter enemy) {
+        if(!enemy) return;
+
         _isFinished = false;
-        enemy.SetCoolTime();
         elapsedTime = 0.0f;
+        enemy.SetCoolTime();
     }
     /// <summary>
     /// 実行処理
     /// </summary>
     /// <param name="enemy"></param>
     public void Execute(EnemyCharacter enemy) {
+        if(!enemy) return;
+
         elapsedTime += Time.deltaTime;
         // プレイヤー方向へ向く
         LookAtPlayer(enemy);
         // クールタイム判定
         if(elapsedTime > enemy.GetCoolTime()) {
             _isFinished = true;
+            return;
         }
     }
     /// <summary>
@@ -35,7 +40,7 @@ public class EnemyAction_Wait : IEnemyAction {
     /// </summary>
     /// <param name="enemy"></param>
     public void Teardown(EnemyCharacter enemy) {
-
+        
     }
     /// <summary>
     /// 終了判定

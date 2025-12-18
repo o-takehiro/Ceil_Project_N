@@ -8,9 +8,6 @@ public class EnemyAttackCollider : MonoBehaviour {
     private void OnTriggerEnter(Collider collision) {
         if (collision.gameObject.tag == "Player") {
             ToPlayerDamage(GetEnemy().GetRawAttack());
-            if (GetEnemy().GetEnemyAttackValue() == 0) {
-                GetEnemy().SetActiveCollider(GetEnemy().GetEnemyAttackValue(), false);
-            }
         }
     }
 }

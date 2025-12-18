@@ -25,7 +25,7 @@ public abstract class CharacterBase : MonoBehaviour {
     public float HP { get; protected set; } = -1;
     public float MP { get; protected set; } = -1;
     public float maxMP { get; protected set; } = -1;
-    public bool isDead { get { return HP <= 0; } }
+    public bool IsDead { get { return HP <= 0; } }
     public int rawAttack { get; protected set; } = -1;
     public int rawDefense { get; protected set; } = -1;
     public float minActionTime { get; protected set; } = -1;

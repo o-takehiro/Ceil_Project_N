@@ -192,7 +192,7 @@ public class CharacterUtility {
     public static void ToPlayerDamage(int setValue) {
         GetPlayer().RemoveHP(setValue);
         SetPlayerHPSliderValue(GetPlayer().GetPlayerSliderValue());
-        if (GetPlayer().isDead) GetPlayer().Dead();
+        if (GetPlayer().IsDead) GetPlayer().Dead();
     }
     /// <summary>
     /// ìGÇ÷ÇÃÉ_ÉÅÅ[ÉW
@@ -201,7 +201,7 @@ public class CharacterUtility {
     public static void ToEnemyDamage(int setValue) {
         GetEnemy().Damage(setValue);
         SetEnemySliderValue(GetEnemy().GetEnemySliderValue());
-        if (GetEnemy().isDead) GetEnemy().Dead();
+        if (GetEnemy().IsDead) GetEnemy().Dead();
     }
 
     /// <summary>
@@ -213,8 +213,6 @@ public class CharacterUtility {
         if (PlayerMagicAttack.isPendingMagic) return;
         GetPlayer().RemoveMP(setValue);
         SetPlayerMPSliderValue(GetPlayer().GetPlayerMPSliderValue());
-
-
     }
 
     public static void ToPlayerAddMP(int setValue) {
@@ -228,10 +226,6 @@ public class CharacterUtility {
     /// <returns></returns>
     public static float GetPlayerToEnemyDistance() {
         return Vector3.Distance(GetPlayerPosition(), GetEnemyPosition());
-    }
-
-    public static CharacterAIBase<EnemyCharacter> GetActionMachine() {
-        return GetEnemy().GetActionMachine();
     }
 
     public static Slider GetPlayerHPSlider() {
@@ -257,26 +251,6 @@ public class CharacterUtility {
     public static void SetEnemySliderValue(float setValue) {
         GetEnemySlider().value = setValue;
     }
-
-    public static void SetEnemyAttackCollider(int setValue, bool setFlag) {
-        GetEnemy().SetActiveCollider(setValue, setFlag);
-    }
-
-    public static eMagicType GetEnemyMagicType(eMagicType magicType) {
-        return GetEnemy().GetEnemyMagicType(magicType);
-    }
-    public static void AddEnemyMagicType(eMagicType magicType) {
-        GetEnemy().AddEnemyMagicList(magicType);
-    }
-
-    public static void CancelEnemyMagic(eMagicType magicType) {
-        GetEnemy().CancelEnemyMagic(magicType);
-    }
-
-    public static void CancelAllEnemyMagic() {
-        GetEnemy().CancelAllEnemyMagic();
-    }
-
 
     public static float GetPlayerCurrentMP() {
         return GetPlayer().GetPlayerCurrentMP();

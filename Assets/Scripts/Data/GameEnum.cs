@@ -145,6 +145,7 @@ public enum eEnemyActionType {
     Wait = 0,
     CloseMove,
     LeaveMove,
+    Freeze,
 
     NormalAttack = 10,
     MiniBullet,

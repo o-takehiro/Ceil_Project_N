@@ -20,17 +20,17 @@ MonoBehaviour:
       FarPlayerDistance: 25
       MinCoolTime: 1.5
       MaxCoolTime: 3
-      PlayerActiveMagic: ffffffffffffffff
+      PlayerActiveMagic: 01000000ffffffff
     - EnemyID: 2
-      ClosePlayerDistance: 10
-      FarPlayerDistance: 35
-      MinCoolTime: 2
-      MaxCoolTime: 3
+      ClosePlayerDistance: 5
+      FarPlayerDistance: 15
+      MinCoolTime: 1
+      MaxCoolTime: 2
       PlayerActiveMagic: ffffffffffffffff
     - EnemyID: 3
       ClosePlayerDistance: 15
       FarPlayerDistance: 25
-      MinCoolTime: 0.5
+      MinCoolTime: 1.5
       MaxCoolTime: 2
       PlayerActiveMagic: ffffffffffffffff
     - EnemyID: 4
@@ -38,4 +38,4 @@ MonoBehaviour:
       FarPlayerDistance: 50
       MinCoolTime: 1
       MaxCoolTime: 1.5
-      PlayerActiveMagic: 0100000002000000
+      PlayerActiveMagic: 01000000ffffffff

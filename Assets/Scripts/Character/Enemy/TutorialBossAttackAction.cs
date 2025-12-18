@@ -8,12 +8,12 @@ public class TutorialBossAttackAction : MonoBehaviour {
     /// UŒ‚–‚–@”­“®
     /// </summary>
     public void EnableAttackMagic() {
-        CreateMagic(eSideType.EnemySide, GetEnemyMagicType(eMagicType.MiniBullet));
+        CreateMagic(eSideType.EnemySide, eMagicType.MiniBullet);
     }
     /// <summary>
     /// UŒ‚–‚–@‰ğœ
     /// </summary>
     public void DisableAttackMagic() {
-        CancelAllEnemyMagic();
+        MagicReset(eSideType.EnemySide, eMagicType.MiniBullet);
     }
 }

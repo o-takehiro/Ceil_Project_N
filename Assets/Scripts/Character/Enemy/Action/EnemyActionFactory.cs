@@ -15,6 +15,7 @@ public static class EnemyActionFactory {
         Register<EnemyAction_Wait>(eEnemyActionType.Wait);
         Register<EnemyAction_CloseMove>(eEnemyActionType.CloseMove);
         Register<EnemyAction_LeaveMove>(eEnemyActionType.LeaveMove);
+        Register<EnemyAction_Freeze>(eEnemyActionType.Freeze);
 
         Register<EnemyAction_NormalAttack>(eEnemyActionType.NormalAttack);
         Register<TutorialBoss_MiniBullet>(eEnemyActionType.MiniBullet);

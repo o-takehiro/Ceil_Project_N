@@ -36,19 +36,10 @@ public class Boss1AttackAction : MonoBehaviour {
     }
 
     public void EnableStompAttack() {
-        CreateMagic(eSideType.EnemySide, GetEnemyMagicType(eMagicType.GroundShock));
+        CreateMagic(eSideType.EnemySide, eMagicType.GroundShock);
     }
 
     public void DisableStompAttack() {
-        CancelEnemyMagic(GetEnemyMagicType(eMagicType.GroundShock));
-        GetEnemy().myAI.ChangeState(new EnemyAI001_Wait());
-    }
-    // “–‚½‚è”»’è
-    private void OnTriggerEnter(Collider collision) {
-        if (!_normalAttackCollider.activeSelf) return; // –³ŒøŽž‚Í‰½‚à‚µ‚È‚¢
-
-        if (collision.gameObject.CompareTag("Player")) {
-            ToPlayerDamage(GetEnemy().GetRawAttack());
-        }
+        MagicReset(eSideType.EnemySide, eMagicType.GroundShock);
     }
 }

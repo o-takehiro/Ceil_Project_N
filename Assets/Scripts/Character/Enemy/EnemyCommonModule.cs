@@ -3,11 +3,13 @@ using UnityEngine;
 using static CharacterUtility;
 
 public class EnemyCommonModule {
+    private const float _DEFAULT_TIME_PER = 0.3f;
+
     /// <summary>
     /// プレイヤー方向へ向く
     /// </summary>
     /// <param name="setTime"></param>
-    public static void LookAtPlayer(EnemyCharacter enemy = null, float setTime = 0.1f) {
+    public static void LookAtPlayer(EnemyCharacter enemy = null, float rotationTime = _DEFAULT_TIME_PER) {
         if(!enemy || !GetPlayer()) return;
 
         Vector3 enemyPos = enemy.transform.position;
@@ -29,7 +31,7 @@ public class EnemyCommonModule {
 
         // 差分角度を求める
         float angle = Vector3.SignedAngle(currentForward, toPlayer, Vector3.up);
-        float rotateAngle = angle * setTime;
+        float rotateAngle = angle * rotationTime;
 
         // Y軸回転
         Quaternion currentRot = enemy.transform.rotation;
@@ -41,7 +43,8 @@ public class EnemyCommonModule {
     /// 指定された方向ベクトルへ向く
     /// </summary>
     /// <param name="setDirection"></param>
-    public static void LookAtDirection(Vector3 setDirection, EnemyCharacter enemy = null) {
+    public static void LookAtDirection(Vector3 setDirection, 
+        EnemyCharacter enemy = null, float rotationTime = _DEFAULT_TIME_PER) {
         if(!enemy) return;
         Vector3 direction = setDirection;
         direction.y = 0f;
@@ -56,7 +59,7 @@ public class EnemyCommonModule {
         forward.Normalize();
         // 差分角度を求める
         float angle = Vector3.SignedAngle(forward, direction, Vector3.up);
-        float rotateAngle = angle * 0.1f;
+        float rotateAngle = angle * rotationTime;
 
         // Y軸回転
         Quaternion currentRot = enemy.transform.rotation;
@@ -67,7 +70,7 @@ public class EnemyCommonModule {
     /// <summary>
     /// 敵自身の正面に対して横を向く
     /// </summary>
-    public static void EnemySideRotation(float setTime = 0.1f, EnemyCharacter enemy = null) {
+    public static void EnemySideRotation(EnemyCharacter enemy = null, float rotationTime = _DEFAULT_TIME_PER) {
         if (!enemy) return;
         // 正面ベクトルを求める
         Vector3 currentForward = enemy.transform.forward;
@@ -80,7 +83,7 @@ public class EnemyCommonModule {
 
         // 差分角度を求める
         float angle = Vector3.SignedAngle(currentForward,targetForward, Vector3.up);
-        float rotateAngle = angle * setTime;
+        float rotateAngle = angle * rotationTime;
 
         // Y軸回転
         Quaternion currentRot = enemy.transform.rotation;

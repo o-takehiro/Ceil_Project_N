@@ -62,7 +62,6 @@ public class PartMainGame : PartBase {
     /// <returns></returns>
     /// <exception cref="System.NotImplementedException"></exception>
     public override async UniTask Execute() {
-
         await FadeManager.Instance.FadeIn();
         SoundManager.Instance.PlayBGM(_currentStageBGM);
         if (_isTutorial) {

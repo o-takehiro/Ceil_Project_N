@@ -18,16 +18,10 @@ public class EnemyCharacter : CharacterBase {
     // 敵のHPゲージ
     [SerializeField]
     protected GameObject enemyCanvas = null;
-    [SerializeField]
-    private List<EnemyAttackCollider> _attackColliderList = null;
+    // HPゲージ
     protected Slider enemyHPGauge = null;
+    // アニメーター
     protected Animator enemyAnimator = null;
-    public CharacterAIMachine<EnemyCharacter> myAI { get; protected set; } = null;
-    public CharacterAIBase<EnemyCharacter> actionMachine { get; protected set; } = null;
-
-    protected List<eMagicType> magicTypeList = null;
-
-    private int _enemyAttackValue = -1;
 
     // 行動判断データ
     protected DecisionData decisionData;
@@ -35,6 +29,7 @@ public class EnemyCharacter : CharacterBase {
     protected DecisionFactors factors;
     // 行動判断インターフェース
     protected IEnemyDecision decision = null;
+    // 行動列挙体
     protected eEnemyActionType actionType = eEnemyActionType.Invalid;
     // 行動リスト
     protected List<int> actionList = null;
@@ -55,6 +50,7 @@ public class EnemyCharacter : CharacterBase {
         decisionData = new DecisionData();
         actionList = new List<int>();
         factors = new DecisionFactors();
+        enemyAnimator = gameObject.GetComponent<Animator>();
     }
     /// <summary>
     /// 準備前処理
@@ -64,6 +60,8 @@ public class EnemyCharacter : CharacterBase {
         base.Setup(masterID);
         // 判断材料データの設定
         decisionData.SetupData(masterID);
+        // リストの初期化
+        factors.isPlayerActiveMagic = new bool[decisionData.playerActiveMagic.Count];
         // キャラクターのデータ設定
         var masterData = GetCharacterMaster(masterID);
         SetupData(masterData);
@@ -100,10 +98,8 @@ public class EnemyCharacter : CharacterBase {
     /// 死亡処理
     /// </summary>
     public override void Dead() {
-        myAI.ChangeState(new EnemyAI008_Empty());
+        ChangeAction(eEnemyActionType.Freeze);
         enemyAnimator.SetBool("isDead", true);
-        CancelAllEnemyMagic();
-        SetAllActiveCollider(false);
         enemyHPGauge.gameObject.SetActive(false);
     }
     /// <summary>
@@ -128,21 +124,66 @@ public class EnemyCharacter : CharacterBase {
         factors.isCoolTime = setFlag;
     }
     /// <summary>
+    /// 接近判断
+    /// </summary>
+    public bool IsPlayerClose() {
+        return factors.isPlayerClose;
+    }
+    /// <summary>
+    /// 遠距離判定
+    /// </summary>
+    /// <returns></returns>
+    public bool IsPlayerFar() {
+        return factors.isPlayerFar;
+    }
+    /// <summary>
     /// 判断材料の更新
     /// </summary>
-    public void UpdateDecisions() {
+    public void ExecuteFactors() {
+        if(IsDead || !CharacterUtility.GetPlayer()) return;
         float distance = GetPlayerToEnemyDistance();
-        factors.isPlayerClose = decisionData.closePlayerDistance < distance;
-        factors.isPlayerFar = decisionData.farPlayerDisance > distance;
+        factors.isPlayerClose = decisionData.closePlayerDistance > distance;
+        factors.isPlayerFar = decisionData.farPlayerDisance < distance;
         List<int> activeMagicList = decisionData.playerActiveMagic;
         if(IsEmpty(activeMagicList)) return;
         for (int i = 0, max = activeMagicList.Count; i < max; i++) {
-            if(!GetMagicActive((int)eSideType.PlayerSide, (int)eMagicType.MiniBullet)) continue;
-
-            factors.isPlayerActiveMagic[i] = true;
+            if (!GetMagicActive((int)eSideType.PlayerSide, activeMagicList[i])) {
+                factors.isPlayerActiveMagic[i] = false;
+                continue;
+            } else {
+                factors.isPlayerActiveMagic[i] = true;
+            }
         }
     }
-
+    /// <summary>
+    /// 行動の更新
+    /// </summary>
+    public void ExecuteAction() {
+        if(IsDead || currentAction == null) return;
+        // 行動実行処理
+        currentAction.Execute(this);
+        // 終了していたら、クールタイム発動
+        if (currentAction.IsFinished()) {
+            if (actionType == eEnemyActionType.Wait) {
+                factors.isCoolTime = false;
+            } else {
+                factors.isCoolTime = true;
+            }
+        }
+    }
+    /// <summary>
+    /// 行動判断の更新
+    /// </summary>
+    public void ExecuteDecision() {
+        if(IsDead || decision == null) return;
+        // 行動中でなければ行動判断をする
+        if (!IsAction()) {
+            // 行動判断
+            eEnemyActionType action = decision.Decide(factors);
+            // 行動の変更
+            if (action != actionType) ChangeAction(action);
+        }
+    }
     protected void SetEnemyCanvas() {
         if (enemyHPGauge != null) return;
 
@@ -161,10 +202,6 @@ public class EnemyCharacter : CharacterBase {
         enemyHPGauge.gameObject.SetActive(true);
     }
 
-    public CharacterAIBase<EnemyCharacter> GetActionMachine() {
-        return actionMachine;
-    }
-
     public Animator GetEnemyAnimator() {
         return enemyAnimator;
     }
@@ -175,70 +212,6 @@ public class EnemyCharacter : CharacterBase {
 
     public float GetEnemySliderValue() {
         return HP / maxHP;
-    }
-
-    public void SetActiveCollider(int setValue, bool setFlag) {
-        if(_attackColliderList[setValue].gameObject.activeSelf == setFlag) return;
-        _attackColliderList[setValue].gameObject.SetActive(setFlag);
-    }
-    private void SetAllActiveCollider(bool setFlag) {
-        for (int i = 0, max = _attackColliderList.Count; i < max; i++) {
-            GameObject colliderObject = _attackColliderList[i].gameObject;
-            if (colliderObject.activeSelf == setFlag) continue;
-
-            colliderObject.SetActive(setFlag);
-        }
-    }
-    public int GetEnemyAttackValue() {
-        return _enemyAttackValue;
-    }
-    public void SetEnemyAttackValue(int setValue) {
-        _enemyAttackValue = setValue;
-    }
-    /// <summary>
-    /// 指定した種類の魔法を取得
-    /// </summary>
-    /// <param name="magicType"></param>
-    /// <returns></returns>
-    public eMagicType GetEnemyMagicType(eMagicType magicType) {
-        for (int i = 0, max = magicTypeList.Count; i < max; i++) {
-            eMagicType magic = magicTypeList[i];
-            if (magic != magicType) continue;
-
-            return magic;
-        }
-        return eMagicType.Invalid;
-    }
-    /// <summary>
-    /// リストに魔法の種類を追加
-    /// </summary>
-    /// <param name="magicType"></param>
-    public void AddEnemyMagicList(eMagicType magicType) {
-        magicTypeList.Add(magicType);
-    }
-    /// <summary>
-    /// 指定した魔法の削除
-    /// </summary>
-    /// <param name="magicType"></param>
-    public void CancelEnemyMagic(eMagicType magicType) {
-        if(IsEmpty(magicTypeList) || magicType == eMagicType.Invalid) return;
-        for (int i = 0, max = magicTypeList.Count; i < max; i++) {
-            eMagicType magic = magicTypeList[i];
-            if(magic != magicType) continue;
-
-            MagicReset(eSideType.EnemySide, magicType);
-            magicTypeList.Remove(magic);
-        }
-    }
-    /// <summary>
-    /// 敵の全ての魔法をリセット
-    /// </summary>
-    public void CancelAllEnemyMagic() {
-        if(IsEmpty(magicTypeList)) return;
-        for (int i = magicTypeList.Count - 1; i >= 0; i--) {
-            MagicReset(eSideType.EnemySide, magicTypeList[i]);
-            magicTypeList.Remove(magicTypeList[i]);
-        }
     }
     /// <summary>
     /// 行動開始

@@ -12,8 +12,11 @@ public class TutorialBossDecision : IEnemyDecision {
         if (factors.isCoolTime)
             return eEnemyActionType.Wait;
 
-        else if (factors.isPlayerClose)
+        else if (factors.isPlayerActiveMagic[0])
             return eEnemyActionType.MagicDefense;
+
+        else if (factors.isPlayerClose)
+            return eEnemyActionType.LeaveMove;
 
         else if (factors.isPlayerFar)
             return eEnemyActionType.CloseMove;

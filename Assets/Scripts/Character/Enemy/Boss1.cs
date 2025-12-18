@@ -11,13 +11,14 @@ public class Boss1 : EnemyCharacter {
 
     public override void Initialize() {
         base.Initialize();
-        enemyAnimator = GetComponent<Animator>();
-        magicTypeList = new List<eMagicType>(MAX_ENEMY_MAGIC);
+        decision = new Boss1Decision();
     }
     public override void Setup(int masterID) {
         base.Setup(masterID);
         //HPゲージの更新
         SetupCanvasPosition(Vector3.one);
+        // アクションの設定
+        ChangeAction(eEnemyActionType.Wait);
     }
     private void Update() {
         //現在の位置更新
@@ -27,23 +28,11 @@ public class Boss1 : EnemyCharacter {
         //中心座標更新
         SetEnemyCenterPosition(new Vector3(transform.position.x, transform.position.y + 2, transform.position.z));
         // 敵行動判断リスト
-        UpdateDecisions();
-        // 行動実行
-        if (currentAction != null) {
-            // 行動実行処理
-            currentAction.Execute(this);
-            // 終了していたら、クールタイム発動
-            if (currentAction.IsFinished())
-                factors.isCoolTime = true;
-        }
-        // 行動中でなければ行動判断をする
-        if (!IsAction()) {
-            // 行動判断
-            eEnemyActionType action = decision.Decide(factors);
-            // 行動の変更
-            if (action != actionType)
-                ChangeAction(action);
-        }
+        ExecuteFactors();
+        // 行動更新
+        ExecuteAction();
+        // 行動判断更新処理
+        ExecuteDecision();
         //オブジェクトの座標更新
         transform.position = currentPos;
         //オブジェクトの回転更新
@@ -57,7 +46,7 @@ public class Boss1 : EnemyCharacter {
 
     public override void Damage(int damage) {
         base.Damage(damage);
-        if (isDead) return;
+        if (IsDead) return;
 
         enemyAnimator.SetTrigger("isDamage");
     }

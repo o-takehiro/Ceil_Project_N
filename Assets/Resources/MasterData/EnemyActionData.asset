@@ -21,6 +21,8 @@ MonoBehaviour:
       Name: CloseMove
     - ID: 2
       Name: LeaveMove
+    - ID: 3
+      Name: Freeze
     - ID: 10
       Name: NormalAttack
     - ID: 11

@@ -2,24 +2,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-using static CharacterUtility;
-using static MagicUtility;
-
 public class Boss2AttackAction : MonoBehaviour {
     public void EnableMagicBeam() {
-        CreateMagic(eSideType.EnemySide, GetEnemyMagicType(eMagicType.LaserBeam));
+        MagicUtility.CreateMagic(eSideType.EnemySide, eMagicType.LaserBeam);
     }
 
     public void DisableMagicBeam() {
-        CancelEnemyMagic(GetEnemyMagicType(eMagicType.LaserBeam));
-        GetEnemy().myAI.ChangeState(new EnemyAI001_Wait());
+        MagicUtility.MagicReset(eSideType.EnemySide, eMagicType.LaserBeam);
     }
 
     public void EnableDefense() {
-        CreateMagic(eSideType.EnemySide, GetEnemyMagicType(eMagicType.Defense));
+        MagicUtility.CreateMagic(eSideType.EnemySide, eMagicType.Defense);
     }
 
     public void DisableDefense() {
-        CancelEnemyMagic(GetEnemyMagicType(eMagicType.Defense));
+        MagicUtility.MagicReset(eSideType.EnemySide, eMagicType.Defense);
     }
 }

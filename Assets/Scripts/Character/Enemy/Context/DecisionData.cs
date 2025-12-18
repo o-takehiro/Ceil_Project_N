@@ -21,7 +21,11 @@ public class DecisionData {
         farPlayerDisance = decisionData.FarPlayerDistance;
         minCoolTime = decisionData.MinCoolTime;
         maxCoolTime = decisionData.MaxCoolTime;
-        SetPlayerActiveMagic(decisionData.PlayerActiveMagic);
+        int[] activeMagicList = decisionData.PlayerActiveMagic;
+        if(CommonModule.IsEmpty(activeMagicList)) return;
+
+        playerActiveMagic = new List<int>(activeMagicList.Length);
+        SetPlayerActiveMagic(activeMagicList);
     }
     /// <summary>
     /// プレイヤーが使用していたら反応する魔法IDリストの設定

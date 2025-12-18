@@ -41,7 +41,7 @@ public class Boss3AttackAction : MonoBehaviour {
     }
 
     public void DisableRoarAttack() {
-        CancelEnemyMagic(GetEnemyMagicType(eMagicType.DelayBullet));
+        MagicReset(eSideType.EnemySide, eMagicType.DelayBullet);
     }
 
     // “–‚½‚è”»’è
