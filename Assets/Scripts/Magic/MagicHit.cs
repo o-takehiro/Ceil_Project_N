@@ -113,7 +113,7 @@ public class MagicHit : MagicObject {
             case eMagicType.GroundShock:
                 if (otherSide == eSideType.PlayerSide) {
                     // プレイヤーがジャンプ中なら当たらない
-                    var groundCheck = other.GetComponent<GroundCheck>();
+                    var groundCheck = other.GetComponentInChildren<GroundCheck>();
                     if (groundCheck == null || !groundCheck.IsGrounded) return;
                     // ダメージを与える
                     GiveDamage(otherSide, groundShockData.Damage);
