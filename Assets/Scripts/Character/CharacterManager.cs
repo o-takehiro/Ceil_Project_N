@@ -47,6 +47,8 @@ public class CharacterManager : MonoBehaviour {
             createEnemy.Initialize();
             _unuseEnemyList.Add(createEnemy);
         }
+        // 敵行動生成クラスの初期化
+        EnemyActionFactory.Initialize();
     }
     /// <summary>
     /// プレイヤーキャラクター生成

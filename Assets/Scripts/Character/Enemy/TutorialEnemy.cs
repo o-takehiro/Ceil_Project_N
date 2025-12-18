@@ -4,36 +4,32 @@
  * @author  Seki
  * @date    2025/7/9
  */
-using Cysharp.Threading.Tasks;
-using JetBrains.Annotations;
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 using static CharacterUtility;
-using static CharacterMasterUtility;
-using static GameConst;
 
 public class TutorialEnemy : EnemyCharacter {
-    private const float _CANVAS_POS_Y = 4.0f;
-
+    /// <summary>
+    /// 初期化処理
+    /// </summary>
     public override void Initialize() {
         base.Initialize();
-        actionMachine = new EnemyAI004_TutorialEnemyAction();
-        actionMachine.Initialize();
-        myAI = new CharacterAIMachine<EnemyCharacter>();
-        enemyAnimator = GetComponent<Animator>();
-        magicTypeList = new List<eMagicType>(MAX_ENEMY_MAGIC);
+        decision = new TutorialBossDecision();
     }
+    /// <summary>
+    /// 準備前処理
+    /// </summary>
+    /// <param name="masterID"></param>
     public override void Setup(int masterID) {
         base.Setup(masterID);
+        // フリーズ状態にしておく
+        ChangeAction(eEnemyActionType.Freeze);
         //HPゲージの更新
         SetupCanvasPosition(Vector3.one);
-        //ステートマシーンの初期化
-        myAI.Setup(this);
-        myAI.ChangeState(new EnemyAI010_LookAtPlayer());
     }
+    /// <summary>
+    /// 更新処理
+    /// </summary>
     private void Update() {
         //現在の位置更新
         SetPosition(transform.position);
@@ -41,8 +37,12 @@ public class TutorialEnemy : EnemyCharacter {
         SetRotation(transform.rotation);
         //中心座標更新
         SetEnemyCenterPosition(new Vector3(transform.position.x, transform.position.y + 2, transform.position.z));
-        //AIマシーンの更新
-        myAI.Update();
+        // 敵行動判断リスト
+        ExecuteFactors();
+        // 行動更新
+        ExecuteAction();
+        // 行動判断更新処理
+        ExecuteDecision();
         //オブジェクトの座標更新
         transform.position = currentPos;
         //オブジェクトの回転更新
@@ -50,12 +50,17 @@ public class TutorialEnemy : EnemyCharacter {
         //1フレーム前の座標更新
         SetEnemyPrevPosition();
     }
-
+    /// <summary>
+    /// ダメージ処理
+    /// </summary>
+    /// <param name="damage"></param>
     public override void Damage(int damage) {
         base.Damage(damage);
-        if (isDead || enemyAnimator.GetCurrentAnimatorStateInfo(0).IsName("isMagicAttack"))
-            return;
+        if (IsDead || !enemyAnimator) return;
+        AnimatorStateInfo state = enemyAnimator.GetCurrentAnimatorStateInfo(0);
 
+        bool isPlaying = state.normalizedTime < 1.0f;
+        if(isPlaying) return;
         enemyAnimator.SetTrigger("isDamage");
     }
 }

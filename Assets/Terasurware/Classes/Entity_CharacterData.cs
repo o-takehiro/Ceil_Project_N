@@ -22,8 +22,8 @@ public class Entity_CharacterData : ScriptableObject
 		public int MP;
 		public int Attack;
 		public int Defense;
-		public float MinActionTime;
-		public float MaxActionTime;
+		public float MoveSpeed;
+		public int[] ActionID;
 	}
 }
 

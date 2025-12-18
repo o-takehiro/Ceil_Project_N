@@ -9,11 +9,15 @@ public class MasterDataManager {
     //読み込んだマスターデータ シート数、行数
     public static List<List<Entity_CharacterData.Param>> characterData = null;
     public static List<List<Entity_MagicData.Param>> magicData = null;
+    public static List<List<Entity_EnemyActionData.Param>> enemyActionData = null;
+    public static List<List<Entity_EnemyDecisionData.Param>> enemyDecisionData = null;
 
     //全てのマスターデータを読み込む
     public static void LoadAllData() {
         characterData = Load<Entity_CharacterData, Entity_CharacterData.Sheet, Entity_CharacterData.Param>("CharacterData");
         magicData = Load<Entity_MagicData, Entity_MagicData.Sheet, Entity_MagicData.Param>("MagicData");
+        enemyActionData = Load<Entity_EnemyActionData, Entity_EnemyActionData.Sheet, Entity_EnemyActionData.Param>("EnemyActionData");
+        enemyDecisionData = Load<Entity_EnemyDecisionData, Entity_EnemyDecisionData.Sheet, Entity_EnemyDecisionData.Param>("EnemyDecisionData");
     }
     /// <summary>
     /// 

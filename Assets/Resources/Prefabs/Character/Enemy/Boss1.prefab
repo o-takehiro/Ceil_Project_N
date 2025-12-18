@@ -223,9 +223,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyCanvas: {fileID: 3423051008145358868}
-  _attackColliderList:
-  - {fileID: 9028152365473200481}
-  - {fileID: 5356399896235155219}
 --- !u!114 &8400196720570198275
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -389,7 +386,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8577279473255169696}
   - component: {fileID: 7474146314066281145}
-  - component: {fileID: 5356399896235155219}
+  - component: {fileID: 2808577599661159479}
   m_Layer: 0
   m_Name: ChargeCollider
   m_TagString: Enemy
@@ -435,16 +432,16 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 1, z: 0.25}
---- !u!114 &5356399896235155219
+--- !u!114 &2808577599661159479
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7026169732073578250}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 24c61dec8a35fe94b9b9f5a9a5e6ec93, type: 3}
+  m_Script: {fileID: 11500000, guid: 23527ccd38862de4baba1c3c945d35e5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1001 &7121638044074443862

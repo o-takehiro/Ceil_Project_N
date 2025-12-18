@@ -2,45 +2,49 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-using static GameConst;
-using static CharacterUtility;
-
 public class Boss2 : EnemyCharacter {
+    /// <summary>
+    /// 初期化処理
+    /// </summary>
     public override void Initialize() {
         base.Initialize();
-        actionMachine = new EnemyAI009_Boss2Action();
-        myAI = new CharacterAIMachine<EnemyCharacter>();
-        enemyAnimator = GetComponent<Animator>();
-        magicTypeList = new List<eMagicType>(MAX_ENEMY_MAGIC);
+        decision = new Boss2Decision();
     }
-
+    /// <summary>
+    /// 準備前処理
+    /// </summary>
+    /// <param name="masterID"></param>
     public override void Setup(int masterID) {
         base.Setup(masterID);
         //HPゲージの設定
         SetupCanvasPosition(Vector3.one * 1);
-        myAI.Setup(this);
-        myAI.ChangeState(new EnemyAI001_Wait());
+        // アクションの設定
+        ChangeAction(eEnemyActionType.Wait);
     }
     public override void Damage(int damage) {
         base.Damage(damage);
-        if (isDead || enemyAnimator.GetCurrentAnimatorStateInfo(0).IsName("isMagicAttack")) return;
+        if (IsDead || enemyAnimator.GetCurrentAnimatorStateInfo(0).IsName("isMagicAttack")) return;
 
         enemyAnimator.SetTrigger("isDamage");
     }
     private void Update() {
         //現在の位置更新
-        SetEnemyPosition(transform.position);
+        SetPosition(transform.position);
         //現在の回転更新
-        SetEnemyRotation(transform.rotation);
+        SetRotation(transform.rotation);
         //中心座標更新
-        SetEnemyCenterPosition(new Vector3(transform.position.x, transform.position.y + 2, transform.position.z));
-        //ステートマシーンの更新
-        myAI.Update();
+        SetCenterPosition(new Vector3(transform.position.x, transform.position.y + 2, transform.position.z));
+        // 敵行動判断リスト
+        ExecuteFactors();
+        // 行動更新
+        ExecuteAction();
+        // 行動判断更新処理
+        ExecuteDecision();
         //座標の更新
-        transform.position = GetEnemyPosition();
-        transform.rotation = GetEnemyRotation();
+        transform.position = currentPos;
+        transform.rotation = currentRot;
         //一フレーム前の位置更新
-        SetEnemyPrevPosition();
+        SetPrevPosition();
     }
     public override void Teardown() {
         base.Teardown();
