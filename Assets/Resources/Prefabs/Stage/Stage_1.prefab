@@ -407,6 +407,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: WallCollider (2)
       objectReference: {fileID: 0}
+    - target: {fileID: 5315764409540084481, guid: 6bb1e327f83abd449858ed9efa39b2fe, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 5315764409540084481, guid: 6bb1e327f83abd449858ed9efa39b2fe, type: 3}
+      propertyPath: m_TagString
+      value: Untagged
+      objectReference: {fileID: 0}
     - target: {fileID: 5598686915793482558, guid: 6bb1e327f83abd449858ed9efa39b2fe, type: 3}
       propertyPath: m_LocalScale.x
       value: 80
@@ -629,6 +637,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: WallCollider
       objectReference: {fileID: 0}
+    - target: {fileID: 5315764409540084481, guid: 6bb1e327f83abd449858ed9efa39b2fe, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 5315764409540084481, guid: 6bb1e327f83abd449858ed9efa39b2fe, type: 3}
+      propertyPath: m_TagString
+      value: Untagged
+      objectReference: {fileID: 0}
     - target: {fileID: 5598686915793482558, guid: 6bb1e327f83abd449858ed9efa39b2fe, type: 3}
       propertyPath: m_LocalScale.x
       value: 50
@@ -698,6 +714,14 @@ PrefabInstance:
     - target: {fileID: 5315764409540084481, guid: 6bb1e327f83abd449858ed9efa39b2fe, type: 3}
       propertyPath: m_Name
       value: WallCollider (3)
+      objectReference: {fileID: 0}
+    - target: {fileID: 5315764409540084481, guid: 6bb1e327f83abd449858ed9efa39b2fe, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 5315764409540084481, guid: 6bb1e327f83abd449858ed9efa39b2fe, type: 3}
+      propertyPath: m_TagString
+      value: Untagged
       objectReference: {fileID: 0}
     - target: {fileID: 5598686915793482558, guid: 6bb1e327f83abd449858ed9efa39b2fe, type: 3}
       propertyPath: m_LocalScale.x
@@ -838,6 +862,14 @@ PrefabInstance:
     - target: {fileID: 5315764409540084481, guid: 6bb1e327f83abd449858ed9efa39b2fe, type: 3}
       propertyPath: m_Name
       value: WallCollider (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 5315764409540084481, guid: 6bb1e327f83abd449858ed9efa39b2fe, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 5315764409540084481, guid: 6bb1e327f83abd449858ed9efa39b2fe, type: 3}
+      propertyPath: m_TagString
+      value: Untagged
       objectReference: {fileID: 0}
     - target: {fileID: 5598686915793482558, guid: 6bb1e327f83abd449858ed9efa39b2fe, type: 3}
       propertyPath: m_LocalScale.x

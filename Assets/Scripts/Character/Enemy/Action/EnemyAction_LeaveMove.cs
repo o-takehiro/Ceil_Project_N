@@ -9,14 +9,17 @@ public class EnemyAction_LeaveMove : IEnemyAction {
     private float _elapsedTime = -1.0f;
     // Rigidbody
     private Rigidbody _rigidbody = null;
-    // 角度(デグリー)
-    private float _angle = -1.0f;
+    // 現在の移動方向
+    private Vector3 _moveDir;
 
     // 角度の範囲(デグリー)
     private const float _RANGE_ANGLE = 30.0f;
     // 移動時間
     private const float _MOVE_TIME_PER = 3.0f;
-
+    // 壁との距離
+    private const float _WALL_CHECK_DISTANCE = 3.0f;
+    // 横移動の角度(デグリー)
+    private const float _AVOID_ANGLE = 90.0f;
     private const string _ANIMATION_NAME = "isMove";
 
     /// <summary>
@@ -32,7 +35,10 @@ public class EnemyAction_LeaveMove : IEnemyAction {
         // 逃げる角度を決める
         Vector3 back = -enemy.transform.forward;
         float baseAngle = Mathf.Atan2(back.z, back.x) * Mathf.Rad2Deg;
-        _angle = baseAngle + Random.Range(-_RANGE_ANGLE, _RANGE_ANGLE);
+        float angle = baseAngle + Random.Range(-_RANGE_ANGLE, _RANGE_ANGLE);
+        // 角度をベクトルに変換する
+        float rad = angle * Mathf.Deg2Rad;
+        _moveDir = new Vector3(Mathf.Cos(rad), 0, Mathf.Sin(rad)).normalized;
         // アニメーション設定
         enemy.GetEnemyAnimator().SetBool(_ANIMATION_NAME, true);
     }
@@ -44,18 +50,28 @@ public class EnemyAction_LeaveMove : IEnemyAction {
         if (!enemy || !_rigidbody) return;
 
         _elapsedTime += Time.deltaTime;
-        // 角度からベクトルへ変換
-        float rad = _angle * Mathf.Deg2Rad;
-        Vector3 dir = new Vector3(Mathf.Cos(rad), 0, Mathf.Sin(rad));
-        // 方向ベクトルへ向く
-        LookAtDirection(dir, enemy);
+        // 壁チェック
+        if (IsWallAhead(enemy, _moveDir, out RaycastHit hit)) {
+            // 反射方向を求める
+            Vector3 reflectDir = _moveDir - 2.0f * Vector3.Dot(_moveDir, hit.normal) * hit.normal;
+            reflectDir.y = 0.0f;
+            reflectDir.Normalize();
+
+            // 反射先もダメなら横逃げ
+            if (IsWallAhead(enemy, reflectDir, out _)) {
+                reflectDir = GetSideEscapeDir();
+            }
+            _moveDir = reflectDir;
+        }
+
+        // 向き更新
+        LookAtDirection(_moveDir, enemy);
         // 移動
-        _rigidbody.velocity = dir * enemy.GetMoveSpeed();
-        // 終了判断
+        _rigidbody.velocity = _moveDir * enemy.GetMoveSpeed();
+
+        // 終了条件
         if (!enemy.IsPlayerClose() || _elapsedTime > _MOVE_TIME_PER) {
-            _elapsedTime = 0.0f;
             _isFinished = true;
-            return;
         }
     }
     /// <summary>
@@ -75,5 +91,29 @@ public class EnemyAction_LeaveMove : IEnemyAction {
     /// <returns></returns>
     public bool IsFinished() {
         return _isFinished;
+    }
+    /// <summary>
+    /// 進行方向が壁に衝突するか判定
+    /// </summary>
+    /// <param name="enemy"></param>
+    /// <param name="dir"></param>
+    /// <param name="hit"></param>
+    /// <returns></returns>
+    private bool IsWallAhead(EnemyCharacter enemy, Vector3 dir, out RaycastHit hit) {
+        // 足元から少しずらした位置を始点とする
+        Vector3 origin = enemy.transform.position + Vector3.up * 0.5f;
+        return Physics.Raycast(origin, dir, out hit,_WALL_CHECK_DISTANCE);
+    }
+    /// <summary>
+    /// 横方向のベクトルの取得
+    /// </summary>
+    /// <returns></returns>
+    private Vector3 GetSideEscapeDir() {
+        // 右方向か左方向か決める
+        float side = Random.value < 0.5f ? _AVOID_ANGLE : -_AVOID_ANGLE;
+        Quaternion rot = Quaternion.AngleAxis(side, Vector3.up);
+        Vector3 dir = rot * _moveDir;
+        dir.y = 0.0f;
+        return dir.normalized;
     }
 }
