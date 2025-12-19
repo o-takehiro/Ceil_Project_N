@@ -154,5 +154,6 @@ public enum eEnemyActionType {
     GroundShock,
     BeamAttack,
     RoarAttack,
-    OverheadAttack
+    ArmDownAttack,
+    Max
 }

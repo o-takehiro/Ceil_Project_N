@@ -38,4 +38,4 @@ MonoBehaviour:
       FarPlayerDistance: 50
       MinCoolTime: 1
       MaxCoolTime: 1.5
-      PlayerActiveMagic: 01000000ffffffff
+      PlayerActiveMagic: 0000000001000000

@@ -24,7 +24,7 @@ public static class EnemyActionFactory {
         Register<Boss1_GroundShock>(eEnemyActionType.GroundShock);
         Register<Boss2_BeamAttack>(eEnemyActionType.BeamAttack);
         Register<Boss3_RoarAttack>(eEnemyActionType.RoarAttack);
-        //Register<Boss3_ShoulderAttack>(eEnemyActionID.OverheadAttack);
+        Register<Boss3_ArmDownAttack>(eEnemyActionType.ArmDownAttack);
     }
     /// <summary>
     /// ファクトリーへ登録

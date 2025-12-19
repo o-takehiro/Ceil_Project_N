@@ -12,10 +12,16 @@ public class Boss3Decision : IEnemyDecision {
         if (factors.isCoolTime)
             return eEnemyActionType.Wait;
 
-        else if (factors.isPlayerActiveMagic[0] || factors.isPlayerFar)
+        else if (factors.isPlayerActiveMagic[1] || factors.isPlayerFar)
             return eEnemyActionType.RoarAttack;
 
-        else
+        else if (factors.isPlayerClose && factors.isPlayerActiveMagic[0])
+            return eEnemyActionType.ArmDownAttack;
+
+        if(factors.isPlayerClose) 
             return eEnemyActionType.NormalAttack;
+
+        else
+            return eEnemyActionType.Wait;
     }
 }
