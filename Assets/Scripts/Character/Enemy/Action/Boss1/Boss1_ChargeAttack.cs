@@ -47,6 +47,7 @@ public class Boss1_ChargeAttack : IEnemyAction {
         if (toTarget.magnitude <= moveDistance) {
             _isFinished = true;
             // ˆÊ’u‚ðŠm’è‚³‚¹‚é
+            _rigidbody.velocity = Vector3.zero;
             enemy.transform.position = new Vector3(_targetPos.x, currentPos.y,_targetPos.z);
             return;
         }
@@ -61,7 +62,6 @@ public class Boss1_ChargeAttack : IEnemyAction {
     /// <param name="enemy"></param>
     public void Teardown(EnemyCharacter enemy) {
         if(!enemy || !_rigidbody || !_chargeCollider) return;
-        _rigidbody.velocity = Vector3.zero;
         _chargeCollider.gameObject.SetActive(false);
         enemy.GetEnemyAnimator().SetBool(_ANIMATION_NAME, false);
         MagicUtility.MagicReset(eSideType.EnemySide, eMagicType.SatelliteOrbital);

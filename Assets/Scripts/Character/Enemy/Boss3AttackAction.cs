@@ -2,12 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-using static CharacterUtility;
-using static MagicUtility;
-
 public class Boss3AttackAction : MonoBehaviour {
+    // ’ÊíUŒ‚“–‚½‚è”»’è
     [SerializeField]
     private GameObject _normalAttackCollider = null;
+    // ˜rU‚è‰º‚ë‚µUŒ‚“–‚½‚è”»’è
     [SerializeField]
     private GameObject _armDownAttackCollider = null;
 
@@ -27,30 +26,21 @@ public class Boss3AttackAction : MonoBehaviour {
         if (_armDownAttackCollider == null) return;
 
         _armDownAttackCollider.SetActive(true);
-
+        MagicUtility.CreateMagic(eSideType.EnemySide, eMagicType.GroundShock);
     }
 
     public void DisableArmDownAttack() {
         if (_armDownAttackCollider == null) return;
 
         _armDownAttackCollider.SetActive(false);
+        MagicUtility.MagicReset(eSideType.EnemySide, eMagicType.GroundShock);
     }
 
     public void EnableRoarAttack() {
-        CreateMagic(eSideType.EnemySide, eMagicType.DelayBullet);
+        MagicUtility.CreateMagic(eSideType.EnemySide, eMagicType.DelayBullet);
     }
 
     public void DisableRoarAttack() {
-        MagicReset(eSideType.EnemySide, eMagicType.DelayBullet);
-    }
-
-    // “–‚½‚è”»’è
-    private void OnTriggerEnter(Collider collision) {
-        if (!_normalAttackCollider.activeSelf) return; // –³Œø‚Í‰½‚à‚µ‚È‚¢
-
-        if (collision.gameObject.CompareTag("Player")) {
-            Debug.Log("ƒpƒ“ƒ`ƒqƒbƒgI");
-            ToPlayerDamage(GetEnemy().GetRawAttack());
-        }
+        MagicUtility.MagicReset(eSideType.EnemySide, eMagicType.DelayBullet);
     }
 }

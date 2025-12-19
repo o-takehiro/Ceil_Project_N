@@ -37,16 +37,16 @@ MonoBehaviour:
       MoveSpeed: 20
       ActionID: 000000000a0000000d0000000e000000ffffffffffffffff
     - ID: 3
-      HP: 800
+      HP: 650
       MP: -1
       Attack: 20
       Defense: 5
       MoveSpeed: 15
       ActionID: 0000000001000000020000000c0000000f000000ffffffff
     - ID: 4
-      HP: 1500
+      HP: 1000
       MP: -1
-      Attack: 20
+      Attack: 35
       Defense: 30
       MoveSpeed: -1
       ActionID: 000000000a0000001000000011000000ffffffffffffffff
