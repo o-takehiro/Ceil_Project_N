@@ -40,7 +40,7 @@ public class EnemyAction_LeaveMove : IEnemyAction {
         float rad = angle * Mathf.Deg2Rad;
         _moveDir = new Vector3(Mathf.Cos(rad), 0, Mathf.Sin(rad)).normalized;
         // アニメーション設定
-        enemy.GetEnemyAnimator().SetBool(_ANIMATION_NAME, true);
+        enemy.enemyAnimator.SetBool(_ANIMATION_NAME, true);
     }
     /// <summary>
     /// 実行処理
@@ -83,7 +83,7 @@ public class EnemyAction_LeaveMove : IEnemyAction {
         // 移動量を0にする
         _rigidbody.velocity = Vector3.zero;
         // アニメーション設定
-        enemy.GetEnemyAnimator().SetBool(_ANIMATION_NAME, false);
+        enemy.enemyAnimator.SetBool(_ANIMATION_NAME, false);
     }
     /// <summary>
     /// 終了判定

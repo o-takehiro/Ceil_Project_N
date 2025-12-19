@@ -5,10 +5,11 @@ using UnityEngine;
 using static CharacterUtility;
 
 public class EnemyHPSliderRotation : MonoBehaviour {
-    private Transform cam;
+    // プレイヤーカメラ
+    private Transform playerCamera;
 
     private void Start() {
-        cam = Camera.main.transform;
+        playerCamera = Camera.main.transform;
     }
 
     private void LateUpdate() {
@@ -19,7 +20,7 @@ public class EnemyHPSliderRotation : MonoBehaviour {
 
     private void LookAtCamera() {
         Vector3 pos = transform.position;
-        Vector3 targetPos = cam.position;
+        Vector3 targetPos = playerCamera.position;
 
         // 高さを固定（y座標を同じにする）
         targetPos.y = pos.y;

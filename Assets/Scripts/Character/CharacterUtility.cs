@@ -245,7 +245,7 @@ public class CharacterUtility {
     }
 
     public static Slider GetEnemySlider() {
-        return GetEnemy().GetEnemySlider();
+        return GetEnemy().enemyHPGauge;
     }
 
     public static void SetEnemySliderValue(float setValue) {

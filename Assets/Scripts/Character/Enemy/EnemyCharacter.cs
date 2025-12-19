@@ -19,9 +19,9 @@ public class EnemyCharacter : CharacterBase {
     [SerializeField]
     protected GameObject enemyCanvas = null;
     // HPゲージ
-    protected Slider enemyHPGauge = null;
+    public Slider enemyHPGauge { get; protected set; } = null;
     // アニメーター
-    protected Animator enemyAnimator = null;
+    public Animator enemyAnimator { get; protected set; } = null;
 
     // 行動判断データ
     protected DecisionData decisionData;
@@ -74,6 +74,10 @@ public class EnemyCharacter : CharacterBase {
         //現在の回転更新
         SetEnemyRotation(Quaternion.identity);
     }
+    /// <summary>
+    /// データの設定
+    /// </summary>
+    /// <param name="setData"></param>
     public void SetupData(Entity_CharacterData.Param setData) {
         SetID(setData.ID);
         SetMaxHP(setData.HP);
@@ -83,6 +87,41 @@ public class EnemyCharacter : CharacterBase {
         SetMoveSpeed(setData.MoveSpeed);
         SetActionID(setData.ActionID);
     }
+    /// <summary>
+    /// UI座標の準備処理
+    /// </summary>
+    /// <param name="setSize"></param>
+
+    protected virtual void SetupCanvasPosition(Vector3 setSize) {
+        Vector3 canvasPos = Vector3.zero;
+        SetEnemyCanvas();
+        enemyHPGauge.transform.SetParent(enemyCanvas.transform, false);
+        enemyHPGauge.transform.localPosition = Vector3.zero;
+        // 毎回180度に確定
+        enemyHPGauge.transform.localRotation = Quaternion.Euler(0, 180f, 0); 
+        enemyHPGauge.GetComponent<RectTransform>().sizeDelta = new Vector2(2, 0.5f);
+        enemyCanvas.transform.localScale = setSize;
+        enemyCanvas.gameObject.SetActive(true);
+        enemyHPGauge.gameObject.SetActive(true);
+    }
+    /// <summary>
+    /// 行動IDデータの設定
+    /// </summary>
+    /// <param name="masterActionList"></param>
+    public void SetActionID(int[] masterActionList) {
+        int masterActionCount = masterActionList.Length;
+        actionList = new List<int>(masterActionCount);
+        // データから-1を除いたアクションIDを設定する
+        for (int i = 0; i < masterActionCount; i++) {
+            if (masterActionList[i] < 0)
+                continue;
+
+            actionList.Add(masterActionList[i]);
+        }
+    }
+    /// <summary>
+    /// 片付け処理
+    /// </summary>
     public override void Teardown() {
         base.Teardown();
         enemyHPGauge.value = 1.0f;
@@ -101,6 +140,99 @@ public class EnemyCharacter : CharacterBase {
         ChangeAction(eEnemyActionType.Freeze);
         enemyAnimator.SetBool("isDead", true);
         enemyHPGauge.gameObject.SetActive(false);
+    }
+    /// <summary>
+    /// 行動開始
+    /// </summary>
+    public void StartEnemyAction() {
+        ChangeAction(eEnemyActionType.Wait);
+    }
+    /// <summary>
+    /// 判断材料の更新
+    /// </summary>
+    public void ExecuteFactors() {
+        if (IsDead || !CharacterUtility.GetPlayer())
+            return;
+        float distance = GetPlayerToEnemyDistance();
+        factors.isPlayerClose = decisionData.closePlayerDistance > distance;
+        factors.isPlayerFar = decisionData.farPlayerDisance < distance;
+        List<int> activeMagicList = decisionData.playerActiveMagic;
+        if (IsEmpty(activeMagicList))
+            return;
+        for (int i = 0, max = activeMagicList.Count; i < max; i++) {
+            if (!GetMagicActive((int)eSideType.PlayerSide, activeMagicList[i])) {
+                factors.isPlayerActiveMagic[i] = false;
+                continue;
+            } else {
+                factors.isPlayerActiveMagic[i] = true;
+            }
+        }
+    }
+    /// <summary>
+    /// 行動の更新
+    /// </summary>
+    public void ExecuteAction() {
+        if (IsDead || currentAction == null)
+            return;
+        // 行動実行処理
+        currentAction.Execute(this);
+        // 終了していたら、クールタイム発動
+        if (currentAction.IsFinished()) {
+            if (actionType == eEnemyActionType.Wait) {
+                factors.isCoolTime = false;
+            } else {
+                factors.isCoolTime = true;
+            }
+        }
+    }
+    /// <summary>
+    /// 行動判断の更新
+    /// </summary>
+    public void ExecuteDecision() {
+        if (IsDead || decision == null)
+            return;
+        // 行動中でなければ行動判断をする
+        if (!IsAction()) {
+            // 行動判断
+            eEnemyActionType action = decision.Decide(factors);
+            // 行動の変更
+            if (action != actionType)
+                ChangeAction(action);
+        }
+    }
+    /// <summary>
+    /// 行動の変更
+    /// </summary>
+    /// <param name="setAction"></param>
+    public void ChangeAction(eEnemyActionType setAction) {
+        if (!TryGetHasActionID((int)setAction))
+            return;
+        // 現在の行動の片付け処理
+        if (currentAction != null) {
+            currentAction.Teardown(this);
+            prevAction = currentAction;
+        }
+        // 行動の生成
+        currentAction = EnemyActionFactory.Create(setAction);
+        if (currentAction == null)
+            return;
+        // 更新処理
+        currentAction.Setup(this);
+        actionType = setAction;
+    }
+    /// <summary>
+    /// 該当するアクションIDが存在するか探す
+    /// </summary>
+    /// <param name="actionID"></param>
+    /// <returns></returns>
+    public bool TryGetHasActionID(int actionID) {
+        for (int i = 0, max = actionList.Count; i < max; i++) {
+            if (actionList[i] != actionID)
+                continue;
+
+            return true;
+        }
+        return false;
     }
     /// <summary>
     /// 移動速度の取得
@@ -137,101 +269,20 @@ public class EnemyCharacter : CharacterBase {
         return factors.isPlayerFar;
     }
     /// <summary>
-    /// 判断材料の更新
+    /// 敵のUI設定
     /// </summary>
-    public void ExecuteFactors() {
-        if(IsDead || !CharacterUtility.GetPlayer()) return;
-        float distance = GetPlayerToEnemyDistance();
-        factors.isPlayerClose = decisionData.closePlayerDistance > distance;
-        factors.isPlayerFar = decisionData.farPlayerDisance < distance;
-        List<int> activeMagicList = decisionData.playerActiveMagic;
-        if(IsEmpty(activeMagicList)) return;
-        for (int i = 0, max = activeMagicList.Count; i < max; i++) {
-            if (!GetMagicActive((int)eSideType.PlayerSide, activeMagicList[i])) {
-                factors.isPlayerActiveMagic[i] = false;
-                continue;
-            } else {
-                factors.isPlayerActiveMagic[i] = true;
-            }
-        }
-    }
-    /// <summary>
-    /// 行動の更新
-    /// </summary>
-    public void ExecuteAction() {
-        if(IsDead || currentAction == null) return;
-        // 行動実行処理
-        currentAction.Execute(this);
-        // 終了していたら、クールタイム発動
-        if (currentAction.IsFinished()) {
-            if (actionType == eEnemyActionType.Wait) {
-                factors.isCoolTime = false;
-            } else {
-                factors.isCoolTime = true;
-            }
-        }
-    }
-    /// <summary>
-    /// 行動判断の更新
-    /// </summary>
-    public void ExecuteDecision() {
-        if(IsDead || decision == null) return;
-        // 行動中でなければ行動判断をする
-        if (!IsAction()) {
-            // 行動判断
-            eEnemyActionType action = decision.Decide(factors);
-            // 行動の変更
-            if (action != actionType) ChangeAction(action);
-        }
-    }
+
     protected void SetEnemyCanvas() {
         if (enemyHPGauge != null) return;
 
         enemyHPGauge = MenuManager.Instance.Get<EnemyHPGauge>().GetSlider();
     }
-
-    protected virtual void SetupCanvasPosition(Vector3 setSize) {
-        Vector3 canvasPos = Vector3.zero;
-        SetEnemyCanvas();
-        enemyHPGauge.transform.SetParent(enemyCanvas.transform, false);
-        enemyHPGauge.transform.localPosition = Vector3.zero;
-        enemyHPGauge.transform.localRotation = Quaternion.Euler(0, 180f, 0); // 毎回180度に確定
-        enemyHPGauge.GetComponent<RectTransform>().sizeDelta = new Vector2(2, 0.5f);
-        enemyCanvas.transform.localScale = setSize;
-        enemyCanvas.gameObject.SetActive(true);
-        enemyHPGauge.gameObject.SetActive(true);
-    }
-
-    public Animator GetEnemyAnimator() {
-        return enemyAnimator;
-    }
-
-    public Slider GetEnemySlider() {
-        return enemyHPGauge;
-    }
-
+    /// <summary>
+    /// HP割合の取得
+    /// </summary>
+    /// <returns></returns>
     public float GetEnemySliderValue() {
         return HP / maxHP;
-    }
-    /// <summary>
-    /// 行動開始
-    /// </summary>
-    public void StartEnemyAction() {
-        ChangeAction(eEnemyActionType.Wait);
-    }
-    /// <summary>
-    /// 行動IDデータの設定
-    /// </summary>
-    /// <param name="masterActionList"></param>
-    public void SetActionID(int[] masterActionList) {
-        int masterActionCount = masterActionList.Length;
-        actionList = new List<int>(masterActionCount);
-        // データから-1を除いたアクションIDを設定する
-        for (int i = 0; i < masterActionCount; i++) {
-            if (masterActionList[i] < 0) continue;
-
-            actionList.Add(masterActionList[i]);
-        }
     }
     /// <summary>
     /// クールタイムの取得
@@ -245,37 +296,6 @@ public class EnemyCharacter : CharacterBase {
     /// </summary>
     public void SetCoolTime() {
         coolTime = Random.Range(decisionData.minCoolTime, decisionData.maxCoolTime);
-    }
-    /// <summary>
-    /// 行動の変更
-    /// </summary>
-    /// <param name="setAction"></param>
-    public void ChangeAction(eEnemyActionType setAction) {
-        if(!FindActionID((int)setAction)) return;
-        // 現在の行動の片付け処理
-        if (currentAction != null) {
-            currentAction.Teardown(this);
-            prevAction = currentAction;
-        }
-        // 行動の生成
-        currentAction = EnemyActionFactory.Create(setAction);
-        if(currentAction == null) return;
-        // 更新処理
-        currentAction.Setup(this);
-        actionType = setAction;
-    }
-    /// <summary>
-    /// 該当するアクションIDが存在するか探す
-    /// </summary>
-    /// <param name="actionID"></param>
-    /// <returns></returns>
-    public bool FindActionID(int actionID) {
-        for (int i = 0, max = actionList.Count; i < max; i++) {
-            if(actionList[i] != actionID) continue;
-
-            return true;
-        }
-        return false;
     }
     /// <summary>
     /// 行動実施中か判定

@@ -14,7 +14,7 @@ public class EnemyAction_NormalAttack : IEnemyAction, IEnemyEndAnimation {
     /// <param name="enemy"></param>
     public void Setup(EnemyCharacter enemy) {
         _isFinished = false;
-        enemy.GetEnemyAnimator().SetTrigger(_ANIMATION_NAME);
+        enemy.enemyAnimator.SetTrigger(_ANIMATION_NAME);   
     }
     /// <summary>
     /// é¿çsèàóù

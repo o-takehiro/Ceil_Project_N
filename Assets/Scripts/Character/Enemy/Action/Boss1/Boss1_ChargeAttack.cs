@@ -25,7 +25,7 @@ public class Boss1_ChargeAttack : IEnemyAction {
         _targetPos = CharacterUtility.GetPlayerPosition();
         // äpìxèàóù
         EnemyCommonModule.EnemySideRotation(enemy);
-        enemy.GetEnemyAnimator().SetBool(_ANIMATION_NAME, true);
+        enemy.enemyAnimator.SetBool(_ANIMATION_NAME, true);
         MagicUtility.CreateMagic(eSideType.EnemySide, eMagicType.SatelliteOrbital);
 
         if(!_chargeCollider) return;
@@ -63,7 +63,7 @@ public class Boss1_ChargeAttack : IEnemyAction {
     public void Teardown(EnemyCharacter enemy) {
         if(!enemy || !_rigidbody || !_chargeCollider) return;
         _chargeCollider.gameObject.SetActive(false);
-        enemy.GetEnemyAnimator().SetBool(_ANIMATION_NAME, false);
+        enemy.enemyAnimator.SetBool(_ANIMATION_NAME, false);
         MagicUtility.MagicReset(eSideType.EnemySide, eMagicType.SatelliteOrbital);
     }
     /// <summary>

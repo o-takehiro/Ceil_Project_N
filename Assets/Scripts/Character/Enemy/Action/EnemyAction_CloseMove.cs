@@ -26,7 +26,7 @@ public class EnemyAction_CloseMove : IEnemyAction {
         _elapsedTime = 0.0f;
         _rigidbody = enemy.GetComponent<Rigidbody>();
         // アニメーションの設定
-        enemy.GetEnemyAnimator().SetBool(_ANIMATION_NAME, true);
+        enemy.enemyAnimator.SetBool(_ANIMATION_NAME, true);
     }
     /// <summary>
     /// 実行処理
@@ -59,7 +59,7 @@ public class EnemyAction_CloseMove : IEnemyAction {
         // 移動量を0にする
         _rigidbody.velocity = Vector3.zero;
         // アニメーションの設定
-        enemy.GetEnemyAnimator().SetBool(_ANIMATION_NAME, false);
+        enemy.enemyAnimator.SetBool(_ANIMATION_NAME, false);
     }
     /// <summary>
     /// 終了判定

@@ -13,7 +13,7 @@ public class Boss3_ArmDownAttack : IEnemyAction, IEnemyEndAnimation{
     /// </summary>
     /// <param name="enemy"></param>
     public void Setup(EnemyCharacter enemy) {
-        enemy.GetEnemyAnimator().SetTrigger(_ANIMATION_NAME);
+        enemy.enemyAnimator.SetTrigger(_ANIMATION_NAME);
     }
     /// <summary>
     /// é¿çsèàóù

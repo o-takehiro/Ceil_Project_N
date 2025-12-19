@@ -6,22 +6,35 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class PressButtonAlpha : MonoBehaviour {
+    // フェード対象
     [SerializeField]
     private Image _fadeImage = null;
-
+    // フェードの切り替え
     private bool _switchFade = false;
+    // ループフラグ
     private bool _isClose = false;
 
+    // フェード時間
     private const float _DEFAULT_FADE_DURATION = 1.0f;
+
     private CancellationToken _token;
+
+    /// <summary>
+    /// 準備前処理
+    /// </summary>
+    /// <param name="setColor"></param>
     public void Setup(Color setColor) {
         _fadeImage.color = setColor;
         _isClose = false;
     }
-
+    /// <summary>
+    /// 実行処理
+    /// </summary>
+    /// <returns></returns>
     public async UniTask Execute() {
         _token = this.GetCancellationTokenOnDestroy();
         while (!_isClose) {
+            // 閉じるまでループする
             if (_switchFade) {
                 await FadeOut();
             } else {
@@ -30,7 +43,9 @@ public class PressButtonAlpha : MonoBehaviour {
             await UniTask.DelayFrame(1, PlayerLoopTiming.Update, _token);
         }
     }
-
+    /// <summary>
+    /// 閉じる
+    /// </summary>
     public void CloseMenu() {
         _isClose = true;
     }
@@ -60,7 +75,6 @@ public class PressButtonAlpha : MonoBehaviour {
     /// <returns></returns>
     private async UniTask FadeTargetAlpha(float targetAlpha, float duration) {
         _token = this.GetCancellationTokenOnDestroy();
-        _fadeImage.gameObject.SetActive(true);
         float elapsedTime = 0.0f;
         float startAlpha = _fadeImage.color.a;
         Color targetColor = _fadeImage.color;
@@ -70,11 +84,9 @@ public class PressButtonAlpha : MonoBehaviour {
             float t = elapsedTime / duration;
             targetColor.a = Mathf.Lerp(startAlpha, targetAlpha, t);
             _fadeImage.color = targetColor;
-            // 1フレーム待つ
             await UniTask.DelayFrame(1, PlayerLoopTiming.Update, _token);
         }
         targetColor.a = targetAlpha;
         _fadeImage.color = targetColor;
-        _fadeImage.gameObject.SetActive(false);
     }
 }
