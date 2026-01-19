@@ -1,7 +1,15 @@
+/*
+ *  @file   LockOnSystem
+ *  @author oorui
+ */
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// ロックオンの仕様
+/// </summary>
 public class LockOnSystem {
     // 現在のロックオン対象
     private Transform _currentLockTarget;

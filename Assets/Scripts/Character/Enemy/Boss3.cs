@@ -8,19 +8,16 @@ using static CharacterUtility;
 public class Boss3 : EnemyCharacter {
     public override void Initialize() {
         base.Initialize();
-        actionMachine = new EnemyAI011_Boss3Action();
-        myAI = new CharacterAIMachine<EnemyCharacter>();
-        enemyAnimator = GetComponent<Animator>();
-        magicTypeList = new List<eMagicType>(MAX_ENEMY_MAGIC);
+        decision = new Boss3Decision();
     }
 
     public override void Setup(int masterID) {
         base.Setup(masterID);
         //中心座標更新
         SetEnemyCenterPosition(new Vector3(transform.position.x, transform.position.y + 20, transform.position.z));
-        myAI.Setup(this);
-        myAI.ChangeState(new EnemyAI001_Wait());
         SetupCanvasPosition(new Vector3(0, -250, 0), new Vector2(400, 40));
+        // アクションの設定
+        ChangeAction(eEnemyActionType.Wait);
     }
 
     protected void SetupCanvasPosition(Vector3 setPosition, Vector2 setDelta) {
@@ -40,11 +37,15 @@ public class Boss3 : EnemyCharacter {
         SetEnemyRotation(transform.rotation);
         //中心座標更新
         SetEnemyCenterPosition(new Vector3(transform.position.x, transform.position.y + 20, transform.position.z));
-        //ステートマシーンの更新
-        myAI.Update();
+        // 敵行動判断リスト
+        ExecuteFactors();
+        // 行動更新
+        ExecuteAction();
+        // 行動判断更新処理
+        ExecuteDecision();
         //座標の更新
-        transform.position = GetEnemyPosition();
-        transform.rotation = GetEnemyRotation();
+        transform.position = currentPos;
+        transform.rotation = currentRot;
         //一フレーム前の位置更新
         SetEnemyPrevPosition();
     }

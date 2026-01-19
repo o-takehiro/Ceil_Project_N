@@ -1,3 +1,8 @@
+/*
+ *  @file   CameraManager
+ *  @author oorui
+ */
+
 using Cysharp.Threading.Tasks;
 using System;
 using System.Threading;
@@ -8,30 +13,21 @@ using UnityEngine.InputSystem;
 /// カメラの挙動を制御するクラス
 /// </summary>
 public class CameraManager : SystemObject {
-    public static CameraManager Instance { get; private set; } = null;
-    private PlayerMovement _movement;   // 移動制御クラス
-    // 敵を記録してロックオン管理する仕組み
-    private LockOnSystem _lockOnSystem = new LockOnSystem();
+    public static CameraManager Instance { get; private set; } = null;  // 自身への参照
+    private LockOnSystem _lockOnSystem = new LockOnSystem();            // ロックオンの処理クラス
+    private CameraInputActions _inputActions;                           // カメラの入力クラス
 
-    // 実際に動かす対象となるカメラ
-    private Camera _camera;
-    private const string _CAMERA_NAME = "Main Camera";
+    private Camera _camera;                             // 動かすカメラ
+    private const string _CAMERA_NAME = "Main Camera";  // カメラの名前
 
-    // 入力（マウスやゲームパッド）をまとめたクラス
-    private CameraInputActions _inputActions;
+    private Vector2 _lookInput;     // 視点入力の値
 
-    // 視点入力の値（横方向・縦方向）
-    private Vector2 _lookInput;
+    private float _currentYaw;      // カメラの横回転
+    private float _currentPitch;    // カメラの縦回転
 
-    // カメラの回転角度を記録するための変数
-    private float _currentYaw;   // 横回転
-    private float _currentPitch; // 縦回転
+    public Transform playerTarget;  // プレイヤー
+    private Transform _target;      // ロックオン時の敵
 
-    // 追従対象（プレイヤーなど）
-    public Transform playerTarget;
-    private Transform _target;
-
-    // カメラの動きに関する設定値
     private Vector3 offset = new Vector3(0f, 4f, -8f); // プレイヤーからどの位置に置くか
     private float followSpeed = 10f;                   // プレイヤーを追いかける速さ
     private float rotationSpeed = 3f;                  // 視点操作の速さ
@@ -40,9 +36,9 @@ public class CameraManager : SystemObject {
     private float pitchLimit = 20f;                    // 上下の視点移動の限界値
 
     // 前回のカメラ状態を記録しておくための変数
-    private Quaternion _cachedCameraRotation;
-    private Vector3 _cachedCameraDirection;
-    private Vector3 _cachedCameraPosition;
+    private Quaternion _cachedCameraRotation;   // 前のカメラの角度
+    private Vector3 _cachedCameraDirection;     // 前のカメラの遷移時間
+    private Vector3 _cachedCameraPosition;      // 前のカメラの座標
     private bool _wasLockedOnLastFrame = false; // 前フレームでロックオンしていたかどうか
 
     // カメラ演出用

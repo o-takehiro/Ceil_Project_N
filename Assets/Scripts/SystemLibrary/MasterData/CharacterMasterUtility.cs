@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CharacterMasterUtility : MonoBehaviour {
+public class CharacterMasterUtility{
     /// <summary>
     /// ID指定のキャラクターマスター取得
     /// </summary>

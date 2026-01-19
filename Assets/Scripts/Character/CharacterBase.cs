@@ -25,7 +25,7 @@ public abstract class CharacterBase : MonoBehaviour {
     public float HP { get; protected set; } = -1;
     public float MP { get; protected set; } = -1;
     public float maxMP { get; protected set; } = -1;
-    public bool isDead { get { return HP <= 0; } }
+    public bool IsDead { get { return HP <= 0; } }
     public int rawAttack { get; protected set; } = -1;
     public int rawDefense { get; protected set; } = -1;
     public float minActionTime { get; protected set; } = -1;
@@ -95,6 +95,13 @@ public abstract class CharacterBase : MonoBehaviour {
     /// <param name="setRotation"></param>
     public void SetRotation(Quaternion setRotation) {
         currentRot = setRotation;
+    }
+    /// <summary>
+    /// ID‚Ìİ’è
+    /// </summary>
+    /// <param name="setID"></param>
+    public void SetID(int setID) {
+        ID = setID;
     }
     /// <summary>
     /// ‘f‚ÌUŒ‚—Íæ“¾

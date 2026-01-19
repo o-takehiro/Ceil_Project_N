@@ -29,6 +29,9 @@ public class PlayerMagicAttack {
         _isDeath = false;
     }
 
+    /// <summary>
+    /// –‚–@ƒŠƒXƒg‚Ì‰Šú‰»
+    /// </summary>
     private void InitializeLists() {
         _eMagicList = new List<eMagicType>(4);
         for (int i = 0; i < 4; i++) {
