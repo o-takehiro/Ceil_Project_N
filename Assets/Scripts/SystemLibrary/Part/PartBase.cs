@@ -1,3 +1,8 @@
+/*
+ *  @file   PartBase
+ *  @author oorui
+ */
+
 using Cysharp.Threading.Tasks;
 using System.Collections;
 using System.Collections.Generic;
@@ -7,7 +12,7 @@ using UnityEngine;
 /// ゲームパートの基底
 /// </summary>
 public abstract class PartBase : MonoBehaviour {
-    
+
     /// <summary>
     /// 初期化処理
     /// ゲーム開始時に一度だけ呼ばれる

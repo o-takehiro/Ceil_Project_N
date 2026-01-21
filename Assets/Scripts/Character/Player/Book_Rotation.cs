@@ -1,3 +1,8 @@
+/*
+ *  @file   Book_Rotation
+ *  @author oorui
+ */
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,11 +10,19 @@ using UnityEngine;
 public class Book_Rotation : MonoBehaviour {
     private Camera _camera;
 
+    /// <summary>
+    /// 初期化
+    /// </summary>
     void Start() {
-        // MainCameraタグのついたカメラを一度だけ取得
+        // カメラの取得
         _camera = Camera.main;
+        if (_camera == null) return;
     }
 
+
+    /// <summary>
+    /// 更新処理
+    /// </summary>
     void LateUpdate() {
         if (_camera == null) return;
 

@@ -1,3 +1,8 @@
+/*
+ *  @file   PartMainGame
+ *  @author oorui
+ */
+
 using Cysharp.Threading.Tasks;
 using System.Collections;
 using System.Collections.Generic;
@@ -51,7 +56,7 @@ public class PartMainGame : PartBase {
     public override async UniTask SetUp() {
         await base.SetUp();
         MageAnimationEvents.isGameOver = false;
-        _goalObject = GameObject.FindObjectOfType<goalObject>();
+        _goalObject = FindObjectOfType<goalObject>();
 
         await UniTask.CompletedTask;
     }
@@ -62,14 +67,13 @@ public class PartMainGame : PartBase {
     /// <returns></returns>
     /// <exception cref="System.NotImplementedException"></exception>
     public override async UniTask Execute() {
-
         await FadeManager.Instance.FadeIn();
         SoundManager.Instance.PlayBGM(_currentStageBGM);
         if (_isTutorial) {
             _isTutorial = false;
             await MenuManager.Instance.Get<MenuTutorialGuide>().Open();
         }
-        GetEnemy().StartEnemyState();
+        GetEnemy().StartEnemyAction();
         ResumePlayer();
         await UniTask.WhenAll(
                 MenuManager.Instance.Get<PlayerHPGauge>().Open(),

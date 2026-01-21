@@ -143,6 +143,9 @@ public class PlayerAttack {
         _canReceiveInput = value;
     }
 
+    /// <summary>
+    /// UŒ‚–ˆ‚ÉMP‚ğ‰ñ•œ‚·‚é
+    /// </summary>
     public void AddMP() {
         if (_attackDataMap.TryGetValue(_currentAttack, out var attackData)) {
             CharacterUtility.ToPlayerAddMP(attackData.HealMP);
@@ -156,5 +159,13 @@ public class PlayerAttack {
         _isAttacking = false;
         _currentAttack = AttackStep.Invalid;
         _attackTimer = 0f;
+    }
+
+    /// <summary>
+    /// UŒ‚‚ğƒLƒƒƒ“ƒZƒ‹‚·‚é
+    /// </summary>
+    public void CancelAttack() {
+        _attackRequested = false;
+        _isAttacking = false;
     }
 }

@@ -137,3 +137,23 @@ public enum eStageState {
 
     Max
 }
+/// <summary>
+/// “G‚ÌƒAƒNƒVƒ‡ƒ“‚ÌŽí—Þ
+/// </summary>
+public enum eEnemyActionType {
+    Invalid = -1,
+    Wait = 0,
+    CloseMove,
+    LeaveMove,
+    Freeze,
+
+    NormalAttack = 10,
+    MiniBullet,
+    MagicDefense,
+    ChargeAttack,
+    GroundShock,
+    BeamAttack,
+    RoarAttack,
+    ArmDownAttack,
+    Max
+}

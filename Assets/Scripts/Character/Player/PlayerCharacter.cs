@@ -122,6 +122,9 @@ public class PlayerCharacter : CharacterBase {
         // ジャンプ中は攻撃できない
         if (!_movement.IsJumping)
             _attack.RequestAttack();
+
+        // 攻撃をキャンセルする
+        _attack.CancelAttack();
     }
 
     /// <summary>
