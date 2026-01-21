@@ -12,12 +12,7 @@ using System;
 using Cysharp.Threading.Tasks;
 
 using static CharacterUtility;
-using static PlayerMagicAttack;
 using static CommonModule;
-using static UnityEngine.EventSystems.EventTrigger;
-using System.Threading;
-using System.Drawing;
-using Cysharp.Threading.Tasks.Triggers;
 
 public class MagicManager : MonoBehaviour {
 	// 自身への参照
@@ -43,15 +38,11 @@ public class MagicManager : MonoBehaviour {
 	// 未使用状態の魔法オブジェクト
 	private List<MagicObject> _unuseObjectList = null;
 
-	// 発動する魔法
-	private List<List<Action<MagicObject>>> _activeMagic = null;
-	// 発動中の魔法ID
-	private List<List<int>> _activeMagicIDList = null;
-	//private eMagicType activeEnemyMagicID = eMagicType.Invalid;
-	// コピーした魔法
-	private List<eMagicType> _copyMagicList = null;
-	// 魔法のリセットがすでに呼ばれているかどうか
-	private List<List<bool>> _isResetMagic = null;
+    // 魔法のリセットがすでに呼ばれているかどうか
+    private List<List<bool>> _isResetMagic = null;
+
+    // 魔法の実行クラス
+    private MagicExecutor _executor = null;
 
 	// 魔法生成中
 	public bool magicGenerate = false;
@@ -61,6 +52,7 @@ public class MagicManager : MonoBehaviour {
 
 	public void Initialize() {
 		instance = this;
+		_executor = new MagicExecutor();
 
 		// 魔法のクラスをある程度生成して未使用状態にしておく
 		_useList = new List<MagicBase>(_MAGIC_MAX);
@@ -84,30 +76,7 @@ public class MagicManager : MonoBehaviour {
 			_unuseObjectList[i].Initialize();
 		}
 
-		// 魔法の種類分のリストを生成しておく
 		int magicTypeMax = (int)eMagicType.Max;
-		_copyMagicList = new List<eMagicType>(magicTypeMax);
-
-		// 発動中の魔法リストを魔法の種類分生成
-		_activeMagicIDList = new List<List<int>>(sideTypeMax);
-		for (int i = 0; i < sideTypeMax; i++) {
-			_activeMagicIDList.Add(new List<int>(magicTypeMax));
-			for (int magicCount = 0; magicCount < magicTypeMax; magicCount++) {
-				// 未使用状態にしておく
-				_activeMagicIDList[i].Add(-1);
-			}
-		}
-
-		// 発動する魔法リストをある程度生成
-		_activeMagic = new List<List<Action<MagicObject>>>(sideTypeMax);
-		for (int i = 0; i < sideTypeMax; i++) {
-			_activeMagic.Add(new List<Action<MagicObject>>(magicTypeMax));
-			for (int magicCount = 0; magicCount < magicTypeMax; magicCount++) {
-				// 未使用状態にしておく
-				_activeMagic[i].Add(null);
-			}
-		}
-
         // 魔法のリセット呼ばれてるかリストを魔法の種類分生成
         _isResetMagic = new List<List<bool>>(sideTypeMax);
         for (int i = 0; i < sideTypeMax; i++) {
@@ -117,18 +86,14 @@ public class MagicManager : MonoBehaviour {
                 _isResetMagic[i].Add(false);
             }
         }
+
+        // 実行クラスの初期化
+        _executor.Initialize(sideTypeMax);
     }
 
 	public void LateUpdate() {
-		if (_activeMagic == null) return;
-
-		// 関数とIDが入っていれば関数実行
-		for (int sideCount = 0; sideCount < (int)eSideType.Max - 1; sideCount++) {
-			for (int i = 0, max = _activeMagicIDList[sideCount].Count; i < max; i++) {
-				if (_activeMagic[sideCount][i] == null || _activeMagicIDList[sideCount][i] < 0) continue;
-				_activeMagic[sideCount][i](GetMagicObject(_activeMagicIDList[sideCount][i]));
-			}
-		}
+		// 魔法実行
+		_executor.MagicExecute();
 	}
 
 	/// <summary>
@@ -235,18 +200,19 @@ public class MagicManager : MonoBehaviour {
 		while (magicGenerate) {
 			await UniTask.Yield();
 		}
-		int side = (int)sideType, magicID = (int)magicType;
-		if (side < 0 || magicID < 0) return;
-		if (_activeMagicIDList[side][magicID] >= 0) return;
+		int side = (int)sideType, magic = (int)magicType;
+		int activeMagicID = _executor.GetActiveMagicID(side, magic);
+		if (side < 0 || magic < 0) return;
+		if (activeMagicID >= 0) return;
 		magicGenerate = true;
 		// データを使用状態にする
-		_activeMagicIDList[side][magicID] = UseMagicData(side);
-		MagicBase magicSide = GetMagicData(_activeMagicIDList[side][magicID]);
-		magicSide?.Setup(_activeMagicIDList[side][magicID], setObject);
+		activeMagicID = UseMagicData(side);
+		MagicBase magicSide = GetMagicData(activeMagicID);
+		magicSide?.Setup(activeMagicID, setObject);
 		// オブジェクトを生成する
-		MagicObject magicObject = GetMagicObject(_activeMagicIDList[side][magicID]);
+		MagicObject magicObject = GetMagicObject(activeMagicID);
 		if (magicObject == null) {
-			UseMagicObject(_activeMagicIDList[side][magicID], magicType);
+			UseMagicObject(activeMagicID, magicType);
 		}
 		// 魔法実行
 		UniTask task = MagicActivate(magicSide, sideType, magicType);
@@ -262,7 +228,7 @@ public class MagicManager : MonoBehaviour {
 	private async UniTask MagicActivate(MagicBase magicSyde, eSideType sideType, eMagicType magicType) {
 		int side = (int)sideType, magic = (int)magicType;
 		// 指定された魔法関数を保存
-		_activeMagic[side][magic] = magicSyde.magicActionList[magicType];
+		_executor.SetActiveMagic(side, magic, magicSyde.magicActionList[magicType]);
 
         // 魔法が生成完了するまで待つ
 		while (!magicSyde.useMagicObject.generateFinish) {
@@ -277,8 +243,8 @@ public class MagicManager : MonoBehaviour {
 	/// </summary>
 	public async UniTask MagicReset(eSideType sideType, eMagicType magicType) {
 		int side = (int)sideType, magicID = (int)magicType;
-		int activeMagic = _activeMagicIDList[side][magicID];
-		MagicBase removeMagic = GetMagicData(activeMagic);
+		int activeMagicID = _executor.GetActiveMagicID(side, magicID);
+		MagicBase removeMagic = GetMagicData(activeMagicID);
 		if (removeMagic == null) return;
 		if (removeMagic.ID < 0) return;
 		if (_isResetMagic[side][magicID]) return;
@@ -287,7 +253,7 @@ public class MagicManager : MonoBehaviour {
 			await UniTask.Yield();
 		}
 		// 魔法のリセット
-		_activeMagic[side][magicID] = null;
+		_executor.SetActiveMagic(side, magicID, null);
         _isResetMagic[side][magicID] = true;
 		// 未使用化可能まで待つ
         MagicObject magicObject = GetMagicObject(removeMagic.ID);
@@ -296,7 +262,7 @@ public class MagicManager : MonoBehaviour {
 		}
 		await UnuseMagicData(removeMagic);
 		// 一番最後にリセット
-		_activeMagicIDList[side][magicID] = -1;
+		_executor.SetActiveMagicID(side, magicID, -1);
 		_isResetMagic[side][magicID] = false;
     }
 
@@ -348,20 +314,8 @@ public class MagicManager : MonoBehaviour {
 	/// </summary>
 	public void AnalysisMagicActivate() {
 		if (GetEnemy() == null) return;
-		UniTask task = EffectManager.Instance.PlayEffect(eEffectType.Analysis, GetEnemyCenterPosition());
-	 	_copyMagicList = GetMagicStorageSlot();
-		// SE再生
-		SoundManager.Instance.PlaySE((int)eSEType.Analysis);
-		int enemy = (int)eSideType.EnemySide;
-		// 発動中の魔法を探す
-		for (int magic = 0, magicMax = _activeMagicIDList[enemy].Count; magic < magicMax; magic++) {
-			// 魔法発動中かつ、コピー済みでなければセット
-			if (!GetMagicActive(enemy, magic) || GetMagicCopied(magic)) continue;
-			SetMagicStorageSlot((eMagicType)magic);
-			// SE再生
-			SoundManager.Instance.PlaySE((int)eSEType.GetMagic);
-			return;
-		}
+		// 解析魔法実行
+		_executor.AnalysisMagicExecute();
 	}
 
 	/// <summary>
@@ -371,18 +325,7 @@ public class MagicManager : MonoBehaviour {
 	/// <param name="magic"></param>
 	/// <returns></returns>
 	public bool GetMagicActive(int side, int magic) {
-		return _activeMagicIDList[side][magic] >= 0;
-	}
-
-	/// <summary>
-	/// 特定の魔法を既にコピーしているかどうか
-	/// </summary>
-	/// <returns></returns>
-	private bool GetMagicCopied(int magicID) { 
-		for (int i = 0, max = _copyMagicList.Count; i < max; i++) {
-			if ((int)_copyMagicList[i] == magicID) return true;
-		}
-		return false;
+		return _executor.GetActiveMagicID(side, magic) >= 0;
 	}
 
 	/// <summary>
