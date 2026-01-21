@@ -5,6 +5,7 @@
  * @date    2025/7/9
  */
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -20,6 +21,12 @@ public abstract class MagicBase {
 	public MagicObject useMagicObject = null;
 	// 魔法を発射する位置オブジェクト
 	public GameObject magicActiveObject = null;
+
+    // 魔法の関数リスト
+    public Dictionary<eMagicType, Action<MagicObject>> magicActionList;
+
+    // 初期化関数
+    public abstract void Initialize();
 	
 	// 魔法陣営取得
 	public abstract eSideType GetSide();

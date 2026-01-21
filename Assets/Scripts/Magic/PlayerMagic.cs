@@ -19,6 +19,7 @@ using static MagicUtility;
 using static CharacterUtility;
 using static MagicMasterUtility;
 using System;
+using UnityEngine.UIElements.Experimental;
 
 public class PlayerMagic : MagicBase {
 	// ’e‚ÌƒXƒs[ƒh
@@ -96,10 +97,27 @@ public class PlayerMagic : MagicBase {
 	Transform camera = Camera.main.transform;
 
 	/// <summary>
-	/// –‚–@w‰c‚Ìæ“¾
+	/// ‰Šú‰»
 	/// </summary>
-	/// <returns></returns>
-	public override eSideType GetSide() {
+    public override void Initialize() {
+		magicActionList = new Dictionary<eMagicType, Action<MagicObject>> {
+			{ eMagicType.Defense, DefenseMagic },
+            { eMagicType.MiniBullet, MiniBulletMagic },
+            { eMagicType.SatelliteOrbital, SatelliteOrbitalMagic },
+            { eMagicType.LaserBeam, LaserBeamMagic },
+            { eMagicType.DelayBullet, DelayBulletMagic },
+            { eMagicType.Healing, HealingMagic },
+            { eMagicType.Buff, BuffMagic },
+            { eMagicType.GroundShock, GroundShockMagic },
+            { eMagicType.BigBullet, BigBulletMagic },
+        };
+    }
+
+    /// <summary>
+    /// –‚–@w‰c‚Ìæ“¾
+    /// </summary>
+    /// <returns></returns>
+    public override eSideType GetSide() {
 		return eSideType.PlayerSide;
 	}
 

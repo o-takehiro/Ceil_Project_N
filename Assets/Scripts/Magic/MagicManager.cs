@@ -72,6 +72,7 @@ public class MagicManager : MonoBehaviour {
 			for (int magicCount = 0; magicCount < _MAGIC_MAX; magicCount++) {
 				// 2つの派生クラスを生成してリストに積む
 				_unuseList[i].Add(CreateSideMagic((eSideType)i));
+				_unuseList[i][magicCount].Initialize();
 			}
 		}
 		// 魔法オブジェクトをある程度生成して未使用状態にしておく
@@ -260,35 +261,9 @@ public class MagicManager : MonoBehaviour {
 	/// <param name="magic"></param>
 	private async UniTask MagicActivate(MagicBase magicSyde, eSideType sideType, eMagicType magicType) {
 		int side = (int)sideType, magic = (int)magicType;
-		switch (magicType) {
-			case eMagicType.Defense:
-				_activeMagic[side][magic] = magicSyde.DefenseMagic;
-				break;
-			case eMagicType.MiniBullet:
-				_activeMagic[side][magic] = magicSyde.MiniBulletMagic;
-				break;
-			case eMagicType.SatelliteOrbital:
-				_activeMagic[side][magic] = magicSyde.SatelliteOrbitalMagic;
-				break;
-			case eMagicType.LaserBeam:
-				_activeMagic[side][magic] = magicSyde.LaserBeamMagic;
-				break;
-            case eMagicType.DelayBullet:
-                _activeMagic[side][magic] = magicSyde.DelayBulletMagic;
-                break;
-			case eMagicType.Healing:
-				_activeMagic[side][magic] = magicSyde.HealingMagic;
-				break;
-			case eMagicType.Buff:
-				_activeMagic[side][magic] = magicSyde.BuffMagic;
-				break;
-			case eMagicType.GroundShock:
-				_activeMagic[side][magic] = magicSyde.GroundShockMagic;
-				break;
-			case eMagicType.BigBullet:
-				_activeMagic[side][magic] = magicSyde.BigBulletMagic;
-				break;
-		}
+		// 指定された魔法関数を保存
+		_activeMagic[side][magic] = magicSyde.magicActionList[magicType];
+
         // 魔法が生成完了するまで待つ
 		while (!magicSyde.useMagicObject.generateFinish) {
 			await UniTask.Yield();

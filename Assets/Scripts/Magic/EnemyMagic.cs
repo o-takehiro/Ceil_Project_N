@@ -87,10 +87,27 @@ public class EnemyMagic : MagicBase {
 	private List<GameObject> _delayBulletList = new List<GameObject>();
 
 	/// <summary>
-	/// –‚–@w‰c‚Ìæ“¾
+	/// ‰Šú‰»
 	/// </summary>
-	/// <returns></returns>
-	public override eSideType GetSide() {
+    public override void Initialize() {
+        magicActionList = new Dictionary<eMagicType, Action<MagicObject>> {
+            { eMagicType.Defense, DefenseMagic },
+            { eMagicType.MiniBullet, MiniBulletMagic },
+            { eMagicType.SatelliteOrbital, SatelliteOrbitalMagic },
+            { eMagicType.LaserBeam, LaserBeamMagic },
+            { eMagicType.DelayBullet, DelayBulletMagic },
+            { eMagicType.Healing, HealingMagic },
+            { eMagicType.Buff, BuffMagic },
+            { eMagicType.GroundShock, GroundShockMagic },
+            { eMagicType.BigBullet, BigBulletMagic },
+        };
+    }
+
+    /// <summary>
+    /// –‚–@w‰c‚Ìæ“¾
+    /// </summary>
+    /// <returns></returns>
+    public override eSideType GetSide() {
 		return eSideType.EnemySide;
 	}
 
