@@ -199,22 +199,22 @@ public class EnemyMagic : MagicBase {
 		// バグ回避用一時待機
 		await UniTask.DelayFrame(1);
 		// リセットチェックがされていなければチェック
-		if (_bulletResetCheck) return;
-		_bulletResetCheck = true;
+		//if (_bulletResetCheck) return;
+		//_bulletResetCheck = true;
 		// すべてが非表示になるまで待機
 		while (!UnuseCheck(_bulletList)) {
 			await UniTask.Yield(PlayerLoopTiming.Update, useMagicObject.token);
 		}
 		// チェック終了
-		_bulletResetCheck = false;
+		//_bulletResetCheck = false;
 		// リストをクリア
 		_bulletList.Clear();
 		magicObject.canUnuse = true;
 
         // リセットチェックがされていなければチェック
-        if (_bulletResetCheck) return;
+        //if (_bulletResetCheck) return;
         // 未使用化可能
-        _bulletResetCheck = true;
+        //_bulletResetCheck = true;
         _bulletGenerate = false;
     }
     /// <summary>

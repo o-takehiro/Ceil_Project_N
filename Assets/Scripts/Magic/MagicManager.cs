@@ -207,6 +207,7 @@ public class MagicManager : MonoBehaviour {
 		magicGenerate = true;
 		// データを使用状態にする
 		activeMagicID = UseMagicData(side);
+		_executor.SetActiveMagicID(side, magic, activeMagicID);
 		MagicBase magicSide = GetMagicData(activeMagicID);
 		magicSide?.Setup(activeMagicID, setObject);
 		// オブジェクトを生成する
