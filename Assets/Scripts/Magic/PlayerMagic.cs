@@ -26,6 +26,8 @@ public class PlayerMagic : MagicBase {
 	private float _bulletSpeed = 30;
 	// 弾のクールタイム
 	private float _bulletCoolTime = 0.0f;
+	// 弾の生成カウント
+	private int _bulletGenerateCount = 0;
 	// 時間差弾のクールタイム
 	private float _delayBulletCoolTime = 0.0f;
 	// 時間差弾のスピード
@@ -156,9 +158,10 @@ public class PlayerMagic : MagicBase {
 	public override void MiniBulletMagic(MagicObject magicObject) {
 		if (magicObject == null) return;
 		// 生成完了
-		magicObject.generateFinish = true;	
-		// 小型弾生成待機用実行関数
-		UniTask task = MiniBulletExecute(magicObject);
+		magicObject.generateFinish = true;
+		_bulletGenerateCount += 1;
+        // 小型弾生成待機用実行関数
+        UniTask task = MiniBulletExecute(magicObject);
 	}
 	/// <summary>
 	/// 待機用小型弾幕魔法実行処理
@@ -178,7 +181,7 @@ public class PlayerMagic : MagicBase {
 					activePos = magicActiveObject.transform.position;
 				}
 				// 敵の防御魔法の外なら生成
-				if (!GetInDefense()) {
+				if (!GetInDefense() && magicObject.gameObject.activeInHierarchy) {
                     // 未使用化不可能
                     magicObject.canUnuse = false;
                     Transform bullet = magicObject.GenerateMiniBullet().transform;
@@ -206,7 +209,8 @@ public class PlayerMagic : MagicBase {
 			}
 			await UniTask.Yield(PlayerLoopTiming.Update, useMagicObject.token);
 		} while (!_bulletGenerate);
-	}
+        _bulletGenerateCount -= 1;
+    }
 	/// <summary>
 	/// 小型弾幕の移動
 	/// </summary>
@@ -238,11 +242,11 @@ public class PlayerMagic : MagicBase {
 		magicObject.RemoveMagic(miniBullet.gameObject);
 		// バグ回避用一時待機
 		await UniTask.DelayFrame(1);
-		// リセットチェックがされていなければチェック
-		if (_bulletResetCheck) return;
+        // リセットチェックがされていなければチェック
+        if (_bulletResetCheck) return;
 		_bulletResetCheck = true;
-		// すべてが非表示になるまで待機
-		while (!UnuseCheck(_bulletList)) {
+		// すべてが非表示かつ生成が終るまで待機
+		while (!UnuseCheck(_bulletList) || _bulletGenerateCount > 0) {
 			await UniTask.Yield(PlayerLoopTiming.Update, useMagicObject.token);
 		}
 		// チェック終了
